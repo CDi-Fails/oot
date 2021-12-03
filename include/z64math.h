@@ -109,5 +109,8 @@ typedef struct {
 #define DOTXZ(vec1, vec2) ((vec1.x) * (vec2.x) + (vec1.z) * (vec2.z))
 #define SQXYZ(vec) ((vec.x) * (vec.x) + (vec.y) * (vec.y) + (vec.z) * (vec.z))
 #define DOTXYZ(vec1, vec2) ((vec1.x) * (vec2.x) + (vec1.y) * (vec2.y) + (vec1.z) * (vec2.z))
+#define VEC3F_X(r, p, y) ((r) * (sinf(DEG_TO_RAD(y))) * (cosf(DEG_TO_RAD(p))))
+#define VEC3F_Y(r, p, y) ((r) * (cosf(DEG_TO_RAD(y))) * (sinf(DEG_TO_RAD(p))))
+#define VEC3F_Z(r, p, y) ((r) * (cosf(DEG_TO_RAD(y))) * (cosf(DEG_TO_RAD(p))))
 
 #endif

@@ -7,6 +7,7 @@
 #include "z_en_firefly.h"
 #include "objects/object_firefly/object_firefly.h"
 #include "overlays/actors/ovl_Obj_Syokudai/z_obj_syokudai.h"
+#include "overlays/actors/ovl_En_Bom/z_en_bom.h"
 
 #define FLAGS 0x00005005
 
@@ -33,7 +34,8 @@ void EnFirefly_DisturbDiveAttack(EnFirefly* this, GlobalContext* globalCtx);
 typedef enum {
     /* 0 */ KEESE_AURA_NONE,
     /* 1 */ KEESE_AURA_FIRE,
-    /* 2 */ KEESE_AURA_ICE
+    /* 2 */ KEESE_AURA_ICE,
+    /* 3 */ KEESE_AURA_BIRI
 } KeeseAuraType;
 
 const ActorInit En_Firefly_InitVars = {
@@ -84,10 +86,10 @@ static DamageTable sDamageTable = {
     /* Explosive     */ DMG_ENTRY(2, 0x0),
     /* Boomerang     */ DMG_ENTRY(1, 0x0),
     /* Normal arrow  */ DMG_ENTRY(2, 0x0),
-    /* Hammer swing  */ DMG_ENTRY(2, 0x0),
+    /* Hammer swing  */ DMG_ENTRY(3, 0x0),
     /* Hookshot      */ DMG_ENTRY(2, 0x0),
-    /* Kokiri sword  */ DMG_ENTRY(1, 0x0),
-    /* Master sword  */ DMG_ENTRY(2, 0x0),
+    /* Kokiri sword  */ DMG_ENTRY(2, 0x0),
+    /* Master sword  */ DMG_ENTRY(3, 0x0),
     /* Giant's Knife */ DMG_ENTRY(4, 0x0),
     /* Fire arrow    */ DMG_ENTRY(2, 0xF),
     /* Ice arrow     */ DMG_ENTRY(4, 0x3),
@@ -100,15 +102,15 @@ static DamageTable sDamageTable = {
     /* Light magic   */ DMG_ENTRY(0, 0x0),
     /* Shield        */ DMG_ENTRY(0, 0x0),
     /* Mirror Ray    */ DMG_ENTRY(0, 0x0),
-    /* Kokiri spin   */ DMG_ENTRY(1, 0x0),
+    /* Kokiri spin   */ DMG_ENTRY(2, 0x0),
     /* Giant spin    */ DMG_ENTRY(4, 0x0),
-    /* Master spin   */ DMG_ENTRY(2, 0x0),
-    /* Kokiri jump   */ DMG_ENTRY(2, 0x0),
+    /* Master spin   */ DMG_ENTRY(3, 0x0),
+    /* Kokiri jump   */ DMG_ENTRY(4, 0x0),
     /* Giant jump    */ DMG_ENTRY(8, 0x0),
-    /* Master jump   */ DMG_ENTRY(4, 0x0),
+    /* Master jump   */ DMG_ENTRY(6, 0x0),
     /* Unknown 1     */ DMG_ENTRY(0, 0x0),
     /* Unblockable   */ DMG_ENTRY(0, 0x0),
-    /* Hammer jump   */ DMG_ENTRY(4, 0x0),
+    /* Hammer jump   */ DMG_ENTRY(6, 0x0),
     /* Unknown 2     */ DMG_ENTRY(0, 0x0),
 };
 
@@ -119,29 +121,35 @@ static InitChainEntry sInitChain[] = {
 };
 
 void EnFirefly_Extinguish(EnFirefly* this) {
-    this->actor.params += 2;
+    this->config.action_type += 2;
     this->collider.elements[0].info.toucher.effect = 0; // None
-    this->auraType = KEESE_AURA_NONE;
-    this->onFire = false;
+    this->config.auraType = KEESE_AURA_NONE;
+    this->config.onFire = false;
     this->actor.naviEnemyId = 0x12; // Keese
 }
 
 void EnFirefly_Ignite(EnFirefly* this) {
-    if (this->actor.params == KEESE_ICE_FLY) {
-        this->actor.params = KEESE_FIRE_FLY;
+    if (this->config.action_type == KEESE_ICE_FLY || this->config.action_type == KEESE_BIRI_FLY) {
+        this->config.action_type = KEESE_FIRE_FLY;
     } else {
-        this->actor.params -= 2;
+        this->config.action_type -= 2;
     }
     this->collider.elements[0].info.toucher.effect = 1; // Fire
-    this->auraType = KEESE_AURA_FIRE;
-    this->onFire = true;
+    this->config.auraType = KEESE_AURA_FIRE;
+    this->config.onFire = true;
     this->actor.naviEnemyId = 0x11; // Fire Keese
 }
 
 void EnFirefly_Init(Actor* thisx, GlobalContext* globalCtx) {
     EnFirefly* this = THIS;
 
+    this->config.params = this->actor.params;
+
     Actor_ProcessInitChain(&this->actor, sInitChain);
+    
+    this->Hero.SpeedMult = 1.0f;
+    this->Hero.TimerMult = 1.0f;
+
     ActorShape_Init(&this->actor.shape, 0.0f, ActorShadow_DrawCircle, 25.0f);
     SkelAnime_Init(globalCtx, &this->skelAnime, &gKeeseSkeleton, &gKeeseFlyAnim, this->jointTable, this->morphTable,
                    28);
@@ -149,36 +157,57 @@ void EnFirefly_Init(Actor* thisx, GlobalContext* globalCtx) {
     Collider_SetJntSph(globalCtx, &this->collider, &this->actor, &sJntSphInit, this->colliderItems);
     CollisionCheck_SetInfo(&this->actor.colChkInfo, &sDamageTable, &sColChkInfoInit);
 
-    if ((this->actor.params & 0x8000) != 0) {
+    if (this->config.isDickbag) { //Angry bat config
+        Actor_SetScale(&this->actor, 0.008f);
+        this->actor.focus.pos.y += 10.0f;
+        this->actor.colChkInfo.health = 3;
+        this->colliderItems[0].info.toucher.damage = 16;
+        if (globalCtx->isHeroMode) { //Extremely angry bat
+            this->actor.colChkInfo.health = 5;
+            this->colliderItems[0].info.toucher.damage *= 2;
+            this->Hero.SpeedMult = 1.3f;
+            this->Hero.TimerMult = 0.7f;
+        }
+    }
+    else if (globalCtx->isHeroMode && !this->config.isDickbag) { //Slightly peeved regular keese
+            this->colliderItems[0].info.toucher.damage *= 2;
+            this->Hero.TimerMult = 0.85f;
+            this->Hero.SpeedMult = 1.15f;
+    }
+
+    if (this->config.isInvisible) {
         this->actor.flags |= 0x80;
         if (1) {}
         this->actor.draw = EnFirefly_DrawInvisible;
-        this->actor.params &= 0x7FFF;
+        //this->actor.params &= 0x7FFF;
     }
 
-    if (this->actor.params <= KEESE_FIRE_PERCH) {
-        this->onFire = true;
+    if (this->config.action_type <= KEESE_FIRE_PERCH) {
+        this->config.onFire = true;
     } else {
-        this->onFire = false;
+        this->config.onFire = false;
     }
 
-    if (this->onFire) {
+    if (this->config.onFire) {
         this->actionFunc = EnFirefly_FlyIdle;
         this->timer = Rand_S16Offset(20, 60);
         this->actor.shape.rot.x = 0x1554;
-        this->auraType = KEESE_AURA_FIRE;
+        this->config.auraType = KEESE_AURA_FIRE;
         this->actor.naviEnemyId = 0x11; // Fire Keese
         this->maxAltitude = this->actor.home.pos.y;
     } else {
-        if (this->actor.params == KEESE_NORMAL_PERCH) {
+        if (this->config.action_type == KEESE_NORMAL_PERCH) {
             this->actionFunc = EnFirefly_Perch;
         } else {
             this->actionFunc = EnFirefly_FlyIdle;
         }
 
-        if (this->actor.params == KEESE_ICE_FLY) {
+        if (this->config.action_type == KEESE_ICE_FLY) {
             this->collider.elements[0].info.toucher.effect = 2; // Ice
             this->actor.naviEnemyId = 0x56;                     // Ice Keese
+        } else if (this->config.action_type == KEESE_BIRI_FLY) {
+            this->collider.elements[0].info.toucher.effect = 3; // Elecric
+            this->actor.naviEnemyId = 0x56;                     // Electric Keese
         } else {
             this->collider.elements[0].info.toucher.effect = 0; // Nothing
             this->actor.naviEnemyId = 0x12;                     // Keese
@@ -186,10 +215,12 @@ void EnFirefly_Init(Actor* thisx, GlobalContext* globalCtx) {
 
         this->maxAltitude = this->actor.home.pos.y + 100.0f;
 
-        if (this->actor.params == KEESE_ICE_FLY) {
-            this->auraType = KEESE_AURA_ICE;
+        if (this->config.action_type == KEESE_ICE_FLY) {
+            this->config.auraType = KEESE_AURA_ICE;
+        } else if (this->config.action_type == KEESE_BIRI_FLY) {
+            this->config.auraType = KEESE_AURA_BIRI;
         } else {
-            this->auraType = KEESE_AURA_NONE;
+            this->config.auraType = KEESE_AURA_NONE;
         }
     }
 
@@ -205,6 +236,11 @@ void EnFirefly_Destroy(Actor* thisx, GlobalContext* globalCtx) {
 void EnFirefly_SetupFlyIdle(EnFirefly* this) {
     this->timer = Rand_S16Offset(70, 100);
     this->actor.speedXZ = (Rand_ZeroOne() * 1.5f) + 1.5f;
+    if (this->config.isDickbag){
+        this->timer += 30;
+        this->actor.speedXZ += DICKBAG_SPEEDMODIFIER;
+    }
+    this->actor.speedXZ *= this->Hero.SpeedMult;
     Math_ScaledStepToS(&this->actor.shape.rot.y, Actor_WorldYawTowardPoint(&this->actor, &this->actor.home.pos), 0x300);
     this->targetPitch = ((this->maxAltitude < this->actor.world.pos.y) ? 0xC00 : -0xC00) + 0x1554;
     this->skelAnime.playSpeed = 1.0f;
@@ -213,6 +249,9 @@ void EnFirefly_SetupFlyIdle(EnFirefly* this) {
 
 void EnFirefly_SetupFall(EnFirefly* this) {
     this->timer = 40;
+    if (this->config.isDickbag){
+        this->timer = (s16)(ceilf(this->Hero.TimerMult * DICKBAG_HITSTUN));
+    }
     this->actor.velocity.y = 0.0f;
     Animation_Change(&this->skelAnime, &gKeeseFlyAnim, 0.5f, 0.0f, 0.0f, ANIMMODE_LOOP_INTERP, -3.0f);
     Audio_PlayActorSound2(&this->actor, NA_SE_EN_FFLY_DEAD);
@@ -231,7 +270,11 @@ void EnFirefly_SetupRebound(EnFirefly* this) {
     this->actor.world.rot.x = 0x7000;
     this->timer = 18;
     this->skelAnime.playSpeed = 1.0f;
-    this->actor.speedXZ = 2.5f;
+    this->actor.speedXZ = 2.5f * this->Hero.SpeedMult;
+    if (this->config.isDickbag){
+        this->timer=10;
+        this->actor.speedXZ += DICKBAG_SPEEDMODIFIER;
+    }
     this->actionFunc = EnFirefly_Rebound;
 }
 
@@ -243,7 +286,9 @@ void EnFirefly_SetupDiveAttack(EnFirefly* this) {
 }
 
 void EnFirefly_SetupFlyAway(EnFirefly* this) {
-    this->timer = 150;
+    s16 BaseTime = 150;
+    if(this->config.isDickbag)BaseTime = 30;
+    this->timer = (s16)(ceilf(this->Hero.TimerMult * BaseTime));
     this->skelAnime.playSpeed = 1.0f;
     this->targetPitch = 0x954;
     this->actionFunc = EnFirefly_FlyAway;
@@ -252,7 +297,7 @@ void EnFirefly_SetupFlyAway(EnFirefly* this) {
 void EnFirefly_SetupStunned(EnFirefly* this) {
     this->timer = 80;
     Actor_SetColorFilter(&this->actor, 0, 0xFF, 0, 80);
-    this->auraType = KEESE_AURA_NONE;
+    this->config.auraType = KEESE_AURA_NONE;
     this->actor.velocity.y = 0.0f;
     this->skelAnime.playSpeed = 3.0f;
     Audio_PlayActorSound2(&this->actor, NA_SE_EN_GOMA_JR_FREEZE);
@@ -264,7 +309,7 @@ void EnFirefly_SetupFrozenFall(EnFirefly* this, GlobalContext* globalCtx) {
     Vec3f iceParticlePos;
 
     this->actor.flags |= 0x10;
-    this->auraType = KEESE_AURA_NONE;
+    this->config.auraType = KEESE_AURA_NONE;
     this->actor.speedXZ = 0.0f;
     Actor_SetColorFilter(&this->actor, 0, 0xFF, 0, 0xFF);
     Audio_PlayActorSound2(&this->actor, NA_SE_EN_FFLY_DEAD);
@@ -290,7 +335,8 @@ void EnFirefly_SetupDisturbDiveAttack(EnFirefly* this) {
     this->skelAnime.playSpeed = 3.0f;
     this->actor.shape.rot.x = 0x1554;
     this->actor.shape.rot.y = this->actor.yawTowardsPlayer;
-    this->actor.speedXZ = 3.0f;
+    this->actor.speedXZ = (3.0f * this->Hero.SpeedMult);
+    if(this->config.isDickbag)this->actor.speedXZ+=DICKBAG_SPEEDMODIFIER;
     this->timer = 50;
     this->actionFunc = EnFirefly_DisturbDiveAttack;
 }
@@ -299,9 +345,10 @@ s32 EnFirefly_ReturnToPerch(EnFirefly* this, GlobalContext* globalCtx) {
     Player* player = GET_PLAYER(globalCtx);
     f32 distFromHome;
 
-    if (this->actor.params != KEESE_NORMAL_PERCH) {
+    if (this->config.action_type != KEESE_NORMAL_PERCH) {
         return 0;
     }
+    if(this->config.isDickbag)return 0;
 
     if (Actor_WorldDistXZToPoint(&player->actor, &this->actor.home.pos) > 300.0f) {
         distFromHome = Actor_WorldDistXYZToPoint(&this->actor, &this->actor.home.pos);
@@ -368,27 +415,52 @@ s32 EnFirefly_SeekTorch(EnFirefly* this, GlobalContext* globalCtx) {
 }
 
 void EnFirefly_FlyIdle(EnFirefly* this, GlobalContext* globalCtx) {
+    Player* player = GET_PLAYER(globalCtx);
     s32 skelanimeUpdated;
     f32 rand;
+    f32 FloorOffset = 20.0f;
+    Vec3f TargetCoords;
+    f32 rotation;
+    if(this->config.isDickbag){
+        FloorOffset=32.0f;
+        if(this->actor.yawTowardsPlayer < 0.0f)rotation=-90.0f;
+        else rotation=90.0f;
+
+        TargetCoords.x = player->actor.world.pos.x + VEC3F_X(45, BINANG_TO_DEGF(player->actor.world.rot.y)+rotation, 0); 
+        TargetCoords.z = player->actor.world.pos.z + VEC3F_Z(45, BINANG_TO_DEGF(player->actor.world.rot.y)+rotation, 0); 
+        TargetCoords.y =  player->actor.world.pos.y + 45;
+    }
 
     SkelAnime_Update(&this->skelAnime);
+    if(!this->actor.isTargeted && this->config.isDickbag && this->timer>2){
+        if(this->actor.xzDistToPlayer < 250.0f){
+            this->timer-=2;
+        }
+    }
     if (this->timer != 0) {
         this->timer--;
     }
     skelanimeUpdated = Animation_OnFrame(&this->skelAnime, 0.0f);
     this->actor.speedXZ = (Rand_ZeroOne() * 1.5f) + 1.5f;
-    if (this->onFire || (this->actor.params == KEESE_ICE_FLY) ||
+    if (this->config.isDickbag){
+        this->actor.speedXZ += DICKBAG_SPEEDMODIFIER;
+    }
+    this->actor.speedXZ *= this->Hero.SpeedMult;
+    if (this->config.onFire || (this->config.action_type == KEESE_ICE_FLY) ||
         ((EnFirefly_ReturnToPerch(this, globalCtx) == 0) && (EnFirefly_SeekTorch(this, globalCtx) == 0))) {
         if (skelanimeUpdated) {
             rand = Rand_ZeroOne();
-            if (rand < 0.5f) {
+            if(rand < 0.8f && this->config.isDickbag){
+                Math_ScaledStepToS(&this->actor.shape.rot.y, Actor_WorldYawTowardPoint(&this->actor, &TargetCoords), 0x600);
+            }
+            else if (rand < 0.5f) {
                 Math_ScaledStepToS(&this->actor.shape.rot.y,
                                    Actor_WorldYawTowardPoint(&this->actor, &this->actor.home.pos), 0x300);
-            } else if (rand < 0.8f) {
+            } else if (rand < 0.85f) {
                 this->actor.shape.rot.y += Rand_CenteredFloat(1536.0f);
             }
             // Climb if too close to ground
-            if (this->actor.world.pos.y < (this->actor.floorHeight + 20.0f)) {
+            if (this->actor.world.pos.y < (this->actor.floorHeight + FloorOffset)) {
                 this->targetPitch = 0x954;
                 // Descend if above maxAltitude
             } else if (this->maxAltitude < this->actor.world.pos.y) {
@@ -410,6 +482,12 @@ void EnFirefly_FlyIdle(EnFirefly* this, GlobalContext* globalCtx) {
     }
     if (this->actor.bgCheckFlags & 8) {
         Math_SmoothStepToS(&this->actor.shape.rot.y, this->actor.wallYaw, 2, 0xC00, 0x300);
+        
+    }
+    if(this->config.isDickbag) {
+        if(Actor_WorldDistXYZToPoint(&this->actor, &TargetCoords) < 20.0f ){
+            EnFirefly_SetupDiveAttack(this);
+        }
     }
     if ((this->timer == 0) && (this->actor.xzDistToPlayer < 200.0f) &&
         (Player_GetMask(globalCtx) != PLAYER_MASK_SKULL)) {
@@ -434,19 +512,33 @@ void EnFirefly_Fall(EnFirefly* this, GlobalContext* globalCtx) {
             this->timer--;
         }
         if ((this->actor.bgCheckFlags & 1) || (this->timer == 0)) {
-            EnFirefly_SetupDie(this);
+            
+            if(this->actor.colChkInfo.health<=0){
+                EnFirefly_SetupDie(this);
+            }
+            else{
+                EnFirefly_SetupFlyIdle(this);
+            }
         }
     }
 }
 
 // Hit the ground or burn up, spawn drops
 void EnFirefly_Die(EnFirefly* this, GlobalContext* globalCtx) {
+    EnBom* bomb;
     if (this->timer != 0) {
         this->timer--;
     }
     Math_StepToF(&this->actor.scale.x, 0.0f, 0.00034f);
     this->actor.scale.y = this->actor.scale.z = this->actor.scale.x;
     if (this->timer == 0) {
+        if (this->config.isKamikaze) {
+            bomb = (EnBom*)Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_BOM,
+            this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0x6FF, BOMB_BODY);
+            if (bomb != NULL) {
+                bomb->timer = 0;
+            }
+        }
         Item_DropCollectibleRandom(globalCtx, &this->actor, &this->actor.world.pos, 0xE0);
         Actor_Kill(&this->actor);
     }
@@ -455,12 +547,15 @@ void EnFirefly_Die(EnFirefly* this, GlobalContext* globalCtx) {
 void EnFirefly_DiveAttack(EnFirefly* this, GlobalContext* globalCtx) {
     Player* player = GET_PLAYER(globalCtx);
     Vec3f preyPos;
+    float TopSpeed = 4.0f;
+    if(this->config.isDickbag)TopSpeed = 6.0f;
+    TopSpeed *= this->Hero.SpeedMult;
 
     SkelAnime_Update(&this->skelAnime);
     if (this->timer != 0) {
         this->timer--;
     }
-    Math_StepToF(&this->actor.speedXZ, 4.0f, 0.5f);
+    Math_StepToF(&this->actor.speedXZ, TopSpeed, TopSpeed/8.0f);
     if (this->actor.bgCheckFlags & 8) {
         Math_SmoothStepToS(&this->actor.shape.rot.y, this->actor.wallYaw, 2, 0xC00, 0x300);
         Math_ScaledStepToS(&this->actor.shape.rot.x, this->targetPitch, 0x100);
@@ -499,8 +594,11 @@ void EnFirefly_DiveAttack(EnFirefly* this, GlobalContext* globalCtx) {
 void EnFirefly_Rebound(EnFirefly* this, GlobalContext* globalCtx) {
     SkelAnime_Update(&this->skelAnime);
     Math_ScaledStepToS(&this->actor.shape.rot.x, 0, 0x100);
-    Math_StepToF(&this->actor.velocity.y, 0.0f, 0.4f);
-    if (Math_StepToF(&this->actor.speedXZ, 0.0f, 0.15f)) {
+    Math_StepToF(&this->actor.velocity.y, 0.0f, (0.4f*this->Hero.SpeedMult));
+    if (this->config.isDickbag){
+        Math_StepToF(&this->actor.speedXZ, 0.0f, (0.15f*this->Hero.SpeedMult));
+    }
+    if (Math_StepToF(&this->actor.speedXZ, 0.0f, (0.15f*this->Hero.SpeedMult))) {
         if (this->timer != 0) {
             this->timer--;
         }
@@ -521,7 +619,12 @@ void EnFirefly_FlyAway(EnFirefly* this, GlobalContext* globalCtx) {
         EnFirefly_SetupFlyIdle(this);
         return;
     }
-    Math_StepToF(&this->actor.speedXZ, 3.0f, 0.3f);
+    if(this->config.isDickbag){
+        Math_StepToF(&this->actor.speedXZ, 4.0f, 0.8f);
+    }
+    else{
+        Math_StepToF(&this->actor.speedXZ, 3.0f, 0.3f);
+    }
     if (this->actor.bgCheckFlags & 1) {
         this->targetPitch = 0x954;
     } else if ((this->actor.bgCheckFlags & 0x10) || (this->maxAltitude < this->actor.world.pos.y)) {
@@ -546,10 +649,12 @@ void EnFirefly_Stunned(EnFirefly* this, GlobalContext* globalCtx) {
         this->timer--;
     }
     if (this->timer == 0) {
-        if (this->onFire) {
-            this->auraType = KEESE_AURA_FIRE;
-        } else if (this->actor.params == KEESE_ICE_FLY) {
-            this->auraType = KEESE_AURA_ICE;
+        if (this->config.onFire) {
+            this->config.auraType = KEESE_AURA_FIRE;
+        } else if (this->config.action_type == KEESE_ICE_FLY) {
+            this->config.auraType = KEESE_AURA_ICE;
+        } else if (this->config.action_type == KEESE_BIRI_FLY) {
+            this->config.auraType = KEESE_AURA_BIRI;
         }
         EnFirefly_SetupFlyIdle(this);
     }
@@ -579,6 +684,11 @@ void EnFirefly_Perch(EnFirefly* this, GlobalContext* globalCtx) {
 
     if (this->actor.xzDistToPlayer < 120.0f) {
         EnFirefly_SetupDisturbDiveAttack(this);
+    }
+    if(this->config.isDickbag){
+        if (this->actor.xzDistToPlayer < 300.0f) {
+            EnFirefly_SetupDisturbDiveAttack(this);
+        }
     }
 }
 
@@ -615,7 +725,7 @@ void EnFirefly_Combust(EnFirefly* this, GlobalContext* globalCtx) {
         EffectSsEnFire_SpawnVec3f(globalCtx, &this->actor, &this->actor.world.pos, 40, 0, 0, i);
     }
 
-    this->auraType = KEESE_AURA_NONE;
+    this->config.auraType = KEESE_AURA_NONE;
 }
 
 void EnFirefly_UpdateDamage(EnFirefly* this, GlobalContext* globalCtx) {
@@ -634,19 +744,19 @@ void EnFirefly_UpdateDamage(EnFirefly* this, GlobalContext* globalCtx) {
             damageEffect = this->actor.colChkInfo.damageEffect;
 
             if (damageEffect == 2) { // Din's Fire
-                if (this->actor.params == KEESE_ICE_FLY) {
+                if (this->config.action_type == KEESE_ICE_FLY) {
                     this->actor.colChkInfo.health = 0;
                     Enemy_StartFinishingBlow(globalCtx, &this->actor);
                     EnFirefly_Combust(this, globalCtx);
                     EnFirefly_SetupFall(this);
-                } else if (!this->onFire) {
+                } else if (!this->config.onFire) {
                     EnFirefly_Ignite(this);
                     if (this->actionFunc == EnFirefly_Perch) {
                         EnFirefly_SetupFlyIdle(this);
                     }
                 }
             } else if (damageEffect == 3) { // Ice Arrows or Ice Magic
-                if (this->actor.params == KEESE_ICE_FLY) {
+                if (this->config.action_type == KEESE_ICE_FLY) {
                     EnFirefly_SetupFall(this);
                 } else {
                     EnFirefly_SetupFrozenFall(this, globalCtx);
@@ -656,7 +766,7 @@ void EnFirefly_UpdateDamage(EnFirefly* this, GlobalContext* globalCtx) {
                     EnFirefly_SetupStunned(this);
                 }
             } else { // Fire Arrows
-                if ((damageEffect == 0xF) && (this->actor.params == KEESE_ICE_FLY)) {
+                if ((damageEffect == 0xF) && (this->config.action_type == KEESE_ICE_FLY)) {
                     EnFirefly_Combust(this, globalCtx);
                 }
                 EnFirefly_SetupFall(this);
@@ -667,15 +777,27 @@ void EnFirefly_UpdateDamage(EnFirefly* this, GlobalContext* globalCtx) {
 
 void EnFirefly_Update(Actor* thisx, GlobalContext* globalCtx2) {
     EnFirefly* this = THIS;
+    EnBom* bomb;
     GlobalContext* globalCtx = globalCtx2;
 
     if (this->collider.base.atFlags & AT_HIT) {
         this->collider.base.atFlags &= ~AT_HIT;
         Audio_PlayActorSound2(&this->actor, NA_SE_EN_FFLY_ATTACK);
-        if (this->onFire) {
+        if (this->config.onFire) {
             EnFirefly_Extinguish(this);
         }
         if (this->actionFunc != EnFirefly_DisturbDiveAttack) {
+            if (this->config.isKamikaze) {
+                bomb = (EnBom*)Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_BOM,
+                this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z, 0, 0, 0x6FF, BOMB_BODY);
+                if (bomb != NULL) {
+                    bomb->timer = 0;
+                }
+                globalCtx->damagePlayer(globalCtx, -8);
+                // Strength?, Direction, Duration?
+                func_8002F71C(globalCtx, &this->actor, 8.0f, this->actor.world.rot.y, 1.0f);
+                Actor_Kill(&this->actor);
+            }
             EnFirefly_SetupRebound(this);
         }
     }
@@ -737,6 +859,8 @@ void EnFirefly_PostLimbDraw(GlobalContext* globalCtx, s32 limbIndex, Gfx** dList
     static Color_RGBA8 fireAuraEnvColor = { 255, 50, 0, 0 };
     static Color_RGBA8 iceAuraPrimColor = { 100, 200, 255, 255 };
     static Color_RGBA8 iceAuraEnvColor = { 0, 0, 255, 0 };
+    static Color_RGBA8 biriAuraPrimColor = { 255, 255, 255, 255 };
+    static Color_RGBA8 biriAuraEnvColor = { 200, 255, 255, 255 };
     static Vec3f effVelocity = { 0.0f, 0.5f, 0.0f };
     static Vec3f effAccel = { 0.0f, 0.5f, 0.0f };
     static Vec3f limbSrc = { 0.0f, 0.0f, 0.0f };
@@ -747,12 +871,14 @@ void EnFirefly_PostLimbDraw(GlobalContext* globalCtx, s32 limbIndex, Gfx** dList
     MtxF mtx;
     s16 effScaleStep;
     s16 effLife;
+    s16 effectYaw;
+    s32 i;
     EnFirefly* this = THIS;
 
-    if (!this->onFire && (limbIndex == 27)) {
+    if (!this->config.onFire && (limbIndex == 27)) {
         gSPDisplayList((*gfx)++, gKeeseEyesDL);
     } else {
-        if ((this->auraType == KEESE_AURA_FIRE) || (this->auraType == KEESE_AURA_ICE)) {
+        if ((this->config.auraType == KEESE_AURA_FIRE) || (this->config.auraType == KEESE_AURA_ICE) || (this->config.auraType == KEESE_AURA_BIRI)) {
             if ((limbIndex == 15) || (limbIndex == 21)) {
                 if (this->actionFunc != EnFirefly_Die) {
                     Matrix_Get(&mtx);
@@ -775,16 +901,29 @@ void EnFirefly_PostLimbDraw(GlobalContext* globalCtx, s32 limbIndex, Gfx** dList
                     effLife = 10;
                 }
 
-                if (this->auraType == KEESE_AURA_FIRE) {
+                if (this->config.auraType == KEESE_AURA_FIRE) {
                     effPrimColor = &fireAuraPrimColor;
                     effEnvColor = &fireAuraEnvColor;
                 } else {
                     effPrimColor = &iceAuraPrimColor;
                     effEnvColor = &iceAuraEnvColor;
                 }
-
-                func_8002843C(globalCtx, &effPos, &effVelocity, &effAccel, effPrimColor, effEnvColor, 250, effScaleStep,
+                
+                if (this->config.auraType != KEESE_AURA_BIRI) {
+                    func_8002843C(globalCtx, &effPos, &effVelocity, &effAccel, effPrimColor, effEnvColor, 250, effScaleStep,
                               effLife);
+                } else {
+                    for (i = 0; i < 4; i++) {
+                        if (!((this->timer + (i << 1)) % 4)) {
+                            effectYaw = (s16)Rand_CenteredFloat(12288.0f) + (i * 0x4000) + 0x2000;
+                            effPos.x = Rand_CenteredFloat(5.0f) + this->actor.world.pos.x;
+                            effPos.y = (Rand_ZeroOne() * 5.0f) + this->actor.world.pos.y + 2.5f;
+                            effPos.z = Rand_CenteredFloat(5.0f) + this->actor.world.pos.z;
+                            func_8002F974(&this->actor, NA_SE_EN_BIRI_SPARK);
+                            EffectSsLightning_Spawn(globalCtx, &effPos, &biriAuraPrimColor, &biriAuraEnvColor, 12, effectYaw, 20, 2);
+                        }
+                    }
+                }
             }
         }
     }
@@ -808,7 +947,7 @@ void EnFirefly_Draw(Actor* thisx, GlobalContext* globalCtx) {
     OPEN_DISPS(globalCtx->state.gfxCtx, "../z_en_firefly.c", 1733);
     func_80093D18(globalCtx->state.gfxCtx);
 
-    if (this->onFire) {
+    if (this->config.onFire) {
         gDPSetEnvColor(POLY_OPA_DISP++, 0, 0, 0, 0);
     } else {
         gDPSetEnvColor(POLY_OPA_DISP++, 0, 0, 0, 255);
@@ -825,7 +964,7 @@ void EnFirefly_DrawInvisible(Actor* thisx, GlobalContext* globalCtx) {
     OPEN_DISPS(globalCtx->state.gfxCtx, "../z_en_firefly.c", 1775);
     func_80093D84(globalCtx->state.gfxCtx);
 
-    if (this->onFire) {
+    if (this->config.onFire) {
         gDPSetEnvColor(POLY_XLU_DISP++, 0, 0, 0, 0);
     } else {
         gDPSetEnvColor(POLY_XLU_DISP++, 0, 0, 0, 255);
