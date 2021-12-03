@@ -309,10 +309,15 @@ void EnDekunuts_ThrowNut(EnDekunuts* this, GlobalContext* globalCtx) {
         spawnPos.x = this->actor.world.pos.x + (Math_SinS(this->actor.shape.rot.y) * 23.0f);
         spawnPos.y = this->actor.world.pos.y + 12.0f;
         spawnPos.z = this->actor.world.pos.z + (Math_CosS(this->actor.shape.rot.y) * 23.0f);
-        if (Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_NUTSBALL, spawnPos.x, spawnPos.y, spawnPos.z,
-                        this->actor.shape.rot.x, this->actor.shape.rot.y, this->actor.shape.rot.z, 0) != NULL) {
+        // This is used to test custom projectiles.
+        if (Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_FIREFLY, spawnPos.x, spawnPos.y, spawnPos.z,
+                        this->actor.shape.rot.x, this->actor.shape.rot.y, this->actor.shape.rot.z, 0x0013) != NULL) {
             Audio_PlayActorSound2(&this->actor, NA_SE_EN_NUTS_THROW);
         }
+        /*if (Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_NUTSBALL, spawnPos.x, spawnPos.y, spawnPos.z,
+                        this->actor.shape.rot.x, this->actor.shape.rot.y, this->actor.shape.rot.z, 0) != NULL) {
+            Audio_PlayActorSound2(&this->actor, NA_SE_EN_NUTS_THROW);
+        }*/
     } else if ((this->animFlagAndTimer > 1) && Animation_OnFrame(&this->skelAnime, 12.0f)) {
         Animation_MorphToPlayOnce(&this->skelAnime, &gDekuNutsSpitAnim, -3.0f);
         if (this->animFlagAndTimer != 0) {

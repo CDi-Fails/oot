@@ -93,7 +93,7 @@ static SceneSelectEntry sScenes[] = {
     // "25: Grave Dive Hole 2" (Grave (Fairy's Fountain))
     { "25:" GFXP_HIRAGANA "ﾊｶｼﾀﾄﾋﾞｺﾐｱﾅ 2", Select_LoadGame, 0x004B },
     // "26: Royal Family's Grave" (Royal Family's Tomb)
-    { "26:" GFXP_HIRAGANA "ｵｳｹ ﾉ ﾊｶｱﾅ", Select_LoadGame, 0x002D },
+    { "Flying Dickbag Home", Select_LoadGame, 0x002D },
     // "27: Great Fairy's Fountain" (Great Fairy's Fountain (Upgrades))
     { "27:" GFXP_HIRAGANA "ﾀﾞｲﾖｳｾｲﾉｲｽﾞﾐ", Select_LoadGame, 0x0315 },
     // "28: Fairy Dive Hole" (Fairy's Fountain (Healing Fairies))
@@ -285,7 +285,7 @@ static SceneSelectEntry sScenes[] = {
     // "121: Boss Stalfos Room" (Stalfos Boss Room)
     { "121:" GFXP_KATAKANA "ﾎﾞｽｽﾀﾛﾌｫｽ" GFXP_HIRAGANA "ﾍﾞﾔ", Select_LoadGame, 0x0020 },
     // "122: Stal" (Sutaru)
-    { "122:Sutaru", Select_LoadGame, 0x0047 },
+    { "Sterile Testing Ground", Select_LoadGame, 0x0047 },
     // "123: Test Area" (Shooting Gallery)
     { "123:jikkenjyou", Select_LoadGame, 0x02EA },
     // "124: Depth Test" (Depth Test)

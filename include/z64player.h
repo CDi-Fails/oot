@@ -157,6 +157,87 @@ typedef enum {
     /*  3 */ PLAYER_DOORTYPE_FAKE
 } PlayerDoorType;
 
+typedef union {
+    struct {
+        u32 stateFlags1;
+        u32 stateFlags2;
+        u8  stateFlags3;
+    };
+    struct {
+        u32 isBoolThing1 : 1; /* PLAYER_STATE_WARP_FALL  */
+        u32 isBoolThing2 : 1; /* PLAYER_STATE_PARALLEL_CAMERA  */
+        u32 isBoolThing3 : 1; /* PLAYER_STATE_DEMO  */
+        u32 isBoolThing4 : 1; /* PLAYER_STATE_ALL_STOP_DEMO  */
+        u32 isBoolThing5 : 1; /* PLAYER_STATE_SWIM  */
+        u32 isBoolThing6 : 1; /* PLAYER_STATE_DAMAGE  */
+        u32 isBoomerangThrow : 1; /* PLAYER_STATE_BOOM_THROW  */
+        u32 isBoolThing7 : 1; /* PLAYER_STATE_BOOM  */
+        u32 isOnHorse : 1; /* PLAYER_STATE_RIDE_HORSE  */
+        u32 isShielding : 1; /* PLAYER_STATE_DEFENSE  */
+        u32 isBoolThing8 : 1; /* PLAYER_STATE_LADDER  */
+        u32 isBoolThing9 : 1; /* PLAYER_STATE_SUBJECT  */
+        u32 isFallingBig : 1; /* PLAYER_STATE_FREEFALL  */
+        u32 isJumping : 1; /* PLAYER_STATE_JUMP  */
+        u32 isBoolThing15 : 1; /* PLAYER_STATE_PARALLEL  */
+        u32 isBoolThing16 : 1; /* PLAYER_STATE_KEEPON  */
+        u32 isZTargeting : 1; /* PLAYER_STATE_ANCHOR  */
+        u32 isBoolThing18 : 1; /* PLAYER_STATE_JUMP_CLIMB  */
+        u32 isFallingSmall : 1; /* PLAYER_STATE_FALL  */
+        u32 isBoolThing20 : 1; /* PLAYER_STATE_POWER_KIRU  */
+        u32 isBoolThing21 : 1; /* PLAYER_STATE_CARRY  */
+        u32 isBoolThing22 : 1; /* PLAYER_STATE_GET_ITEM  */
+        u32 isBoolThing23 : 1; /* PLAYER_STATE_ARROW_CATCH  */
+        u32 isBoolThing24 : 1; /* PLAYER_STATE_AUTO_FIGHT  */
+        u32 isBoolThing25 : 1; /* PLAYER_STATE_DOWN  */
+        u32 isBoolThing26 : 1; /* PLAYER_STATE_TALK  */
+        u32 isBoolThing27 : 1; /* PLAYER_STATE_NO_KEY_MODE  */
+        u32 isZTargetingEnemy : 1; /* PLAYER_STATE_ANCHOR_FIGHT  */
+        u32 isBoolThing29 : 1; /* PLAYER_STATE_BOW  */
+        u32 isBoolThing30 : 1; /* PLAYER_STATE_HOOK_FLY_END  */
+        u32 isBottleScoop : 1; /* PLAYER_STATE_BOTTLE_ATTACK  */
+        u32 isBoolThing32 : 1; /* PLAYER_STATE_SCENE_CHANGE_DEMO  */
+        u32 isBoolThing2_1 : 1; /* PLAYER_STATE_WATER_FALL  */
+        u32 isBoolThing2_2 : 1; /* PLAYER_STATE_KIRU_TRANSLATE  */
+        u32 isBoolThing2_3 : 1; /* PLAYER_STATE_NO_DISPLAY  */
+        u32 isBoolThing2_4 : 1; /* PLAYER_STATE_WAIT  */
+        u32 isBoolThing2_5 : 1; /* PLAYER_STATE_OKARINA_MODE  */
+        u32 isBoolThing2_6 : 1; /* PLAYER_STATE_MIRROR_DISPLAY  */
+        u32 isBoolThing2_7 : 1; /* PLAYER_STATE_OKARINA_ACTOR_OK  */
+        u32 isBoolThing2_8 : 1; /* PLAYER_STATE_OKARINA_REQUEST_OK  */
+        u32 isBoolThing2_9 : 1; /* PLAYER_STATE_OKARINA_REQUEST  */
+        u32 isBoolThing2_10 : 1; /* PLAYER_STATE_RIDE_HORSE_END_OK  */
+        u32 isBoolThing2_11 : 1; /* PLAYER_STATE_ELF_MAIL_OK  */
+        u32 isBoolThing2_12 : 1; /* PLAYER_STATE_ELF_ACTION  */
+        u32 isBoolThing2_13 : 1; /* PLAYER_STATE_DEMO_JUMP  */
+        u32 isBoolThing2_14 : 1; /* PLAYER_STATE_TUNNEL  */
+        u32 isBoolThing2_15 : 1; /* PLAYER_STATE_POWER_KIRU_SHOT  */
+        u32 isBoolThing2_16 : 1; /* PLAYER_STATE_TUNNEL_OK  */
+        u32 isBoolThing2_17 : 1; /* PLAYER_STATE_STOP_FLAG  */
+        u32 isBoolThing2_18 : 1; /* PLAYER_STATE_ICE_DOWN  */
+        u32 isBoolThing2_19 : 1; /* PLAYER_STATE_ANCHOR_ROCK  */
+        u32 isBoolThing2_20 : 1; /* PLAYER_STATE_CLIMB_STOP  */
+        u32 isBoolThing2_21 : 1; /* PLAYER_STATE_SWIM_DEEP_CAMERA  */
+        u32 isSwimmingDeep : 1; /* PLAYER_STATE_SWIM_DEEP  */
+        u32 isBoolThing2_23 : 1; /* PLAYER_STATE_SAND_SOUND_SET  */
+        u32 isBoolThing2_24 : 1; /* PLAYER_STATE_PUSH_PULL_CATCH  */
+        u32 isRedeadAttack : 1; /* PLAYER_STATE_RE_DEAD_ATTACK  */
+        u32 isBoolThing2_26 : 1; /* PLAYER_STATE_NO_SHAPE_ANGLE  */
+        u32 isBoolThing2_27 : 1; /* PLAYER_STATE_NO_ANCHOR_ANGLE  */
+        u32 isBoolThing2_28 : 1; /* PLAYER_STATE_PUSH_PULL  */
+        u32 isBoolThing2_29 : 1; /* PLAYER_STATE_BIG_SE_SET  */
+        u32 isBoolThing2_30 : 1; /* PLAYER_STATE_STEPUP_OK  */
+        u32 isBoolThing2_31 : 1; /* PLAYER_STATE_TALK_OK  */
+        u32 isBoolThing2_32 : 1; /* PLAYER_STATE_PUSH_PULL_OK  */
+        u8  isBoolThing3_1 : 1; /* UNUSED */
+        u8  isHookshotPull : 1; /* PLAYER_STATE_HOOK_FLY  */
+        u8  isBoolThing3_3 : 1; /* PLAYER_STATE_SHIELD_REMAKE  */
+        u8  isBoolThing3_4 : 1; /* PLAYER_STATE_TO_OKARINA */
+        u8  isBoolThing3_5 : 1; /* PLAYER_STATE_GROUND_CHECKED  */
+        u8  isBoolThing3_6 : 1; /* PLAYER_STATE_KIRU_END */
+        u8  isBoolThing3_7 : 1; /* PLAYER_STATE_MOVE_STOP   */
+        u8  isBoolThing3_8 : 1; /* PLAYER_STATE_GROUND_NO_CHECK  */
+    };
+} Player_StateFlags;
 
 #define PLAYER_LIMB_BUF_COUNT PLAYER_LIMB_MAX + 2 // 2 extra entries in limb buffers?
 
@@ -277,13 +358,91 @@ typedef struct Player {
     /* 0x0670 */ s32        swordEffectIndex;
     /* 0x0674 */ PlayerFunc674 func_674;
     /* 0x0678 */ PlayerAgeProperties* ageProperties;
-    /* 0x067C */ u32        stateFlags1;
-    /* 0x0680 */ u32        stateFlags2;
+    union {
+        struct {
+            u32        stateFlags1;
+            u32        stateFlags2;
+            u8         stateFlags3;
+        };
+        struct {
+            u32 isBoolThing1 : 1; /* PLAYER_STATE_WARP_FALL  */
+            u32 isBoolThing2 : 1; /* PLAYER_STATE_PARALLEL_CAMERA  */
+            u32 isBoolThing3 : 1; /* PLAYER_STATE_DEMO  */
+            u32 isBoolThing4 : 1; /* PLAYER_STATE_ALL_STOP_DEMO  */
+            u32 isBoolThing5 : 1; /* PLAYER_STATE_SWIM  */
+            u32 isBoolThing6 : 1; /* PLAYER_STATE_DAMAGE  */
+            u32 isBoomerangThrow : 1; /* PLAYER_STATE_BOOM_THROW  */
+            u32 isBoolThing8 : 1; /* PLAYER_STATE_BOOM  */
+            u32 isOnHorse : 1; /* PLAYER_STATE_RIDE_HORSE  */
+            u32 isShielding : 1; /* PLAYER_STATE_DEFENSE  */
+            u32 isBoolThing11 : 1; /* PLAYER_STATE_LADDER  */
+            u32 isBoolThing12 : 1; /* PLAYER_STATE_SUBJECT  */
+            u32 isFallingBig : 1; /* PLAYER_STATE_FREEFALL  */
+            u32 isJumping : 1; /* PLAYER_STATE_JUMP  */
+            u32 isBoolThing15 : 1; /* PLAYER_STATE_PARALLEL  */
+            u32 isBoolThing16 : 1; /* PLAYER_STATE_KEEPON  */
+            u32 isZTargeting : 1; /* PLAYER_STATE_ANCHOR  */
+            u32 isBoolThing18 : 1; /* PLAYER_STATE_JUMP_CLIMB  */
+            u32 isFallingSmall : 1; /* PLAYER_STATE_FALL  */
+            u32 isBoolThing20 : 1; /* PLAYER_STATE_POWER_KIRU  */
+            u32 isBoolThing21 : 1; /* PLAYER_STATE_CARRY  */
+            u32 isBoolThing22 : 1; /* PLAYER_STATE_GET_ITEM  */
+            u32 isBoolThing23 : 1; /* PLAYER_STATE_ARROW_CATCH  */
+            u32 isBoolThing24 : 1; /* PLAYER_STATE_AUTO_FIGHT  */
+            u32 isBoolThing25 : 1; /* PLAYER_STATE_DOWN  */
+            u32 isBoolThing26 : 1; /* PLAYER_STATE_TALK  */
+            u32 isBoolThing27 : 1; /* PLAYER_STATE_NO_KEY_MODE  */
+            u32 isZTargetingEnemy : 1; /* PLAYER_STATE_ANCHOR_FIGHT  */
+            u32 isBoolThing29 : 1; /* PLAYER_STATE_BOW  */
+            u32 isBoolThing30 : 1; /* PLAYER_STATE_HOOK_FLY_END  */
+            u32 isBottleScoop : 1; /* PLAYER_STATE_BOTTLE_ATTACK  */
+            u32 isBoolThing32 : 1; /* PLAYER_STATE_SCENE_CHANGE_DEMO  */
+            u32 isBoolThing2_1 : 1; /* PLAYER_STATE_WATER_FALL  */
+            u32 isBoolThing2_2 : 1; /* PLAYER_STATE_KIRU_TRANSLATE  */
+            u32 isBoolThing2_3 : 1; /* PLAYER_STATE_NO_DISPLAY  */
+            u32 isBoolThing2_4 : 1; /* PLAYER_STATE_WAIT  */
+            u32 isBoolThing2_5 : 1; /* PLAYER_STATE_OKARINA_MODE  */
+            u32 isBoolThing2_6 : 1; /* PLAYER_STATE_MIRROR_DISPLAY  */
+            u32 isBoolThing2_7 : 1; /* PLAYER_STATE_OKARINA_ACTOR_OK  */
+            u32 isBoolThing2_8 : 1; /* PLAYER_STATE_OKARINA_REQUEST_OK  */
+            u32 isBoolThing2_9 : 1; /* PLAYER_STATE_OKARINA_REQUEST  */
+            u32 isBoolThing2_10 : 1; /* PLAYER_STATE_RIDE_HORSE_END_OK  */
+            u32 isBoolThing2_11 : 1; /* PLAYER_STATE_ELF_MAIL_OK  */
+            u32 isBoolThing2_12 : 1; /* PLAYER_STATE_ELF_ACTION  */
+            u32 isBoolThing2_13 : 1; /* PLAYER_STATE_DEMO_JUMP  */
+            u32 isBoolThing2_14 : 1; /* PLAYER_STATE_TUNNEL  */
+            u32 isBoolThing2_15 : 1; /* PLAYER_STATE_POWER_KIRU_SHOT  */
+            u32 isBoolThing2_16 : 1; /* PLAYER_STATE_TUNNEL_OK  */
+            u32 isBoolThing2_17 : 1; /* PLAYER_STATE_STOP_FLAG  */
+            u32 isBoolThing2_18 : 1; /* PLAYER_STATE_ICE_DOWN  */
+            u32 isBoolThing2_19 : 1; /* PLAYER_STATE_ANCHOR_ROCK  */
+            u32 isBoolThing2_20 : 1; /* PLAYER_STATE_CLIMB_STOP  */
+            u32 isBoolThing2_21 : 1; /* PLAYER_STATE_SWIM_DEEP_CAMERA  */
+            u32 isSwimmingDeep : 1; /* PLAYER_STATE_SWIM_DEEP  */
+            u32 isBoolThing2_23 : 1; /* PLAYER_STATE_SAND_SOUND_SET  */
+            u32 isBoolThing2_24 : 1; /* PLAYER_STATE_PUSH_PULL_CATCH  */
+            u32 isRedeadAttack : 1; /* PLAYER_STATE_RE_DEAD_ATTACK  */
+            u32 isBoolThing2_26 : 1; /* PLAYER_STATE_NO_SHAPE_ANGLE  */
+            u32 isBoolThing2_27 : 1; /* PLAYER_STATE_NO_ANCHOR_ANGLE  */
+            u32 isBoolThing2_28 : 1; /* PLAYER_STATE_PUSH_PULL  */
+            u32 isBoolThing2_29 : 1; /* PLAYER_STATE_BIG_SE_SET  */
+            u32 isBoolThing2_30 : 1; /* PLAYER_STATE_STEPUP_OK  */
+            u32 isBoolThing2_31 : 1; /* PLAYER_STATE_TALK_OK  */
+            u32 isBoolThing2_32 : 1; /* PLAYER_STATE_PUSH_PULL_OK  */
+            u8  isBoolThing3_1 : 1; /* UNUSED */
+            u8  isHookshotPull : 1; /* PLAYER_STATE_HOOK_FLY  */
+            u8  isBoolThing3_3 : 1; /* PLAYER_STATE_SHIELD_REMAKE  */
+            u8  isBoolThing3_4 : 1; /* PLAYER_STATE_TO_OKARINA */
+            u8  isBoolThing3_5 : 1; /* PLAYER_STATE_GROUND_CHECKED  */
+            u8  isBoolThing3_6 : 1; /* PLAYER_STATE_KIRU_END */
+            u8  isBoolThing3_7 : 1; /* PLAYER_STATE_MOVE_STOP   */
+            u8  isBoolThing3_8 : 1; /* PLAYER_STATE_GROUND_NO_CHECK  */
+        };
+    };
     /* 0x0684 */ Actor*     unk_684;
     /* 0x0688 */ Actor*     boomerangActor;
     /* 0x068C */ Actor*     naviActor;
     /* 0x0690 */ s16        naviTextId;
-    /* 0x0692 */ u8         stateFlags3;
     /* 0x0693 */ s8         exchangeItemId;
     /* 0x0694 */ Actor*     targetActor;
     /* 0x0698 */ f32        targetActorDistance;
