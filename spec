@@ -508,8 +508,6 @@ beginseg
     include "build/src/libultra/io/spsetpc.o"
     include "build/src/libultra/libc/sqrt.o"
     include "build/src/libultra/libc/absf.o"
-    include "build/src/libthot/vector.o"
-    include "build/src/libthot/evan2k.o"
     include "build/src/code/code_801067F0.o"
     include "build/src/code/code_80106860.o"
     include "build/src/code/code_801068B0.o"
