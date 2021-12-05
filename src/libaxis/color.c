@@ -15,7 +15,7 @@
 * @param blue
 * @return Color_HSVf 
 **/
-Color_HSVf Color_RGBToHSVf(u8 red, u8 green, u8 blue) {
+Color_HSVf LibAxis_Color_RGBToHSVf(u8 red, u8 green, u8 blue) {
     Color_HSVf return_value;
     f32 _r, _g, _b;
     f32 cmax, cmin, delta;
@@ -61,7 +61,7 @@ Color_HSVf Color_RGBToHSVf(u8 red, u8 green, u8 blue) {
 * @param hsv 
 * @return Color_RGBA32 
 **/
-Color_RGBA32 Color_HSVfToRGBA32(Color_HSVf* hsv) {
+Color_RGBA32 LibAxis_Color_HSVfToRGBA32(Color_HSVf* hsv) {
     Color_RGBA32 return_value;
     f32 c, x, m;
     f32 _rgb[3];
@@ -103,7 +103,7 @@ Color_RGBA32 Color_HSVfToRGBA32(Color_HSVf* hsv) {
 * @param hue 
 * @param speed 
 **/
-void Color_CycleHue(f32* hue, f32 speed) {
+void LibAxis_Color_CycleHue(f32* hue, f32 speed) {
     if (*hue >= 0.0f && *hue < 360.0f) {
         *hue += speed;
     } else if (*hue >= 360.0f) {
@@ -118,7 +118,7 @@ void Color_CycleHue(f32* hue, f32 speed) {
 * @param timer 
 * @param min 
 **/
-void Color_LerpCosine(f32* val, f32 timer, f32 min) {
+void LibAxis_Color_LerpCosine(f32* val, f32 timer, f32 min) {
     /* Cap Minimum */
     if (min < 0.0f) {
         min = 0.0f;
@@ -137,7 +137,7 @@ void Color_LerpCosine(f32* val, f32 timer, f32 min) {
 * @param percent 
 * @return Color_RGBA32 
 **/
-Color_RGBA32 Color_LerpPercent(u32 rgba1, u32 rgba2, f32 percent) {
+Color_RGBA32 LibAxis_Color_LerpPercent(u32 rgba1, u32 rgba2, f32 percent) {
     Color_RGBA32 a, b, return_value;
     a.rgba = rgba1;
     b.rgba = rgba2;

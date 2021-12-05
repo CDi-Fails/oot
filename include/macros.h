@@ -172,4 +172,20 @@ extern GraphicsContext* __gfxCtx;
 #define ALIGNED8
 #endif
 
+/* Return or write to an [A]rbitrary [VAL]ue in memory. */
+#define AVAL(base,type,offset)  (*(type*)((u8*)(base)+(offset)))
+
+/* Return a pointer to an [A]rbitrary [ADDR]ess in memory. */
+#define AADDR(a,o)  ((void*)((u8*)(a)+(o)))
+
+/* Return the type of an element in a structure. */
+#define TYPEOF(TYPE, ELEMENT) typeof((((TYPE*)0)->ELEMENT))
+
+/* Bit Flags */
+#define BIT_CHECK(STORE, BIT) ((STORE) & (BIT))
+#define BIT_TEST(STORE, BIT) (BIT_CHECK((STORE), (BIT)) != 0)
+#define BIT_SET(STORE, BIT) ((STORE) |= (BIT)) 
+#define BIT_CLEAR(STORE, BIT) ((STORE) &= ~(BIT))
+#define BIT_TOGGLE(STORE, BIT) ((STORE) ^= (BIT))
+
 #endif

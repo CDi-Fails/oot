@@ -7,6 +7,7 @@
 #include "z_en_dekunuts.h"
 #include "overlays/effects/ovl_Effect_Ss_Hahen/z_eff_ss_hahen.h"
 #include "objects/object_dekunuts/object_dekunuts.h"
+#include "overlays/actors/ovl_En_Vase/z_en_vase.h"
 
 #define FLAGS 0x00000005
 
@@ -310,8 +311,8 @@ void EnDekunuts_ThrowNut(EnDekunuts* this, GlobalContext* globalCtx) {
         spawnPos.y = this->actor.world.pos.y + 12.0f;
         spawnPos.z = this->actor.world.pos.z + (Math_CosS(this->actor.shape.rot.y) * 23.0f);
         // This is used to test custom projectiles.
-        if (Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_FIREFLY, spawnPos.x, spawnPos.y, spawnPos.z,
-                        this->actor.shape.rot.x, this->actor.shape.rot.y, this->actor.shape.rot.z, 0x0013) != NULL) {
+        if (Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_VASE, spawnPos.x, spawnPos.y, spawnPos.z,
+                        this->actor.shape.rot.x, this->actor.shape.rot.y, this->actor.shape.rot.z, TEST_VARIABLE) != NULL) {
             Audio_PlayActorSound2(&this->actor, NA_SE_EN_NUTS_THROW);
         }
         /*if (Actor_Spawn(&globalCtx->actorCtx, globalCtx, ACTOR_EN_NUTSBALL, spawnPos.x, spawnPos.y, spawnPos.z,

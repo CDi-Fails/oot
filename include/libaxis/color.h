@@ -30,22 +30,22 @@
     u16 rgba;
 } Color_RGBA16, Color_RGBA_5551;*/
 
-typedef union {
+/*typedef union {
     struct {
         u8 r, g, b;
     };
     u32 rgb;
-} Color_RGB24;
+} Color_RGB24;*/
 
-typedef union {
+/*typedef union {
     struct {
         u8 r, g, b, a;
     };
     u32 rgba;
-} Color_RGBA32;
+} Color_RGBA32;*/
 
-typedef struct {
+/*typedef struct {
     f32 h, s, v;
-} Color_HSVf;
+} Color_HSVf;*/
 
 #endif

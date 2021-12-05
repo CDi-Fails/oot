@@ -31,4 +31,22 @@ typedef union {
     u16 rgba;
 } Color_RGBA16;
 
+typedef struct {
+    f32 h, s, v;
+} Color_HSVf;
+
+typedef union {
+    struct {
+        u8 r, g, b;
+    };
+    u32 rgb;
+} Color_RGB24;
+
+typedef union {
+    struct {
+        u8 r, g, b, a;
+    };
+    u32 rgba;
+} Color_RGBA32;
+
 #endif

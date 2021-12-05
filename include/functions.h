@@ -441,7 +441,7 @@ u32 Actor_SetRideActor(GlobalContext* globalCtx, Actor* horse, s32 arg2);
 s32 Actor_NotMounted(GlobalContext* globalCtx, Actor* horse);
 void func_8002F698(GlobalContext* globalCtx, Actor* actor, f32 arg2, s16 arg3, f32 arg4, u32 arg5, u32 arg6);
 void func_8002F6D4(GlobalContext* globalCtx, Actor* actor, f32 arg2, s16 arg3, f32 arg4, u32 arg5);
-void func_8002F71C(GlobalContext* globalCtx, Actor* actor, f32 arg2, s16 arg3, f32 arg4);
+void func_8002F71C(GlobalContext* globalCtx, Actor* actor, f32 power, s16 direction, f32 duration); // Knockback
 void func_8002F758(GlobalContext* globalCtx, Actor* actor, f32 arg2, s16 arg3, f32 arg4, u32 arg5);
 void func_8002F7A0(GlobalContext* globalCtx, Actor* actor, f32 arg2, s16 arg3, f32 arg4);
 void func_8002F7DC(Actor* actor, u16 sfxId);
@@ -2388,12 +2388,16 @@ void FileChoose_Init(GameState* thisx);
 void FileChoose_Destroy(GameState* thisx);
 
 /* libaxis */
-/*Color_HSVf Color_RGBToHSVf(u8 red, u8 green, u8 blue);
-Color_RGBA32 Color_HSVfToRGBA32(Color_HSVf* hsv);
-void Color_CycleHue(f32* hue, f32 speed);
-void Color_LerpCosine(f32* val, f32 timer, f32 min);
-Color_RGBA32 Color_LerpPercent(u32 rgba1, u32 rgba2, f32 percent);
-void Vec2f_AddAssignment(Vec2f* lhs, Vec2f* rhs);
+f32 LibAxis_MinF3(f32 a, f32 b, f32 c);
+f32 LibAxis_MaxF3(f32 a, f32 b, f32 c);
+f32 LibAxis_ModF(f32 x, f32 y);
+s32 LibAxis_PowI(s32 base, s32 exp);
+Color_HSVf LibAxis_Color_RGBToHSVf(u8 red, u8 green, u8 blue);
+Color_RGBA32 LibAxis_Color_HSVfToRGBA32(Color_HSVf* hsv);
+void LibAxis_Color_CycleHue(f32* hue, f32 speed);
+void LibAxis_Color_LerpCosine(f32* val, f32 timer, f32 min);
+Color_RGBA32 LibAxis_Color_LerpPercent(u32 rgba1, u32 rgba2, f32 percent);
+/*void Vec2f_AddAssignment(Vec2f* lhs, Vec2f* rhs);
 void Vec2f_SubAssignment(Vec2f* lhs, Vec2f* rhs);
 void Vec2f_MultiplyAssignment(Vec2f* lhs, Vec2f* rhs);
 void Vec2f_DivideAssignment(Vec2f* lhs, Vec2f* rhs);
@@ -2489,10 +2493,10 @@ Vec3f Vec3f_Inverse(Vec3f lhs);
 void Vec3f_FromVec3iAssignment(Vec3f* lhs, Vec3i* rhs);
 void Vec3f_FromVec3sAssignment(Vec3f* lhs, Vec3s* rhs);
 Vec3f Vec3f_FromVec3i(Vec3i* lhs);
-Vec3f Vec3f_FromVec3s(Vec3s* lhs);
+Vec3f Vec3f_FromVec3s(Vec3s* lhs);*/
 Vec3f Vec3f_PointOnCylinder(f32 radius, f32 yaw, f32 pitch);
 Vec3f Vec3f_PointOnSphere(f32 radius, f32 yaw, f32 pitch);
-void Vec3i_AddAssignment(Vec3i* lhs, Vec3i* rhs);
+/*void Vec3i_AddAssignment(Vec3i* lhs, Vec3i* rhs);
 void Vec3i_SubAssignment(Vec3i* lhs, Vec3i* rhs);
 void Vec3i_MultiplyAssignment(Vec3i* lhs, Vec3i* rhs);
 void Vec3i_DivideAssignment(Vec3i* lhs, Vec3i* rhs);
@@ -2632,8 +2636,5 @@ Vec3f QuatF_ToAngleAxis(QuatF* lhs, Vec3f axis, f32* angle);
 void QuatF_FromLookRotationAssignment(QuatF* lhs, Vec3f* look_at, Vec3f* up);
 QuatF QuatF_FromLookRotation(Vec3f* look_at, Vec3f* up);
 void QuatF_ToMatrixAssignment(f32 matrix[4][4], QuatF lhs);*/
-f32 LibAxis_MinF3(f32 a, f32 b, f32 c);
-f32 LibAxis_MaxF3(f32 a, f32 b, f32 c);
-f32 LibAxis_ModF(f32 x, f32 y);
 
 #endif
