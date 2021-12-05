@@ -116,7 +116,8 @@ void LibAxis_Color_CycleHue(f32* hue, f32 speed) {
 * 
 * @param val 
 * @param timer 
-* @param min 
+* @param min
+* @see https://www.desmos.com/calculator/y9pbdosftx
 **/
 void LibAxis_Color_LerpCosine(f32* val, f32 timer, f32 min) {
     /* Cap Minimum */

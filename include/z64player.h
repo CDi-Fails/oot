@@ -169,7 +169,7 @@ typedef union {
         u32 isBoolThing3 : 1; /* PLAYER_STATE_DEMO  */
         u32 isBoolThing4 : 1; /* PLAYER_STATE_ALL_STOP_DEMO  */
         u32 isBoolThing5 : 1; /* PLAYER_STATE_SWIM  */
-        u32 isBoolThing6 : 1; /* PLAYER_STATE_DAMAGE  */
+        u32 isTakeDamage : 1; /* PLAYER_STATE_DAMAGE  */
         u32 isBoomerangThrow : 1; /* PLAYER_STATE_BOOM_THROW  */
         u32 isBoolThing7 : 1; /* PLAYER_STATE_BOOM  */
         u32 isOnHorse : 1; /* PLAYER_STATE_RIDE_HORSE  */
@@ -370,7 +370,7 @@ typedef struct Player {
             u32 isBoolThing3 : 1; /* PLAYER_STATE_DEMO  */
             u32 isBoolThing4 : 1; /* PLAYER_STATE_ALL_STOP_DEMO  */
             u32 isBoolThing5 : 1; /* PLAYER_STATE_SWIM  */
-            u32 isBoolThing6 : 1; /* PLAYER_STATE_DAMAGE  */
+            u32 isTakeDamage : 1; /* PLAYER_STATE_DAMAGE  */
             u32 isBoomerangThrow : 1; /* PLAYER_STATE_BOOM_THROW  */
             u32 isBoolThing8 : 1; /* PLAYER_STATE_BOOM  */
             u32 isOnHorse : 1; /* PLAYER_STATE_RIDE_HORSE  */
