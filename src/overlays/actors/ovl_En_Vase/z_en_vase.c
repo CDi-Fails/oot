@@ -12,6 +12,7 @@
 #include "objects/object_fhg/object_fhg.h"
 #include "overlays/actors/ovl_En_Fhg_Fire/z_en_fhg_fire.h"
 #include "objects/gameplay_keep/gameplay_keep.h"
+#include "overlays/effects/ovl_Effect_Ss_Fhg_Flash/z_eff_ss_fhg_flash.h"
 
 #define FLAGS 0x00000010
 
@@ -73,7 +74,7 @@ void EnVase_Init(Actor* thisx, GlobalContext* globalCtx) {
     this->config.Collision.hitBoxAC = false;
     this->config.Collision.Damage.HealthDamage = 16;
     this->config.Collision.Damage.TouchEffect = DMG_FX_ELECTRIC;
-    this->config.Velocity = 6.0f;
+    this->config.Velocity = 15.0f;
     this->config.Gravity = 0.0f;
     this->config.MasterScale = 6.0f;
     this->config.Knockback = 7.0f;
@@ -95,7 +96,7 @@ void EnVase_Init(Actor* thisx, GlobalContext* globalCtx) {
     this->config.TargetCoords.z = 0.0f;
     this->config.ParticleInit.isEnabled = true;
     this->config.ParticleInit.Type = PARTICLE_SPARK;
-    this->config.ParticleInit.Density = 10;
+    this->config.ParticleInit.Density = 2;
     this->config.ParticleInit.TrailLength = 12;
     this->config.ParticleInit.TrailVariation = 12.0f;
     this->config.ParticleInit.Scale = (s16)(3.0f);
@@ -177,6 +178,7 @@ void EnVase_ModeUpdate(EnVase* this, GlobalContext* globalCtx) {
         // Checking if the player is using a shield that reflects projectiles
         // And if so, reflects the projectile on impact
         if (BIT_CHECK(LibAxis_PowI(2, player->currentShield - 1), this->config.shieldCanBlock)) {
+            //*(u32*)0x80700000 = 1;
             if ((this->collider.base.atFlags & AT_HIT) && (this->collider.base.atFlags & AT_TYPE_ENEMY) &&
                 (this->collider.base.atFlags & AT_BOUNCED)) {
                 this->collider.base.atFlags &= ~AT_TYPE_ENEMY & ~AT_BOUNCED & ~AT_HIT;
@@ -391,7 +393,7 @@ void EnVase_SpawnLightningTrail(EnVase* this, GlobalContext* globalCtx){
         this->config.ParticleInit.Position.z = Rand_CenteredFloat(this->config.ParticleInit.TrailVariation) + this->actor.world.pos.z;
 
         //func_8002F974(&this->actor, NA_SE_EN_BIRI_SPARK);
-        EffectSsLightning_Spawn(globalCtx, &this->config.ParticleInit.Position, &primColor, &envColor, this->config.ParticleInit.Scale, effectYaw, this->config.ParticleInit.TrailLength, 2);
+        // EffectSsLightning_Spawn(globalCtx, &this->config.ParticleInit.Position, &primColor, &envColor, this->config.ParticleInit.Scale, effectYaw, this->config.ParticleInit.TrailLength, 2);
     }
 }
 
@@ -466,23 +468,16 @@ void EnVase_SpawnLightningBall(EnVase* this, GlobalContext* globalCtx){
     envColor.g = this->config.AuraColors[setColor].g;
     envColor.b = this->config.AuraColors[setColor].b;
 
-    for(i = 10; i > 0; --i) {
-        effectYaw = (s16)Rand_CenteredFloat(12288.0f) + (65536/10*i) + 0x2000;
-        this->config.ParticleInit.Position.x = Rand_CenteredFloat(this->config.MasterScale/2) + this->actor.world.pos.x;
-        this->config.ParticleInit.Position.y = (Rand_ZeroOne() * this->config.MasterScale/2) + this->actor.world.pos.y;
-        this->config.ParticleInit.Position.z = Rand_CenteredFloat(this->config.MasterScale/2) + this->actor.world.pos.z;
+    for(i = 5; i > 0; --i) {
+        effectYaw = (s16)Rand_CenteredFloat(12288.0f) + (65536/5*i) + 0x2000;
+        this->config.ParticleInit.Position.x = Rand_CenteredFloat(this->config.MasterScale*2) + this->actor.world.pos.x;
+        this->config.ParticleInit.Position.y = (Rand_ZeroOne() * this->config.MasterScale*2) + this->actor.world.pos.y;
+        this->config.ParticleInit.Position.z = Rand_CenteredFloat(this->config.MasterScale*2) + this->actor.world.pos.z;
 
         //func_8002F974(&this->actor, NA_SE_EN_BIRI_SPARK);
-        EffectSsLightning_Spawn(globalCtx, &this->actor.world.pos, &primColor, &envColor, this->config.MasterScale, effectYaw, 2, 4);
+        //EffectSsLightning_Spawn(globalCtx, &this->actor.world.pos, &primColor, &envColor, this->config.MasterScale, effectYaw, 2, 4); //Failed implementation 1
 
-        gDPSetPrimColor(POLY_XLU_DISP++, 0, 0x80, primColor.r, primColor.g, primColor.b, primColor.a);
-        Matrix_Translate(effect.x, effect.y, effect.z, MTXMODE_NEW);
-        func_800D1FD4(&globalCtx->billboardMtxF);
-        //Matrix_RotateZ((effect->rot.z / (f32)0x8000) * 3.1416f, MTXMODE_APPLY);
-        Matrix_Scale(this->config.MasterScale * 0.0185f, this->config.MasterScale * 0.0185f, 1.0f, MTXMODE_APPLY);
-        gSPMatrix(POLY_XLU_DISP++, Matrix_NewMtx(globalCtx->state.gfxCtx, __FILE__, __LINE__),
-            G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
-        gSPDisplayList(POLY_XLU_DISP++, this->config.object.dlist);
+        EffectSsFhgFlash_SpawnShock(globalCtx, &this->actor, &this->config.ParticleInit.Position, this->config.MasterScale * 8, FHGFLASH_SHOCK_NO_ACTOR); //Failed implementation 2
     }
 
     CLOSE_DISPS(globalCtx->state.gfxCtx, __FILE__, __LINE__);
