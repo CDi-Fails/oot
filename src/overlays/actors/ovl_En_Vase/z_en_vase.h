@@ -10,17 +10,19 @@ typedef void (*EnVaseActionFunc)(struct EnVase*, GlobalContext*);
 
 #define Player_Knockback func_8002F71C
 
-#define TEST_VARIABLE PROJ_ENERGYBALL
+#define TEST_VARIABLE PROJ_SPARK
 #define COLOR_COUNT 10
 #define SHIELD_FLAG_DEKU 1
 #define SHIELD_FLAG_HYLIAN 2
 #define SHIELD_FLAG_MIRROR 4
 
 typedef enum {
+    PROJ_NONE,
     PROJ_DEKU_NUT,
     PROJ_OCTO_ROCK,
     PROJ_BOMB,
-    PROJ_ENERGYBALL
+    PROJ_ENERGYBALL,
+    PROJ_SPARK
 } ProjectileType;
 
 typedef enum {
@@ -61,7 +63,12 @@ typedef struct {
         LightInfo lightInfoNoGlow;
         LightNode* lightNodeNoGlow;
     } LightSource;
-    DamageProperty Damage;
+    struct {
+        u8 bumpBoxOC;
+        u8 hurtBoxAT;
+        u8 hitBoxAC;
+        DamageProperty Damage;
+    } Collision;
     f32 Velocity;
     f32 Gravity;
     f32 MasterScale;

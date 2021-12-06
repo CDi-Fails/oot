@@ -25,7 +25,8 @@ void EnVase_Draw(Actor* thisx, GlobalContext* globalCtx);
 void EnVase_UpdateSetup(EnVase* this, GlobalContext* globalCtx);
 void EnVase_ModeUpdate(EnVase* this, GlobalContext* globalCtx);
 void EnVase_SpawnSparkles(EnVase* this, GlobalContext* globalCtx, s32 sparkleLife);
-void EnVase_SpawnFlame(EnVase* this, GlobalContext* globalCtx, s32 sparkleLife);
+void EnVase_SpawnFlameTrail(EnVase* this, GlobalContext* globalCtx, s32 sparkleLife);
+void EnVase_SpawnLightningTrail(EnVase* this, GlobalContext* globalCtx);
 
 const ActorInit En_Vase_InitVars = {
     ACTOR_EN_VASE,
@@ -52,7 +53,7 @@ static ColliderCylinderInit sCylinderInit = {
         ELEMTYPE_UNK0,
         { 0xFFCFFFFF, 0x00, 0x08 },
         { 0xFFCFFFFF, 0x00, 0x00 },
-        TOUCH_ON | TOUCH_SFX_WOOD,
+        TOUCH_ON | TOUCH_SFX_NORMAL,
         BUMP_ON,
         OCELEM_ON,
     },
@@ -66,44 +67,48 @@ void EnVase_Init(Actor* thisx, GlobalContext* globalCtx) {
     this->config.object.id = OBJECT_FHG;
     //this->config.object.dlist = gDekuNutsDekuNutDL;
     this->config.spawnActorOnImpact = true;
-    this->config.shieldCanBlock = SHIELD_FLAG_HYLIAN | SHIELD_FLAG_MIRROR;
-    this->config.Damage.HealthDamage = 16;
-    this->config.Damage.TouchEffect = DMG_FX_FIRE;
-    this->config.Velocity = 12.0f;
+    this->config.shieldCanBlock = SHIELD_FLAG_DEKU | SHIELD_FLAG_MIRROR;
+    this->config.Collision.bumpBoxOC = true;
+    this->config.Collision.hurtBoxAT = true;
+    this->config.Collision.hitBoxAC = false;
+    this->config.Collision.Damage.HealthDamage = 16;
+    this->config.Collision.Damage.TouchEffect = DMG_FX_ELECTRIC;
+    this->config.Velocity = 6.0f;
     this->config.Gravity = 0.0f;
     this->config.MasterScale = 6.0f;
     this->config.Knockback = 7.0f;
     this->config.Timer = 30;
-    this->config.SoundEffect = NA_SE_PL_ARROW_CHARGE_FIRE;
-    this->config.CoreColors[0].rgba = 0xFFFFFFFF;
-    this->config.CoreColors[1].rgba = 0xFAC000FF;
-    this->config.CoreColors[2].rgba = 0xFF7500FF;
-    this->config.AuraColors[0].rgba = 0xFF7500FF;
-    this->config.AuraColors[1].rgba = 0xFC6400FF;
-    this->config.AuraColors[2].rgba = 0xB62203FF;
+    this->config.SoundEffect = NA_SE_EN_BALINADE_BL_SPARK;
+    this->config.CoreColors[0].rgba = 0xEDFFFDFF;
+    this->config.CoreColors[1].rgba = 0xBFE8FDFF;
+    this->config.CoreColors[2].rgba = 0x91D1FEFF;
+    this->config.AuraColors[0].rgba = 0xBFE8FDFF;
+    this->config.AuraColors[1].rgba = 0x91D1FEFF;
+    this->config.AuraColors[2].rgba = 0x64BAFEFF;
     this->config.MainColorFlicker = 2;
     this->config.AuraColorFlicker = 2;
     this->config.LightSource.isEnabled = true;
-    this->config.LightSource.glowScale = 180;
+    this->config.LightSource.glowScale = 48;
     this->config.LightSource.lightColor = this->config.CoreColors[this->config.AuraColorFlicker];
     this->config.TargetCoords.x = 0.0f;
     this->config.TargetCoords.y = 0.0f;
     this->config.TargetCoords.z = 0.0f;
     this->config.ParticleInit.isEnabled = true;
-    this->config.ParticleInit.Type = PARTICLE_NAVISPARKLE;
-    this->config.ParticleInit.Density = 0;
+    this->config.ParticleInit.Type = PARTICLE_SPARK;
+    this->config.ParticleInit.Density = 10;
     this->config.ParticleInit.TrailLength = 12;
-    this->config.ParticleInit.TrailVariation = 16.0f;
-    //this->config.ParticleInit.Scale = (s16)((this->config.MasterScale * 5) * 100);
-    this->config.ParticleInit.Scale = 0x28;
-    this->config.ParticleInit.Colors[0].rgba = 0xFAC000FF;
-    this->config.ParticleInit.Colors[1].rgba = 0xFF7500FF;
-    this->config.ParticleInit.Colors[2].rgba = 0xFC6400FF;
-    this->config.ParticleInit.SecondaryColors[0].rgba = 0xFF7500FF;
-    this->config.ParticleInit.SecondaryColors[1].rgba = 0xFC6400FF;
-    this->config.ParticleInit.SecondaryColors[2].rgba = 0xB62203FF;
+    this->config.ParticleInit.TrailVariation = 12.0f;
+    this->config.ParticleInit.Scale = (s16)(3.0f);
+    this->config.ParticleInit.Colors[0].rgba = 0xEDFFFDFF;
+    this->config.ParticleInit.Colors[1].rgba = 0xBFE8FDFF;
+    this->config.ParticleInit.Colors[2].rgba = 0x91D1FEFF;
+    this->config.ParticleInit.SecondaryColors[0].rgba = 0xBFE8FDFF;
+    this->config.ParticleInit.SecondaryColors[1].rgba = 0x91D1FEFF;
+    this->config.ParticleInit.SecondaryColors[2].rgba = 0x64BAFEFF;
     this->config.ParticleInit.ColorFlicker=2;
     this->config.ParticleInit.SecondaryColorFlicker=2;
+    this->collider.dim.radius = (s16)(1 + (this->config.MasterScale / 2));
+    this->collider.dim.height = (s16)(1 + (this->config.MasterScale));
     this->end = 0xDEADBEEF;
 
     //ActorShape_Init(&this->actor.shape, 400.0f, ActorShadow_DrawCircle, 13.0f);
@@ -135,8 +140,8 @@ void EnVase_UpdateSetup(EnVase* this, GlobalContext* globalCtx) {
         this->actionFunc = EnVase_ModeUpdate;
         this->actor.speedXZ = this->config.Velocity;
         Actor_SetScale(&this->actor, this->config.MasterScale);
-        this->collider.info.toucher.damage = this->config.Damage.HealthDamage;
-        this->collider.info.toucher.effect = this->config.Damage.TouchEffect;
+        this->collider.info.toucher.damage = this->config.Collision.Damage.HealthDamage;
+        this->collider.info.toucher.effect = this->config.Collision.Damage.TouchEffect;
 
         if (this->config.LightSource.isEnabled) {
                 Lights_PointGlowSetInfo(&this->config.LightSource.lightInfoGlow, this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z,
@@ -248,10 +253,13 @@ void EnVase_Update(Actor* thisx, GlobalContext* globalCtx) {
         if (this->config.ParticleInit.isEnabled) {
             switch(this->config.ParticleInit.Type) {
                 case PARTICLE_FLAME: {
-                    EnVase_SpawnFlame(this, globalCtx, (s32)this->config.ParticleInit.TrailLength);
+                    //EnVase_SpawnFlame(this, globalCtx, (s32)this->config.ParticleInit.TrailLength);
                 } break;
                 case PARTICLE_NAVISPARKLE: {
                     EnVase_SpawnSparkles(this, globalCtx, this->config.ParticleInit.TrailLength);
+                } break;
+                case PARTICLE_SPARK:{
+                    EnVase_SpawnLightningTrail(this, globalCtx);
                 } break;
             }
         }
@@ -262,9 +270,17 @@ void EnVase_Update(Actor* thisx, GlobalContext* globalCtx) {
 
         this->actor.flags |= 0x1000000;
 
-        CollisionCheck_SetAT(globalCtx, &globalCtx->colChkCtx, &this->collider.base);
-        CollisionCheck_SetAC(globalCtx, &globalCtx->colChkCtx, &this->collider.base);
-        CollisionCheck_SetOC(globalCtx, &globalCtx->colChkCtx, &this->collider.base);
+        if (this->config.Collision.hurtBoxAT) {
+            CollisionCheck_SetAT(globalCtx, &globalCtx->colChkCtx, &this->collider.base);
+        }
+
+        if (this->config.Collision.hitBoxAC) {
+            CollisionCheck_SetAC(globalCtx, &globalCtx->colChkCtx, &this->collider.base);
+        }
+
+        if (this->config.Collision.bumpBoxOC) {
+            CollisionCheck_SetOC(globalCtx, &globalCtx->colChkCtx, &this->collider.base);
+        }
     }
 }
 
@@ -345,7 +361,38 @@ void EnVase_SpawnSparkles(EnVase* this, GlobalContext* globalCtx, s32 sparkleLif
     );
 }
 
-void EnVase_SpawnFlame(EnVase* this, GlobalContext* globalCtx, s32 sparkleLife) {
+
+void EnVase_SpawnFlameTrail(EnVase* this, GlobalContext* globalCtx, s32 sparkleLife) {
+
+}
+
+void EnVase_SpawnLightningTrail(EnVase* this, GlobalContext* globalCtx){
+    s16 effectYaw;
+    Vec3f effPos;
+    s32 i;
+    s16 setColor;
+    Color_RGBA8 primColor;
+    Color_RGBA8 envColor;
+
+    setColor = Rand_S16Offset(0, this->config.ParticleInit.ColorFlicker);
+    primColor.r = this->config.ParticleInit.Colors[setColor].r;
+    primColor.g = this->config.ParticleInit.Colors[setColor].g;
+    primColor.b = this->config.ParticleInit.Colors[setColor].b;
+
+    setColor = Rand_S16Offset(0, this->config.ParticleInit.SecondaryColorFlicker);
+    envColor.r = this->config.ParticleInit.SecondaryColors[setColor].r;
+    envColor.g = this->config.ParticleInit.SecondaryColors[setColor].g;
+    envColor.b = this->config.ParticleInit.SecondaryColors[setColor].b;
+
+    for(i = this->config.ParticleInit.Density; i > 0 && this->config.ParticleInit.Density>0; --i) {
+        effectYaw = (s16)Rand_CenteredFloat(12288.0f) + (65536/this->config.ParticleInit.Density*i) + 0x2000;
+        this->config.ParticleInit.Position.x = Rand_CenteredFloat(this->config.ParticleInit.TrailVariation) + this->actor.world.pos.x;
+        this->config.ParticleInit.Position.y = (Rand_ZeroOne() * this->config.ParticleInit.TrailVariation) + this->actor.world.pos.y;
+        this->config.ParticleInit.Position.z = Rand_CenteredFloat(this->config.ParticleInit.TrailVariation) + this->actor.world.pos.z;
+
+        //func_8002F974(&this->actor, NA_SE_EN_BIRI_SPARK);
+        EffectSsLightning_Spawn(globalCtx, &this->config.ParticleInit.Position, &primColor, &envColor, this->config.ParticleInit.Scale, effectYaw, this->config.ParticleInit.TrailLength, 2);
+    }
 }
 
 
@@ -395,6 +442,51 @@ void EnVase_DrawEnergyBall(EnVase* this, GlobalContext* globalCtx) {
     CLOSE_DISPS(globalCtx->state.gfxCtx, __FILE__, __LINE__);
 }
 
+void EnVase_SpawnLightningBall(EnVase* this, GlobalContext* globalCtx){
+    s16 effectYaw;
+    Vec3f effect;
+    s32 i;
+    s16 setColor;
+    Color_RGBA8 primColor;
+    Color_RGBA8 envColor;
+
+    OPEN_DISPS(globalCtx->state.gfxCtx, __FILE__, __LINE__);
+
+    this->config.object.dlist = gPhantomEnergyBallDL;
+    func_80093D84(globalCtx->state.gfxCtx);
+    gSPDisplayList(POLY_XLU_DISP++, this->config.object.dlist);
+
+    setColor = Rand_S16Offset(0, this->config.ParticleInit.ColorFlicker);
+    primColor.r = this->config.CoreColors[setColor].r;
+    primColor.g = this->config.CoreColors[setColor].g;
+    primColor.b = this->config.CoreColors[setColor].b;
+
+    setColor = Rand_S16Offset(0, this->config.ParticleInit.SecondaryColorFlicker);
+    envColor.r = this->config.AuraColors[setColor].r;
+    envColor.g = this->config.AuraColors[setColor].g;
+    envColor.b = this->config.AuraColors[setColor].b;
+
+    for(i = 10; i > 0; --i) {
+        effectYaw = (s16)Rand_CenteredFloat(12288.0f) + (65536/10*i) + 0x2000;
+        this->config.ParticleInit.Position.x = Rand_CenteredFloat(this->config.MasterScale/2) + this->actor.world.pos.x;
+        this->config.ParticleInit.Position.y = (Rand_ZeroOne() * this->config.MasterScale/2) + this->actor.world.pos.y;
+        this->config.ParticleInit.Position.z = Rand_CenteredFloat(this->config.MasterScale/2) + this->actor.world.pos.z;
+
+        //func_8002F974(&this->actor, NA_SE_EN_BIRI_SPARK);
+        EffectSsLightning_Spawn(globalCtx, &this->actor.world.pos, &primColor, &envColor, this->config.MasterScale, effectYaw, 2, 4);
+
+        gDPSetPrimColor(POLY_XLU_DISP++, 0, 0x80, primColor.r, primColor.g, primColor.b, primColor.a);
+        Matrix_Translate(effect.x, effect.y, effect.z, MTXMODE_NEW);
+        func_800D1FD4(&globalCtx->billboardMtxF);
+        //Matrix_RotateZ((effect->rot.z / (f32)0x8000) * 3.1416f, MTXMODE_APPLY);
+        Matrix_Scale(this->config.MasterScale * 0.0185f, this->config.MasterScale * 0.0185f, 1.0f, MTXMODE_APPLY);
+        gSPMatrix(POLY_XLU_DISP++, Matrix_NewMtx(globalCtx->state.gfxCtx, __FILE__, __LINE__),
+            G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
+        gSPDisplayList(POLY_XLU_DISP++, this->config.object.dlist);
+    }
+
+    CLOSE_DISPS(globalCtx->state.gfxCtx, __FILE__, __LINE__);
+}
 
 
 void EnVase_Draw(Actor* thisx, GlobalContext* globalCtx) {
@@ -415,6 +507,9 @@ void EnVase_Draw(Actor* thisx, GlobalContext* globalCtx) {
         } break;
         case PROJ_ENERGYBALL: {
             EnVase_DrawEnergyBall(this, globalCtx);
+        } break;
+        case PROJ_SPARK: {
+            EnVase_SpawnLightningBall(this, globalCtx);
         } break;
     }
 
