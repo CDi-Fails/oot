@@ -4914,7 +4914,7 @@ s32 func_8083B040(Player* this, PlayState* play) {
             if (this->attentionMode == PLAYER_ATTENTIONMODE_ITEM_CUTSCENE) {
                 item = Player_ActionToMagicSpell(this, this->itemActionParam);
                 if (item >= EXCH_ITEM_NONE) {
-                    if ((item != EXCH_ITEM_CHICKEN) || (gSaveContext.respawn[RESPAWN_MODE_TOP].data <= 0)) {
+                    if ((item != EXCH_ITEM_POCKET_EGG) || (gSaveContext.respawn[RESPAWN_MODE_TOP].data <= 0)) {
                         func_8083AF44(play, this, item);
                     } else {
                         Player_SetActionFunc(play, this, func_8085063C, 1);
@@ -4995,15 +4995,15 @@ s32 func_8083B040(Player* this, PlayState* play) {
                 }
 
                 item = Player_ActionToBottle(this, this->itemActionParam);
-                if (item >= 0) {
-                    if (item == 0xC) {
+                if (item >= PLAYER_AP_BOTTLE) {
+                    if (item == PLAYER_AP_BOTTLE_FAIRY) {
                         Player_SetActionFuncPreserveItemAP(play, this, func_8084EED8, 0);
                         Player_PlayAnimOnceSetSpeed(play, this, &gPlayerAnim_002650);
                         func_80835EA4(play, 3);
-                    } else if ((item > 0) && (item < 4)) {
+                    } else if ((item > PLAYER_AP_BOTTLE) && (item < PLAYER_AP_BOTTLE_POE)) {
                         Player_SetActionFuncPreserveItemAP(play, this, func_8084EFC0, 0);
                         Player_PlayAnimOnceSetSpeed(play, this, &gPlayerAnim_002688);
-                        func_80835EA4(play, (item == 1) ? 1 : 5);
+                        func_80835EA4(play, (item == PLAYER_AP_BOTTLE_FISH) ? 1 : 5);
                     } else {
                         Player_SetActionFuncPreserveItemAP(play, this, func_8084EAC0, 0);
                         Player_ChangeAnimMorphLastFrameSlowed(play, this, &gPlayerAnim_002668);
