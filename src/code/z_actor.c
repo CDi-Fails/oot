@@ -987,7 +987,7 @@ s32 func_8002DDA8(PlayState* play) {
 s32 Actor_PlayerIsMakingLoudNoise(PlayState* play) {
     Player* player = GET_PLAYER(play);
 
-    return player->stateFlags2 & PLAYER_MAKING_LOUD_NOISE;
+    return player->stateFlags2 & PLAYER_STATE2_MAKING_REACTABLE_NOISE;
 }
 
 s32 Actor_PlayerIsIdleWhileClimbing(PlayState* play) {
@@ -1707,7 +1707,7 @@ void func_8002F850(PlayState* play, Actor* actor) {
             sfxId = NA_SE_PL_WALK_WATER1 - SFX_FLAG;
         }
     } else {
-        sfxId = SurfaceType_GetSfx(&play->colCtx, actor->floorPoly, actor->floorBgId);
+        sfxId = SurfaceType_SetMoveSfx(&play->colCtx, actor->floorPoly, actor->floorBgId);
     }
 
     func_80078914(&actor->projectedPos, NA_SE_EV_BOMB_BOUND);

@@ -29,8 +29,8 @@ s32 D_80119D90[32] = {
     0, 1, 3, 5, 8, 16, 32, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
 
-// SurfaceType_GetSfx
-u16 D_80119E10[14] = {
+// SurfaceType_SetMoveSfx
+u16 sPlayerMoveSfx[PLAYER_MOVESFXTYPE_MAX] = {
     NA_SE_PL_WALK_GROUND - SFX_FLAG, NA_SE_PL_WALK_SAND - SFX_FLAG,   NA_SE_PL_WALK_CONCRETE - SFX_FLAG,
     NA_SE_PL_WALK_DIRT - SFX_FLAG,   NA_SE_PL_WALK_WATER0 - SFX_FLAG, NA_SE_PL_WALK_WATER1 - SFX_FLAG,
     NA_SE_PL_WALK_WATER2 - SFX_FLAG, NA_SE_PL_WALK_MAGMA - SFX_FLAG,  NA_SE_PL_WALK_GRASS - SFX_FLAG,
@@ -4038,20 +4038,23 @@ u32 SurfaceType_IsHorseBlocked(CollisionContext* colCtx, CollisionPoly* poly, s3
     return SurfaceType_GetData(colCtx, poly, bgId, 0) >> 31 & 1;
 }
 
-u32 func_80041F10(CollisionContext* colCtx, CollisionPoly* poly, s32 bgId) {
+/**
+ * SurfaceType Get Poly Movement Sfx
+ */
+u32 SurfaceType_GetMoveSfx(CollisionContext* colCtx, CollisionPoly* poly, s32 bgId) {
     return SurfaceType_GetData(colCtx, poly, bgId, 1) & 0xF;
 }
 
 /**
- * SurfaceType Get Poly Sfx
+ * SurfaceType Set Poly Movement Sfx
  */
-u16 SurfaceType_GetSfx(CollisionContext* colCtx, CollisionPoly* poly, s32 bgId) {
-    s32 id = func_80041F10(colCtx, poly, bgId);
+u16 SurfaceType_SetMoveSfx(CollisionContext* colCtx, CollisionPoly* poly, s32 bgId) {
+    s32 id = SurfaceType_GetMoveSfx(colCtx, poly, bgId);
 
-    if (id < 0 || id > 13) {
+    if (id < PLAYER_MOVESFXTYPE_DEFAULT || id > PLAYER_MOVESFXTYPE_CARPET) {
         return NA_SE_PL_WALK_GROUND - SFX_FLAG;
     }
-    return D_80119E10[id];
+    return sPlayerMoveSfx[id];
 }
 
 /**
