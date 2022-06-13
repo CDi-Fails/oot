@@ -717,7 +717,7 @@ void EnSkj_SariasSongKidIdle(EnSkj* this, PlayState* play) {
             Player* player = GET_PLAYER(play);
             if (EnSkj_RangeCheck(player, sSmallStumpSkullKid.skullkid)) {
                 EnSkj_SetupWaitInRange(this);
-                player->stateFlags2 |= PLAYER_STATE2_23;
+                player->stateFlags2 |= PLAYER_STATE2_NEAR_OCARINA_ACTOR;
                 player->unk_6A8 = &sSmallStumpSkullKid.skullkid->actor;
             }
         }
@@ -900,8 +900,8 @@ void EnSkj_WaitInRange(EnSkj* this, PlayState* play) {
 
     // When link pulls out the Ocarina center him on the stump
     // Link was probably supposed to be pointed towards skull kid as well
-    if (player->stateFlags2 & PLAYER_STATE2_24) {
-        player->stateFlags2 |= PLAYER_STATE2_25;
+    if (player->stateFlags2 & PLAYER_STATE2_ATTEMPT_PLAY_OCARINA_FOR_ACTOR) {
+        player->stateFlags2 |= PLAYER_STATE2_PLAYING_OCARINA_FOR_ACTOR;
         player->unk_6A8 = &sSmallStumpSkullKid.skullkid->actor;
         player->actor.world.pos.x = sSmallStumpSkullKid.skullkid->actor.world.pos.x;
         player->actor.world.pos.y = sSmallStumpSkullKid.skullkid->actor.world.pos.y;
@@ -922,7 +922,7 @@ void EnSkj_WaitInRange(EnSkj* this, PlayState* play) {
     } else if (!EnSkj_RangeCheck(player, sSmallStumpSkullKid.skullkid)) {
         EnSkj_SetupResetFight(this);
     } else {
-        player->stateFlags2 |= PLAYER_STATE2_23;
+        player->stateFlags2 |= PLAYER_STATE2_NEAR_OCARINA_ACTOR;
         if (GET_ITEMGETINF(ITEMGETINF_16)) {
             if (GET_ITEMGETINF(ITEMGETINF_39)) {
                 this->textId = Text_GetFaceReaction(play, 0x15);
@@ -983,10 +983,10 @@ void EnSkj_WaitForSong(EnSkj* this, PlayState* play) {
                 play->msgCtx.ocarinaMode = OCARINA_MODE_05;
             }
         } else if (play->msgCtx.ocarinaMode == OCARINA_MODE_02) {
-            player->stateFlags2 &= ~PLAYER_STATE2_24;
+            player->stateFlags2 &= ~PLAYER_STATE2_ATTEMPT_PLAY_OCARINA_FOR_ACTOR;
             Actor_Kill(&this->actor);
         } else if (play->msgCtx.ocarinaMode == OCARINA_MODE_01) {
-            player->stateFlags2 |= PLAYER_STATE2_23;
+            player->stateFlags2 |= PLAYER_STATE2_NEAR_OCARINA_ACTOR;
         } else {
             if (play->msgCtx.ocarinaMode >= OCARINA_MODE_05) {
                 gSaveContext.sunsSongState = 0;
@@ -1070,7 +1070,7 @@ void EnSkj_SetupMaskTrade(EnSkj* this) {
 void EnSkj_StartMaskTrade(EnSkj* this, PlayState* play) {
     u8 sp1F = Message_GetState(&play->msgCtx);
 
-    func_8002DF54(play, &this->actor, 1);
+    Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_IDLE);
     if ((sp1F == TEXT_STATE_DONE) && Message_ShouldAdvance(play)) {
         EnSkj_JumpFromStump(this);
     }
@@ -1168,7 +1168,7 @@ void EnSkj_SetupWaitForMaskTextClear(EnSkj* this) {
 
 void EnSkj_WaitForMaskTextClear(EnSkj* this, PlayState* play) {
     if ((Message_GetState(&play->msgCtx) == TEXT_STATE_DONE) && Message_ShouldAdvance(play)) {
-        func_8002DF54(play, &this->actor, 7);
+        Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END);
         this->backflipFlag = 1;
         EnSkj_Backflip(this);
     }
@@ -1198,7 +1198,7 @@ void EnSkj_SariasSongWaitForTextClear(EnSkj* this, PlayState* play) {
 
     if (state == TEXT_STATE_DONE && Message_ShouldAdvance(play)) {
         EnSkj_SetupWaitInRange(this);
-        player->stateFlags2 |= PLAYER_STATE2_23;
+        player->stateFlags2 |= PLAYER_STATE2_NEAR_OCARINA_ACTOR;
         player->unk_6A8 = (Actor*)sSmallStumpSkullKid.skullkid;
     }
 }
@@ -1362,8 +1362,8 @@ void EnSkj_SetupWaitForOcarina(EnSkj* this, PlayState* play) {
         sOcarinaMinigameSkullKids[SKULL_KID_LEFT].skullkid->playerInRange = true;
         sOcarinaMinigameSkullKids[SKULL_KID_RIGHT].skullkid->playerInRange = true;
 
-        if (player->stateFlags2 & PLAYER_STATE2_24) {
-            player->stateFlags2 |= PLAYER_STATE2_25;
+        if (player->stateFlags2 & PLAYER_STATE2_ATTEMPT_PLAY_OCARINA_FOR_ACTOR) {
+            player->stateFlags2 |= PLAYER_STATE2_PLAYING_OCARINA_FOR_ACTOR;
             func_800F5BF0(NATURE_ID_KOKIRI_REGION);
             EnSkj_TurnPlayer(this, player);
             player->unk_6A8 = &this->actor;
@@ -1378,15 +1378,15 @@ void EnSkj_SetupWaitForOcarina(EnSkj* this, PlayState* play) {
 void EnSkj_WaitForOcarina(EnSkj* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
-    if (player->stateFlags2 & PLAYER_STATE2_24) {
-        player->stateFlags2 |= PLAYER_STATE2_25;
+    if (player->stateFlags2 & PLAYER_STATE2_ATTEMPT_PLAY_OCARINA_FOR_ACTOR) {
+        player->stateFlags2 |= PLAYER_STATE2_PLAYING_OCARINA_FOR_ACTOR;
         func_800F5BF0(NATURE_ID_KOKIRI_REGION);
         EnSkj_TurnPlayer(this, player);
         player->unk_6A8 = &this->actor;
         Message_StartTextbox(play, 0x10BE, &this->actor);
         this->actionFunc = EnSkj_StartOcarinaMinigame;
     } else if (EnSkj_RangeCheck(player, this)) {
-        player->stateFlags2 |= PLAYER_STATE2_23;
+        player->stateFlags2 |= PLAYER_STATE2_NEAR_OCARINA_ACTOR;
     }
 }
 
@@ -1505,7 +1505,7 @@ void EnSkj_WaitForOfferResponse(EnSkj* this, PlayState* play) {
         switch (play->msgCtx.choiceIndex) {
             case 0: // yes
                 player = GET_PLAYER(play);
-                player->stateFlags3 |= PLAYER_STATE3_5; // makes player take ocarina out right away after closing box
+                player->stateFlags3 |= PLAYER_STATE3_FORCE_PULL_OCARINA; // makes player take ocarina out right away after closing box
                 this->actionFunc = EnSkj_SetupWaitForOcarina;
                 break;
             case 1: // no

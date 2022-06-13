@@ -195,7 +195,7 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
             objectIdx = Object_GetIndex(&play->objectCtx, OBJECT_GANON_ANIME3);
             if (Object_IsLoaded(&play->objectCtx, objectIdx)) {
                 func_80064520(play, &play->csCtx);
-                func_8002DF54(play, &this->actor, 8);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_WAIT);
                 this->subCamId = Play_CreateSubCamera(play);
                 Play_ChangeCameraStatus(play, CAM_ID_MAIN, CAM_STAT_WAIT);
                 Play_ChangeCameraStatus(play, this->subCamId, CAM_STAT_ACTIVE);
@@ -266,11 +266,11 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
             }
             if (this->unk_398 == 40) {
                 sZelda->unk_3C8 = 1;
-                func_8002DF54(play, &this->actor, 0x4E);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_LOOK_TO_CHARACTER_AT_SIDE_SMILING);
             }
             if (this->unk_398 == 85) {
                 sZelda->unk_3C8 = 2;
-                func_8002DF54(play, &this->actor, 0x4F);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_LOOK_TO_CHARACTER_ABOVE_SMILING);
             }
             this->subCamEye.x = 930.0f;
             this->subCamEye.y = 1129.0f;
@@ -299,14 +299,14 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
             }
             if (this->unk_398 == 20) {
                 sZelda->unk_3C8 = 3;
-                func_8002DF54(play, &this->actor, 0x50);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_SURPRISED_DEFENSE);
             }
             if (this->unk_398 == 55) {
                 this->unk_39C = 4;
                 this->unk_398 = 0;
                 this->unk_410.x = 0.0f;
                 sZelda->unk_3C8 = 4;
-                func_8002DF54(play, &this->actor, 0x50);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_SURPRISED_DEFENSE);
             }
             break;
         case 4:
@@ -323,7 +323,7 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
                 func_800C08AC(play, this->subCamId, 0);
                 this->subCamId = SUB_CAM_ID_DONE;
                 func_80064534(play, &play->csCtx);
-                func_8002DF54(play, &this->actor, 7);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END);
                 this->unk_39C = 5;
                 this->unk_398 = 0;
             }
@@ -370,7 +370,7 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
             }
             if (this->unk_398 == 30) {
                 sZelda->unk_3C8 = 5;
-                func_8002DF54(play, &this->actor, 0x51);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_START_HALF_TURN_SURPRISED);
             }
             if (this->unk_398 == 50) {
                 this->unk_398 = 0;
@@ -401,7 +401,7 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
                 func_80078884(NA_SE_EV_STONE_BOUND);
             }
             if (this->unk_398 == 30) {
-                func_8002DF54(play, &this->actor, 0x52);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END_HALF_TURN_SURPRISED);
             }
             if (this->unk_398 == 50) {
                 this->unk_398 = 0;
@@ -468,7 +468,7 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
             this->subCamAt.y = player->actor.world.pos.y;
             this->subCamAt.z = player->actor.world.pos.z - 200.0f;
             if (this->unk_398 == 20) {
-                func_8002DF54(play, &this->actor, 0x1E);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_DRAW_AND_BRANDISH_SWORD);
             }
             if (this->unk_398 == 60) {
                 this->subCamEye.x = (this->actor.world.pos.x + 200.0f) - 154.0f;
@@ -557,7 +557,7 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
                 SkelAnime_Free(&this->skelAnime, play);
                 SkelAnime_InitFlex(play, &this->skelAnime, &object_ganon2_Skel_025970, NULL, NULL, NULL, 0);
                 BossGanon2_SetObjectSegment(this, play, OBJECT_GANON_ANIME3, false);
-                func_8002DF54(play, &this->actor, 0x54);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_LOOK_UP_DEFENSE_IDLE);
                 this->unk_314 = 3;
             }
             // fake, tricks the compiler into using stack the way we need it to
@@ -613,7 +613,7 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
                 this->actor.world.pos.x += 250;
                 this->actor.world.pos.y = 1886.0f;
                 this->unk_394 = 0.0f;
-                func_8002DF54(play, &this->actor, 0x53);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_START_LOOK_UP_DEFENSE);
                 this->unk_30C = 5.0f;
                 this->unk_228 = 1.0f;
             }
@@ -698,7 +698,7 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
             if (this->unk_398 == 215) {
                 this->unk_39C = 23;
                 this->unk_224 = 0.0f;
-                func_8002DF54(play, &this->actor, 0x55);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END_LOOK_UP_DEFENSE);
             }
             break;
         case 23:
@@ -718,7 +718,7 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
             this->subCamAt.z = player->actor.world.pos.z;
             if (this->unk_398 == 228) {
                 func_80078884(NA_SE_IT_SHIELD_REFLECT_SW);
-                func_8002DF54(play, &this->actor, 0x56);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_START_SWORD_KNOCKED_FROM_HAND);
                 func_800A9F6C(0.0f, 0xFF, 0xA, 0x32);
             }
             if (this->unk_398 >= 229) {
@@ -755,7 +755,7 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
                 func_80078884(NA_SE_IT_SWORD_SWING);
             }
             if (this->unk_398 == 25) {
-                func_8002DF54(play, &this->actor, 0x57);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_SWORD_KNOCKED_FROM_HAND_IDLE);
                 this->unk_39C = 25;
                 this->unk_398 = 0;
             }
@@ -803,7 +803,7 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
         case 27:
             this->subCamUp.z = 0.0f;
             if (this->unk_398 == 4) {
-                func_8002DF54(play, &this->actor, 0x58);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END_SWORD_KNOCKED_FROM_HAND);
             }
             this->subCamEye.x = player->actor.world.pos.x - 20.0f;
             this->subCamEye.y = player->actor.world.pos.y + 50.0f;
@@ -876,7 +876,7 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
                 func_800C08AC(play, this->subCamId, 0);
                 this->subCamId = SUB_CAM_ID_DONE;
                 func_80064534(play, &play->csCtx);
-                func_8002DF54(play, &this->actor, 7);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END);
                 this->unk_39C = 0;
                 this->unk_337 = 1;
                 func_808FFDB0(this, play);
@@ -1298,7 +1298,7 @@ void func_80900890(BossGanon2* this, PlayState* play) {
             this->subCamId = Play_CreateSubCamera(play);
             Play_ChangeCameraStatus(play, CAM_ID_MAIN, CAM_STAT_WAIT);
             Play_ChangeCameraStatus(play, this->subCamId, CAM_STAT_ACTIVE);
-            func_8002DF54(play, &this->actor, 8);
+            Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_WAIT);
             this->unk_39C = 1;
             this->subCamEye = mainCam1->eye;
             this->subCamAt = mainCam1->at;
@@ -1347,7 +1347,7 @@ void func_80900890(BossGanon2* this, PlayState* play) {
                 func_800C08AC(play, this->subCamId, 0);
                 this->subCamId = SUB_CAM_ID_DONE;
                 func_80064534(play, &play->csCtx);
-                func_8002DF54(play, &this->actor, 7);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END);
                 this->unk_39C = 3;
             }
             break;
@@ -1358,7 +1358,7 @@ void func_80900890(BossGanon2* this, PlayState* play) {
             Play_ChangeCameraStatus(play, this->subCamId, CAM_STAT_ACTIVE);
             this->unk_39C = 11;
             this->unk_334 = 1;
-            func_8002DF54(play, &this->actor, 0x60);
+            Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_GET_SWORD_BACK_2);
             this->unk_398 = 0;
             FALLTHROUGH;
         case 11:
@@ -1380,7 +1380,7 @@ void func_80900890(BossGanon2* this, PlayState* play) {
                 func_800C08AC(play, this->subCamId, 0);
                 this->subCamId = SUB_CAM_ID_DONE;
                 func_80064534(play, &play->csCtx);
-                func_8002DF54(play, &this->actor, 7);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END);
             }
             break;
     }
@@ -1484,7 +1484,7 @@ void func_8090120C(BossGanon2* this, PlayState* play) {
             this->subCamId = Play_CreateSubCamera(play);
             Play_ChangeCameraStatus(play, CAM_ID_MAIN, CAM_STAT_WAIT);
             Play_ChangeCameraStatus(play, this->subCamId, CAM_STAT_ACTIVE);
-            func_8002DF54(play, &this->actor, 8);
+            Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_WAIT);
             this->unk_39C = 1;
             this->unk_398 = 0;
             sZelda->unk_3C8 = 9;
@@ -1521,7 +1521,7 @@ void func_8090120C(BossGanon2* this, PlayState* play) {
                 this->skelAnime.playSpeed = 3.0f;
             }
             if (this->unk_398 == 120) {
-                func_8002DF54(play, &this->actor, 0x63);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_WATCH_ZELDA_STUN_GANON);
             }
             this->actor.world.rot.y = 0x4000;
             this->actor.world.pos.x = this->actor.world.pos.z = 0.0f;
@@ -1589,7 +1589,7 @@ void func_8090120C(BossGanon2* this, PlayState* play) {
                 this->unk_39C = 5;
                 this->unk_398 = 40;
                 this->skelAnime.playSpeed = 1.0f;
-                func_8002DF54(play, &this->actor, 0x64);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_START_LOOK_AT_SWORD_GLOW);
             }
             break;
         case 5:
@@ -1603,10 +1603,10 @@ void func_8090120C(BossGanon2* this, PlayState* play) {
                 Math_ApproachZeroF(&this->unk_38C, 1.0f, 8.0f);
             }
             if (this->unk_398 == 70) {
-                func_8002DF54(play, &this->actor, 0x65);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_LOOK_AT_SWORD_GLOW_IDLE);
             }
             if (this->unk_398 == 150) {
-                func_8002DF54(play, &this->actor, 0x66);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END_LOOK_AT_SWORD_GLOW);
             }
             this->unk_30C = 10.0f;
             player->actor.world.pos.x = 250.0f;
@@ -1625,7 +1625,7 @@ void func_8090120C(BossGanon2* this, PlayState* play) {
                 func_800C08AC(play, this->subCamId, 0);
                 this->subCamId = SUB_CAM_ID_DONE;
                 func_80064534(play, &play->csCtx);
-                func_8002DF54(play, &this->actor, 7);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END);
                 this->unk_39C = 6;
             }
             break;
@@ -1711,7 +1711,7 @@ void func_8090120C(BossGanon2* this, PlayState* play) {
             if (this->unk_398 == 55) {
                 Animation_MorphToPlayOnce(&this->skelAnime, &object_ganon2_Anim_007288, 0.0f);
                 this->unk_194 = Animation_GetLastFrame(&object_ganon2_Anim_007288);
-                func_8002DF54(play, &this->actor, 0x62);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END_GANON_KILL_COMBO);
                 this->unk_39C = 8;
                 this->unk_398 = 1000;
             }

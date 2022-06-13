@@ -2196,7 +2196,7 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
 
             Math_ApproachF(&D_80B7E144, 195.0f, 1.0f, 1.0f);
 
-            if (player->stateFlags1 & PLAYER_STATE1_27) {
+            if (player->stateFlags1 & PLAYER_STATE1_SWIMMING) {
                 D_80B7E0B4 = 0;
                 player->unk_860 = 0;
             }
@@ -5363,7 +5363,7 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
             sSubCamId = Play_CreateSubCamera(play);
             Play_ChangeCameraStatus(play, CAM_ID_MAIN, CAM_STAT_WAIT);
             Play_ChangeCameraStatus(play, sSubCamId, CAM_STAT_ACTIVE);
-            func_8002DF54(play, &this->actor, 5);
+            Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_SURPRISED);
             mainCam = Play_GetCamera(play, CAM_ID_MAIN);
             sSubCamEye.x = mainCam->eye.x;
             sSubCamEye.y = mainCam->eye.y;
@@ -5389,7 +5389,7 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
                 mainCam->at = sSubCamAt;
                 func_800C08AC(play, sSubCamId, 0);
                 func_80064534(play, &play->csCtx);
-                func_8002DF54(play, &this->actor, 7);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END);
                 D_80B7A6CC = 0;
                 sSubCamId = SUB_CAM_ID_DONE;
                 D_80B7A6D0 = 30;
@@ -5405,7 +5405,7 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
             sSubCamId = Play_CreateSubCamera(play);
             Play_ChangeCameraStatus(play, CAM_ID_MAIN, CAM_STAT_WAIT);
             Play_ChangeCameraStatus(play, sSubCamId, CAM_STAT_ACTIVE);
-            func_8002DF54(play, &this->actor, 5);
+            Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_SURPRISED);
             mainCam = Play_GetCamera(play, CAM_ID_MAIN);
             sSubCamEye.x = mainCam->eye.x;
             sSubCamEye.y = mainCam->eye.y;
@@ -5424,7 +5424,7 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
             if ((D_80B7A6D0 == 0) && Message_ShouldAdvance(play)) {
                 D_80B7A6CC = 22;
                 D_80B7A6D0 = 40;
-                func_8002DF54(play, &this->actor, 0x1C);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_GET_ITEM);
                 D_80B7FEE4 = 0.0f;
             }
             break;
@@ -5493,7 +5493,7 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
                         mainCam->at = sSubCamAt;
                         func_800C08AC(play, sSubCamId, 0);
                         func_80064534(play, &play->csCtx);
-                        func_8002DF54(play, &this->actor, 7);
+                        Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END);
                         D_80B7A6CC = 0;
                         sSubCamId = SUB_CAM_ID_DONE;
                         player->unk_860 = -5;

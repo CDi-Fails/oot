@@ -338,6 +338,122 @@ typedef enum {
     /* 0x2D */ PLAYER_ANIMGROUP_MAX
 } PlayerAnimGroup;
 
+typedef enum {
+    /* 0x00 */ PLAYER_ATTENTIONMODE_NONE,
+    /* 0x01 */ PLAYER_ATTENTIONMODE_C_UP,
+    /* 0x02 */ PLAYER_ATTENTIONMODE_AIMING,
+    /* 0x03 */ PLAYER_ATTENTIONMODE_CUTSCENE,
+    /* 0x04 */ PLAYER_ATTENTIONMODE_ITEM_CUTSCENE,
+    /* 0x045*/ PLAYER_ATTENTIONMODE_MAX
+} PlayerAttentionMode;
+
+typedef enum {
+    PLAYER_CSMODE_NONE,
+    PLAYER_CSMODE_IDLE,
+    PLAYER_CSMODE_TURN_AROUND_SURPRISED_SHORT,
+    PLAYER_CSMODE_UNK_3,
+    PLAYER_CSMODE_UNK_4,
+    PLAYER_CSMODE_SURPRISED,
+    PLAYER_CSMODE_UNK_6,
+    PLAYER_CSMODE_END,
+    PLAYER_CSMODE_WAIT,
+    PLAYER_CSMODE_TURN_AROUND_SURPRISED_LONG,
+    PLAYER_CSMODE_ENTER_WARP,
+    PLAYER_CSMODE_RAISED_BY_WARP,
+    PLAYER_CSMODE_FIGHT_STANCE,
+    PLAYER_CSMODE_START_GET_SPIRITUAL_STONE,
+    PLAYER_CSMODE_GET_SPIRITUAL_STONE,
+    PLAYER_CSMODE_END_GET_SPIRITUAL_STONE,
+    PLAYER_CSMODE_GET_UP_FROM_DEKU_TREE_STORY,
+    PLAYER_CSMODE_SIT_LISTENING_TO_DEKU_TREE_STORY,
+    PLAYER_CSMODE_SWORD_INTO_PEDESTAL,
+    PLAYER_CSMODE_REACT_TO_QUAKE,
+    PLAYER_CSMODE_END_REACT_TO_QUAKE,
+    PLAYER_CSMODE_UNK_21,
+    PLAYER_CSMODE_WARP_TO_SAGES,
+    PLAYER_CSMODE_LOOK_AT_SELF,
+    PLAYER_CSMODE_KNOCKED_TO_GROUND,
+    PLAYER_CSMODE_GET_UP_FROM_GROUND,
+    PLAYER_CSMODE_START_PLAY_OCARINA,
+    PLAYER_CSMODE_END_PLAY_OCARINA,
+    PLAYER_CSMODE_GET_ITEM,
+    PLAYER_CSMODE_IDLE_2,
+    PLAYER_CSMODE_DRAW_AND_BRANDISH_SWORD,
+    PLAYER_CSMODE_UNK_31,
+    PLAYER_CSMODE_UNK_32,
+    PLAYER_CSMODE_SURPRIED_STUMBLE_BACK_AND_FALL,
+    PLAYER_CSMODE_SURFACE_FROM_DIVE,
+    PLAYER_CSMODE_GET_ITEM_IN_WATER,
+    PLAYER_CSMODE_GENTLE_KNOCKBACK_INTO_SIT,
+    PLAYER_CSMODE_GRABBED_AND_CARRIED_BY_NECK,
+    PLAYER_CSMODE_SLEEPING_RESTLESS,
+    PLAYER_CSMODE_SLEEPING,
+    PLAYER_CSMODE_AWAKEN,
+    PLAYER_CSMODE_GET_OFF_BED,
+    PLAYER_CSMODE_BLOWN_BACKWARD,
+    PLAYER_CSMODE_STAND_UP_AND_WATCH,
+    PLAYER_CSMODE_IDLE_3,
+    PLAYER_CSMODE_STOP,
+    PLAYER_CSMODE_STOP_2,
+    PLAYER_CSMODE_LOOK_THROUGH_PEEPHOLE,
+    PLAYER_CSMODE_STEP_BACK_CAUTIOUSLY,
+    PLAYER_CSMODE_IDLE_4,
+    PLAYER_CSMODE_DRAW_SWORD_CHILD,
+    PLAYER_CSMODE_JUMP_TO_ZELDAS_CRYSTAL,
+    PLAYER_CSMODE_DESPERATE_LOOKING_AT_ZELDAS_CRYSTAL,
+    PLAYER_CSMODE_LOOK_UP_AT_ZELDAS_CRYSTAL_VANISHING,
+    PLAYER_CSMODE_TURN_AROUND_SLOWLY,
+    PLAYER_CSMODE_END_SHIELD_EYES_WITH_HAND,
+    PLAYER_CSMODE_SHIELD_EYES_WITH_HAND,
+    PLAYER_CSMODE_LOOK_AROUND_SURPRISED,
+    PLAYER_CSMODE_INSPECT_GROUND_CAREFULLY,
+    PLAYER_CSMODE_STARTLED_BY_GORONS_FALLING,
+    PLAYER_CSMODE_FALL_TO_KNEE,
+    PLAYER_CSMODE_FLAT_ON_BACK,
+    PLAYER_CSMODE_RAISE_FROM_FLAT_ON_BACK,
+    PLAYER_CSMODE_START_SPIN_ATTACK,
+    PLAYER_CSMODE_ZELDA_CLOUDS_CUTSCENE_IDLE,
+    PLAYER_CSMODE_ZELDA_CLOUDS_CUTSCENE_START_PASS_OCARINA,
+    PLAYER_CSMODE_ZELDA_CLOUDS_CUTSCENE_END_PASS_OCARINA,
+    PLAYER_CSMODE_START_LOOK_AROUND_AFTER_SWORD_WARP,
+    PLAYER_CSMODE_END_LOOK_AROUND_AFTER_SWORD_WARP,
+    PLAYER_CSMODE_LOOK_AROUND_AND_AT_SELF_QUICKLY,
+    PLAYER_CSMODE_START_LEARN_OCARINA_SONG_ADULT,
+    PLAYER_CSMODE_END_LEARN_OCARINA_SONG_ADULT,
+    PLAYER_CSMODE_START_LEARN_OCARINA_SONG_CHILD,
+    PLAYER_CSMODE_END_LEARN_OCARINA_SONG_CHILD,
+    PLAYER_CSMODE_RESIST_DARK_MAGIC,
+    PLAYER_CSMODE_TRIFORCE_HAND_RESONATES,
+    PLAYER_CSMODE_STARE_DOWN_STARTLED,
+    PLAYER_CSMODE_LOOK_UP_STARTLED,
+    PLAYER_CSMODE_LOOK_TO_CHARACTER_AT_SIDE_SMILING,
+    PLAYER_CSMODE_LOOK_TO_CHARACTER_ABOVE_SMILING,
+    PLAYER_CSMODE_SURPRISED_DEFENSE,
+    PLAYER_CSMODE_START_HALF_TURN_SURPRISED,
+    PLAYER_CSMODE_END_HALF_TURN_SURPRISED,
+    PLAYER_CSMODE_START_LOOK_UP_DEFENSE,
+    PLAYER_CSMODE_LOOK_UP_DEFENSE_IDLE,
+    PLAYER_CSMODE_END_LOOK_UP_DEFENSE,
+    PLAYER_CSMODE_START_SWORD_KNOCKED_FROM_HAND,
+    PLAYER_CSMODE_SWORD_KNOCKED_FROM_HAND_IDLE,
+    PLAYER_CSMODE_END_SWORD_KNOCKED_FROM_HAND,
+    PLAYER_CSMODE_SPIN_ATTACK_IDLE,
+    PLAYER_CSMODE_INSPECT_WEAPON,
+    PLAYER_CSMODE_UNK_91,
+    PLAYER_CSMODE_KNOCKED_TO_GROUND_WITH_DAMAGE_EFFECT,
+    PLAYER_CSMODE_REACT_TO_HEAT,
+    PLAYER_CSMODE_GET_SWORD_BACK,
+    PLAYER_CSMODE_CAUGHT_BY_GUARD,
+    PLAYER_CSMODE_GET_SWORD_BACK_2,
+    PLAYER_CSMODE_START_GANON_KILL_COMBO,
+    PLAYER_CSMODE_END_GANON_KILL_COMBO,
+    PLAYER_CSMODE_WATCH_ZELDA_STUN_GANON,
+    PLAYER_CSMODE_START_LOOK_AT_SWORD_GLOW,
+    PLAYER_CSMODE_LOOK_AT_SWORD_GLOW_IDLE,
+    PLAYER_CSMODE_END_LOOK_AT_SWORD_GLOW,
+    PLAYER_CSMODE_MAX
+} PlayerCutsceneMode;
+
 #define LIMB_BUF_COUNT(limbCount) ((ALIGN16((limbCount) * sizeof(Vec3s)) + sizeof(Vec3s) - 1) / sizeof(Vec3s))
 #define PLAYER_LIMB_BUF_COUNT LIMB_BUF_COUNT(PLAYER_LIMB_MAX)
 
@@ -383,84 +499,84 @@ typedef struct {
     /* 0x10 */ Vec3f base;
 } WeaponInfo; // size = 0x1C
 
-#define PLAYER_STATE1_0 (1 << 0)
-#define PLAYER_STATE1_1 (1 << 1)
-#define PLAYER_STATE1_2 (1 << 2)
-#define PLAYER_STATE1_3 (1 << 3)
-#define PLAYER_STATE1_4 (1 << 4)
-#define PLAYER_STATE1_5 (1 << 5)
-#define PLAYER_STATE1_6 (1 << 6)
-#define PLAYER_STATE1_7 (1 << 7)
-#define PLAYER_STATE1_8 (1 << 8)
-#define PLAYER_STATE1_9 (1 << 9)
-#define PLAYER_STATE1_10 (1 << 10)
-#define PLAYER_STATE1_11 (1 << 11)
-#define PLAYER_STATE1_12 (1 << 12)
-#define PLAYER_STATE1_13 (1 << 13)
-#define PLAYER_STATE1_14 (1 << 14)
-#define PLAYER_STATE1_15 (1 << 15)
-#define PLAYER_STATE1_16 (1 << 16)
-#define PLAYER_STATE1_17 (1 << 17)
-#define PLAYER_STATE1_18 (1 << 18)
-#define PLAYER_STATE1_19 (1 << 19)
-#define PLAYER_STATE1_20 (1 << 20)
-#define PLAYER_STATE1_21 (1 << 21)
-#define PLAYER_STATE1_22 (1 << 22)
-#define PLAYER_STATE1_23 (1 << 23)
-#define PLAYER_STATE1_24 (1 << 24)
-#define PLAYER_STATE1_25 (1 << 25)
-#define PLAYER_STATE1_26 (1 << 26)
-#define PLAYER_STATE1_27 (1 << 27)
-#define PLAYER_STATE1_28 (1 << 28)
-#define PLAYER_STATE1_29 (1 << 29)
+#define PLAYER_STATE1_EXITING_SCENE (1 << 0)
+#define PLAYER_STATE1_SWIPING_BOTTLE (1 << 1)
+#define PLAYER_STATE1_END_HOOKSHOT_MOVE (1 << 2)
+#define PLAYER_STATE1_AIMING_FPS_ITEM (1 << 3)
+#define PLAYER_STATE1_TARGETING (1 << 4)
+#define PLAYER_STATE1_INPUT_DISABLED (1 << 5)
+#define PLAYER_STATE1_TALKING (1 << 6)
+#define PLAYER_STATE1_IN_DEATH_CUTSCENE (1 << 7)
+#define PLAYER_STATE1_USE_ITEM_IMMEDIATELY (1 << 8)
+#define PLAYER_STATE1_PREPARED_TO_SHOOT (1 << 9)
+#define PLAYER_STATE1_GETTING_ITEM (1 << 10)
+#define PLAYER_STATE1_HOLDING_ACTOR (1 << 11)
+#define PLAYER_STATE1_CHARGING_SPIN_ATTACK (1 << 12)
+#define PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP (1 << 13)
+#define PLAYER_STATE1_CLIMBING_ONTO_LEDGE (1 << 14)
+#define PLAYER_STATE1_UNUSED_TARGETING_FLAG (1 << 15)
+#define PLAYER_STATE1_FORCE_STRAFING (1 << 16)
+#define PLAYER_STATE1_TARGETING_NO_TARGET_ACTOR (1 << 17)
+#define PLAYER_STATE1_JUMPING (1 << 18)
+#define PLAYER_STATE1_FREEFALLING (1 << 19)
+#define PLAYER_STATE1_IN_FIRST_PERSON_MODE (1 << 20)
+#define PLAYER_STATE1_CLIMBING (1 << 21)
+#define PLAYER_STATE1_SHIELDING (1 << 22)
+#define PLAYER_STATE1_RIDING_HORSE (1 << 23)
+#define PLAYER_STATE1_AIMING_BOOMERANG (1 << 24)
+#define PLAYER_STATE1_AWAITING_THROWN_BOOMERANG (1 << 25)
+#define PLAYER_STATE1_TAKING_DAMAGE (1 << 26)
+#define PLAYER_STATE1_SWIMMING (1 << 27)
+#define PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE (1 << 28)
+#define PLAYER_STATE1_IN_CUTSCENE (1 << 29)
 #define PLAYER_STATE1_30 (1 << 30)
-#define PLAYER_STATE1_31 (1 << 31)
+#define PLAYER_STATE1_FALLING_INTO_GROTTO_OR_VOID (1 << 31)
 
-#define PLAYER_STATE2_0 (1 << 0)
-#define PLAYER_STATE2_1 (1 << 1)
-#define PLAYER_STATE2_2 (1 << 2)
-#define PLAYER_STATE2_3 (1 << 3)
-#define PLAYER_STATE2_4 (1 << 4)
-#define PLAYER_STATE2_5 (1 << 5)
-#define PLAYER_STATE2_6 (1 << 6)
-#define PLAYER_STATE2_7 (1 << 7)
-#define PLAYER_STATE2_8 (1 << 8)
-#define PLAYER_STATE2_9 (1 << 9)
-#define PLAYER_STATE2_10 (1 << 10)
-#define PLAYER_STATE2_11 (1 << 11)
-#define PLAYER_STATE2_12 (1 << 12)
-#define PLAYER_STATE2_13 (1 << 13)
-#define PLAYER_STATE2_14 (1 << 14)
-#define PLAYER_STATE2_15 (1 << 15)
-#define PLAYER_STATE2_16 (1 << 16)
-#define PLAYER_STATE2_17 (1 << 17)
-#define PLAYER_STATE2_18 (1 << 18)
-#define PLAYER_STATE2_19 (1 << 19)
-#define PLAYER_STATE2_20 (1 << 20)
-#define PLAYER_STATE2_21 (1 << 21)
-#define PLAYER_STATE2_22 (1 << 22)
-#define PLAYER_STATE2_23 (1 << 23)
-#define PLAYER_STATE2_24 (1 << 24)
-#define PLAYER_STATE2_25 (1 << 25)
-#define PLAYER_STATE2_26 (1 << 26)
-#define PLAYER_STATE2_27 (1 << 27)
-#define PLAYER_STATE2_28 (1 << 28)
-#define PLAYER_STATE2_29 (1 << 29)
-#define PLAYER_STATE2_30 (1 << 30)
-#define PLAYER_STATE2_31 (1 << 31)
+#define PLAYER_STATE2_CAN_GRAB_PUSH_PULL_WALL (1 << 0)
+#define PLAYER_STATE2_CAN_SPEAK_OR_CHECK (1 << 1)
+#define PLAYER_STATE2_CAN_CLIMB_PUSH_PULL_WALL (1 << 2)
+#define PLAYER_STATE2_RUNNING (1 << 3)
+#define PLAYER_STATE2_MOVING_PUSH_PULL_WALL (1 << 4)
+#define PLAYER_STATE2_DISABLE_MOVE_ROTATION_WHILE_TARGETING (1 << 5)
+#define PLAYER_STATE2_ALWAYS_DISABLE_MOVE_ROTATION (1 << 6)
+#define PLAYER_STATE2_RESTRAINED_BY_ENEMY (1 << 7)
+#define PLAYER_STATE2_ENABLE_PUSH_PULL_CAM (1 << 8)
+#define PLAYER_STATE2_SPAWN_DUST_AT_FEET (1 << 9)
+#define PLAYER_STATE2_DIVING (1 << 10)
+#define PLAYER_STATE2_ENABLE_DIVE_CAMERA_AND_TIMER (1 << 11)
+#define PLAYER_STATE2_IDLE_WHILE_CLIMBING (1 << 12)
+#define PLAYER_STATE2_USING_SWITCH_TARGETING (1 << 13)
+#define PLAYER_STATE2_FROZEN_IN_ICE (1 << 14)
+#define PLAYER_STATE2_PAUSE_MOST_UPDATING (1 << 15)
+#define PLAYER_STATE2_CAN_ENTER_CRAWLSPACE (1 << 16)
+#define PLAYER_STATE2_RELEASING_SPIN_ATTACK (1 << 17)
+#define PLAYER_STATE2_INSIDE_CRAWLSPACE (1 << 18)
+#define PLAYER_STATE2_BACKFLIPPING_OR_SIDEHOPPING (1 << 19)
+#define PLAYER_STATE2_NAVI_IS_ACTIVE (1 << 20)
+#define PLAYER_STATE2_NAVI_REQUESTING_TALK (1 << 21)
+#define PLAYER_STATE2_CAN_DISMOUNT_HORSE (1 << 22)
+#define PLAYER_STATE2_NEAR_OCARINA_ACTOR (1 << 23)
+#define PLAYER_STATE2_ATTEMPT_PLAY_OCARINA_FOR_ACTOR (1 << 24)
+#define PLAYER_STATE2_PLAYING_OCARINA_FOR_ACTOR (1 << 25)
+#define PLAYER_STATE2_ENABLE_REFLECTION (1 << 26)
+#define PLAYER_STATE2_PLAYING_OCARINA_GENERAL (1 << 27)
+#define PLAYER_STATE2_IDLING (1 << 28)
+#define PLAYER_STATE2_DISABLE_DRAW (1 << 29)
+#define PLAYER_STATE2_ENABLE_FORWARD_SLIDE_FROM_ATTACK (1 << 30)
+#define PLAYER_STATE2_FORCE_VOID_OUT (1 << 31)
 
-#define PLAYER_STATE3_0 (1 << 0)
-#define PLAYER_STATE3_1 (1 << 1)
+#define PLAYER_STATE3_IGNORE_CEILING_FLOOR_AND_WATER (1 << 0)
+#define PLAYER_STATE3_MIDAIR (1 << 1)
 #define PLAYER_STATE3_2 (1 << 2)
-#define PLAYER_STATE3_3 (1 << 3)
-#define PLAYER_STATE3_4 (1 << 4)
-#define PLAYER_STATE3_5 (1 << 5)
-#define PLAYER_STATE3_6 (1 << 6)
-#define PLAYER_STATE3_7 (1 << 7)
+#define PLAYER_STATE3_ENDING_MELEE_ATTACK (1 << 3)
+#define PLAYER_STATE3_CHECKING_FLOOR_AND_WATER_COLLISION (1 << 4)
+#define PLAYER_STATE3_FORCE_PULL_OCARINA (1 << 5)
+#define PLAYER_STATE3_RESTORE_NAYRUS_LOVE (1 << 6)
+#define PLAYER_STATE3_MOVING_ALONG_HOOKSHOT_PATH (1 << 7)
 
-typedef void (*PlayerFunc674)(struct Player*, struct PlayState*);
-typedef s32 (*PlayerFunc82C)(struct Player*, struct PlayState*);
-typedef void (*PlayerFuncA74)(struct PlayState*, struct Player*);
+typedef void (*PlayerActionFunc)(struct Player*, struct PlayState*);
+typedef s32 (*PlayerUpperActionFunc)(struct Player*, struct PlayState*);
+typedef void (*PlayerMiniCsFunc)(struct PlayState*, struct Player*);
 
 typedef struct Player {
     /* 0x0000 */ Actor      actor;
@@ -516,22 +632,25 @@ typedef struct Player {
     /* 0x0445 */ u8         prevCsMode;
     /* 0x0446 */ u8         unk_446;
     /* 0x0447 */ u8         unk_447;
-    /* 0x0448 */ Actor*     unk_448;
+    /* 0x0448 */ Actor*     csTargetActor;
     /* 0x044C */ char       unk_44C[0x004];
     /* 0x0450 */ Vec3f      unk_450;
     /* 0x045C */ Vec3f      unk_45C;
     /* 0x0468 */ char       unk_468[0x002];
-    /* 0x046A */ s16        unk_46A;
+    union {
+        /* 0x046A */ s16 csFlag;
+        /* 0x046A */ s16 doorBgCamIndex;
+    };
     /* 0x046C */ s16        subCamId;
     /* 0x046E */ char       unk_46E[0x02A];
     /* 0x0498 */ ColliderCylinder cylinder;
     /* 0x04E4 */ ColliderQuad meleeWeaponQuads[2];
     /* 0x05E4 */ ColliderQuad shieldQuad;
-    /* 0x0664 */ Actor*     unk_664;
+    /* 0x0664 */ Actor*     targetActor;
     /* 0x0668 */ char       unk_668[0x004];
     /* 0x066C */ s32        unk_66C;
     /* 0x0670 */ s32        meleeWeaponEffectIndex;
-    /* 0x0674 */ PlayerFunc674 func_674;
+    /* 0x0674 */ PlayerActionFunc actionFunc;
     /* 0x0678 */ PlayerAgeProperties* ageProperties;
     /* 0x067C */ u32        stateFlags1;
     /* 0x0680 */ u32        stateFlags2;
@@ -541,14 +660,14 @@ typedef struct Player {
     /* 0x0690 */ s16        naviTextId;
     /* 0x0692 */ u8         stateFlags3;
     /* 0x0693 */ s8         exchangeItemId;
-    /* 0x0694 */ Actor*     targetActor;
-    /* 0x0698 */ f32        targetActorDistance;
+    /* 0x0694 */ Actor*     talkActor;
+    /* 0x0698 */ f32        talkActorDistance;
     /* 0x069C */ char       unk_69C[0x004];
     /* 0x06A0 */ f32        unk_6A0;
     /* 0x06A4 */ f32        unk_6A4;
     /* 0x06A8 */ Actor*     unk_6A8;
     /* 0x06AC */ s8         unk_6AC;
-    /* 0x06AD */ u8         unk_6AD;
+    /* 0x06AD */ u8         attentionMode;
     /* 0x06AE */ u16        unk_6AE;
     /* 0x06B0 */ s16        unk_6B0;
     /* 0x06B2 */ char       unk_6B4[0x004];
@@ -563,9 +682,9 @@ typedef struct Player {
     /* 0x06C8 */ SkelAnime  skelAnime2;
     /* 0x070C */ Vec3s      jointTable2[PLAYER_LIMB_BUF_COUNT];
     /* 0x079C */ Vec3s      morphTable2[PLAYER_LIMB_BUF_COUNT];
-    /* 0x082C */ PlayerFunc82C func_82C;
+    /* 0x082C */ PlayerUpperActionFunc upperActionFunc;
     /* 0x0830 */ f32        unk_830;
-    /* 0x0834 */ s16        unk_834;
+    /* 0x0834 */ s16        fpsItemTimer;
     /* 0x0836 */ s8         unk_836;
     /* 0x0837 */ u8         unk_837;
     /* 0x0838 */ f32        linearVelocity;
@@ -584,7 +703,11 @@ typedef struct Player {
     /* 0x0854 */ f32        unk_854;
     /* 0x0858 */ f32        unk_858;
     /* 0x085C */ f32        unk_85C; // stick length among other things
-    /* 0x0860 */ s16        unk_860; // stick flame timer among other things
+    union {
+        /* 0x0860 */ s16 fpsItemType;
+        /* 0x0860 */ s16 stickFlameTimer;
+        /* 0x0860 */ s16 fishingState;
+    };
     /* 0x0862 */ s8         unk_862; // get item draw ID + 1
     /* 0x0864 */ f32        unk_864;
     /* 0x0868 */ f32        unk_868;
@@ -625,7 +748,7 @@ typedef struct Player {
     /* 0x0A60 */ u8         isBurning;
     /* 0x0A61 */ u8         flameTimers[PLAYER_BODYPART_MAX]; // one flame per body part
     /* 0x0A73 */ u8         unk_A73;
-    /* 0x0A74 */ PlayerFuncA74 func_A74;
+    /* 0x0A74 */ PlayerMiniCsFunc miniCsFunc;
     /* 0x0A78 */ s8         invincibilityTimer; // prevents damage when nonzero (positive = visible, counts towards zero each frame)
     /* 0x0A79 */ u8         unk_A79;
     /* 0x0A7A */ u8         unk_A7A;

@@ -460,11 +460,11 @@ void ObjOshihiki_OnScene(ObjOshihiki* this, PlayState* play) {
             this->direction = this->dyna.unk_150;
             ObjOshihiki_SetupPush(this, play);
         } else {
-            player->stateFlags2 &= ~PLAYER_STATE2_4;
+            player->stateFlags2 &= ~PLAYER_STATE2_MOVING_PUSH_PULL_WALL;
             this->dyna.unk_150 = 0.0f;
         }
     } else {
-        player->stateFlags2 &= ~PLAYER_STATE2_4;
+        player->stateFlags2 &= ~PLAYER_STATE2_MOVING_PUSH_PULL_WALL;
         this->dyna.unk_150 = 0.0f;
     }
 }
@@ -501,11 +501,11 @@ void ObjOshihiki_OnActor(ObjOshihiki* this, PlayState* play) {
                         this->direction = this->dyna.unk_150;
                         ObjOshihiki_SetupPush(this, play);
                     } else {
-                        player->stateFlags2 &= ~PLAYER_STATE2_4;
+                        player->stateFlags2 &= ~PLAYER_STATE2_MOVING_PUSH_PULL_WALL;
                         this->dyna.unk_150 = 0.0f;
                     }
                 } else {
-                    player->stateFlags2 &= ~PLAYER_STATE2_4;
+                    player->stateFlags2 &= ~PLAYER_STATE2_MOVING_PUSH_PULL_WALL;
                     this->dyna.unk_150 = 0.0f;
                 }
             } else {
@@ -553,7 +553,7 @@ void ObjOshihiki_Push(ObjOshihiki* this, PlayState* play) {
     if (!ObjOshihiki_CheckFloor(this, play)) {
         thisx->home.pos.x = thisx->world.pos.x;
         thisx->home.pos.z = thisx->world.pos.z;
-        player->stateFlags2 &= ~PLAYER_STATE2_4;
+        player->stateFlags2 &= ~PLAYER_STATE2_MOVING_PUSH_PULL_WALL;
         this->dyna.unk_150 = 0.0f;
         this->pushDist = 0.0f;
         this->pushSpeed = 0.0f;
@@ -566,7 +566,7 @@ void ObjOshihiki_Push(ObjOshihiki* this, PlayState* play) {
 
         thisx->home.pos.x = thisx->world.pos.x;
         thisx->home.pos.z = thisx->world.pos.z;
-        player->stateFlags2 &= ~PLAYER_STATE2_4;
+        player->stateFlags2 &= ~PLAYER_STATE2_MOVING_PUSH_PULL_WALL;
         this->dyna.unk_150 = 0.0f;
         this->pushDist = 0.0f;
         this->pushSpeed = 0.0f;
@@ -594,7 +594,7 @@ void ObjOshihiki_Fall(ObjOshihiki* this, PlayState* play) {
     this->stateFlags |= PUSHBLOCK_FALL;
     if (fabsf(this->dyna.unk_150) > 0.001f) {
         this->dyna.unk_150 = 0.0f;
-        player->stateFlags2 &= ~PLAYER_STATE2_4;
+        player->stateFlags2 &= ~PLAYER_STATE2_MOVING_PUSH_PULL_WALL;
     }
     Actor_MoveForward(&this->dyna.actor);
     if (ObjOshihiki_CheckGround(this, play)) {

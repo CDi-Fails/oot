@@ -837,7 +837,7 @@ s32 BossTw_CheckBeamReflection(BossTw* this, PlayState* play) {
     Vec3f vec;
     Player* player = GET_PLAYER(play);
 
-    if (player->stateFlags1 & PLAYER_STATE1_22 &&
+    if (player->stateFlags1 & PLAYER_STATE1_SHIELDING &&
         (s16)(player->actor.shape.rot.y - this->actor.shape.rot.y + 0x8000) < 0x2000 &&
         (s16)(player->actor.shape.rot.y - this->actor.shape.rot.y + 0x8000) > -0x2000) {
         // player is shielding and facing angles are less than 45 degrees in either direction
@@ -979,7 +979,7 @@ void BossTw_ShootBeam(BossTw* this, PlayState* play) {
 
     if (this->timers[1] != 0) {
         Math_ApproachS(&this->actor.shape.rot.y, this->actor.yawTowardsPlayer, 5, this->rotateSpeed);
-        if ((player->stateFlags1 & PLAYER_STATE1_22) &&
+        if ((player->stateFlags1 & PLAYER_STATE1_SHIELDING) &&
             ((s16)((player->actor.shape.rot.y - this->actor.shape.rot.y) + 0x8000) < 0x2000) &&
             ((s16)((player->actor.shape.rot.y - this->actor.shape.rot.y) + 0x8000) > -0x2000)) {
             Math_ApproachF(&this->targetPos.x, player->bodyPartsPos[PLAYER_BODYPART_R_HAND].x, 1.0f, 400.0f);
@@ -1505,7 +1505,7 @@ void BossTw_TwinrovaMergeCS(BossTw* this, PlayState* play) {
         case 0:
             this->csState2 = 1;
             func_80064520(play, &play->csCtx);
-            func_8002DF54(play, &this->actor, 0x39);
+            Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_LOOK_AROUND_SURPRISED);
             this->subCamId = Play_CreateSubCamera(play);
             Play_ChangeCameraStatus(play, CAM_ID_MAIN, CAM_STAT_WAIT);
             Play_ChangeCameraStatus(play, this->subCamId, CAM_STAT_ACTIVE);
@@ -1645,7 +1645,7 @@ void BossTw_TwinrovaMergeCS(BossTw* this, PlayState* play) {
                     Animation_MorphToPlayOnce(&this->skelAnime, &object_tw_Anim_038E2C, 0.0f);
                     this->workf[ANIM_SW_TGT] = Animation_GetLastFrame(&object_tw_Anim_038E2C);
                     this->timers[0] = 50;
-                    func_8002DF54(play, &this->actor, 2);
+                    Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_TURN_AROUND_SURPRISED_SHORT);
                     Audio_PlayActorSound2(&this->actor, NA_SE_EN_TWINROBA_TRANSFORM);
                     Audio_QueueSeqCmd(SEQ_PLAYER_BGM_MAIN << 24 | NA_BGM_BOSS);
                 }
@@ -1688,7 +1688,7 @@ void BossTw_TwinrovaMergeCS(BossTw* this, PlayState* play) {
             }
 
             if (this->timers[3] == 19) {
-                func_8002DF54(play, &this->actor, 5);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_SURPRISED);
             }
 
             if (this->timers[3] == 16) {
@@ -1721,7 +1721,7 @@ void BossTw_TwinrovaMergeCS(BossTw* this, PlayState* play) {
                 this->subCamId = SUB_CAM_ID_DONE;
                 this->csState2 = this->subCamId;
                 func_80064534(play, &play->csCtx);
-                func_8002DF54(play, &this->actor, 7);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END);
                 this->work[TW_PLLR_IDX] = 0;
                 this->targetPos = sTwinrovaPillarPos[0];
                 BossTw_TwinrovaSetupFly(this, play);
@@ -1801,7 +1801,7 @@ void BossTw_TwinrovaIntroCS(BossTw* this, PlayState* play) {
                 player->actor.world.pos.x = player->actor.world.pos.z = .0f;
                 this->csState2 = 1;
                 func_80064520(play, &play->csCtx);
-                func_8002DF54(play, &this->actor, 0x39);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_LOOK_AROUND_SURPRISED);
                 this->subCamId = Play_CreateSubCamera(play);
                 Play_ChangeCameraStatus(play, CAM_ID_MAIN, CAM_STAT_WAIT);
                 Play_ChangeCameraStatus(play, this->subCamId, CAM_STAT_ACTIVE);
@@ -2284,7 +2284,7 @@ void BossTw_TwinrovaIntroCS(BossTw* this, PlayState* play) {
                 this->subCamId = SUB_CAM_ID_DONE;
                 this->csState2 = this->subCamId;
                 func_80064534(play, &play->csCtx);
-                func_8002DF54(play, &this->actor, 7);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END);
                 BossTw_SetupWait(this, play);
             }
             break;
@@ -2688,7 +2688,7 @@ void BossTw_TwinrovaDeathCS(BossTw* this, PlayState* play) {
         case 0:
             this->csState2 = 1;
             func_80064520(play, &play->csCtx);
-            func_8002DF54(play, &this->actor, 8);
+            Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_WAIT);
             this->subCamId = Play_CreateSubCamera(play);
             Play_ChangeCameraStatus(play, CAM_ID_MAIN, CAM_STAT_WAIT);
             Play_ChangeCameraStatus(play, this->subCamId, CAM_STAT_ACTIVE);
@@ -2727,7 +2727,7 @@ void BossTw_TwinrovaDeathCS(BossTw* this, PlayState* play) {
                 sKoumePtr->actor.world.pos.z = sKotakePtr->actor.world.pos.z;
                 sKoumePtr->work[YAW_TGT] = sKotakePtr->work[YAW_TGT] = sKoumePtr->actor.shape.rot.x =
                     sKotakePtr->actor.shape.rot.x = sKoumePtr->actor.shape.rot.y = sKotakePtr->actor.shape.rot.y = 0;
-                func_8002DF54(play, &sKoumePtr->actor, 1);
+                Actor_SetPlayerCutscene(play, &sKoumePtr->actor, PLAYER_CSMODE_IDLE);
                 sKoumePtr->actor.flags |= ACTOR_FLAG_0;
             }
             break;
@@ -2816,7 +2816,7 @@ void BossTw_TwinrovaDeathCS(BossTw* this, PlayState* play) {
                 this->csState2 = 4;
                 this->subCamId = SUB_CAM_ID_DONE;
                 func_80064534(play, &play->csCtx);
-                func_8002DF54(play, &this->actor, 7);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END);
                 Audio_QueueSeqCmd(SEQ_PLAYER_BGM_MAIN << 24 | NA_BGM_BOSS_CLEAR);
                 Actor_SpawnAsChild(&play->actorCtx, &this->actor, play, ACTOR_DOOR_WARP1, 600.0f, 230.0f, 0.0f, 0, 0, 0,
                                    WARP_DUNGEON_ADULT);
@@ -4800,7 +4800,7 @@ void BossTw_UpdateEffects(PlayState* play) {
                     if (eff->workf[EFF_SCALE] == 0.0f) {
                         eff->type = TWEFF_NONE;
                         if (eff->target == NULL) {
-                            player->stateFlags2 &= ~PLAYER_STATE2_15;
+                            player->stateFlags2 &= ~PLAYER_STATE2_PAUSE_MOST_UPDATING;
                             sFreezeState = 0;
                         }
                     }
@@ -4816,9 +4816,9 @@ void BossTw_UpdateEffects(PlayState* play) {
 
                         if (eff->workf[EFF_ROLL] >= 0.8f) {
                             eff->workf[EFF_ROLL] -= 0.8f;
-                            player->stateFlags2 |= PLAYER_STATE2_15;
+                            player->stateFlags2 |= PLAYER_STATE2_PAUSE_MOST_UPDATING;
                         } else {
-                            player->stateFlags2 &= ~PLAYER_STATE2_15;
+                            player->stateFlags2 &= ~PLAYER_STATE2_PAUSE_MOST_UPDATING;
                         }
 
                         if ((sKotakePtr->workf[UNK_F11] > 10.0f) && (sKotakePtr->workf[UNK_F11] < 200.0f)) {

@@ -320,19 +320,19 @@ void func_809FE3B4(EnDu* this, PlayState* play) {
 void func_809FE3C0(EnDu* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
-    if (player->stateFlags2 & PLAYER_STATE2_24) {
+    if (player->stateFlags2 & PLAYER_STATE2_ATTEMPT_PLAY_OCARINA_FOR_ACTOR) {
         func_8010BD88(play, OCARINA_ACTION_CHECK_SARIA);
-        player->stateFlags2 |= PLAYER_STATE2_25;
+        player->stateFlags2 |= PLAYER_STATE2_PLAYING_OCARINA_FOR_ACTOR;
         player->unk_6A8 = &this->actor;
         EnDu_SetupAction(this, func_809FE4A4);
         return;
     }
     if (this->unk_1F4.unk_00 == 2) {
-        func_8002DF54(play, &this->actor, 7);
+        Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END);
         this->unk_1F4.unk_00 = 0;
     }
     if (this->actor.xzDistToPlayer < 116.0f + this->collider.dim.radius) {
-        player->stateFlags2 |= PLAYER_STATE2_23;
+        player->stateFlags2 |= PLAYER_STATE2_NEAR_OCARINA_ACTOR;
     }
 }
 
@@ -357,14 +357,14 @@ void func_809FE4A4(EnDu* this, PlayState* play) {
         EnDu_SetupAction(this, func_809FE890);
         play->msgCtx.ocarinaMode = OCARINA_MODE_04;
     } else {
-        player->stateFlags2 |= PLAYER_STATE2_23;
+        player->stateFlags2 |= PLAYER_STATE2_NEAR_OCARINA_ACTOR;
     }
 }
 
 void func_809FE638(EnDu* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
-    if (!(player->stateFlags1 & PLAYER_STATE1_29)) {
+    if (!(player->stateFlags1 & PLAYER_STATE1_IN_CUTSCENE)) {
         OnePointCutscene_Init(play, 3330, -99, &this->actor, CAM_ID_MAIN);
         player->actor.shape.rot.y = player->actor.world.rot.y = this->actor.world.rot.y + 0x7FFF;
         Audio_PlayFanfare(NA_BGM_APPEAR);
@@ -423,7 +423,7 @@ void func_809FE890(EnDu* this, PlayState* play) {
     CsCmdActorAction* csAction;
 
     if (play->csCtx.state == CS_STATE_IDLE) {
-        func_8002DF54(play, &this->actor, 1);
+        Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_IDLE);
         EnDu_SetupAction(this, func_809FEB08);
         return;
     }
@@ -490,7 +490,7 @@ void func_809FEB08(EnDu* this, PlayState* play) {
     this->unk_1EE = 0;
 
     if (this->unk_1E8 == 1) {
-        func_8002DF54(play, &this->actor, 7);
+        Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END);
         Animation_ChangeByInfo(&this->skelAnime, sAnimationInfo, ENDU_ANIM_1);
         EnDu_SetupAction(this, func_809FE3C0);
         return;
@@ -509,7 +509,7 @@ void func_809FEB08(EnDu* this, PlayState* play) {
 
 void func_809FEC14(EnDu* this, PlayState* play) {
     if (this->unk_1F4.unk_00 == 2) {
-        func_8002DF54(play, &this->actor, 7);
+        Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END);
         EnDu_SetupAction(this, func_809FEC70);
         func_809FEC70(this, play);
     }

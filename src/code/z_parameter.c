@@ -628,7 +628,7 @@ void func_80083108(PlayState* play) {
         ((play->sceneNum == SCENE_SPOT20) && (gSaveContext.cutsceneIndex == 0xFFF0))) {
         gSaveContext.unk_13E7 = 0;
 
-        if ((player->stateFlags1 & PLAYER_STATE1_23) || (play->shootingGalleryStatus > 1) ||
+        if ((player->stateFlags1 & PLAYER_STATE1_RIDING_HORSE) || (play->shootingGalleryStatus > 1) ||
             ((play->sceneNum == SCENE_BOWLING) && Flags_GetSwitch(play, 0x38))) {
             if (gSaveContext.equips.buttonItems[0] != ITEM_NONE) {
                 gSaveContext.unk_13E7 = 1;
@@ -677,11 +677,11 @@ void func_80083108(PlayState* play) {
                     Interface_ChangeAlpha(8);
                 } else if ((play->sceneNum == SCENE_BOWLING) && Flags_GetSwitch(play, 0x38)) {
                     Interface_ChangeAlpha(8);
-                } else if (player->stateFlags1 & PLAYER_STATE1_23) {
+                } else if (player->stateFlags1 & PLAYER_STATE1_RIDING_HORSE) {
                     Interface_ChangeAlpha(12);
                 }
             } else {
-                if (player->stateFlags1 & PLAYER_STATE1_23) {
+                if (player->stateFlags1 & PLAYER_STATE1_RIDING_HORSE) {
                     Interface_ChangeAlpha(12);
                 }
             }
@@ -759,7 +759,7 @@ void func_80083108(PlayState* play) {
                 }
 
                 Interface_ChangeAlpha(50);
-            } else if ((player->stateFlags1 & PLAYER_STATE1_21) || (player->stateFlags2 & PLAYER_STATE2_18)) {
+            } else if ((player->stateFlags1 & PLAYER_STATE1_CLIMBING) || (player->stateFlags2 & PLAYER_STATE2_INSIDE_CRAWLSPACE)) {
                 if (gSaveContext.buttonStatus[0] != BTN_DISABLED) {
                     gSaveContext.buttonStatus[0] = BTN_DISABLED;
                     gSaveContext.buttonStatus[1] = BTN_DISABLED;
@@ -769,7 +769,7 @@ void func_80083108(PlayState* play) {
                     Interface_ChangeAlpha(50);
                 }
             } else if (GET_EVENTINF_HORSES_STATE() == EVENTINF_HORSES_STATE_1) {
-                if (player->stateFlags1 & PLAYER_STATE1_23) {
+                if (player->stateFlags1 & PLAYER_STATE1_RIDING_HORSE) {
                     if ((gSaveContext.equips.buttonItems[0] != ITEM_NONE) &&
                         (gSaveContext.equips.buttonItems[0] != ITEM_BOW)) {
                         if (gSaveContext.inventory.items[SLOT_BOW] == ITEM_NONE) {
@@ -2799,8 +2799,8 @@ void Interface_DrawItemButtons(PlayState* play) {
 
             if ((gSaveContext.unk_13EA == 1) || (gSaveContext.unk_13EA == 2) || (gSaveContext.unk_13EA == 5)) {
                 temp = 0;
-            } else if ((player->stateFlags1 & PLAYER_STATE1_21) || (func_8008F2F8(play) == 4) ||
-                       (player->stateFlags2 & PLAYER_STATE2_18)) {
+            } else if ((player->stateFlags1 & PLAYER_STATE1_CLIMBING) || (func_8008F2F8(play) == 4) ||
+                       (player->stateFlags2 & PLAYER_STATE2_INSIDE_CRAWLSPACE)) {
                 temp = 70;
             } else {
                 temp = interfaceCtx->healthAlpha;
@@ -3219,7 +3219,7 @@ void Interface_Draw(PlayState* play) {
             if (gSaveContext.equips.buttonItems[0] != ITEM_NONE) {
                 Interface_DrawItemIconTexture(play, interfaceCtx->iconItemSegment, 0);
 
-                if ((player->stateFlags1 & PLAYER_STATE1_23) || (play->shootingGalleryStatus > 1) ||
+                if ((player->stateFlags1 & PLAYER_STATE1_RIDING_HORSE) || (play->shootingGalleryStatus > 1) ||
                     ((play->sceneNum == SCENE_BOWLING) && Flags_GetSwitch(play, 0x38))) {
                     gDPPipeSync(OVERLAY_DISP++);
                     gDPSetCombineLERP(OVERLAY_DISP++, PRIMITIVE, ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE,
@@ -3466,7 +3466,7 @@ void Interface_Draw(PlayState* play) {
 
         if ((play->pauseCtx.state == 0) && (play->pauseCtx.debugState == 0) &&
             (play->gameOverCtx.state == GAMEOVER_INACTIVE) && (msgCtx->msgMode == MSGMODE_NONE) &&
-            !(player->stateFlags2 & PLAYER_STATE2_24) && (play->transitionTrigger == TRANS_TRIGGER_OFF) &&
+            !(player->stateFlags2 & PLAYER_STATE2_ATTEMPT_PLAY_OCARINA_FOR_ACTOR) && (play->transitionTrigger == TRANS_TRIGGER_OFF) &&
             (play->transitionMode == TRANS_MODE_OFF) && !Play_InCsMode(play) && (gSaveContext.minigameState != 1) &&
             (play->shootingGalleryStatus <= 1) && !((play->sceneNum == SCENE_BOWLING) && Flags_GetSwitch(play, 0x38))) {
             svar6 = 0;
@@ -3738,7 +3738,7 @@ void Interface_Draw(PlayState* play) {
                                                 gSaveContext.timer2State = 5;
                                                 gSaveContext.cutsceneIndex = 0;
                                                 Message_StartTextbox(play, 0x71B0, NULL);
-                                                func_8002DF54(play, NULL, 8);
+                                                Actor_SetPlayerCutscene(play, NULL, PLAYER_CSMODE_WAIT);
                                             } else {
                                                 D_8015FFE6 = 40;
                                                 gSaveContext.timer2State = 6;
@@ -4033,7 +4033,7 @@ void Interface_Update(PlayState* play) {
     Health_UpdateMeter(play);
 
     if ((gSaveContext.timer1State >= 3) && (play->pauseCtx.state == 0) && (play->pauseCtx.debugState == 0) &&
-        (msgCtx->msgMode == MSGMODE_NONE) && !(player->stateFlags2 & PLAYER_STATE2_24) &&
+        (msgCtx->msgMode == MSGMODE_NONE) && !(player->stateFlags2 & PLAYER_STATE2_ATTEMPT_PLAY_OCARINA_FOR_ACTOR) &&
         (play->transitionTrigger == TRANS_TRIGGER_OFF) && (play->transitionMode == TRANS_MODE_OFF) &&
         !Play_InCsMode(play)) {}
 

@@ -416,7 +416,7 @@ void func_80996C60(DoorShutter* this, PlayState* play) {
         DoorShutter_SetupAction(this, func_80997004);
         this->unk_16C = sp38;
         this->unk_170 = 0.0f;
-        Camera_ChangeDoorCam(play->cameraPtrs[CAM_ID_MAIN], &this->dyna.actor, player->unk_46A, 0.0f, 12, sp34, 10);
+        Camera_ChangeDoorCam(play->cameraPtrs[CAM_ID_MAIN], &this->dyna.actor, player->doorBgCamIndex, 0.0f, 12, sp34, 10);
     }
 }
 
@@ -552,9 +552,9 @@ void func_80997220(DoorShutter* this, PlayState* play) {
     }
     this->unk_164 = 0;
     this->dyna.actor.velocity.y = 0.0f;
-    if (DoorShutter_SetupDoor(this, play) && !(player->stateFlags1 & PLAYER_STATE1_11)) {
+    if (DoorShutter_SetupDoor(this, play) && !(player->stateFlags1 & PLAYER_STATE1_HOLDING_ACTOR)) {
         DoorShutter_SetupAction(this, func_80997568);
-        func_8002DF54(play, NULL, 2);
+        Actor_SetPlayerCutscene(play, NULL, PLAYER_CSMODE_TURN_AROUND_SURPRISED_SHORT);
     }
 }
 
@@ -588,7 +588,7 @@ void func_80997528(DoorShutter* this, PlayState* play) {
 
 void func_80997568(DoorShutter* this, PlayState* play) {
     if (this->unk_16F++ > 30) {
-        func_8002DF54(play, NULL, 7);
+        Actor_SetPlayerCutscene(play, NULL, PLAYER_CSMODE_END);
         DoorShutter_SetupDoor(this, play);
     }
 }
@@ -636,7 +636,7 @@ void DoorShutter_Update(Actor* thisx, PlayState* play) {
     DoorShutter* this = (DoorShutter*)thisx;
     Player* player = GET_PLAYER(play);
 
-    if (!(player->stateFlags1 & (PLAYER_STATE1_6 | PLAYER_STATE1_7 | PLAYER_STATE1_10 | PLAYER_STATE1_28)) ||
+    if (!(player->stateFlags1 & (PLAYER_STATE1_TALKING | PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_GETTING_ITEM | PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE)) ||
         (this->actionFunc == DoorShutter_SetupType)) {
         this->actionFunc(this, play);
     }

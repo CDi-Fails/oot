@@ -129,7 +129,7 @@ void DoorAna_WaitOpen(DoorAna* this, PlayState* play) {
     player = GET_PLAYER(play);
     if (Math_StepToF(&this->actor.scale.x, 0.01f, 0.001f)) {
         if ((this->actor.targetMode != 0) && (play->transitionTrigger == TRANS_TRIGGER_OFF) &&
-            (player->stateFlags1 & PLAYER_STATE1_31) && (player->unk_84F == 0)) {
+            (player->stateFlags1 & PLAYER_STATE1_FALLING_INTO_GROTTO_OR_VOID) && (player->unk_84F == 0)) {
             destinationIdx = ((this->actor.params >> 0xC) & 7) - 1;
             Play_SetupRespawnPoint(play, RESPAWN_MODE_RETURN, 0x4FF);
             gSaveContext.respawn[RESPAWN_MODE_RETURN].pos.y = this->actor.world.pos.y;
@@ -141,10 +141,10 @@ void DoorAna_WaitOpen(DoorAna* this, PlayState* play) {
             play->nextEntranceIndex = sGrottoEntrances[destinationIdx];
             DoorAna_SetupAction(this, DoorAna_GrabPlayer);
         } else {
-            if (!Player_InCsMode(play) && !(player->stateFlags1 & (PLAYER_STATE1_23 | PLAYER_STATE1_27)) &&
+            if (!Player_InCsMode(play) && !(player->stateFlags1 & (PLAYER_STATE1_RIDING_HORSE | PLAYER_STATE1_SWIMMING)) &&
                 this->actor.xzDistToPlayer <= 15.0f && -50.0f <= this->actor.yDistToPlayer &&
                 this->actor.yDistToPlayer <= 15.0f) {
-                player->stateFlags1 |= PLAYER_STATE1_31;
+                player->stateFlags1 |= PLAYER_STATE1_FALLING_INTO_GROTTO_OR_VOID;
                 this->actor.targetMode = 1;
             } else {
                 this->actor.targetMode = 0;

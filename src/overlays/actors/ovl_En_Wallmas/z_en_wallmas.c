@@ -259,7 +259,7 @@ void EnWallmas_SetupTakePlayer(EnWallmas* this, PlayState* play) {
     this->actor.velocity.y = 0.0f;
 
     this->yTarget = this->actor.yDistToPlayer;
-    func_8002DF38(play, &this->actor, 0x25);
+    Actor_SetPlayerCutsceneNoFlag(play, &this->actor, PLAYER_CSMODE_GRABBED_AND_CARRIED_BY_NECK);
     OnePointCutscene_Init(play, 9500, 9999, &this->actor, CAM_ID_MAIN);
 }
 
@@ -301,7 +301,7 @@ void EnWallmas_WaitToDrop(EnWallmas* this, PlayState* play) {
         this->timer--;
     }
 
-    if ((player->stateFlags1 & PLAYER_STATE1_20) || (player->stateFlags1 & PLAYER_STATE1_27) ||
+    if ((player->stateFlags1 & PLAYER_STATE1_IN_FIRST_PERSON_MODE) || (player->stateFlags1 & PLAYER_STATE1_SWIMMING) ||
         !(player->actor.bgCheckFlags & BGCHECKFLAG_GROUND) ||
         ((this->actor.params == 1) && (320.0f < Math_Vec3f_DistXZ(&this->actor.home.pos, playerPos)))) {
         Audio_StopSfxById(NA_SE_EN_FALL_AIM);
@@ -320,7 +320,7 @@ void EnWallmas_WaitToDrop(EnWallmas* this, PlayState* play) {
 void EnWallmas_Drop(EnWallmas* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
-    if (!Player_InCsMode(play) && !(player->stateFlags2 & PLAYER_STATE2_4) && (player->invincibilityTimer >= 0) &&
+    if (!Player_InCsMode(play) && !(player->stateFlags2 & PLAYER_STATE2_MOVING_PUSH_PULL_WALL) && (player->invincibilityTimer >= 0) &&
         (this->actor.xzDistToPlayer < 30.0f) && (this->actor.yDistToPlayer < -5.0f) &&
         (-(f32)(player->cylinder.dim.height + 10) < this->actor.yDistToPlayer)) {
         EnWallmas_SetupTakePlayer(this, play);

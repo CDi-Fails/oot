@@ -320,7 +320,7 @@ s32 EnZl4_SetupFromLegendCs(EnZl4* this, PlayState* play) {
     Actor* playerx = &GET_PLAYER(play)->actor;
     s16 rotY;
 
-    func_8002DF54(play, &this->actor, 8);
+    Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_WAIT);
     playerx->world.pos = this->actor.world.pos;
     rotY = this->actor.shape.rot.y;
     playerx->world.pos.x += 56.0f * Math_SinS(rotY);
@@ -912,7 +912,7 @@ s32 EnZl4_CsLookWindow(EnZl4* this, PlayState* play) {
                 play->csCtx.segment = SEGMENTED_TO_VIRTUAL(gZeldasCourtyardGanonCs);
                 gSaveContext.cutsceneTrigger = 1;
                 this->talkState++;
-                func_8002DF54(play, &this->actor, 8);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_WAIT);
             }
             break;
         case 2:
@@ -922,7 +922,7 @@ s32 EnZl4_CsLookWindow(EnZl4* this, PlayState* play) {
                 }
             } else {
                 func_800AA000(0.0f, 0xA0, 0xA, 0x28);
-                func_8002DF54(play, &this->actor, 1);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_IDLE);
                 Animation_ChangeByInfo(&this->skelAnime, sAnimationInfo, ZL4_ANIM_30);
                 EnZl4_SetActiveCamDir(play, 11);
                 Message_StartTextbox(play, 0x7039, NULL);
@@ -1193,7 +1193,7 @@ void EnZl4_Cutscene(EnZl4* this, PlayState* play) {
             break;
         case ZL4_CS_PLAN:
             if (EnZl4_CsMakePlan(this, play)) {
-                func_8002DF54(play, &this->actor, 7);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END);
                 gSaveContext.unk_13EE = 0x32;
                 SET_EVENTCHKINF(EVENTCHKINF_40);
                 this->actionFunc = EnZl4_Idle;

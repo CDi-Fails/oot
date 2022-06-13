@@ -320,7 +320,7 @@ void BgPoEvent_BlockFall(BgPoEvent* this, PlayState* play) {
             if (firstFall == 0) {
                 firstFall = 1;
             } else {
-                func_8002DF54(play, &GET_PLAYER(play)->actor, 7);
+                Actor_SetPlayerCutscene(play, &GET_PLAYER(play)->actor, PLAYER_CSMODE_END);
             }
         }
         this->direction = 0;
@@ -346,7 +346,7 @@ void BgPoEvent_BlockIdle(BgPoEvent* this, PlayState* play) {
         }
     } else {
         if ((gSaveContext.timer1Value == 0) && (sBlocksAtRest == 5)) {
-            player->stateFlags2 &= ~PLAYER_STATE2_4;
+            player->stateFlags2 &= ~PLAYER_STATE2_MOVING_PUSH_PULL_WALL;
             sPuzzleState = 0x10;
             sBlocksAtRest = 0;
         }
@@ -356,7 +356,7 @@ void BgPoEvent_BlockIdle(BgPoEvent* this, PlayState* play) {
             if (sPuzzleState == 0x10) {
                 sPuzzleState = 0x40;
                 Audio_PlayActorSound2(&this->dyna.actor, NA_SE_EV_BLOCK_RISING);
-                func_8002DF54(play, &player->actor, 8);
+                Actor_SetPlayerCutscene(play, &player->actor, PLAYER_CSMODE_WAIT);
             }
         } else if (this->dyna.unk_150 != 0.0f) {
             if (this->direction == 0) {
@@ -365,11 +365,11 @@ void BgPoEvent_BlockIdle(BgPoEvent* this, PlayState* play) {
                     this->direction = (this->dyna.unk_150 >= 0.0f) ? 1.0f : -1.0f;
                     this->actionFunc = BgPoEvent_BlockPush;
                 } else {
-                    player->stateFlags2 &= ~PLAYER_STATE2_4;
+                    player->stateFlags2 &= ~PLAYER_STATE2_MOVING_PUSH_PULL_WALL;
                     this->dyna.unk_150 = 0.0f;
                 }
             } else {
-                player->stateFlags2 &= ~PLAYER_STATE2_4;
+                player->stateFlags2 &= ~PLAYER_STATE2_MOVING_PUSH_PULL_WALL;
                 this->dyna.unk_150 = 0.0f;
                 DECR(this->direction);
             }
@@ -392,7 +392,7 @@ void BgPoEvent_BlockPush(BgPoEvent* this, PlayState* play) {
     this->dyna.actor.world.pos.x = (Math_SinS(this->dyna.unk_158) * displacement) + this->dyna.actor.home.pos.x;
     this->dyna.actor.world.pos.z = (Math_CosS(this->dyna.unk_158) * displacement) + this->dyna.actor.home.pos.z;
     if (blockStop) {
-        player->stateFlags2 &= ~PLAYER_STATE2_4;
+        player->stateFlags2 &= ~PLAYER_STATE2_MOVING_PUSH_PULL_WALL;
         if ((this->dyna.unk_150 > 0.0f) && (func_800435D8(play, &this->dyna, 0x1E, 0x32, -0x14) == 0)) {
             Audio_PlayActorSound2(&this->dyna.actor, NA_SE_EV_BLOCK_BOUND);
         }
@@ -417,7 +417,7 @@ void BgPoEvent_BlockReset(BgPoEvent* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
     if (this->dyna.unk_150 != 0.0f) {
-        player->stateFlags2 &= ~PLAYER_STATE2_4;
+        player->stateFlags2 &= ~PLAYER_STATE2_MOVING_PUSH_PULL_WALL;
         this->dyna.unk_150 = 0.0f;
     }
     if (Math_StepToF(&this->dyna.actor.world.pos.y, 493.0f, 1.0f) &&
@@ -437,7 +437,7 @@ void BgPoEvent_BlockSolved(BgPoEvent* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
     if (this->dyna.unk_150 != 0.0f) {
-        player->stateFlags2 &= ~PLAYER_STATE2_4;
+        player->stateFlags2 &= ~PLAYER_STATE2_MOVING_PUSH_PULL_WALL;
     }
     if (Math_StepToF(&this->dyna.actor.world.pos.y, 369.0f, 2.0f)) {
         sPuzzleState = 0x20;
@@ -517,7 +517,7 @@ void BgPoEvent_PaintingPresent(BgPoEvent* this, PlayState* play) {
     DECR(this->timer);
 
     if (((this->timer == 0) || ((thisx->xzDistToPlayer < 150.0f) && (thisx->yDistToPlayer < 50.0f)) ||
-         (func_8002DD78(player) && (thisx->xzDistToPlayer < 320.0f) &&
+         (Actor_PlayerIsAimingPrimedFPSItem(player) && (thisx->xzDistToPlayer < 320.0f) &&
           ((this->index != 2) ? (thisx->yDistToPlayer < 100.0f) : (thisx->yDistToPlayer < 0.0f)) &&
           Player_IsFacingActor(thisx, 0x2000, play))) &&
         ((thisx->parent != NULL) || (thisx->child != NULL))) {

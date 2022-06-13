@@ -413,7 +413,7 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
                         sp50 = 0.0f;
                         if ((90.0f >= this->actor.xzDistToPlayer) && (this->actor.xzDistToPlayer > 70.0f) &&
                             (ABS(sp5A) >= 0x7800) &&
-                            (this->actor.isTargeted || !(player->stateFlags1 & PLAYER_STATE1_22))) {
+                            (this->actor.isTargeted || !(player->stateFlags1 & PLAYER_STATE1_SHIELDING))) {
                             EnTorch2_SwingSword(play, input, this);
                         } else if (((this->actor.xzDistToPlayer <= 70.0f) ||
                                     ((this->actor.xzDistToPlayer <= 80.0f + sp50) &&
@@ -487,7 +487,7 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
             this->meleeWeaponState = 0;
             input->cur.stick_x = input->cur.stick_y = 0;
             if ((this->invincibilityTimer > 0) && (this->actor.world.pos.y < (this->actor.floorHeight - 160.0f))) {
-                this->stateFlags3 &= ~PLAYER_STATE3_0;
+                this->stateFlags3 &= ~PLAYER_STATE3_IGNORE_CEILING_FLOOR_AND_WATER;
                 this->actor.flags |= ACTOR_FLAG_0;
                 this->invincibilityTimer = 0;
                 this->actor.velocity.y = 0.0f;
@@ -562,13 +562,13 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
     // Handles Dark Link being damaged
 
     if ((this->actor.colChkInfo.health == 0) && sDeathFlag) {
-        this->csMode = 0x18;
-        this->unk_448 = &player->actor;
-        this->unk_46A = 1;
+        this->csMode = PLAYER_CSMODE_KNOCKED_TO_GROUND;
+        this->csTargetActor = &player->actor;
+        this->csFlag = 1;
         sDeathFlag = false;
     }
     if ((this->invincibilityTimer == 0) && (this->actor.colChkInfo.health != 0) &&
-        (this->cylinder.base.acFlags & AC_HIT) && !(this->stateFlags1 & PLAYER_STATE1_26) &&
+        (this->cylinder.base.acFlags & AC_HIT) && !(this->stateFlags1 & PLAYER_STATE1_TAKING_DAMAGE) &&
         !(this->meleeWeaponQuads[0].base.atFlags & AT_HIT) && !(this->meleeWeaponQuads[1].base.atFlags & AT_HIT)) {
 
         if (!Actor_ApplyDamage(&this->actor)) {
@@ -601,7 +601,7 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
                 this->unk_8A2 = this->actor.yawTowardsPlayer + 0x8000;
                 Actor_SetDropFlag(&this->actor, &this->cylinder.info, true);
                 this->stateFlags3 &= ~PLAYER_STATE3_2;
-                this->stateFlags3 |= PLAYER_STATE3_0;
+                this->stateFlags3 |= PLAYER_STATE3_IGNORE_CEILING_FLOOR_AND_WATER;
                 sActionState = ENTORCH2_DAMAGE;
                 if (sAlpha == 255) {
                     Actor_SetColorFilter(&this->actor, 0x4000, 0xFF, 0, 0xC);
@@ -620,7 +620,7 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
         this->stateFlags3 &= ~PLAYER_STATE3_2;
     } else {
         this->stateFlags3 |= PLAYER_STATE3_2;
-        this->stateFlags1 &= ~PLAYER_STATE1_26;
+        this->stateFlags1 &= ~PLAYER_STATE1_TAKING_DAMAGE;
         this->invincibilityTimer = 0;
         input->press.stick_x = input->press.stick_y = 0;
         /*! @bug

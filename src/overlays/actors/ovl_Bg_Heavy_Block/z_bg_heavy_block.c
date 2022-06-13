@@ -366,7 +366,7 @@ void BgHeavyBlock_LiftedUp(BgHeavyBlock* this, PlayState* play) {
 
     this->timer++;
 
-    func_8002DF54(play, &player->actor, 8);
+    Actor_SetPlayerCutscene(play, &player->actor, PLAYER_CSMODE_WAIT);
 
     // if parent is NULL, link threw it
     if (Actor_HasNoParent(&this->dyna.actor, play)) {

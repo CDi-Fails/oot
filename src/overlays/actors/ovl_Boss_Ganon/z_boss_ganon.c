@@ -557,7 +557,7 @@ void BossGanon_IntroCutscene(BossGanon* this, PlayState* play) {
             this->actor.shape.rot.y = 0;
 
             func_80064520(play, &play->csCtx);
-            func_8002DF54(play, &this->actor, 8);
+            Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_WAIT);
             this->csCamIndex = Play_CreateSubCamera(play);
             Play_ChangeCameraStatus(play, CAM_ID_MAIN, CAM_STAT_WAIT);
             Play_ChangeCameraStatus(play, this->csCamIndex, CAM_STAT_ACTIVE);
@@ -599,7 +599,7 @@ void BossGanon_IntroCutscene(BossGanon* this, PlayState* play) {
             BossGanon_SetIntroCsCamera(this, 1);
 
             if (this->csTimer == 10) {
-                func_8002DF54(play, &this->actor, 5);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_SURPRISED);
             }
 
             if (this->csTimer == 13) {
@@ -632,7 +632,7 @@ void BossGanon_IntroCutscene(BossGanon* this, PlayState* play) {
                 break;
             }
 
-            func_8002DF54(play, &this->actor, 8);
+            Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_WAIT);
             this->csState = 4;
             BossGanon_SetIntroCsCamera(this, 2);
             this->csTimer = 0;
@@ -664,7 +664,7 @@ void BossGanon_IntroCutscene(BossGanon* this, PlayState* play) {
             }
 
             if (this->csTimer == 10) {
-                func_8002DF54(play, &this->actor, 0x4B);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_TRIFORCE_HAND_RESONATES);
             }
 
             if (this->csTimer == 70) {
@@ -730,7 +730,7 @@ void BossGanon_IntroCutscene(BossGanon* this, PlayState* play) {
 
             this->csState = 9;
             this->csTimer = 0;
-            func_8002DF54(play, &this->actor, 8);
+            Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_WAIT);
             sZelda->unk_3C8 = 0;
             this->triforceType = GDF_TRIFORCE_ZELDA;
             this->fwork[GDF_TRIFORCE_SCALE] = 10.0f;
@@ -784,7 +784,7 @@ void BossGanon_IntroCutscene(BossGanon* this, PlayState* play) {
             player->actor.world.pos.z = 20.0f;
 
             if (this->csTimer == 20) {
-                func_8002DF54(play, &this->actor, 0x17);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_LOOK_AT_SELF);
                 Interface_ChangeAlpha(11); // show hearts only
             }
 
@@ -1004,7 +1004,7 @@ void BossGanon_IntroCutscene(BossGanon* this, PlayState* play) {
             }
 
             if (this->csTimer == 30) {
-                func_8002DF54(play, &this->actor, 0x4A);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_RESIST_DARK_MAGIC);
             }
 
             if (this->csTimer <= 50) {
@@ -1127,7 +1127,7 @@ void BossGanon_IntroCutscene(BossGanon* this, PlayState* play) {
                 func_800C08AC(play, this->csCamIndex, 0);
                 this->csState = this->csCamIndex = 0;
                 func_80064534(play, &play->csCtx);
-                func_8002DF54(play, &this->actor, 7);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END);
                 BossGanon_SetupWait(this, play);
             }
 
@@ -1232,7 +1232,7 @@ void BossGanon_DeathAndTowerCutscene(BossGanon* this, PlayState* play) {
     switch (this->csState) {
         case 0:
             func_80064520(play, &play->csCtx);
-            func_8002DF54(play, &this->actor, 8);
+            Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_WAIT);
             this->csCamIndex = Play_CreateSubCamera(play);
             Play_ChangeCameraStatus(play, CAM_ID_MAIN, CAM_STAT_WAIT);
             Play_ChangeCameraStatus(play, this->csCamIndex, CAM_STAT_ACTIVE);
@@ -1467,7 +1467,7 @@ void BossGanon_DeathAndTowerCutscene(BossGanon* this, PlayState* play) {
             Audio_PlayActorSound2(&this->actor, NA_SE_EN_GANON_BODY_SPARK - SFX_FLAG);
 
             if (this->csTimer == 2) {
-                func_8002DF54(play, &this->actor, 0x39);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_LOOK_AROUND_SURPRISED);
             }
 
             if (this->csTimer > 50) {
@@ -1503,7 +1503,7 @@ void BossGanon_DeathAndTowerCutscene(BossGanon* this, PlayState* play) {
 
         case 100:
             func_80064520(play, &play->csCtx);
-            func_8002DF54(play, &this->actor, 8);
+            Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_WAIT);
             this->csCamIndex = Play_CreateSubCamera(play);
             Play_ChangeCameraStatus(play, CAM_ID_MAIN, CAM_STAT_WAIT);
             Play_ChangeCameraStatus(play, this->csCamIndex, CAM_STAT_ACTIVE);
@@ -1592,11 +1592,11 @@ void BossGanon_DeathAndTowerCutscene(BossGanon* this, PlayState* play) {
             this->csCamAt.z = -135.0f;
 
             if (this->csTimer == 5) {
-                func_8002DF54(play, &this->actor, 0x4C);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_STARE_DOWN_STARTLED);
             }
 
             if (this->csTimer == 70) {
-                func_8002DF54(play, &this->actor, 0x4D);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_LOOK_UP_STARTLED);
             }
 
             if (this->csTimer == 90) {
@@ -1681,7 +1681,7 @@ void BossGanon_DeathAndTowerCutscene(BossGanon* this, PlayState* play) {
 
             if (this->csTimer == 20) {
                 sZelda->unk_3C8 = 5;
-                func_8002DF54(play, &this->actor, 0x39);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_LOOK_AROUND_SURPRISED);
             }
 
             if (this->csTimer == 40) {
@@ -1748,7 +1748,7 @@ void BossGanon_DeathAndTowerCutscene(BossGanon* this, PlayState* play) {
                 this->csState = 107;
                 this->csTimer = 0;
                 Message_StartTextbox(play, 0x70D2, NULL);
-                func_8002DF54(play, &this->actor, 0x39);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_LOOK_AROUND_SURPRISED);
             }
             break;
 
@@ -1790,7 +1790,7 @@ void BossGanon_DeathAndTowerCutscene(BossGanon* this, PlayState* play) {
                 this->csState = 109;
                 this->csCamIndex = 0;
                 func_80064534(play, &play->csCtx);
-                func_8002DF54(play, &this->actor, 7);
+                Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END);
                 Flags_SetSwitch(play, 0x37);
             }
             break;
@@ -2203,10 +2203,10 @@ void BossGanon_Wait(BossGanon* this, PlayState* play) {
     SkelAnime_Update(&this->skelAnime);
 
     if ((this->unk_1C2 == 0) && !(player->actor.world.pos.y < 0.0f)) {
-        if (!(player->stateFlags1 & PLAYER_STATE1_13) && (fabsf(player->actor.world.pos.x) < 110.0f) &&
+        if (!(player->stateFlags1 & PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP) && (fabsf(player->actor.world.pos.x) < 110.0f) &&
             (fabsf(player->actor.world.pos.z) < 110.0f)) {
             BossGanon_SetupPoundFloor(this, play);
-        } else if ((this->timers[0] == 0) && !(player->stateFlags1 & PLAYER_STATE1_13)) {
+        } else if ((this->timers[0] == 0) && !(player->stateFlags1 & PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP)) {
             this->timers[0] = (s16)Rand_ZeroFloat(30.0f) + 30;
 
             if ((s8)this->actor.colChkInfo.health >= 20) {
@@ -3923,7 +3923,7 @@ void BossGanon_LightBall_Update(Actor* thisx, PlayState* play2) {
 
         switch (this->unk_1C2) {
             case 0:
-                if ((player->stateFlags1 & PLAYER_STATE1_1) &&
+                if ((player->stateFlags1 & PLAYER_STATE1_SWIPING_BOTTLE) &&
                     (ABS((s16)(player->actor.shape.rot.y - (s16)(ganondorf->actor.yawTowardsPlayer + 0x8000))) <
                      0x2000) &&
                     (sqrtf(SQ(xDistFromLink) + SQ(yDistFromLink) + SQ(zDistFromLink)) <= 25.0f)) {

@@ -572,7 +572,7 @@ s32 func_80B150AC(EnTa* this, PlayState* play, s32 idx) {
     Player* player = GET_PLAYER(play);
     Actor* interactRangeActor;
 
-    if (player->stateFlags1 & PLAYER_STATE1_11) {
+    if (player->stateFlags1 & PLAYER_STATE1_HOLDING_ACTOR) {
         interactRangeActor = player->interactRangeActor;
         if (interactRangeActor != NULL && interactRangeActor->id == ACTOR_EN_NIW &&
             interactRangeActor == &this->superCuccos[idx]->actor) {
@@ -606,7 +606,7 @@ void func_80B15100(EnTa* this, PlayState* play) {
         if (player->heldActor == &this->superCuccos[unk_2CA]->actor) {
             player->heldActor = NULL;
         }
-        player->stateFlags1 &= ~PLAYER_STATE1_11;
+        player->stateFlags1 &= ~PLAYER_STATE1_HOLDING_ACTOR;
         this->superCuccos[unk_2CA] = NULL;
     }
     this->unk_2E0 |= 1;
@@ -699,7 +699,7 @@ void func_80B154FC(EnTa* this, PlayState* play) {
                     switch (EnTa_GetSuperCuccosCount(this, play)) {
                         case 1:
                             gSaveContext.timer1State = 0;
-                            func_8002DF54(play, &this->actor, 1);
+                            Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_IDLE);
 
                             Message_StartTextbox(play, 0x2084, &this->actor);
                             this->actionFunc = func_80B15424;
@@ -741,7 +741,7 @@ void func_80B154FC(EnTa* this, PlayState* play) {
         this->unk_2E0 &= ~0x200;
         func_80078884(NA_SE_SY_FOUND);
         gSaveContext.timer1State = 0;
-        func_8002DF54(play, &this->actor, 1);
+        Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_IDLE);
         Message_StartTextbox(play, 0x2081, &this->actor);
         this->actionFunc = func_80B15424;
         func_80B14E28(this, play);
@@ -794,7 +794,7 @@ void func_80B1585C(EnTa* this, PlayState* play) {
         Animation_Change(&this->skelAnime, &gTalonSitWakeUpAnim, 1.0f,
                          Animation_GetLastFrame(&gTalonSitWakeUpAnim) - 1.0f,
                          Animation_GetLastFrame(&gTalonSitWakeUpAnim), ANIMMODE_ONCE, 10.0f);
-        func_8002DF54(play, &this->actor, 7);
+        Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END);
     }
 }
 
@@ -809,7 +809,7 @@ void func_80B15AD4(EnTa* this, PlayState* play) {
         func_800F5ACC(NA_BGM_TIMED_MINI_GAME);
         this->unk_2E0 |= 0x200;
         Message_CloseTextbox(play);
-        func_8002DF54(play, &this->actor, 1);
+        Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_IDLE);
     }
 
     if ((Message_GetState(&play->msgCtx) == TEXT_STATE_EVENT) && Message_ShouldAdvance(play)) {

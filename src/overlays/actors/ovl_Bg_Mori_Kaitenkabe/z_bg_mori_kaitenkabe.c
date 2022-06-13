@@ -95,7 +95,7 @@ void BgMoriKaitenkabe_Wait(BgMoriKaitenkabe* this, PlayState* play) {
         this->timer++;
         if ((this->timer > 28) && !Player_InCsMode(play)) {
             BgMoriKaitenkabe_SetupRotate(this);
-            func_8002DF54(play, &this->dyna.actor, 8);
+            Actor_SetPlayerCutscene(play, &this->dyna.actor, PLAYER_CSMODE_WAIT);
             Math_Vec3f_Copy(&this->lockedPlayerPos, &player->actor.world.pos);
             push.x = Math_SinS(this->dyna.unk_158);
             push.y = 0.0f;
@@ -111,7 +111,7 @@ void BgMoriKaitenkabe_Wait(BgMoriKaitenkabe* this, PlayState* play) {
     }
     if (fabsf(this->dyna.unk_150) > 0.001f) {
         this->dyna.unk_150 = 0.0f;
-        player->stateFlags2 &= ~PLAYER_STATE2_4;
+        player->stateFlags2 &= ~PLAYER_STATE2_MOVING_PUSH_PULL_WALL;
     }
 }
 
@@ -129,7 +129,7 @@ void BgMoriKaitenkabe_Rotate(BgMoriKaitenkabe* this, PlayState* play) {
     Math_StepToF(&this->rotSpeed, 0.6f, 0.02f);
     if (Math_StepToF(&this->rotYdeg, this->rotDirection * 45.0f, this->rotSpeed)) {
         BgMoriKaitenkabe_SetupWait(this);
-        func_8002DF54(play, thisx, 7);
+        Actor_SetPlayerCutscene(play, thisx, PLAYER_CSMODE_END);
         if (this->rotDirection > 0.0f) {
             thisx->home.rot.y += 0x2000;
         } else {
@@ -144,7 +144,7 @@ void BgMoriKaitenkabe_Rotate(BgMoriKaitenkabe* this, PlayState* play) {
     }
     if (fabsf(this->dyna.unk_150) > 0.001f) {
         this->dyna.unk_150 = 0.0f;
-        player->stateFlags2 &= ~PLAYER_STATE2_4;
+        player->stateFlags2 &= ~PLAYER_STATE2_MOVING_PUSH_PULL_WALL;
     }
     Math_Vec3f_Copy(&player->actor.world.pos, &this->lockedPlayerPos);
 }

@@ -368,10 +368,10 @@ void BossSst_HeadSetupIntro(BossSst* this, PlayState* play) {
     player->targetYaw = -0x8000;
     player->currentYaw = -0x8000;
     player->fallStartHeight = 0;
-    player->stateFlags1 |= PLAYER_STATE1_5;
+    player->stateFlags1 |= PLAYER_STATE1_INPUT_DISABLED;
 
     func_80064520(play, &play->csCtx);
-    func_8002DF54(play, &this->actor, 8);
+    Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_WAIT);
     sSubCamId = Play_CreateSubCamera(play);
     Play_ChangeCameraStatus(play, CAM_ID_MAIN, CAM_STAT_WAIT);
     Play_ChangeCameraStatus(play, sSubCamId, CAM_STAT_ACTIVE);
@@ -402,9 +402,9 @@ void BossSst_HeadIntro(BossSst* this, PlayState* play) {
     if (this->timer == 0) {
         sHands[RIGHT]->actor.flags |= ACTOR_FLAG_0;
         sHands[LEFT]->actor.flags |= ACTOR_FLAG_0;
-        player->stateFlags1 &= ~PLAYER_STATE1_5;
+        player->stateFlags1 &= ~PLAYER_STATE1_INPUT_DISABLED;
         func_80064534(play, &play->csCtx);
-        func_8002DF54(play, &this->actor, 7);
+        Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END);
         sSubCamAt.y += 30.0f;
         sSubCamAt.z += 300.0f;
         Play_CameraSetAtEye(play, sSubCamId, &sSubCamAt, &sSubCamEye);
@@ -649,7 +649,7 @@ void BossSst_HeadNeutral(BossSst* this, PlayState* play) {
 
     if (this->timer == 0) {
         if ((GET_PLAYER(play)->actor.world.pos.y > -50.0f) &&
-            !(GET_PLAYER(play)->stateFlags1 & (PLAYER_STATE1_7 | PLAYER_STATE1_13 | PLAYER_STATE1_14))) {
+            !(GET_PLAYER(play)->stateFlags1 & (PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP | PLAYER_STATE1_CLIMBING_ONTO_LEDGE))) {
             sHands[Rand_ZeroOne() <= 0.5f]->ready = true;
             BossSst_HeadSetupWait(this);
         } else {
@@ -1014,7 +1014,7 @@ void BossSst_HeadSetupDeath(BossSst* this, PlayState* play) {
     Play_ChangeCameraStatus(play, CAM_ID_MAIN, CAM_STAT_WAIT);
     Play_ChangeCameraStatus(play, sSubCamId, CAM_STAT_ACTIVE);
     Play_CopyCamera(play, sSubCamId, CAM_ID_MAIN);
-    func_8002DF54(play, &player->actor, 8);
+    Actor_SetPlayerCutscene(play, &player->actor, PLAYER_CSMODE_WAIT);
     func_80064520(play, &play->csCtx);
     Math_Vec3f_Copy(&sSubCamEye, &GET_ACTIVE_CAM(play)->eye);
     this->actionFunc = BossSst_HeadDeath;
@@ -1177,7 +1177,7 @@ void BossSst_HeadFinish(BossSst* this, PlayState* play) {
             Play_ChangeCameraStatus(play, sSubCamId, CAM_STAT_WAIT);
             Play_ChangeCameraStatus(play, CAM_ID_MAIN, CAM_STAT_ACTIVE);
             Play_ClearCamera(play, sSubCamId);
-            func_8002DF54(play, &GET_PLAYER(play)->actor, 7);
+            Actor_SetPlayerCutscene(play, &GET_PLAYER(play)->actor, PLAYER_CSMODE_END);
             func_80064534(play, &play->csCtx);
             Actor_Kill(&this->actor);
             Actor_Kill(&sHands[LEFT]->actor);
@@ -1234,7 +1234,7 @@ void BossSst_HandWait(BossSst* this, PlayState* play) {
         }
 
         if ((this->timer == 0) && (player->actor.world.pos.y > -50.0f) &&
-            !(player->stateFlags1 & (PLAYER_STATE1_7 | PLAYER_STATE1_13 | PLAYER_STATE1_14))) {
+            !(player->stateFlags1 & (PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP | PLAYER_STATE1_CLIMBING_ONTO_LEDGE))) {
             BossSst_HandSelectAttack(this);
         }
     } else if (sHead->actionFunc == BossSst_HeadNeutral) {
@@ -1717,7 +1717,7 @@ void BossSst_HandClap(BossSst* this, PlayState* play) {
         if (this->ready) {
             this->timer = 30;
             this->colliderJntSph.base.atFlags &= ~(AT_ON | AT_HIT);
-            if (!(player->stateFlags2 & PLAYER_STATE2_7)) {
+            if (!(player->stateFlags2 & PLAYER_STATE2_RESTRAINED_BY_ENEMY)) {
                 dropFlag = true;
             }
         } else {
@@ -1806,7 +1806,7 @@ void BossSst_HandGrab(BossSst* this, PlayState* play) {
         if (SkelAnime_Update(&this->skelAnime)) {
             this->colliderJntSph.base.atFlags &= ~(AT_ON | AT_HIT);
             this->actor.speedXZ = 0.0f;
-            if (player->stateFlags2 & PLAYER_STATE2_7) {
+            if (player->stateFlags2 & PLAYER_STATE2_RESTRAINED_BY_ENEMY) {
                 if (Rand_ZeroOne() < 0.5f) {
                     BossSst_HandSetupCrush(this);
                 } else {
@@ -1833,7 +1833,7 @@ void BossSst_HandGrab(BossSst* this, PlayState* play) {
 
     this->actor.world.pos.x += this->actor.speedXZ * Math_SinS(this->actor.world.rot.y);
     this->actor.world.pos.z += this->actor.speedXZ * Math_CosS(this->actor.world.rot.y);
-    if (player->stateFlags2 & PLAYER_STATE2_7) {
+    if (player->stateFlags2 & PLAYER_STATE2_RESTRAINED_BY_ENEMY) {
         player->unk_850 = 0;
         player->actor.world.pos = this->actor.world.pos;
         player->actor.shape.rot.y = this->actor.shape.rot.y;
@@ -1854,7 +1854,7 @@ void BossSst_HandCrush(BossSst* this, PlayState* play) {
         this->timer--;
     }
 
-    if (!(player->stateFlags2 & PLAYER_STATE2_7)) {
+    if (!(player->stateFlags2 & PLAYER_STATE2_RESTRAINED_BY_ENEMY)) {
         BossSst_HandReleasePlayer(this, play, true);
         BossSst_HandSetupEndCrush(this);
     } else {
@@ -1927,7 +1927,7 @@ void BossSst_HandSwing(BossSst* this, PlayState* play) {
         Math_ScaledStepToS(&this->actor.shape.rot.z, 0, 0x800);
     }
 
-    if (player->stateFlags2 & PLAYER_STATE2_7) {
+    if (player->stateFlags2 & PLAYER_STATE2_RESTRAINED_BY_ENEMY) {
         player->unk_850 = 0;
         Math_Vec3f_Copy(&player->actor.world.pos, &this->actor.world.pos);
         player->actor.shape.rot.x = this->actor.shape.rot.x;
@@ -1940,7 +1940,7 @@ void BossSst_HandSwing(BossSst* this, PlayState* play) {
     }
 
     if ((this->timer == 4) && (this->amplitude == 0) && SkelAnime_Update(&this->skelAnime) &&
-        (player->stateFlags2 & PLAYER_STATE2_7)) {
+        (player->stateFlags2 & PLAYER_STATE2_RESTRAINED_BY_ENEMY)) {
         BossSst_HandReleasePlayer(this, play, false);
         player->actor.world.pos.x += 70.0f * Math_SinS(this->actor.shape.rot.y);
         player->actor.world.pos.z += 70.0f * Math_CosS(this->actor.shape.rot.y);

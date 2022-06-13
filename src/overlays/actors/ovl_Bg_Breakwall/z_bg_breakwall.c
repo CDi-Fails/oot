@@ -254,7 +254,7 @@ void BgBreakwall_Wait(BgBreakwall* this, PlayState* play) {
             gSaveContext.cutsceneTrigger = 1;
             Audio_PlaySoundGeneral(NA_SE_SY_CORRECT_CHIME, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                    &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
-            func_8002DF54(play, NULL, 0x31);
+            Actor_SetPlayerCutscene(play, NULL, PLAYER_CSMODE_IDLE_4);
         }
 
         if (this->dyna.actor.params < 0) {
