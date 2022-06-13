@@ -627,7 +627,7 @@ s32 func_80AFEDF8(EnSkj* this, PlayState* play) {
 
     if (this->actor.xzDistToPlayer < this->unk_2EC) {
         this = this;
-        if (func_8002DDE4(play) != 0) {
+        if (Actor_PlayerIsRunning(play) != 0) {
             return 1;
         }
     }

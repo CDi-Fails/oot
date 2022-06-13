@@ -696,7 +696,7 @@ s32 func_80B0DEA8(EnSw* this, PlayState* play, s32 arg2) {
 
     if (!(player->stateFlags1 & PLAYER_STATE1_CLIMBING) && arg2) {
         return false;
-    } else if (func_8002DDF4(play) && arg2) {
+    } else if (Actor_PlayerIsIdleWhileClimbing(play) && arg2) {
         return false;
     } else if (ABS(func_80B0DE34(this, &player->actor.world.pos) - this->actor.shape.rot.z) >= 0x1FC2) {
         return false;
@@ -860,7 +860,7 @@ void func_80B0E728(EnSw* this, PlayState* play) {
                 this->unk_440 = 4;
             }
 
-            if (!(Math_Vec3f_DistXYZ(&this->actor.world.pos, &this->unk_448) > 13.0f) || func_8002DDF4(play)) {
+            if (!(Math_Vec3f_DistXYZ(&this->actor.world.pos, &this->unk_448) > 13.0f) || Actor_PlayerIsIdleWhileClimbing(play)) {
                 this->actionFunc = func_80B0E90C;
             }
         }

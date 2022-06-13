@@ -278,7 +278,7 @@ void EnRd_Idle(EnRd* this, PlayState* play) {
         }
 
         this->isMourning = false;
-        if ((this->actor.xzDistToPlayer <= 150.0f) && func_8002DDE4(play)) {
+        if ((this->actor.xzDistToPlayer <= 150.0f) && Actor_PlayerIsRunning(play)) {
             if ((this->actor.params != REDEAD_TYPE_CRYING) && !this->isMourning) {
                 EnRd_SetupAttemptPlayerFreeze(this);
             } else {
@@ -563,7 +563,7 @@ void EnRd_Grab(EnRd* this, PlayState* play) {
                 play->damagePlayer(play, -8);
                 func_800AA000(this->actor.xzDistToPlayer, 0xF0, 1, 0xC);
                 this->grabDamageTimer = 20;
-                func_8002F7DC(&player->actor, NA_SE_VO_LI_DAMAGE_S + player->ageProperties->unk_92);
+                func_8002F7DC(&player->actor, NA_SE_VO_LI_DAMAGE_S + player->ageProperties->ageVoiceSFXOffset);
             }
             break;
 

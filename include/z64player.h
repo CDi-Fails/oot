@@ -458,7 +458,7 @@ typedef enum {
 #define PLAYER_LIMB_BUF_COUNT LIMB_BUF_COUNT(PLAYER_LIMB_MAX)
 
 typedef struct {
-    /* 0x00 */ f32 unk_00;
+    /* 0x00 */ f32 ceilingCheckHeight;
     /* 0x04 */ f32 unk_04;
     /* 0x08 */ f32 unk_08;
     /* 0x0C */ f32 unk_0C;
@@ -468,11 +468,11 @@ typedef struct {
     /* 0x1C */ f32 unk_1C;
     /* 0x20 */ f32 unk_20;
     /* 0x24 */ f32 unk_24;
-    /* 0x28 */ f32 unk_28;
-    /* 0x2C */ f32 unk_2C;
+    /* 0x28 */ f32 waterSurface;
+    /* 0x2C */ f32 diveWaterSurface;
     /* 0x30 */ f32 unk_30;
     /* 0x34 */ f32 unk_34;
-    /* 0x38 */ f32 unk_38;
+    /* 0x38 */ f32 wallCheckRadius;
     /* 0x3C */ f32 unk_3C;
     /* 0x40 */ f32 unk_40;
     /* 0x44 */ Vec3s unk_44;
@@ -480,17 +480,17 @@ typedef struct {
     /* 0x62 */ Vec3s unk_62[4];
     /* 0x7A */ Vec3s unk_7A[2];
     /* 0x86 */ Vec3s unk_86[2];
-    /* 0x92 */ u16 unk_92;
-    /* 0x94 */ u16 unk_94;
-    /* 0x98 */ LinkAnimationHeader* unk_98;
-    /* 0x9C */ LinkAnimationHeader* unk_9C;
-    /* 0xA0 */ LinkAnimationHeader* unk_A0;
-    /* 0xA4 */ LinkAnimationHeader* unk_A4;
-    /* 0xA8 */ LinkAnimationHeader* unk_A8;
-    /* 0xAC */ LinkAnimationHeader* unk_AC[4];
-    /* 0xBC */ LinkAnimationHeader* unk_BC[2];
-    /* 0xC4 */ LinkAnimationHeader* unk_C4[2];
-    /* 0xCC */ LinkAnimationHeader* unk_CC[2];
+    /* 0x92 */ u16 ageVoiceSFXOffset;
+    /* 0x94 */ u16 ageEnvSFXOffset;
+    /* 0x98 */ LinkAnimationHeader* chestOpenAnim;
+    /* 0x9C */ LinkAnimationHeader* timeTravelStartAnim;
+    /* 0xA0 */ LinkAnimationHeader* timeTravelEndAnim;
+    /* 0xA4 */ LinkAnimationHeader* startClimb1Anim;
+    /* 0xA8 */ LinkAnimationHeader* startClimb2Anim;
+    /* 0xAC */ LinkAnimationHeader* verticalClimbAnim[4];
+    /* 0xBC */ LinkAnimationHeader* horizontalClimbAnim[2];
+    /* 0xC4 */ LinkAnimationHeader* endClimb1Anim[2];
+    /* 0xCC */ LinkAnimationHeader* endClimb2Anim[2];
 } PlayerAgeProperties; // size = 0xD4
 
 typedef struct {

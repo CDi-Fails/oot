@@ -603,7 +603,7 @@ void BossGanon_IntroCutscene(BossGanon* this, PlayState* play) {
             }
 
             if (this->csTimer == 13) {
-                func_8002F7DC(&player->actor, player->ageProperties->unk_92 + NA_SE_VO_LI_SURPRISE);
+                func_8002F7DC(&player->actor, player->ageProperties->ageVoiceSFXOffset + NA_SE_VO_LI_SURPRISE);
             }
 
             if (this->csTimer != 35) {
