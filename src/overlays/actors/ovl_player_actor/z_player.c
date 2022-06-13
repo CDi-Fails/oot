@@ -1509,9 +1509,9 @@ void Player_PlayLandingSfx(Player* this) {
     func_8002F7DC(&this->actor, sfxId);
 }
 
-void func_808328EC(Player* this, u16 sfxId) {
+void Player_PlayLoudSfx(Player* this, u16 sfxId) {
     func_8002F7DC(&this->actor, sfxId);
-    this->stateFlags2 |= PLAYER_STATE2_RUNNING;
+    this->stateFlags2 |= PLAYER_MAKING_LOUD_NOISE;
 }
 
 void func_80832924(Player* this, struct_80832924* entry) {
@@ -1956,7 +1956,7 @@ void func_80833A20(Player* this, s32 newMeleeWeaponState) {
         }
 
         if (itemSfx != 0) {
-            func_808328EC(this, itemSfx);
+            Player_PlayLoudSfx(this, itemSfx);
         }
 
         if (!((this->meleeWeaponAnimation >= PLAYER_MWA_FLIPSLASH_START) &&
@@ -2210,18 +2210,18 @@ s32 func_8083442C(Player* this, PlayState* play) {
 void Player_ChangeOrPutawayItem(PlayState* play, Player* this) {
     if (this->heldItemActionParam != PLAYER_AP_NONE) {
         if (func_8008F2BC(this, this->heldItemActionParam) >= 0) {
-            func_808328EC(this, NA_SE_IT_SWORD_PUTAWAY);
+            Player_PlayLoudSfx(this, NA_SE_IT_SWORD_PUTAWAY);
         } else {
-            func_808328EC(this, NA_SE_PL_CHANGE_ARMS);
+            Player_PlayLoudSfx(this, NA_SE_PL_CHANGE_ARMS);
         }
     }
 
     Player_UseItem(play, this, this->heldItemId);
 
     if (func_8008F2BC(this, this->heldItemActionParam) >= 0) {
-        func_808328EC(this, NA_SE_IT_SWORD_PICKOUT);
+        Player_PlayLoudSfx(this, NA_SE_IT_SWORD_PICKOUT);
     } else if (this->heldItemActionParam != PLAYER_AP_NONE) {
-        func_808328EC(this, NA_SE_PL_CHANGE_ARMS);
+        Player_PlayLoudSfx(this, NA_SE_PL_CHANGE_ARMS);
     }
 }
 
@@ -2914,7 +2914,7 @@ void Player_UseItem(PlayState* play, Player* this, s32 item) {
                     this->currentMask = actionParam - PLAYER_AP_MASK_KEATON + 1;
                 }
 
-                func_808328EC(this, NA_SE_PL_CHANGE_ARMS);
+                Player_PlayLoudSfx(this, NA_SE_PL_CHANGE_ARMS);
             } else if (((actionParam >= PLAYER_AP_OCARINA_FAIRY) && (actionParam <= PLAYER_AP_OCARINA_TIME)) ||
                        (actionParam >= PLAYER_AP_BOTTLE_FISH)) {
                 if (!func_8008E9C4(this) ||
@@ -6761,7 +6761,7 @@ void func_8084029C(Player* this, f32 arg1) {
     } else if (func_8084021C(this->unk_868, arg1, 29.0f, 10.0f) || func_8084021C(this->unk_868, arg1, 29.0f, 24.0f)) {
         Player_PlayWalkSfx(this, this->linearVelocity);
         if (this->linearVelocity > 4.0f) {
-            this->stateFlags2 |= PLAYER_STATE2_RUNNING;
+            this->stateFlags2 |= PLAYER_MAKING_LOUD_NOISE;
         }
     }
 
@@ -10041,7 +10041,7 @@ void func_80848C74(PlayState* play, Player* this) {
     spawnedFlame = false;
     timerPtr = this->flameTimers;
 
-    if (this->stateFlags2 & PLAYER_STATE2_RUNNING) {
+    if (this->stateFlags2 & PLAYER_MAKING_LOUD_NOISE) {
         sp58 = 100;
     } else {
         sp58 = 0;
@@ -10395,7 +10395,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
         }
 
         this->stateFlags1 &= ~(PLAYER_STATE1_SWIPING_BOTTLE | PLAYER_STATE1_PREPARED_TO_SHOOT | PLAYER_STATE1_CHARGING_SPIN_ATTACK | PLAYER_STATE1_SHIELDING);
-        this->stateFlags2 &= ~(PLAYER_STATE2_CAN_GRAB_PUSH_PULL_WALL | PLAYER_STATE2_CAN_CLIMB_PUSH_PULL_WALL | PLAYER_STATE2_RUNNING | PLAYER_STATE2_DISABLE_MOVE_ROTATION_WHILE_TARGETING | PLAYER_STATE2_ALWAYS_DISABLE_MOVE_ROTATION |
+        this->stateFlags2 &= ~(PLAYER_STATE2_CAN_GRAB_PUSH_PULL_WALL | PLAYER_STATE2_CAN_CLIMB_PUSH_PULL_WALL | PLAYER_MAKING_LOUD_NOISE | PLAYER_STATE2_DISABLE_MOVE_ROTATION_WHILE_TARGETING | PLAYER_STATE2_ALWAYS_DISABLE_MOVE_ROTATION |
                                PLAYER_STATE2_ENABLE_PUSH_PULL_CAM | PLAYER_STATE2_SPAWN_DUST_AT_FEET | PLAYER_STATE2_IDLE_WHILE_CLIMBING | PLAYER_STATE2_FROZEN_IN_ICE |
                                PLAYER_STATE2_CAN_ENTER_CRAWLSPACE | PLAYER_STATE2_CAN_DISMOUNT_HORSE | PLAYER_STATE2_ENABLE_REFLECTION);
         this->stateFlags3 &= ~PLAYER_STATE3_CHECKING_FLOOR_AND_WATER_COLLISION;

@@ -984,10 +984,10 @@ s32 func_8002DDA8(PlayState* play) {
     return (player->stateFlags1 & PLAYER_STATE1_HOLDING_ACTOR) || Actor_PlayerIsAimingPrimedFPSItem(player);
 }
 
-s32 Actor_PlayerIsRunning(PlayState* play) {
+s32 Actor_PlayerIsMakingLoudNoise(PlayState* play) {
     Player* player = GET_PLAYER(play);
 
-    return player->stateFlags2 & PLAYER_STATE2_RUNNING;
+    return player->stateFlags2 & PLAYER_MAKING_LOUD_NOISE;
 }
 
 s32 Actor_PlayerIsIdleWhileClimbing(PlayState* play) {

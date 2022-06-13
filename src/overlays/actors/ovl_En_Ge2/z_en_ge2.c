@@ -189,7 +189,7 @@ s32 Ge2_DetectPlayerInAction(PlayState* play, EnGe2* this) {
         return 2;
     }
 
-    if (Actor_PlayerIsRunning(play)) {
+    if (Actor_PlayerIsMakingLoudNoise(play)) {
         return 1;
     }
     return 0;

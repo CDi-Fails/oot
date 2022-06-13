@@ -392,7 +392,7 @@ f32 Player_GetHeight(Player* player);
 f32 func_8002DCE4(Player* player);
 s32 Actor_PlayerIsAimingFPSItem(Player* player);
 s32 Actor_PlayerIsAimingPrimedFPSItem(Player* player);
-s32 Actor_PlayerIsRunning(PlayState* play);
+s32 Actor_PlayerIsMakingLoudNoise(PlayState* play);
 s32 Actor_PlayerIsIdleWhileClimbing(PlayState* play);
 void func_8002DE04(PlayState* play, Actor* actorA, Actor* actorB);
 void func_8002DE74(PlayState* play, Player* player);
