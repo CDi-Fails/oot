@@ -624,7 +624,7 @@ void EnFr_Idle(EnFr* this, PlayState* play) {
         this->reward = GI_NONE;
         this->actionFunc = EnFr_Activate;
     } else if (EnFr_IsAboveAndWithin30DistXZ(player, this)) {
-        player->unk_6A8 = &this->actor;
+        player->ocarinaActor = &this->actor;
     }
 }
 

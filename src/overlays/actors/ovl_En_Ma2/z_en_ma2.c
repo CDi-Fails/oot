@@ -265,7 +265,7 @@ void func_80AA204C(EnMa2* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
     if (player->stateFlags2 & PLAYER_STATE2_ATTEMPT_PLAY_OCARINA_FOR_ACTOR) {
-        player->unk_6A8 = &this->actor;
+        player->ocarinaActor = &this->actor;
         player->stateFlags2 |= PLAYER_STATE2_PLAYING_OCARINA_FOR_ACTOR;
         func_8010BD58(play, OCARINA_ACTION_CHECK_EPONA);
         this->actionFunc = func_80AA20E4;

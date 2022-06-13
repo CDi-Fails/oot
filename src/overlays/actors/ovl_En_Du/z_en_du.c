@@ -323,7 +323,7 @@ void func_809FE3C0(EnDu* this, PlayState* play) {
     if (player->stateFlags2 & PLAYER_STATE2_ATTEMPT_PLAY_OCARINA_FOR_ACTOR) {
         func_8010BD88(play, OCARINA_ACTION_CHECK_SARIA);
         player->stateFlags2 |= PLAYER_STATE2_PLAYING_OCARINA_FOR_ACTOR;
-        player->unk_6A8 = &this->actor;
+        player->ocarinaActor = &this->actor;
         EnDu_SetupAction(this, func_809FE4A4);
         return;
     }

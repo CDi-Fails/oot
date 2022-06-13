@@ -762,7 +762,7 @@ void func_80AAB948(EnMd* this, PlayState* play) {
     if ((this->unk_1E0.unk_00 == 0) && (play->sceneNum == SCENE_SPOT10)) {
         if (player->stateFlags2 & PLAYER_STATE2_ATTEMPT_PLAY_OCARINA_FOR_ACTOR) {
             player->stateFlags2 |= PLAYER_STATE2_PLAYING_OCARINA_FOR_ACTOR;
-            player->unk_6A8 = &this->actor;
+            player->ocarinaActor = &this->actor;
             func_8010BD58(play, OCARINA_ACTION_CHECK_SARIA);
             this->actionFunc = func_80AABC10;
             return;

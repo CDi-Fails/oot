@@ -352,7 +352,7 @@ void func_80AA0F44(EnMa1* this, PlayState* play) {
     if (GET_EVENTCHKINF(EVENTCHKINF_16)) {
         if (player->stateFlags2 & PLAYER_STATE2_ATTEMPT_PLAY_OCARINA_FOR_ACTOR) {
             player->stateFlags2 |= PLAYER_STATE2_PLAYING_OCARINA_FOR_ACTOR;
-            player->unk_6A8 = &this->actor;
+            player->ocarinaActor = &this->actor;
             this->actor.textId = 0x2061;
             Message_StartTextbox(play, this->actor.textId, NULL);
             this->unk_1E8.unk_00 = 1;

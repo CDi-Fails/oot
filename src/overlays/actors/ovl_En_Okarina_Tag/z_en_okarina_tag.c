@@ -132,7 +132,7 @@ void func_80ABEF2C(EnOkarinaTag* this, PlayState* play) {
                 } else if ((this->actor.xzDistToPlayer < (50.0f + this->interactRange) &&
                             ((fabsf(player->actor.world.pos.y - this->actor.world.pos.y) < 40.0f)))) {
                     this->unk_15A = 0;
-                    player->unk_6A8 = &this->actor;
+                    player->ocarinaActor = &this->actor;
                 }
             }
         }

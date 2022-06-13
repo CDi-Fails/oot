@@ -665,7 +665,7 @@ typedef struct Player {
     /* 0x069C */ char       unk_69C[0x004];
     /* 0x06A0 */ f32        unk_6A0;
     /* 0x06A4 */ f32        unk_6A4;
-    /* 0x06A8 */ Actor*     unk_6A8;
+    /* 0x06A8 */ Actor*     ocarinaActor;
     /* 0x06AC */ s8         unk_6AC;
     /* 0x06AD */ u8         attentionMode;
     /* 0x06AE */ u16        unk_6AE;
