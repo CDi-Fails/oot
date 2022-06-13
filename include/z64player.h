@@ -481,7 +481,7 @@ typedef struct {
     /* 0x7A */ Vec3s unk_7A[2];
     /* 0x86 */ Vec3s unk_86[2];
     /* 0x92 */ u16 ageVoiceSFXOffset;
-    /* 0x94 */ u16 ageEnvSFXOffset;
+    /* 0x94 */ u16 ageMoveSFXOffset;
     /* 0x98 */ LinkAnimationHeader* chestOpenAnim;
     /* 0x9C */ LinkAnimationHeader* timeTravelStartAnim;
     /* 0xA0 */ LinkAnimationHeader* timeTravelEndAnim;
@@ -733,7 +733,7 @@ typedef struct Player {
     /* 0x0898 */ s16        unk_898;
     /* 0x089A */ s16        unk_89A;
     /* 0x089C */ s16        unk_89C;
-    /* 0x089E */ u16        unk_89E;
+    /* 0x089E */ u16        moveSFXType;
     /* 0x08A0 */ u8         unk_8A0;
     /* 0x08A1 */ u8         unk_8A1;
     /* 0x08A2 */ s16        unk_8A2;

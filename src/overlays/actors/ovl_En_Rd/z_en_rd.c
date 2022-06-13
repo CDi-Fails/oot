@@ -563,7 +563,7 @@ void EnRd_Grab(EnRd* this, PlayState* play) {
                 play->damagePlayer(play, -8);
                 func_800AA000(this->actor.xzDistToPlayer, 0xF0, 1, 0xC);
                 this->grabDamageTimer = 20;
-                func_8002F7DC(&player->actor, NA_SE_VO_LI_DAMAGE_S + player->ageProperties->ageVoiceSFXOffset);
+                func_8002F7DC(&player->actor, NA_SE_VO_LI_DAMAGE_S + player->ageProperties->ageVoiceSfxOffset);
             }
             break;
 
