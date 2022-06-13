@@ -3479,7 +3479,7 @@ void func_80837918(Player* this, s32 quadIndex, u32 dmgFlags) {
     this->meleeWeaponQuads[quadIndex].info.toucher.dmgFlags = dmgFlags;
 
     if (dmgFlags == DMG_DEKU_STICK) {
-        this->meleeWeaponQuads[quadIndex].info.toucherFlags = TOUCH_ON | TOUCH_NEAREST | TOUCH_Sfx_WOOD;
+        this->meleeWeaponQuads[quadIndex].info.toucherFlags = TOUCH_ON | TOUCH_NEAREST | TOUCH_SFX_WOOD;
     } else {
         this->meleeWeaponQuads[quadIndex].info.toucherFlags = TOUCH_ON | TOUCH_NEAREST;
     }
@@ -9115,7 +9115,7 @@ static ColliderQuadInit D_80854650 = {
         ELEMTYPE_UNK2,
         { 0x00000100, 0x00, 0x01 },
         { 0xFFCFFFFF, 0x00, 0x00 },
-        TOUCH_ON | TOUCH_Sfx_NORMAL,
+        TOUCH_ON | TOUCH_SFX_NORMAL,
         BUMP_NONE,
         OCELEM_NONE,
     },
@@ -9135,7 +9135,7 @@ static ColliderQuadInit D_808546A0 = {
         ELEMTYPE_UNK2,
         { 0x00100000, 0x00, 0x00 },
         { 0xDFCFFFFF, 0x00, 0x00 },
-        TOUCH_ON | TOUCH_Sfx_NORMAL,
+        TOUCH_ON | TOUCH_SFX_NORMAL,
         BUMP_ON,
         OCELEM_NONE,
     },
