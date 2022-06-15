@@ -494,7 +494,7 @@ void EnTest_Idle(EnTest* this, PlayState* play) {
         yawDiff = player->actor.shape.rot.y - this->actor.shape.rot.y;
 
         if (this->actor.xzDistToPlayer < 100.0f) {
-            if ((player->meleeWeaponState != 0) && (ABS(yawDiff) >= 0x1F40)) {
+            if ((player->isMeleeWeaponAttacking != 0) && (ABS(yawDiff) >= 0x1F40)) {
                 this->actor.shape.rot.y = this->actor.world.rot.y = this->actor.yawTowardsPlayer;
 
                 if (Rand_ZeroOne() > 0.7f && player->meleeWeaponAnimation != PLAYER_MWA_JUMPSLASH_START) {
@@ -624,7 +624,7 @@ void EnTest_WalkAndBlock(EnTest* this, PlayState* play) {
 
         yawDiff = player->actor.shape.rot.y - this->actor.shape.rot.y;
 
-        if ((this->actor.xzDistToPlayer < 100.0f) && (player->meleeWeaponState != 0)) {
+        if ((this->actor.xzDistToPlayer < 100.0f) && (player->isMeleeWeaponAttacking != 0)) {
             if (ABS(yawDiff) >= 0x1F40) {
                 this->actor.shape.rot.y = this->actor.world.rot.y = this->actor.yawTowardsPlayer;
 
@@ -1234,7 +1234,7 @@ void func_808621D4(EnTest* this, PlayState* play) {
         }
     }
 
-    if (player->meleeWeaponState != 0) {
+    if (player->isMeleeWeaponAttacking != 0) {
         if ((this->actor.bgCheckFlags & BGCHECKFLAG_WALL) &&
             ((ABS((s16)(this->actor.wallYaw - this->actor.shape.rot.y)) < 0x38A4) &&
              (this->actor.xzDistToPlayer < 80.0f))) {
@@ -1274,7 +1274,7 @@ void func_80862418(EnTest* this, PlayState* play) {
         }
     }
 
-    if (player->meleeWeaponState != 0) {
+    if (player->isMeleeWeaponAttacking != 0) {
         if ((this->actor.bgCheckFlags & BGCHECKFLAG_WALL) &&
             ((ABS((s16)(this->actor.wallYaw - this->actor.shape.rot.y)) < 0x38A4) &&
              (this->actor.xzDistToPlayer < 80.0f))) {
@@ -1321,7 +1321,7 @@ void EnTest_Stunned(EnTest* this, PlayState* play) {
     if (this->actor.colorFilterTimer == 0) {
         if (this->actor.colChkInfo.health == 0) {
             func_80862FA8(this, play);
-        } else if (player->meleeWeaponState != 0) {
+        } else if (player->isMeleeWeaponAttacking != 0) {
             if ((this->actor.bgCheckFlags & BGCHECKFLAG_WALL) &&
                 ((ABS((s16)(this->actor.wallYaw - this->actor.shape.rot.y)) < 0x38A4) &&
                  (this->actor.xzDistToPlayer < 80.0f))) {
@@ -1668,7 +1668,7 @@ void EnTest_UpdateDamage(EnTest* this, PlayState* play) {
             if (this->swordState >= 1) {
                 this->swordState = 0;
             }
-            this->unk_7DC = player->unk_845;
+            this->unk_7DC = player->slashCounter;
             this->actor.world.rot.y = this->actor.yawTowardsPlayer;
             Actor_SetDropFlag(&this->actor, &this->bodyCollider.info, false);
             Audio_StopSfxByPosAndId(&this->actor.projectedPos, NA_SE_EN_STAL_WARAU);

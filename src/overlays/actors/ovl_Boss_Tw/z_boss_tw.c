@@ -817,7 +817,7 @@ s32 BossTw_BeamHitPlayerCheck(BossTw* this, PlayState* play) {
                 }
 
                 player->isBurning = true;
-                func_8002F7DC(&player->actor, player->ageProperties->ageVoiceSFXOffset + NA_SE_VO_LI_DEMO_DAMAGE);
+                func_8002F7DC(&player->actor, player->ageProperties->ageVoiceSfxOffset + NA_SE_VO_LI_DEMO_DAMAGE);
             }
         }
 
@@ -1692,7 +1692,7 @@ void BossTw_TwinrovaMergeCS(BossTw* this, PlayState* play) {
             }
 
             if (this->timers[3] == 16) {
-                func_8002F7DC(&player->actor, player->ageProperties->ageVoiceSFXOffset + NA_SE_VO_LI_SURPRISE);
+                func_8002F7DC(&player->actor, player->ageProperties->ageVoiceSfxOffset + NA_SE_VO_LI_SURPRISE);
             }
 
             if ((this->timers[3] != 0) && (this->timers[3] < 20)) {
@@ -4067,7 +4067,7 @@ void BossTw_BlastFire(BossTw* this, PlayState* play) {
                     player->isBurning = 1;
 
                     if (this->work[BURN_TMR] == 0) {
-                        func_8002F7DC(&player->actor, player->ageProperties->ageVoiceSFXOffset + NA_SE_VO_LI_DEMO_DAMAGE);
+                        func_8002F7DC(&player->actor, player->ageProperties->ageVoiceSfxOffset + NA_SE_VO_LI_DEMO_DAMAGE);
                         this->work[BURN_TMR] = 40;
                     }
 

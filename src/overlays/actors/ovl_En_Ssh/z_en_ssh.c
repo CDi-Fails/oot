@@ -437,7 +437,7 @@ void EnSsh_CheckBodyStickHit(EnSsh* this, PlayState* play) {
     ColliderInfo* info = &this->colCylinder[0].info;
     Player* player = GET_PLAYER(play);
 
-    if (player->unk_860 != 0) {
+    if (player->stickFlameTimer != 0) {
         info->bumper.dmgFlags |= DMG_DEKU_STICK;
         this->colCylinder[1].info.bumper.dmgFlags &= ~DMG_DEKU_STICK;
         this->colCylinder[2].info.bumper.dmgFlags &= ~DMG_DEKU_STICK;

@@ -370,7 +370,7 @@ void EnSyatekiMan_EndGame(EnSyatekiMan* this, PlayState* play) {
                     break;
                 case SYATEKI_RESULT_ALMOST:
                     this->timer = 20;
-                    func_8008EF44(play, 15);
+                    Player_SetShootingGalleryStatus(play, 15);
                     this->actionFunc = EnSyatekiMan_RestartGame;
                     break;
                 default:

@@ -2198,11 +2198,11 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
 
             if (player->stateFlags1 & PLAYER_STATE1_SWIMMING) {
                 D_80B7E0B4 = 0;
-                player->unk_860 = 0;
+                player->fishingState = 0;
             }
 
             if (D_80B7E0B4 == 0) {
-                if ((D_80B7E0B0 == 0) && (player->unk_860 == 1)) {
+                if ((D_80B7E0B0 == 0) && (player->fishingState == 1)) {
                     D_80B7E0B4 = 37;
                     Message_CloseTextbox(play);
                 }
@@ -2385,7 +2385,7 @@ void Fishing_UpdateLure(Fishing* this, PlayState* play) {
                 D_80B7A690 = 1;
             }
 
-            player->unk_860 = 2;
+            player->fishingState = 2;
 
             if (D_80B7E138 < 3.0f) {
                 spD0 = D_80B7E10C * Math_SinS(D_80B7E0AE * 0x1060);
@@ -3812,7 +3812,7 @@ void Fishing_UpdateFish(Actor* thisx, PlayState* play2) {
             } else if (this->actor.xzDistToPlayer < (KREG(59) + 50.0f)) {
                 this->unk_158 = 6;
                 this->unk_17A[0] = 100;
-                player->unk_860 = 3;
+                player->fishingState = 3;
                 func_800A9F6C(0.0f, 1, 3, 1);
                 D_80B7E084++;
                 func_80064520(play, &play->csCtx);
@@ -5351,7 +5351,7 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
             sSubCamId = SUB_CAM_ID_DONE;
             Environment_EnableUnderwaterLights(play, 0);
             play->envCtx.adjFogNear = 0;
-            player->unk_860 = -5;
+            player->fishingState = -5;
             D_80B7E0B0 = 5;
             break;
         }
@@ -5496,7 +5496,7 @@ void Fishing_UpdateOwner(Actor* thisx, PlayState* play2) {
                         Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_END);
                         D_80B7A6CC = 0;
                         sSubCamId = SUB_CAM_ID_DONE;
-                        player->unk_860 = -5;
+                        player->fishingState = -5;
                         D_80B7E0B0 = 5;
                         D_80B7A6D4 = 0;
                         D_80B7E0A6 = 20;

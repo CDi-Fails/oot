@@ -1463,33 +1463,33 @@ typedef struct {
 #define TARGET_RANGE(range, leash) \
     { SQ(range), (f32)range / leash }
 
-TargetRangeParams D_80115FF8[] = {
+TargetRangeParams sTargetModeRanges[] = {
     TARGET_RANGE(70, 140),   TARGET_RANGE(170, 255),    TARGET_RANGE(280, 5600),      TARGET_RANGE(350, 525),
     TARGET_RANGE(700, 1050), TARGET_RANGE(1000, 1500),  TARGET_RANGE(100, 105.36842), TARGET_RANGE(140, 163.33333),
     TARGET_RANGE(240, 576),  TARGET_RANGE(280, 280000),
 };
 
-u32 func_8002F090(Actor* actor, f32 arg1) {
-    return arg1 < D_80115FF8[actor->targetMode].rangeSq;
+u32 Actor_DistWithinTargetRange(Actor* actor, f32 dist) {
+    return dist < sTargetModeRanges[actor->targetMode].rangeSq;
 }
 
-s32 func_8002F0C8(Actor* actor, Player* player, s32 flag) {
+s32 Actor_OutsideTargetRange(Actor* actor, Player* player, s32 disableCheck) {
     if ((actor->update == NULL) || !(actor->flags & ACTOR_FLAG_0)) {
         return true;
     }
 
-    if (!flag) {
-        s16 var = (s16)(actor->yawTowardsPlayer - 0x8000) - player->actor.shape.rot.y;
-        s16 abs_var = ABS(var);
+    if (!disableCheck) {
+        s16 yawDiff = (s16)(actor->yawTowardsPlayer - 0x8000) - player->actor.shape.rot.y;
+        s16 absYawDiff = ABS(yawDiff);
         f32 dist;
 
-        if ((player->targetActor == NULL) && (abs_var > 0x2AAA)) {
+        if ((player->targetActor == NULL) && (absYawDiff > DEG_TO_BINANG(60.0f))) {
             dist = FLT_MAX;
         } else {
             dist = actor->xyzDistToPlayerSq;
         }
 
-        return !func_8002F090(actor, D_80115FF8[actor->targetMode].leashScale * dist);
+        return !Actor_DistWithinTargetRange(actor, sTargetModeRanges[actor->targetMode].leashScale * dist);
     }
 
     return false;
@@ -2130,10 +2130,10 @@ void Actor_UpdateAll(PlayState* play, ActorContext* actorCtx) {
 
     if ((actor != NULL) && (actor->update == NULL)) {
         actor = NULL;
-        func_8008EDF0(player);
+        Player_ForceDisableTargeting(player);
     }
 
-    if ((actor == NULL) || (player->unk_66C < 5)) {
+    if ((actor == NULL) || (player->targetSwitchTimer < 5)) {
         actor = NULL;
         if (actorCtx->targetCtx.unk_4B != 0) {
             actorCtx->targetCtx.unk_4B = 0;
@@ -2871,7 +2871,7 @@ Actor* Actor_Delete(ActorContext* actorCtx, Actor* actor, PlayState* play) {
     }
 
     if ((player != NULL) && (actor == player->targetActor)) {
-        func_8008EDF0(player);
+        Player_ForceDisableTargeting(player);
         Camera_ChangeMode(Play_GetCamera(play, Play_GetActiveCamId(play)), 0);
     }
 
@@ -2948,7 +2948,7 @@ void func_800328D4(PlayState* play, ActorContext* actorCtx, Player* player, u32 
 
             if (actor != sp84) {
                 var = func_8002EFC0(actor, player, D_8015BBFC);
-                if ((var < D_8015BBF0) && func_8002F090(actor, var) && func_80032880(play, actor) &&
+                if ((var < D_8015BBF0) && Actor_DistWithinTargetRange(actor, var) && func_80032880(play, actor) &&
                     (!BgCheck_CameraLineTest1(&play->colCtx, &player->actor.focus.pos, &actor->focus.pos, &sp70, &sp80,
                                               1, 1, 1, 1, &sp7C) ||
                      SurfaceType_IsIgnoredByProjectiles(&play->colCtx, sp80, sp7C))) {
@@ -3968,7 +3968,7 @@ s32 func_80035124(Actor* actor, PlayState* play) {
 u8 func_800353E8(PlayState* play) {
     Player* player = GET_PLAYER(play);
 
-    return player->unk_845;
+    return player->slashCounter;
 }
 
 /**
@@ -4002,7 +4002,7 @@ s32 func_800354B4(PlayState* play, Actor* actor, f32 range, s16 arg3, s16 arg4, 
     var1 = (s16)(actor->yawTowardsPlayer + 0x8000) - player->actor.shape.rot.y;
     var2 = actor->yawTowardsPlayer - arg5;
 
-    if ((actor->xzDistToPlayer <= range) && (player->meleeWeaponState != 0) && (arg4 >= ABS(var1)) &&
+    if ((actor->xzDistToPlayer <= range) && (player->isMeleeWeaponAttacking != 0) && (arg4 >= ABS(var1)) &&
         (arg3 >= ABS(var2))) {
         return true;
     } else {
@@ -4043,7 +4043,7 @@ void func_800355B8(PlayState* play, Vec3f* pos) {
 u8 func_800355E4(PlayState* play, Collider* collider) {
     Player* player = GET_PLAYER(play);
 
-    if ((collider->acFlags & AC_TYPE_PLAYER) && (player->meleeWeaponState != 0) &&
+    if ((collider->acFlags & AC_TYPE_PLAYER) && (player->isMeleeWeaponAttacking != 0) &&
         (player->meleeWeaponAnimation == PLAYER_MWA_HAMMER_FORWARD)) {
         return true;
     } else {

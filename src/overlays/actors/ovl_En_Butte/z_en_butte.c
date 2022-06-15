@@ -397,7 +397,7 @@ void EnButte_Update(Actor* thisx, PlayState* play) {
     this->unk_260 += 0x600;
 
     if ((this->actor.params & 1) == 1) {
-        if (GET_PLAYER(play)->meleeWeaponState == 0) {
+        if (GET_PLAYER(play)->isMeleeWeaponAttacking == 0) {
             if (this->swordDownTimer > 0) {
                 this->swordDownTimer--;
             }

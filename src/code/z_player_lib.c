@@ -126,7 +126,7 @@ u8 gPlayerModelTypes[PLAYER_MODELGROUP_MAX][PLAYER_MODELGROUPENTRY_MAX] = {
     { PLAYER_ANIMTYPE_HOLDING_ITEM_IN_LEFT_HAND, PLAYER_MODELTYPE_LH_CLOSED, PLAYER_MODELTYPE_RH_BOW_SLINGSHOT, PLAYER_MODELTYPE_SHEATH_18,
       PLAYER_MODELTYPE_WAIST },
     /* PLAYER_MODELGROUP_EXPLOSIVES */
-    { PLAYER_ANIMTYPE_HOLDING_OBJECT_ABOVE_HEAD, PLAYER_MODELTYPE_LH_OPEN, PLAYER_MODELTYPE_RH_OPEN, PLAYER_MODELTYPE_SHEATH_18,
+    { PLAYER_ANIMTYPE_USED_EXPLOSIVE, PLAYER_MODELTYPE_LH_OPEN, PLAYER_MODELTYPE_RH_OPEN, PLAYER_MODELTYPE_SHEATH_18,
       PLAYER_MODELTYPE_WAIST },
     /* PLAYER_MODELGROUP_BOOMERANG */
     { PLAYER_ANIMTYPE_DEFAULT, PLAYER_MODELTYPE_LH_BOOMERANG, PLAYER_MODELTYPE_RH_OPEN, PLAYER_MODELTYPE_SHEATH_18,
@@ -501,7 +501,7 @@ s32 Player_InCsMode(PlayState* play) {
     return Player_InBlockingCsMode(play, this) || (this->attentionMode == PLAYER_ATTENTIONMODE_ITEM_CUTSCENE);
 }
 
-s32 func_8008E9C4(Player* this) {
+s32 Player_IsTargeting(Player* this) {
     return (this->stateFlags1 & PLAYER_STATE1_TARGETING);
 }
 
@@ -599,7 +599,7 @@ void Player_UpdateBottleHeld(PlayState* play, Player* this, s32 item, s32 action
     this->itemActionParam = actionParam;
 }
 
-void func_8008EDF0(Player* this) {
+void Player_ForceDisableTargeting(Player* this) {
     this->targetActor = NULL;
     this->stateFlags2 &= ~PLAYER_STATE2_USING_SWITCH_TARGETING;
 }
@@ -609,13 +609,13 @@ void func_8008EE08(Player* this) {
         (this->stateFlags1 & (PLAYER_STATE1_CLIMBING | PLAYER_STATE1_RIDING_HORSE | PLAYER_STATE1_SWIMMING)) ||
         (!(this->stateFlags1 & (PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALLING)) &&
          ((this->actor.world.pos.y - this->actor.floorHeight) < 100.0f))) {
-        this->stateFlags1 &= ~(PLAYER_STATE1_UNUSED_TARGETING_FLAG | PLAYER_STATE1_FORCE_STRAFING | PLAYER_STATE1_TARGETING_NO_TARGET_ACTOR | PLAYER_STATE1_JUMPING |
+        this->stateFlags1 &= ~(PLAYER_STATE1_UNUSED_TARGETING_FLAG | PLAYER_STATE1_FORCE_STRAFING | PLAYER_STATE1_Z_PARALLEL_MODE | PLAYER_STATE1_JUMPING |
                                PLAYER_STATE1_FREEFALLING | PLAYER_STATE1_30);
     } else if (!(this->stateFlags1 & (PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALLING | PLAYER_STATE1_CLIMBING))) {
         this->stateFlags1 |= PLAYER_STATE1_FREEFALLING;
     }
 
-    func_8008EDF0(this);
+    Player_ForceDisableTargeting(this);
 }
 
 void func_8008EEAC(PlayState* play, Actor* actor) {
@@ -629,13 +629,13 @@ void func_8008EEAC(PlayState* play, Actor* actor) {
     Camera_ChangeMode(Play_GetCamera(play, CAM_ID_MAIN), CAM_MODE_FOLLOWTARGET);
 }
 
-s32 func_8008EF30(PlayState* play) {
+s32 Player_IsRidingHorse(PlayState* play) {
     Player* this = GET_PLAYER(play);
 
     return (this->stateFlags1 & PLAYER_STATE1_RIDING_HORSE);
 }
 
-s32 func_8008EF44(PlayState* play, s32 ammo) {
+s32 Player_SetShootingGalleryStatus(PlayState* play, s32 ammo) {
     play->shootingGalleryStatus = ammo + 1;
     return 1;
 }
@@ -712,7 +712,7 @@ s32 func_8008F128(Player* this) {
 s32 Player_ActionToMeleeWeapon(s32 actionParam) {
     s32 meleeWeapon = actionParam - PLAYER_AP_FISHING_POLE;
 
-    if ((meleeWeapon > 0) && (meleeWeapon < 6)) {
+    if ((meleeWeapon > PLAYER_MELEEWEAPON_NONE) && (meleeWeapon < PLAYER_MELEEWEAPON_MAX)) {
         return meleeWeapon;
     } else {
         return 0;
@@ -1285,7 +1285,7 @@ void func_800906D4(PlayState* play, Player* this, Vec3f* newTipPos) {
                               &this->meleeWeaponInfo[0].base);
     }
 
-    if ((this->meleeWeaponState > 0) &&
+    if ((this->isMeleeWeaponAttacking > 0) &&
         ((this->meleeWeaponAnimation < PLAYER_MWA_SPIN_ATTACK_1H) || (this->stateFlags2 & PLAYER_STATE2_RELEASING_SPIN_ATTACK))) {
         func_80090480(play, &this->meleeWeaponQuads[0], &this->meleeWeaponInfo[1], &newTipPos[1], &newBasePos[1]);
         func_80090480(play, &this->meleeWeaponQuads[1], &this->meleeWeaponInfo[2], &newTipPos[2], &newBasePos[2]);
@@ -1322,9 +1322,9 @@ void Player_DrawGetItem(PlayState* play, Player* this) {
 void func_80090A28(Player* this, Vec3f* vecs) {
     D_8012608C.x = D_80126080.x;
 
-    if (this->unk_845 >= 3) {
-        this->unk_845 += 1;
-        D_8012608C.x *= 1.0f + ((9 - this->unk_845) * 0.1f);
+    if (this->slashCounter >= 3) {
+        this->slashCounter += 1;
+        D_8012608C.x *= 1.0f + ((9 - this->slashCounter) * 0.1f);
     }
 
     D_8012608C.x += 1200.0f;
@@ -1461,7 +1461,7 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
             if (this->actor.scale.y >= 0.0f) {
                 D_80126080.x = this->unk_85C * 5000.0f;
                 func_80090A28(this, sp124);
-                if (this->meleeWeaponState != 0) {
+                if (this->isMeleeWeaponAttacking != 0) {
                     func_800906D4(play, this, sp124);
                 } else {
                     Math_Vec3f_Copy(&this->meleeWeaponInfo[0].tip, &sp124[0]);
@@ -1477,7 +1477,7 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
             gSPDisplayList(POLY_OPA_DISP++, gLinkChildLinkDekuStickDL);
 
             CLOSE_DISPS(play->state.gfxCtx, "../z_player_lib.c", 2656);
-        } else if ((this->actor.scale.y >= 0.0f) && (this->meleeWeaponState != 0)) {
+        } else if ((this->actor.scale.y >= 0.0f) && (this->isMeleeWeaponAttacking != 0)) {
             Vec3f spE4[3];
 
             if (Player_HoldsBrokenKnife(this)) {

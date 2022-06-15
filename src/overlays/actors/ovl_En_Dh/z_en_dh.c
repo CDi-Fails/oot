@@ -479,8 +479,8 @@ void EnDh_CollisionCheck(EnDh* this, PlayState* play) {
         if ((this->actor.colChkInfo.damageEffect != 0) && (this->actor.colChkInfo.damageEffect != 6)) {
             this->collider2.base.atFlags = this->collider2.elements[0].info.toucherFlags = AT_NONE; // also TOUCH_NONE
             this->collider2.elements[0].info.toucher.dmgFlags = this->collider2.elements[0].info.toucher.damage = 0;
-            if (player->unk_844 != 0) {
-                this->unk_258 = player->unk_845;
+            if (player->comboTimer != 0) {
+                this->unk_258 = player->slashCounter;
             }
             Actor_SetColorFilter(&this->actor, 0x4000, 0xFF, 0, 8);
             lastHealth = this->actor.colChkInfo.health;
@@ -521,7 +521,7 @@ void EnDh_Update(Actor* thisx, PlayState* play) {
             CollisionCheck_SetOC(play, &play->colChkCtx, &this->collider1.base);
         }
         if (((this->curAction != DH_DAMAGE) && (this->actor.shape.yOffset == 0.0f)) ||
-            ((player->unk_844 != 0) && (player->unk_845 != this->unk_258))) {
+            ((player->comboTimer != 0) && (player->slashCounter != this->unk_258))) {
 
             CollisionCheck_SetAC(play, &play->colChkCtx, &this->collider2.base);
             CollisionCheck_SetAT(play, &play->colChkCtx, &this->collider2.base);

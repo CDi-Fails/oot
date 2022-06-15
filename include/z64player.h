@@ -285,7 +285,7 @@ typedef enum {
     /* 0x02 */ PLAYER_ANIMTYPE_HOLDING_SHIELD,
     /* 0x03 */ PLAYER_ANIMTYPE_HOLDING_TWO_HAND_WEAPON,
     /* 0x04 */ PLAYER_ANIMTYPE_HOLDING_ITEM_IN_LEFT_HAND,
-    /* 0x05 */ PLAYER_ANIMTYPE_HOLDING_OBJECT_ABOVE_HEAD,
+    /* 0x05 */ PLAYER_ANIMTYPE_USED_EXPLOSIVE,
     /* 0x06 */ PLAYER_ANIMTYPE_MAX
 } PlayerAnimType;
 
@@ -478,6 +478,43 @@ typedef enum {
     PLAYER_CLIMBSTATUS_KNOCKED_DOWN
 } PlayerClimbStatus;
 
+typedef enum {
+    /* 0x00 */ PLAYER_MELEEWEAPON_NONE,
+    /* 0x01 */ PLAYER_MELEEWEAPON_SWORD_MASTER,
+    /* 0x02 */ PLAYER_MELEEWEAPON_SWORD_KOKIRI,
+    /* 0x03 */ PLAYER_MELEEWEAPON_SWORD_BGS,
+    /* 0x04 */ PLAYER_MELEEWEAPON_STICK,
+    /* 0x05 */ PLAYER_MELEEWEAPON_HAMMER,
+    /* 0x06 */ PLAYER_MELEEWEAPON_MAX
+} PlayerMeleeWeapon;
+
+typedef enum {
+    /* 0x00 */ PLAYER_BOTTLECONTENTS_NONE,
+    /* 0x01 */ PLAYER_BOTTLECONTENTS_FISH,
+    /* 0x02 */ PLAYER_BOTTLECONTENTS_FIRE,
+    /* 0x03 */ PLAYER_BOTTLECONTENTS_BUG,
+    /* 0x04 */ PLAYER_BOTTLECONTENTS_POE,
+    /* 0x05 */ PLAYER_BOTTLECONTENTS_BIG_POE,
+    /* 0x06 */ PLAYER_BOTTLECONTENTS_LETTER,
+    /* 0x07 */ PLAYER_BOTTLECONTENTS_POTION_RED,
+    /* 0x08 */ PLAYER_BOTTLECONTENTS_POTION_BLUE,
+    /* 0x09 */ PLAYER_BOTTLECONTENTS_POTION_GREEN,
+    /* 0x0A */ PLAYER_BOTTLECONTENTS_MILK,
+    /* 0x0B */ PLAYER_BOTTLECONTENTS_MILK_HALF,
+    /* 0x0C */ PLAYER_BOTTLECONTENTS_FAIRY,
+    /* 0x0D */ PLAYER_BOTTLECONTENTS_MAX
+} PlayerBottleContents;
+
+typedef enum {
+    /* 0x00 */ PLAYER_MAGICSPELL_UNUSED_15,
+    /* 0x01 */ PLAYER_MAGICSPELL_UNUSED_16,
+    /* 0x02 */ PLAYER_MAGICSPELL_UNUSED_17,
+    /* 0x03 */ PLAYER_MAGICSPELL_FARORES_WIND,
+    /* 0x04 */ PLAYER_MAGICSPELL_NAYRUS_LOVE,
+    /* 0x05 */ PLAYER_MAGICSPELL_DINS_FIRE,
+    /* 0x06 */ PLAYER_MAGICSPELLS_MAX
+} PlayerMagicSpells;
+
 #define PLAYER_ANIMSFXFLAGS_0 (1 << 11) // 0x0800
 #define PLAYER_ANIMSFXFLAGS_1 (1 << 12) // 0x1000
 #define PLAYER_ANIMSFXFLAGS_2 (1 << 13) // 0x2000
@@ -545,7 +582,7 @@ typedef struct {
 #define PLAYER_STATE1_CLIMBING_ONTO_LEDGE (1 << 14)
 #define PLAYER_STATE1_UNUSED_TARGETING_FLAG (1 << 15)
 #define PLAYER_STATE1_FORCE_STRAFING (1 << 16)
-#define PLAYER_STATE1_TARGETING_NO_TARGET_ACTOR (1 << 17)
+#define PLAYER_STATE1_Z_PARALLEL_MODE (1 << 17)
 #define PLAYER_STATE1_JUMPING (1 << 18)
 #define PLAYER_STATE1_FREEFALLING (1 << 19)
 #define PLAYER_STATE1_IN_FIRST_PERSON_MODE (1 << 20)
@@ -677,7 +714,7 @@ typedef struct Player {
     /* 0x05E4 */ ColliderQuad shieldQuad;
     /* 0x0664 */ Actor*     targetActor;
     /* 0x0668 */ char       unk_668[0x004];
-    /* 0x066C */ s32        unk_66C;
+    /* 0x066C */ s32        targetSwitchTimer;
     /* 0x0670 */ s32        meleeWeaponEffectIndex;
     /* 0x0674 */ PlayerActionFunc actionFunc;
     /* 0x0678 */ PlayerAgeProperties* ageProperties;
@@ -721,9 +758,9 @@ typedef struct Player {
     /* 0x083E */ s16        targetYaw;
     /* 0x0840 */ u16        unk_840;
     /* 0x0842 */ s8         meleeWeaponAnimation;
-    /* 0x0843 */ s8         meleeWeaponState;
-    /* 0x0844 */ s8         unk_844;
-    /* 0x0845 */ u8         unk_845;
+    /* 0x0843 */ s8         isMeleeWeaponAttacking;
+    /* 0x0844 */ s8         comboTimer;
+    /* 0x0845 */ u8         slashCounter;
     /* 0x0846 */ u8         unk_846;
     /* 0x0847 */ s8         unk_847[4];
     /* 0x084B */ s8         unk_84B[4];
@@ -749,7 +786,7 @@ typedef struct Player {
     /* 0x0878 */ f32        unk_878;
     /* 0x087C */ s16        unk_87C;
     /* 0x087E */ s16        unk_87E;
-    /* 0x0880 */ f32        unk_880;
+    /* 0x0880 */ f32        speedLimit;
     /* 0x0884 */ f32        wallHeight; // height used to determine whether link can climb or grab a ledge at the top
     /* 0x0888 */ f32        wallDistance; // distance to the colliding wall plane
     /* 0x088C */ u8         unk_88C;
@@ -785,8 +822,8 @@ typedef struct Player {
     /* 0x0A79 */ u8         unk_A79;
     /* 0x0A7A */ u8         unk_A7A;
     /* 0x0A7B */ u8         unk_A7B;
-    /* 0x0A7C */ f32        unk_A7C;
-    /* 0x0A80 */ s16        unk_A80;
+    /* 0x0A7C */ f32        analogStickDistance;
+    /* 0x0A80 */ s16        analogStickAngle;
     /* 0x0A82 */ u16        unk_A82;
     /* 0x0A84 */ s16        unk_A84;
     /* 0x0A86 */ s8         unk_A86;

@@ -211,14 +211,14 @@ s32 Math_AsymStepToF(f32* pValue, f32 target, f32 incrStep, f32 decrStep) {
     return 0;
 }
 
-void func_80077D10(f32* arg0, s16* arg1, Input* input) {
+void func_80077D10(f32* analogStickDistance, s16* analogStickAngle, Input* input) {
     f32 relX = input->rel.stick_x;
     f32 relY = input->rel.stick_y;
 
-    *arg0 = sqrtf(SQ(relX) + SQ(relY));
-    *arg0 = (60.0f < *arg0) ? 60.0f : *arg0;
+    *analogStickDistance = sqrtf(SQ(relX) + SQ(relY));
+    *analogStickDistance = (60.0f < *analogStickDistance) ? 60.0f : *analogStickDistance;
 
-    *arg1 = Math_Atan2S(relY, -relX);
+    *analogStickAngle = Math_Atan2S(relY, -relX);
 }
 
 s16 Rand_S16Offset(s16 base, s16 range) {
