@@ -3923,11 +3923,7 @@ void BossGanon_LightBall_Update(Actor* thisx, PlayState* play2) {
 
         switch (this->unk_1C2) {
             case 0:
-<<<<<<< HEAD
                 if ((player->stateFlags1 & PLAYER_STATE1_SWINGING_BOTTLE) &&
-=======
-                if ((player->stateFlags1 & PLAYER_STATE1_SWINGING_BOTTLE) &&
->>>>>>> upstream/master
                     (ABS((s16)(player->actor.shape.rot.y - (s16)(ganondorf->actor.yawTowardsPlayer + 0x8000))) <
                      0x2000) &&
                     (sqrtf(SQ(xDistFromLink) + SQ(yDistFromLink) + SQ(zDistFromLink)) <= 25.0f)) {

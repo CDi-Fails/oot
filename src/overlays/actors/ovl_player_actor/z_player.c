@@ -1978,7 +1978,7 @@ void Player_MeleeAttack(Player* this, s32 attackFlag) {
 }
 
 s32 Player_InZParallelMode(Player* this) {
-    if (this->stateFlags1 & (PLAYER_STATE1_FORCE_STRAFING | PLAYER_STATE1_Z_PARALLEL_MODE | PLAYER_STATE1_30)) {
+    if (this->stateFlags1 & (PLAYER_STATE1_FORCE_STRAFING | PLAYER_STATE1_Z_PARALLEL_MODE | PLAYER_STATE1_UNK_Z_PARALLEL_STATE)) {
         return 1;
     } else {
         return 0;
@@ -3127,13 +3127,13 @@ void func_80836BEC(Player* this, PlayState* play) {
     s32 cond;
 
     if (!zTrigPressed) {
-        this->stateFlags1 &= ~PLAYER_STATE1_30;
+        this->stateFlags1 &= ~PLAYER_STATE1_UNK_Z_PARALLEL_STATE;
     }
 
     if ((play->csCtx.state != CS_STATE_IDLE) || (this->csMode != PLAYER_CSMODE_NONE) ||
         (this->stateFlags1 & (PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_IN_CUTSCENE)) || (this->stateFlags3 & PLAYER_STATE3_MOVING_ALONG_HOOKSHOT_PATH)) {
         this->targetSwitchTimer = 0;
-    } else if (zTrigPressed || (this->stateFlags2 & PLAYER_STATE2_USING_SWITCH_TARGETING) || (this->unk_684 != NULL)) {
+    } else if (zTrigPressed || (this->stateFlags2 & PLAYER_STATE2_USING_SWITCH_TARGETING) || (this->nextTargetActor != NULL)) {
         if (this->targetSwitchTimer <= 5) {
             this->targetSwitchTimer = 5;
         } else {
@@ -3180,27 +3180,27 @@ void func_80836BEC(Player* this, PlayState* play) {
                     } else {
                         if (!holdTarget) {
                             Player_ForceDisableTargeting(this);
-                        }
+                    }
                     }
 
-                    this->stateFlags1 &= ~PLAYER_STATE1_30;
+                    this->stateFlags1 &= ~PLAYER_STATE1_UNK_Z_PARALLEL_STATE;
                 } else {
-                    if (!(this->stateFlags1 & (PLAYER_STATE1_Z_PARALLEL_MODE | PLAYER_STATE1_30))) {
+                    if (!(this->stateFlags1 & (PLAYER_STATE1_Z_PARALLEL_MODE | PLAYER_STATE1_UNK_Z_PARALLEL_STATE))) {
                         func_808355DC(this);
                     }
                 }
             }
 
             if (this->targetActor != NULL) {
-                if ((this->actor.category == ACTORCAT_PLAYER) && (this->targetActor != this->unk_684) &&
+                if ((this->actor.category == ACTORCAT_PLAYER) && (this->targetActor != this->nextTargetActor) &&
                     Actor_OutsideTargetRange(this->targetActor, this, isRangeCheckDisabled)) {
                     Player_ForceDisableTargeting(this);
-                    this->stateFlags1 |= PLAYER_STATE1_30;
+                    this->stateFlags1 |= PLAYER_STATE1_UNK_Z_PARALLEL_STATE;
                 } else if (this->targetActor != NULL) {
                     this->targetActor->targetPriority = 40;
                 }
-            } else if (this->unk_684 != NULL) {
-                this->targetActor = this->unk_684;
+            } else if (this->nextTargetActor != NULL) {
+                this->targetActor = this->nextTargetActor;
             }
         }
 
@@ -9932,7 +9932,7 @@ void Player_UpdateCamAndSeqModes(PlayState* play, Player* this) {
                 } else {
                     camMode = CAM_MODE_HANG;
                 }
-            } else if (this->stateFlags1 & (PLAYER_STATE1_Z_PARALLEL_MODE | PLAYER_STATE1_30)) {
+            } else if (this->stateFlags1 & (PLAYER_STATE1_Z_PARALLEL_MODE | PLAYER_STATE1_UNK_Z_PARALLEL_STATE)) {
                 if (Actor_PlayerIsAimingPrimedFPSItem(this) || Player_IsAimingPrimedBoomerang(this)) {
                     camMode = CAM_MODE_BOWARROWZ;
                 } else if (this->stateFlags1 & PLAYER_STATE1_CLIMBING) {
@@ -10130,6 +10130,34 @@ static f32 sFloorConveyorSpeeds[] = { 0.5f, 1.0f, 3.0f };
 
 void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     s32 pad;
+
+    // TESTING
+
+    GfxPrint printer;
+    Gfx* gfx;
+
+    OPEN_DISPS(globalCtx->state.gfxCtx, __FILE__, __LINE__);
+
+    gfx = POLY_OPA_DISP + 1;
+    gSPDisplayList(OVERLAY_DISP++, gfx);
+
+    GfxPrint_Init(&printer);
+    GfxPrint_Open(&printer, gfx);
+
+    GfxPrint_SetColor(&printer, 255, 0, 255, 255);
+    GfxPrint_SetPos(&printer, 10, 10);
+    GfxPrint_Printf(&printer, "target: %d, next: %d", this->targetActor, this->nextTargetActor);
+
+    gfx = GfxPrint_Close(&printer);
+    GfxPrint_Destroy(&printer);
+
+    gSPEndDisplayList(gfx++);
+    gSPBranchList(POLY_OPA_DISP, gfx);
+    POLY_OPA_DISP = gfx;
+
+    CLOSE_DISPS(globalCtx->state.gfxCtx, __FILE__, __LINE__);
+
+    // END TESTING
 
     sControlInput = input;
 
@@ -10407,19 +10435,11 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
             this->stateFlags2 &= ~(PLAYER_STATE2_CAN_SPEAK_OR_CHECK | PLAYER_STATE2_NAVI_REQUESTING_TALK);
         }
 
-<<<<<<< HEAD
         this->stateFlags1 &= ~(PLAYER_STATE1_SWINGING_BOTTLE | PLAYER_STATE1_PREPARED_TO_SHOOT | PLAYER_STATE1_CHARGING_SPIN_ATTACK | PLAYER_STATE1_SHIELDING);
         this->stateFlags2 &= ~(PLAYER_STATE2_CAN_GRAB_PUSH_PULL_WALL | PLAYER_STATE2_CAN_CLIMB_PUSH_PULL_WALL | PLAYER_STATE2_MAKING_REACTABLE_NOISE | PLAYER_STATE2_DISABLE_MOVE_ROTATION_WHILE_TARGETING | PLAYER_STATE2_ALWAYS_DISABLE_MOVE_ROTATION |
                                PLAYER_STATE2_ENABLE_PUSH_PULL_CAM | PLAYER_STATE2_SPAWN_DUST_AT_FEET | PLAYER_STATE2_IDLE_WHILE_CLIMBING | PLAYER_STATE2_FROZEN_IN_ICE |
                                PLAYER_STATE2_CAN_ENTER_CRAWLSPACE | PLAYER_STATE2_CAN_DISMOUNT_HORSE | PLAYER_STATE2_ENABLE_REFLECTION);
         this->stateFlags3 &= ~PLAYER_STATE3_CHECKING_FLOOR_AND_WATER_COLLISION;
-=======
-        this->stateFlags1 &= ~(PLAYER_STATE1_SWINGING_BOTTLE | PLAYER_STATE1_9 | PLAYER_STATE1_12 | PLAYER_STATE1_22);
-        this->stateFlags2 &= ~(PLAYER_STATE2_0 | PLAYER_STATE2_2 | PLAYER_STATE2_3 | PLAYER_STATE2_5 | PLAYER_STATE2_6 |
-                               PLAYER_STATE2_8 | PLAYER_STATE2_9 | PLAYER_STATE2_12 | PLAYER_STATE2_14 |
-                               PLAYER_STATE2_16 | PLAYER_STATE2_22 | PLAYER_STATE2_26);
-        this->stateFlags3 &= ~PLAYER_STATE3_4;
->>>>>>> upstream/master
 
         func_80847298(this);
         func_8083315C(play, this);
@@ -10477,7 +10497,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
 
         this->doorType = PLAYER_DOORTYPE_NONE;
         this->unk_8A1 = 0;
-        this->unk_684 = NULL;
+        this->nextTargetActor = NULL;
 
         phi_f12 =
             ((this->bodyPartsPos[PLAYER_BODYPART_L_FOOT].y + this->bodyPartsPos[PLAYER_BODYPART_R_FOOT].y) * 0.5f) +

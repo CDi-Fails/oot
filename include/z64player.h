@@ -595,7 +595,7 @@ typedef struct {
 #define PLAYER_STATE1_SWIMMING (1 << 27)
 #define PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE (1 << 28)
 #define PLAYER_STATE1_IN_CUTSCENE (1 << 29)
-#define PLAYER_STATE1_30 (1 << 30)
+#define PLAYER_STATE1_UNK_Z_PARALLEL_STATE (1 << 30)
 #define PLAYER_STATE1_FALLING_INTO_GROTTO_OR_VOID (1 << 31)
 
 #define PLAYER_STATE2_CAN_GRAB_PUSH_PULL_WALL (1 << 0)
@@ -720,7 +720,7 @@ typedef struct Player {
     /* 0x0678 */ PlayerAgeProperties* ageProperties;
     /* 0x067C */ u32        stateFlags1;
     /* 0x0680 */ u32        stateFlags2;
-    /* 0x0684 */ Actor*     unk_684;
+    /* 0x0684 */ Actor*     nextTargetActor;
     /* 0x0688 */ Actor*     boomerangActor;
     /* 0x068C */ Actor*     naviActor;
     /* 0x0690 */ s16        naviTextId;

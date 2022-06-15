@@ -610,7 +610,7 @@ void func_8008EE08(Player* this) {
         (!(this->stateFlags1 & (PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALLING)) &&
          ((this->actor.world.pos.y - this->actor.floorHeight) < 100.0f))) {
         this->stateFlags1 &= ~(PLAYER_STATE1_UNUSED_TARGETING_FLAG | PLAYER_STATE1_FORCE_STRAFING | PLAYER_STATE1_Z_PARALLEL_MODE | PLAYER_STATE1_JUMPING |
-                               PLAYER_STATE1_FREEFALLING | PLAYER_STATE1_30);
+                               PLAYER_STATE1_FREEFALLING | PLAYER_STATE1_UNK_Z_PARALLEL_STATE);
     } else if (!(this->stateFlags1 & (PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALLING | PLAYER_STATE1_CLIMBING))) {
         this->stateFlags1 |= PLAYER_STATE1_FREEFALLING;
     }
@@ -623,7 +623,7 @@ void func_8008EEAC(PlayState* play, Actor* actor) {
 
     func_8008EE08(this);
     this->targetActor = actor;
-    this->unk_684 = actor;
+    this->nextTargetActor = actor;
     this->stateFlags1 |= PLAYER_STATE1_FORCE_STRAFING;
     Camera_SetParam(Play_GetCamera(play, CAM_ID_MAIN), 8, actor);
     Camera_ChangeMode(Play_GetCamera(play, CAM_ID_MAIN), CAM_MODE_FOLLOWTARGET);
