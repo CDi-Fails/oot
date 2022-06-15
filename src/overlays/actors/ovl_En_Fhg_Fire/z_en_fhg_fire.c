@@ -469,7 +469,11 @@ void EnFhgFire_EnergyBall(EnFhgFire* this, PlayState* play) {
         switch (this->work[FHGFIRE_FIRE_MODE]) {
             case FHGFIRE_LIGHT_GREEN:
                 canBottleReflect1 =
-                    ((player->stateFlags1 & PLAYER_STATE1_SWIPING_BOTTLE) &&
+<<<<<<< HEAD
+                    ((player->stateFlags1 & PLAYER_STATE1_SWINGING_BOTTLE) &&
+=======
+                    ((player->stateFlags1 & PLAYER_STATE1_SWINGING_BOTTLE) &&
+>>>>>>> upstream/master
                      (ABS((s16)(player->actor.shape.rot.y - (s16)(bossGnd->actor.yawTowardsPlayer + 0x8000))) <
                       0x2000) &&
                      (sqrtf(SQ(dxL) + SQ(dyL) + SQ(dzL)) <= 25.0f))

@@ -10407,11 +10407,19 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
             this->stateFlags2 &= ~(PLAYER_STATE2_CAN_SPEAK_OR_CHECK | PLAYER_STATE2_NAVI_REQUESTING_TALK);
         }
 
-        this->stateFlags1 &= ~(PLAYER_STATE1_SWIPING_BOTTLE | PLAYER_STATE1_PREPARED_TO_SHOOT | PLAYER_STATE1_CHARGING_SPIN_ATTACK | PLAYER_STATE1_SHIELDING);
+<<<<<<< HEAD
+        this->stateFlags1 &= ~(PLAYER_STATE1_SWINGING_BOTTLE | PLAYER_STATE1_PREPARED_TO_SHOOT | PLAYER_STATE1_CHARGING_SPIN_ATTACK | PLAYER_STATE1_SHIELDING);
         this->stateFlags2 &= ~(PLAYER_STATE2_CAN_GRAB_PUSH_PULL_WALL | PLAYER_STATE2_CAN_CLIMB_PUSH_PULL_WALL | PLAYER_STATE2_MAKING_REACTABLE_NOISE | PLAYER_STATE2_DISABLE_MOVE_ROTATION_WHILE_TARGETING | PLAYER_STATE2_ALWAYS_DISABLE_MOVE_ROTATION |
                                PLAYER_STATE2_ENABLE_PUSH_PULL_CAM | PLAYER_STATE2_SPAWN_DUST_AT_FEET | PLAYER_STATE2_IDLE_WHILE_CLIMBING | PLAYER_STATE2_FROZEN_IN_ICE |
                                PLAYER_STATE2_CAN_ENTER_CRAWLSPACE | PLAYER_STATE2_CAN_DISMOUNT_HORSE | PLAYER_STATE2_ENABLE_REFLECTION);
         this->stateFlags3 &= ~PLAYER_STATE3_CHECKING_FLOOR_AND_WATER_COLLISION;
+=======
+        this->stateFlags1 &= ~(PLAYER_STATE1_SWINGING_BOTTLE | PLAYER_STATE1_9 | PLAYER_STATE1_12 | PLAYER_STATE1_22);
+        this->stateFlags2 &= ~(PLAYER_STATE2_0 | PLAYER_STATE2_2 | PLAYER_STATE2_3 | PLAYER_STATE2_5 | PLAYER_STATE2_6 |
+                               PLAYER_STATE2_8 | PLAYER_STATE2_9 | PLAYER_STATE2_12 | PLAYER_STATE2_14 |
+                               PLAYER_STATE2_16 | PLAYER_STATE2_22 | PLAYER_STATE2_26);
+        this->stateFlags3 &= ~PLAYER_STATE3_4;
+>>>>>>> upstream/master
 
         func_80847298(this);
         func_8083315C(play, this);
@@ -12401,11 +12409,11 @@ void func_8084EAC0(Player* this, PlayState* play) {
     }
 }
 
-static BottleCatchInfo D_80854A04[] = {
-    { ACTOR_EN_ELF, ITEM_FAIRY, 0x2A, 0x46 },
-    { ACTOR_EN_FISH, ITEM_FISH, 0x1F, 0x47 },
-    { ACTOR_EN_ICE_HONO, ITEM_BLUE_FIRE, 0x20, 0x5D },
-    { ACTOR_EN_INSECT, ITEM_BUG, 0x21, 0x7A },
+static BottleCatchInfo sBottleCatchInfos[] = {
+    { ACTOR_EN_ELF, ITEM_FAIRY, PLAYER_AP_BOTTLE_FAIRY, 0x46 },
+    { ACTOR_EN_FISH, ITEM_FISH, PLAYER_AP_BOTTLE_FISH, 0x47 },
+    { ACTOR_EN_ICE_HONO, ITEM_BLUE_FIRE, PLAYER_AP_BOTTLE_FIRE, 0x5D },
+    { ACTOR_EN_INSECT, ITEM_BUG, PLAYER_AP_BOTTLE_BUG, 0x7A },
 };
 
 void func_8084ECA4(Player* this, PlayState* play) {
@@ -12420,7 +12428,7 @@ void func_8084ECA4(Player* this, PlayState* play) {
     if (LinkAnimation_Update(play, &this->skelAnime)) {
         if (this->unk_84F != 0) {
             if (this->unk_850 == 0) {
-                Message_StartTextbox(play, D_80854A04[this->unk_84F - 1].textId, &this->actor);
+                Message_StartTextbox(play, sBottleCatchInfos[this->unk_84F - 1].textId, &this->actor);
                 Audio_PlayFanfare(NA_BGM_ITEM_GET | 0x900);
                 this->unk_850 = 1;
             } else if (Message_GetState(&play->msgCtx) == TEXT_STATE_CLOSING) {
@@ -12443,14 +12451,14 @@ void func_8084ECA4(Player* this, PlayState* play) {
                     }
 
                     if (this->interactRangeActor != NULL) {
-                        catchInfo = &D_80854A04[0];
-                        for (i = 0; i < 4; i++, catchInfo++) {
+                        catchInfo = &sBottleCatchInfos[0];
+                        for (i = 0; i < ARRAY_COUNT(sBottleCatchInfos); i++, catchInfo++) {
                             if (this->interactRangeActor->id == catchInfo->actorId) {
                                 break;
                             }
                         }
 
-                        if (i < 4) {
+                        if (i < ARRAY_COUNT(sBottleCatchInfos)) {
                             this->unk_84F = i + 1;
                             this->unk_850 = 0;
                             this->stateFlags1 |= PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE | PLAYER_STATE1_IN_CUTSCENE;
@@ -12465,8 +12473,11 @@ void func_8084ECA4(Player* this, PlayState* play) {
         }
     }
 
+    //! @bug If the animation is changed at any point above (such as by func_8083C0E8() or func_808322D0()), it will
+    //! change the curFrame to 0. This causes this flag to be set for one frame, at a time when it does not look like
+    //! Player is swinging the bottle.
     if (this->skelAnime.curFrame <= 7.0f) {
-        this->stateFlags1 |= PLAYER_STATE1_SWIPING_BOTTLE;
+        this->stateFlags1 |= PLAYER_STATE1_SWINGING_BOTTLE;
     }
 }
 
