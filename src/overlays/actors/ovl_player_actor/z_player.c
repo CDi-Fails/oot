@@ -10131,34 +10131,6 @@ static f32 sFloorConveyorSpeeds[] = { 0.5f, 1.0f, 3.0f };
 void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     s32 pad;
 
-    // TESTING
-
-    GfxPrint printer;
-    Gfx* gfx;
-
-    OPEN_DISPS(globalCtx->state.gfxCtx, __FILE__, __LINE__);
-
-    gfx = POLY_OPA_DISP + 1;
-    gSPDisplayList(OVERLAY_DISP++, gfx);
-
-    GfxPrint_Init(&printer);
-    GfxPrint_Open(&printer, gfx);
-
-    GfxPrint_SetColor(&printer, 255, 0, 255, 255);
-    GfxPrint_SetPos(&printer, 10, 10);
-    GfxPrint_Printf(&printer, "target: %d, next: %d", this->targetActor, this->nextTargetActor);
-
-    gfx = GfxPrint_Close(&printer);
-    GfxPrint_Destroy(&printer);
-
-    gSPEndDisplayList(gfx++);
-    gSPBranchList(POLY_OPA_DISP, gfx);
-    POLY_OPA_DISP = gfx;
-
-    CLOSE_DISPS(globalCtx->state.gfxCtx, __FILE__, __LINE__);
-
-    // END TESTING
-
     sControlInput = input;
 
     if (this->unk_A86 < 0) {
