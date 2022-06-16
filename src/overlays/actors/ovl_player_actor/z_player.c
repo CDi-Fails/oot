@@ -98,11 +98,11 @@ typedef struct {
 } struct_80854554; // size = 0x0C
 
 typedef struct {
-    /* 0x00 */ LinkAnimationHeader* unk_00;
-    /* 0x04 */ LinkAnimationHeader* unk_04;
-    /* 0x08 */ LinkAnimationHeader* unk_08;
-    /* 0x0C */ u8 unk_0C;
-    /* 0x0D */ u8 unk_0D;
+    /* 0x00 */ LinkAnimationHeader* startAnim;
+    /* 0x04 */ LinkAnimationHeader* middleAnim;
+    /* 0x08 */ LinkAnimationHeader* endAnim;
+    /* 0x0C */ u8 startFrame;
+    /* 0x0D */ u8 endFrame;
 } struct_80854190; // size = 0x10
 
 typedef struct {
@@ -1594,9 +1594,9 @@ void *func_80832CFC(Player* this) {
 
 void func_80832D20(Player* this) {
     func_80832CFC(this);
-    this->skelAnime.prevTransl.x *= this->ageProperties->unk_08;
-    this->skelAnime.prevTransl.y *= this->ageProperties->unk_08;
-    this->skelAnime.prevTransl.z *= this->ageProperties->unk_08;
+    this->skelAnime.prevTransl.x *= this->ageProperties->translationScale;
+    this->skelAnime.prevTransl.y *= this->ageProperties->translationScale;
+    this->skelAnime.prevTransl.z *= this->ageProperties->translationScale;
 }
 
 void func_80832DB0(Player* this) {
@@ -1608,8 +1608,8 @@ void func_80832DBC(Player* this) {
         func_808322FC(this);
         this->skelAnime.jointTable[0].x = this->skelAnime.baseTransl.x;
         this->skelAnime.jointTable[0].z = this->skelAnime.baseTransl.z;
-        if (this->skelAnime.moveFlags & 8) {
-            if (this->skelAnime.moveFlags & 2) {
+        if (this->skelAnime.moveFlags & PLAYER_ANIMFLAG_3) {
+            if (this->skelAnime.moveFlags & PLAYER_ANIMFLAG_UPDATE_Y) {
                 this->skelAnime.jointTable[0].y = this->skelAnime.prevTransl.y;
             }
         } else {
@@ -1627,7 +1627,7 @@ void func_80832E48(Player* this, s32 flags) {
     this->skelAnime.prevTransl = this->skelAnime.baseTransl;
     SkelAnime_UpdateTranslation(&this->skelAnime, &pos, this->actor.shape.rot.y);
 
-    if (flags & 1) {
+    if (flags & PLAYER_ANIMFLAG_0) {
         if (!LINK_IS_ADULT) {
             pos.x *= 0.64f;
             pos.z *= 0.64f;
@@ -1636,9 +1636,9 @@ void func_80832E48(Player* this, s32 flags) {
         this->actor.world.pos.z += pos.z * this->actor.scale.z;
     }
 
-    if (flags & 2) {
-        if (!(flags & 4)) {
-            pos.y *= this->ageProperties->unk_08;
+    if (flags & PLAYER_ANIMFLAG_UPDATE_Y) {
+        if (!(flags & PLAYER_ANIMFLAG_2)) {
+            pos.y *= this->ageProperties->translationScale;
         }
         this->actor.world.pos.y += pos.y * this->actor.scale.y;
     }
@@ -1647,9 +1647,9 @@ void func_80832E48(Player* this, s32 flags) {
 }
 
 void func_80832F54(PlayState* play, Player* this, s32 flags) {
-    if (flags & 0x200) {
+    if (flags & PLAYER_ANIMFLAG_9) {
         func_80832D20(this);
-    } else if ((flags & 0x100) || (this->skelAnime.moveFlags != 0)) {
+    } else if ((flags & PLAYER_ANIMFLAG_8) || (this->skelAnime.moveFlags != 0)) {
         func_80832CFC(this);
     } else {
         this->skelAnime.prevTransl = this->skelAnime.jointTable[0];
@@ -2628,7 +2628,7 @@ s32 func_80835588(Player* this, PlayState* play) {
 void func_808355DC(Player* this) {
     this->stateFlags1 |= PLAYER_STATE1_Z_PARALLEL_MODE;
 
-    if (!(this->skelAnime.moveFlags & 0x80) && (this->actor.bgCheckFlags & BGCHECKFLAG_PLAYER_WALL_INTERACT) &&
+    if (!(this->skelAnime.moveFlags & PLAYER_ANIMFLAG_7) && (this->actor.bgCheckFlags & BGCHECKFLAG_PLAYER_WALL_INTERACT) &&
         (sYawToTouchedWall < DEG_TO_BINANG(45.0f))) {
         this->currentYaw = this->actor.shape.rot.y = this->actor.wallYaw + 0x8000;
     }
@@ -3537,7 +3537,7 @@ void Player_SetupMeleeWeaponAttack(PlayState* play, Player* this, s32 meleeWeapo
 
     this->meleeWeaponAnimation = meleeWeaponAnim;
 
-    Player_PlayAnimOnceSlowed(play, this, D_80854190[meleeWeaponAnim].unk_00);
+    Player_PlayAnimOnceSlowed(play, this, D_80854190[meleeWeaponAnim].startAnim);
     if ((meleeWeaponAnim != PLAYER_MWA_FLIPSLASH_START) && (meleeWeaponAnim != PLAYER_MWA_JUMPSLASH_START)) {
         func_80832F54(play, this, 0x209);
     }
@@ -4025,14 +4025,14 @@ s32 func_80838A14(Player* this, PlayState* play) {
 
                 if (Player_IsSwimming(this)) {
                     sp38 = &gPlayerAnim_0032E8;
-                    sp34 -= (60.0f * this->ageProperties->unk_08);
+                    sp34 -= (60.0f * this->ageProperties->translationScale);
                     this->stateFlags1 &= ~PLAYER_STATE1_SWIMMING;
                 } else if (this->ageProperties->unk_18 <= sp34) {
                     sp38 = &gPlayerAnim_002D40;
-                    sp34 -= (59.0f * this->ageProperties->unk_08);
+                    sp34 -= (59.0f * this->ageProperties->translationScale);
                 } else {
                     sp38 = &gPlayerAnim_002D38;
-                    sp34 -= (41.0f * this->ageProperties->unk_08);
+                    sp34 -= (41.0f * this->ageProperties->translationScale);
                 }
 
                 this->actor.shape.yOffset -= sp34 * 100.0f;
@@ -4785,7 +4785,7 @@ void func_8083AA10(Player* this, PlayState* play) {
                 return;
             }
 
-            if (!(this->stateFlags3 & PLAYER_STATE3_MIDAIR) && !(this->skelAnime.moveFlags & 0x80) &&
+            if (!(this->stateFlags3 & PLAYER_STATE3_MIDAIR) && !(this->skelAnime.moveFlags & PLAYER_ANIMFLAG_7) &&
                 (func_8084411C != this->actionFunc) && (func_80844A44 != this->actionFunc)) {
 
                 if ((D_80853604 == 7) || (this->isMeleeWeaponAttacking != 0)) {
@@ -7642,9 +7642,9 @@ void func_8084279C(Player* this, PlayState* play) {
     }
 }
 
-s32 Player_SetupMeleeAttack(Player* this, f32 arg1, f32 arg2, f32 arg3) {
-    if ((arg1 <= this->skelAnime.curFrame) && (this->skelAnime.curFrame <= arg3)) {
-        Player_MeleeAttack(this, (arg2 <= this->skelAnime.curFrame) ? 1 : -1);
+s32 Player_SetupMeleeAttack(Player* this, f32 startFrame, f32 attackFrame, f32 endFrame) {
+    if ((startFrame <= this->skelAnime.curFrame) && (this->skelAnime.curFrame <= endFrame)) {
+        Player_MeleeAttack(this, (attackFrame <= this->skelAnime.curFrame) ? 1 : -1);
         return 1;
     }
 
@@ -8280,7 +8280,7 @@ void func_8084411C(Player* this, PlayState* play) {
                             func_8083EC18(this, play, sTouchedWallFlags);
                         } else if ((this->unk_88C >= 2) && (this->wallHeight < 150.0f) &&
                                    (((this->actor.world.pos.y - this->actor.floorHeight) + this->wallHeight) >
-                                    (70.0f * this->ageProperties->unk_08))) {
+                                    (70.0f * this->ageProperties->translationScale))) {
                             AnimationContext_DisableQueue(play);
                             if (this->stateFlags1 & PLAYER_STATE1_END_HOOKSHOT_MOVE) {
                                 Player_PlayVoiceSfxForAge(this, NA_SE_VO_LI_HOOKSHOT_HANG);
@@ -10143,7 +10143,37 @@ static f32 sFloorConveyorSpeeds[] = { 0.5f, 1.0f, 3.0f };
 void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     s32 pad;
 
-        // // TESTING
+    // TESTING
+    
+    GfxPrint printer;
+    Gfx* gfx;
+    
+    this->skelAnime.moveFlags |= ANIM_FLAG_NO_MOVE;
+
+    OPEN_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
+
+    gfx = POLY_OPA_DISP + 1;
+    gSPDisplayList(OVERLAY_DISP++, gfx);
+
+    GfxPrint_Init(&printer);
+    GfxPrint_Open(&printer, gfx);
+
+    GfxPrint_SetColor(&printer, 255, 0, 255, 255);
+    GfxPrint_SetPos(&printer, 10, 10);
+    GfxPrint_Printf(&printer, "attackAnim: %x", D_80854190[this->meleeWeaponAnimation]);
+
+    gfx = GfxPrint_Close(&printer);
+    GfxPrint_Destroy(&printer);
+
+    gSPEndDisplayList(gfx++);
+    gSPBranchList(POLY_OPA_DISP, gfx);
+    POLY_OPA_DISP = gfx;
+
+    CLOSE_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
+
+    // END TESTING
+
+     // // TESTING
 
     // static s16 val = 0;
     // static s16 i = 0;
@@ -10231,7 +10261,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     // GfxPrint printer;
     // Gfx* gfx;
     
-    // this->skelAnime.moveFlags |= (1 << 0);
+    // this->skelAnime.moveFlags |= ANIM_FLAG_NO_MOVE;
 
     // OPEN_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
 
@@ -10255,7 +10285,6 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     // CLOSE_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
 
     // // END TESTING
-
 
     sControlInput = input;
 
@@ -10376,7 +10405,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
             func_8084FF7C(this);
         }
 
-        if (!(this->skelAnime.moveFlags & 0x80)) {
+        if (!(this->skelAnime.moveFlags & PLAYER_ANIMFLAG_7)) {
             if (((this->actor.bgCheckFlags & BGCHECKFLAG_GROUND) && (D_808535E4 == 5) &&
                  (this->currentBoots != PLAYER_BOOTS_IRON)) ||
                 ((this->currentBoots == PLAYER_BOOTS_HOVER) &&
@@ -10558,9 +10587,9 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
 
         Player_UpdateCamAndSeqModes(play, this);
 
-        if (this->skelAnime.moveFlags & 8) {
+        if (this->skelAnime.moveFlags & PLAYER_ANIMFLAG_3) {
             AnimationContext_SetMoveActor(play, &this->actor, &this->skelAnime,
-                                          (this->skelAnime.moveFlags & 4) ? 1.0f : this->ageProperties->unk_08);
+                                          (this->skelAnime.moveFlags & PLAYER_ANIMFLAG_2) ? 1.0f : this->ageProperties->translationScale);
         }
 
         func_808368EC(this, play);
@@ -13087,12 +13116,12 @@ s32 func_80850224(Player* this, PlayState* play) {
 static Vec3f D_80854A40 = { 0.0f, 40.0f, 45.0f };
 
 void Player_MeleeWeaponAttack(Player* this, PlayState* play) {
-    struct_80854190* sp44 = &D_80854190[this->meleeWeaponAnimation];
+    struct_80854190* attackAnim = &D_80854190[this->meleeWeaponAnimation];
 
     this->stateFlags2 |= PLAYER_STATE2_DISABLE_MOVE_ROTATION_WHILE_TARGETING;
 
     if (!func_80842DF4(play, this)) {
-        Player_SetupMeleeAttack(this, 0.0f, sp44->unk_0C, sp44->unk_0D);
+        Player_SetupMeleeAttack(this, 0.0f, attackAnim->startFrame, attackAnim->endFrame);
 
         if ((this->stateFlags2 & PLAYER_STATE2_ENABLE_FORWARD_SLIDE_FROM_ATTACK) && (this->heldItemActionParam != PLAYER_AP_HAMMER) &&
             LinkAnimation_OnFrame(&this->skelAnime, 0.0f)) {
@@ -13109,25 +13138,25 @@ void Player_MeleeWeaponAttack(Player* this, PlayState* play) {
 
         if (LinkAnimation_Update(play, &this->skelAnime)) {
             if (!func_80850224(this, play)) {
-                u8 sp43 = this->skelAnime.moveFlags;
-                LinkAnimationHeader* sp3C;
+                u8 savedMoveFlags = this->skelAnime.moveFlags;
+                LinkAnimationHeader* anim;
 
                 if (Player_IsTargeting(this)) {
-                    sp3C = sp44->unk_08;
+                    anim = attackAnim->endAnim;
                 } else {
-                    sp3C = sp44->unk_04;
+                    anim = attackAnim->middleAnim;
                 }
 
                 Player_InactivateMeleeWeapon(this);
                 this->skelAnime.moveFlags = 0;
 
-                if ((sp3C == &gPlayerAnim_002908) && (this->modelAnimType != PLAYER_ANIMTYPE_HOLDING_TWO_HAND_WEAPON)) {
-                    sp3C = &gPlayerAnim_002AC8;
+                if ((anim == &gPlayerAnim_002908) && (this->modelAnimType != PLAYER_ANIMTYPE_HOLDING_TWO_HAND_WEAPON)) {
+                    anim = &gPlayerAnim_002AC8;
                 }
 
-                func_8083A098(this, sp3C, play);
+                func_8083A098(this, anim, play);
 
-                this->skelAnime.moveFlags = sp43;
+                this->skelAnime.moveFlags = savedMoveFlags;
                 this->stateFlags3 |= PLAYER_STATE3_ENDING_MELEE_ATTACK;
             }
         } else if (this->heldItemActionParam == PLAYER_AP_HAMMER) {
@@ -14403,8 +14432,8 @@ void func_80852B4C(PlayState* play, Player* this, CsCmdActorAction* arg2, Cutsce
         arg3->func(play, this, arg2);
     }
 
-    if ((D_80858AA0 & 4) && !(this->skelAnime.moveFlags & 4)) {
-        this->skelAnime.morphTable[0].y /= this->ageProperties->unk_08;
+    if ((D_80858AA0 & 4) && !(this->skelAnime.moveFlags & PLAYER_ANIMFLAG_2)) {
+        this->skelAnime.morphTable[0].y /= this->ageProperties->translationScale;
         D_80858AA0 = 0;
     }
 }

@@ -530,13 +530,24 @@ typedef enum {
 #define PLAYER_LOOKFLAGS_OVERRIDE_UPPERBODY_ROT_Y (1 << 7) // 0x00080
 #define PLAYER_LOOKFLAGS_OVERRIDE_UPPERBODY_ROT_Z (1 << 8) // 0x00100
 
+#define PLAYER_ANIMFLAG_0 (1 << 0)
+#define PLAYER_ANIMFLAG_UPDATE_Y (1 << 1)
+#define PLAYER_ANIMFLAG_2 (1 << 2)
+#define PLAYER_ANIMFLAG_3 (1 << 3)
+#define PLAYER_ANIMFLAG_NO_MOVE (1 << 4)
+#define PLAYER_ANIMFLAG_5 (1 << 5)
+#define PLAYER_ANIMFLAG_6 (1 << 6)
+#define PLAYER_ANIMFLAG_7 (1 << 7)
+#define PLAYER_ANIMFLAG_8 (1 << 8)
+#define PLAYER_ANIMFLAG_9 (1 << 9)
+
 #define LIMB_BUF_COUNT(limbCount) ((ALIGN16((limbCount) * sizeof(Vec3s)) + sizeof(Vec3s) - 1) / sizeof(Vec3s))
 #define PLAYER_LIMB_BUF_COUNT LIMB_BUF_COUNT(PLAYER_LIMB_MAX)
 
 typedef struct {
     /* 0x00 */ f32 ceilingCheckHeight;
     /* 0x04 */ f32 unk_04;
-    /* 0x08 */ f32 unk_08;
+    /* 0x08 */ f32 translationScale;
     /* 0x0C */ f32 unk_0C;
     /* 0x10 */ f32 unk_10;
     /* 0x14 */ f32 unk_14;
