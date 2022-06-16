@@ -471,7 +471,7 @@ void EnSyatekiMan_Update(Actor* thisx, PlayState* play) {
     this->blinkFunc(this);
     this->actor.focus.pos.y = 70.0f;
     Actor_SetFocus(&this->actor, 70.0f);
-    Actor_TrackPlayer(play, &this->actor, &this->headRot, &this->bodyRot, this->actor.focus.pos);
+    Actor_TrackPlayer(play, &this->actor, &this->headRot, &this->upperBodyRot, this->actor.focus.pos);
 }
 
 s32 EnSyatekiMan_OverrideLimbDraw(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot, void* thisx) {
@@ -479,7 +479,7 @@ s32 EnSyatekiMan_OverrideLimbDraw(PlayState* play, s32 limbIndex, Gfx** dList, V
     s32 turnDirection;
 
     if (limbIndex == 1) {
-        rot->x += this->bodyRot.y;
+        rot->x += this->upperBodyRot.y;
     }
     if (limbIndex == 8) {
         *dList = gObjectOssanEnSyatekiManDL_007E28;

@@ -1987,18 +1987,18 @@ void Fishing_DrawRod(PlayState* play) {
         Math_SmoothStepToF(&player->unk_85C, input->rel.stick_y * 0.02f, 0.3f, 5.0f, 0.0f);
         spC8 = player->unk_85C - spC8;
 
-        spC4 = player->unk_858;
-        Math_SmoothStepToF(&player->unk_858, input->rel.stick_x * 0.02f, 0.3f, 5.0f, 0.0f);
-        spC4 = player->unk_858 - spC4;
+        spC4 = player->reelPullDir;
+        Math_SmoothStepToF(&player->reelPullDir, input->rel.stick_x * 0.02f, 0.3f, 5.0f, 0.0f);
+        spC4 = player->reelPullDir - spC4;
 
-        if (player->unk_858 > 1.0f) {
-            player->unk_858 = 1.0f;
+        if (player->reelPullDir > 1.0f) {
+            player->reelPullDir = 1.0f;
         }
         if (player->unk_85C > 1.0f) {
             player->unk_85C = 1.0f;
         }
-        if (player->unk_858 < -1.0f) {
-            player->unk_858 = -1.0f;
+        if (player->reelPullDir < -1.0f) {
+            player->reelPullDir = -1.0f;
         }
         if (player->unk_85C < -1.0f) {
             player->unk_85C = -1.0f;
@@ -2011,7 +2011,7 @@ void Fishing_DrawRod(PlayState* play) {
         Math_ApproachZeroF(&D_80B7A6B8, 1.0f, 0.05f);
     } else {
         Math_ApproachZeroF(&player->unk_85C, 1.0f, 0.1f);
-        Math_ApproachZeroF(&player->unk_858, 1.0f, 0.1f);
+        Math_ApproachZeroF(&player->reelPullDir, 1.0f, 0.1f);
         Math_ApproachF(&D_80B7A6AC, (Math_SinS(D_80B7E0AE * 3000) * 0.025f) + -0.03f, 1.0f, 0.05f);
         Math_ApproachZeroF(&D_80B7A6A8, 1.0f, 0.05f);
 
@@ -2043,7 +2043,7 @@ void Fishing_DrawRod(PlayState* play) {
     }
 
     Matrix_RotateX(-M_PI / 5.0000003f, MTXMODE_APPLY);
-    Matrix_RotateZ((player->unk_858 * 0.5f) + 3.0f * M_PI / 20.0f, MTXMODE_APPLY);
+    Matrix_RotateZ((player->reelPullDir * 0.5f) + 3.0f * M_PI / 20.0f, MTXMODE_APPLY);
     Matrix_RotateX((D_80B7A6C0 + 20.0f) * 0.01f * M_PI, MTXMODE_APPLY);
     Matrix_Scale(0.70000005f, 0.70000005f, 0.70000005f, MTXMODE_APPLY);
 

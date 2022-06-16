@@ -623,7 +623,7 @@ void func_8008EEAC(PlayState* play, Actor* actor) {
 
     func_8008EE08(this);
     this->targetActor = actor;
-    this->nextTargetActor = actor;
+    this->forcedTargetActor = actor;
     this->stateFlags1 |= PLAYER_STATE1_FORCE_STRAFING;
     Camera_SetParam(Play_GetCamera(play, CAM_ID_MAIN), 8, actor);
     Camera_ChangeMode(Play_GetCamera(play, CAM_ID_MAIN), CAM_MODE_FOLLOWTARGET);
@@ -1087,22 +1087,22 @@ s32 Player_OverrideLimbDrawGameplayCommon(PlayState* play, s32 limbIndex, Gfx** 
         }
 
         if (limbIndex == PLAYER_LIMB_HEAD) {
-            rot->x += this->unk_6BA;
-            rot->y -= this->unk_6B8;
-            rot->z += this->unk_6B6;
+            rot->x += this->headRot.z;
+            rot->y -= this->headRot.y;
+            rot->z += this->headRot.x;
         } else if (limbIndex == PLAYER_LIMB_UPPER) {
             if (this->unk_6B0 != 0) {
                 Matrix_RotateZ(BINANG_TO_RAD(0x44C), MTXMODE_APPLY);
                 Matrix_RotateY(BINANG_TO_RAD(this->unk_6B0), MTXMODE_APPLY);
             }
-            if (this->unk_6BE != 0) {
-                Matrix_RotateY(BINANG_TO_RAD(this->unk_6BE), MTXMODE_APPLY);
+            if (this->upperBodyRot.y != 0) {
+                Matrix_RotateY(BINANG_TO_RAD(this->upperBodyRot.y), MTXMODE_APPLY);
             }
-            if (this->unk_6BC != 0) {
-                Matrix_RotateX(BINANG_TO_RAD(this->unk_6BC), MTXMODE_APPLY);
+            if (this->upperBodyRot.x != 0) {
+                Matrix_RotateX(BINANG_TO_RAD(this->upperBodyRot.x), MTXMODE_APPLY);
             }
-            if (this->unk_6C0 != 0) {
-                Matrix_RotateZ(BINANG_TO_RAD(this->unk_6C0), MTXMODE_APPLY);
+            if (this->upperBodyRot.z != 0) {
+                Matrix_RotateZ(BINANG_TO_RAD(this->upperBodyRot.z), MTXMODE_APPLY);
             }
         } else if (limbIndex == PLAYER_LIMB_L_THIGH) {
             func_8008F87C(play, this, &this->skelAnime, pos, rot, PLAYER_LIMB_L_THIGH, PLAYER_LIMB_L_SHIN,
@@ -1547,23 +1547,23 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
                 Matrix_MultVec3f(&sZeroVec, &sp90);
                 distXYZ = Math_Vec3f_DistXYZ(sCurBodyPartPos, &sp90);
 
-                this->unk_858 = distXYZ - 3.0f;
+                this->spinAttackTimer = distXYZ - 3.0f;
                 if (distXYZ < 3.0f) {
-                    this->unk_858 = 0.0f;
+                    this->spinAttackTimer = 0.0f;
                 } else {
-                    this->unk_858 *= 1.6f;
-                    if (this->unk_858 > 1.0f) {
-                        this->unk_858 = 1.0f;
+                    this->spinAttackTimer *= 1.6f;
+                    if (this->spinAttackTimer > 1.0f) {
+                        this->spinAttackTimer = 1.0f;
                     }
                 }
 
                 this->unk_85C = -0.5f;
             }
 
-            Matrix_Scale(1.0f, this->unk_858, 1.0f, MTXMODE_APPLY);
+            Matrix_Scale(1.0f, this->spinAttackTimer, 1.0f, MTXMODE_APPLY);
 
             if (!LINK_IS_ADULT) {
-                Matrix_RotateZ(this->unk_858 * -0.2f, MTXMODE_APPLY);
+                Matrix_RotateZ(this->spinAttackTimer * -0.2f, MTXMODE_APPLY);
             }
 
             gSPMatrix(POLY_XLU_DISP++, Matrix_NewMtx(play->state.gfxCtx, "../z_player_lib.c", 2804),

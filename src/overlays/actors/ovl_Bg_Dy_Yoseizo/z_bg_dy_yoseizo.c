@@ -859,7 +859,7 @@ void BgDyYoseizo_Update(Actor* thisx, PlayState* play2) {
     this->heightOffset = this->scale * 7500.0f;
     Actor_SetFocus(&this->actor, this->heightOffset);
     this->actor.focus.pos.y = this->heightOffset;
-    Actor_TrackPlayer(play, &this->actor, &this->headRot, &this->torsoRot, this->actor.focus.pos);
+    Actor_TrackPlayer(play, &this->actor, &this->headRot, &this->upperBodyRot, this->actor.focus.pos);
     BgDyYoseizo_UpdateEffects(this, play);
     Actor_SetScale(&this->actor, this->scale);
 }
@@ -868,7 +868,7 @@ s32 BgDyYoseizo_OverrideLimbDraw(PlayState* play, s32 limbIndex, Gfx** dList, Ve
     BgDyYoseizo* this = (BgDyYoseizo*)thisx;
 
     if (limbIndex == 8) { // Torso
-        rot->x += this->torsoRot.y;
+        rot->x += this->upperBodyRot.y;
     }
     if (limbIndex == 15) { // Head
         rot->x += this->headRot.y;

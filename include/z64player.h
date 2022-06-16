@@ -520,6 +520,16 @@ typedef enum {
 #define PLAYER_ANIMSFXFLAGS_2 (1 << 13) // 0x2000
 #define PLAYER_ANIMSFXFLAGS_3 (1 << 14) // 0x4000
 
+#define PLAYER_LOOKFLAGS_OVERRIDE_FOCUS_ROT_X (1 << 0) // 0x00001
+#define PLAYER_LOOKFLAGS_OVERRIDE_FOCUS_ROT_Y (1 << 1) // 0x00002
+#define PLAYER_LOOKFLAGS_OVERRIDE_FOCUS_ROT_Z (1 << 2) // 0x00004
+#define PLAYER_LOOKFLAGS_OVERRIDE_HEAD_ROT_X (1 << 3) // 0x00008
+#define PLAYER_LOOKFLAGS_OVERRIDE_HEAD_ROT_Y (1 << 4) // 0x00010
+#define PLAYER_LOOKFLAGS_OVERRIDE_HEAD_ROT_Z (1 << 5) // 0x00020
+#define PLAYER_LOOKFLAGS_OVERRIDE_UPPERBODY_ROT_X (1 << 6) // 0x00040
+#define PLAYER_LOOKFLAGS_OVERRIDE_UPPERBODY_ROT_Y (1 << 7) // 0x00080
+#define PLAYER_LOOKFLAGS_OVERRIDE_UPPERBODY_ROT_Z (1 << 8) // 0x00100
+
 #define LIMB_BUF_COUNT(limbCount) ((ALIGN16((limbCount) * sizeof(Vec3s)) + sizeof(Vec3s) - 1) / sizeof(Vec3s))
 #define PLAYER_LIMB_BUF_COUNT LIMB_BUF_COUNT(PLAYER_LIMB_MAX)
 
@@ -720,7 +730,7 @@ typedef struct Player {
     /* 0x0678 */ PlayerAgeProperties* ageProperties;
     /* 0x067C */ u32        stateFlags1;
     /* 0x0680 */ u32        stateFlags2;
-    /* 0x0684 */ Actor*     nextTargetActor;
+    /* 0x0684 */ Actor*     forcedTargetActor;
     /* 0x0688 */ Actor*     boomerangActor;
     /* 0x068C */ Actor*     naviActor;
     /* 0x0690 */ s16        naviTextId;
@@ -734,15 +744,11 @@ typedef struct Player {
     /* 0x06A8 */ Actor*     ocarinaActor;
     /* 0x06AC */ s8         unk_6AC;
     /* 0x06AD */ u8         attentionMode;
-    /* 0x06AE */ u16        unk_6AE;
+    /* 0x06AE */ u16        lookFlags;
     /* 0x06B0 */ s16        unk_6B0;
     /* 0x06B2 */ char       unk_6B4[0x004];
-    /* 0x06B6 */ s16        unk_6B6;
-    /* 0x06B8 */ s16        unk_6B8;
-    /* 0x06BA */ s16        unk_6BA;
-    /* 0x06BC */ s16        unk_6BC;
-    /* 0x06BE */ s16        unk_6BE;
-    /* 0x06C0 */ s16        unk_6C0;
+    /* 0x06B6 */ Vec3s      headRot;
+    /* 0x06BC */ Vec3s      upperBodyRot;
     /* 0x06C2 */ s16        unk_6C2;
     /* 0x06C4 */ f32        unk_6C4;
     /* 0x06C8 */ SkelAnime  skelAnime2;
@@ -761,16 +767,19 @@ typedef struct Player {
     /* 0x0843 */ s8         isMeleeWeaponAttacking;
     /* 0x0844 */ s8         comboTimer;
     /* 0x0845 */ u8         slashCounter;
-    /* 0x0846 */ u8         unk_846;
-    /* 0x0847 */ s8         unk_847[4];
-    /* 0x084B */ s8         unk_84B[4];
+    /* 0x0846 */ u8         inputFrameCounter;
+    /* 0x0847 */ s8         analogStickInputs[4];
+    /* 0x084B */ s8         offsetAnalogStickInputs[4];
     union {
         /* 0x084F */ s8 unk_84F;
         /* 0x084F */ s8 climbStatus;
     };
     /* 0x0850 */ s16        unk_850; // multipurpose timer
     /* 0x0854 */ f32        unk_854;
-    /* 0x0858 */ f32        unk_858;
+    union {
+        /* 0x0858 */ f32        spinAttackTimer;
+        /* 0x0858 */ f32        reelPullDir;
+    };
     /* 0x085C */ f32        unk_85C; // stick length among other things
     union {
         /* 0x0860 */ s16 fpsItemType;
@@ -779,7 +788,7 @@ typedef struct Player {
     };
     /* 0x0862 */ s8         unk_862; // get item draw ID + 1
     /* 0x0864 */ f32        unk_864;
-    /* 0x0868 */ f32        unk_868;
+    /* 0x0868 */ f32        walkFrame;
     /* 0x086C */ f32        unk_86C;
     /* 0x0870 */ f32        unk_870;
     /* 0x0874 */ f32        unk_874;

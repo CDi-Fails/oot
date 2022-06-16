@@ -65,7 +65,7 @@ typedef struct BgDyYoseizo {
     /* 0x032C */ f32 frameCount;
     /* 0x0330 */ char unk_330[4];
     /* 0x0334 */ Vec3s headRot;
-    /* 0x033A */ Vec3s torsoRot;
+    /* 0x033A */ Vec3s upperBodyRot;
     /* 0x0340 */ EnDyExtra* beam;
     /* 0x0344 */ EnExItem* item;
     /* 0x0348 */ char unk_348[0x4C];

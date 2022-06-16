@@ -362,7 +362,7 @@ void EnRd_WalkToPlayer(EnRd* this, PlayState* play) {
                 if (!(this->rdFlags & 0x80)) {
                     player->actor.freezeTimer = 40;
                     func_8008EEAC(play, &this->actor);
-                    GET_PLAYER(play)->nextTargetActor = &this->actor;
+                    GET_PLAYER(play)->forcedTargetActor = &this->actor;
                     func_800AA000(this->actor.xzDistToPlayer, 0xFF, 0x14, 0x96);
                 }
 
