@@ -10143,35 +10143,35 @@ static f32 sFloorConveyorSpeeds[] = { 0.5f, 1.0f, 3.0f };
 void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     s32 pad;
 
-    // TESTING
+    // // TESTING
     
-    GfxPrint printer;
-    Gfx* gfx;
+    // GfxPrint printer;
+    // Gfx* gfx;
     
-    this->skelAnime.moveFlags |= ANIM_FLAG_NO_MOVE;
+    // this->skelAnime.moveFlags |= ANIM_FLAG_NO_MOVE;
 
-    OPEN_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
+    // OPEN_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
 
-    gfx = POLY_OPA_DISP + 1;
-    gSPDisplayList(OVERLAY_DISP++, gfx);
+    // gfx = POLY_OPA_DISP + 1;
+    // gSPDisplayList(OVERLAY_DISP++, gfx);
 
-    GfxPrint_Init(&printer);
-    GfxPrint_Open(&printer, gfx);
+    // GfxPrint_Init(&printer);
+    // GfxPrint_Open(&printer, gfx);
 
-    GfxPrint_SetColor(&printer, 255, 0, 255, 255);
-    GfxPrint_SetPos(&printer, 10, 10);
-    GfxPrint_Printf(&printer, "attackAnim: %x", D_80854190[this->meleeWeaponAnimation]);
+    // GfxPrint_SetColor(&printer, 255, 0, 255, 255);
+    // GfxPrint_SetPos(&printer, 10, 10);
+    // GfxPrint_Printf(&printer, "attackAnim: %x", D_80854190[this->meleeWeaponAnimation]);
 
-    gfx = GfxPrint_Close(&printer);
-    GfxPrint_Destroy(&printer);
+    // gfx = GfxPrint_Close(&printer);
+    // GfxPrint_Destroy(&printer);
 
-    gSPEndDisplayList(gfx++);
-    gSPBranchList(POLY_OPA_DISP, gfx);
-    POLY_OPA_DISP = gfx;
+    // gSPEndDisplayList(gfx++);
+    // gSPBranchList(POLY_OPA_DISP, gfx);
+    // POLY_OPA_DISP = gfx;
 
-    CLOSE_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
+    // CLOSE_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
 
-    // END TESTING
+    // // END TESTING
 
      // // TESTING
 
