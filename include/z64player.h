@@ -800,7 +800,10 @@ typedef struct Player {
         /* 0x0858 */ f32        spinAttackTimer;
         /* 0x0858 */ f32        reelPullDir;
     };
-    /* 0x085C */ f32        unk_85C; // stick length among other things
+    union {
+        /* 0x085C */ f32        unk_85C; // stick length among other things
+        /* 0x085C */ f32        dekuStickLength;
+    };
     union {
         /* 0x0860 */ s16 fpsItemType;
         /* 0x0860 */ s16 stickFlameTimer;
@@ -822,7 +825,7 @@ typedef struct Player {
     /* 0x088D */ u8         unk_88D;
     /* 0x088E */ u8         unk_88E;
     /* 0x088F */ u8         unk_88F;
-    /* 0x0890 */ u8         unk_890;
+    /* 0x0890 */ u8         runDamageTimer;
     /* 0x0891 */ u8         shockTimer;
     /* 0x0892 */ u8         unk_892;
     /* 0x0893 */ u8         hoverBootsTimer;
@@ -849,11 +852,11 @@ typedef struct Player {
     /* 0x0A74 */ PlayerMiniCsFunc miniCsFunc;
     /* 0x0A78 */ s8         invincibilityTimer; // prevents damage when nonzero (positive = visible, counts towards zero each frame)
     /* 0x0A79 */ u8         unk_A79;
-    /* 0x0A7A */ u8         unk_A7A;
+    /* 0x0A7A */ u8         floorProperty;
     /* 0x0A7B */ u8         unk_A7B;
     /* 0x0A7C */ f32        analogStickDistance;
     /* 0x0A80 */ s16        analogStickAngle;
-    /* 0x0A82 */ u16        unk_A82;
+    /* 0x0A82 */ u16        prevMoveSfxType;
     /* 0x0A84 */ s16        unk_A84;
     /* 0x0A86 */ s8         unk_A86;
     /* 0x0A87 */ u8         unk_A87;

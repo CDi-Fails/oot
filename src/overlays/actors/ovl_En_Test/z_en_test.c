@@ -1725,7 +1725,7 @@ void EnTest_Update(Actor* thisx, PlayState* play) {
         } else if (this->actor.bgCheckFlags & BGCHECKFLAG_GROUND_TOUCH) {
             floorProperty = func_80041EA4(&play->colCtx, this->actor.floorPoly, this->actor.floorBgId);
 
-            if ((floorProperty == 5) || (floorProperty == 0xC) ||
+            if ((floorProperty == BGCHECK_FLOORPROPERTY_VOID_PIT) || (floorProperty == BGCHECK_FLOORPROPERTY_VOID_PIT_LARGE) ||
                 func_80041D4C(&play->colCtx, this->actor.floorPoly, this->actor.floorBgId) == BGCHECK_FLOORSPECIALPROPERTY_VOID_ON_TOUCH) {
                 Actor_Kill(&this->actor);
                 return;

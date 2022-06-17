@@ -21,11 +21,6 @@ struct DynaPolyActor;
 #define BGCHECK_SUBDIV_OVERLAP 50
 #define BGCHECK_SUBDIV_MIN 150.0f
 
-#define FUNC_80041EA4_RESPAWN 5
-#define FUNC_80041EA4_MOUNT_WALL 6
-#define FUNC_80041EA4_STOP 8
-#define FUNC_80041EA4_VOID_OUT 12
-
 #define WATERBOX_ROOM(p) ((p >> 13) & 0x3F)
 
 typedef struct {
@@ -192,6 +187,23 @@ typedef struct {
     /* 0x24 */ f32* distSq;    // distance from posA to poly squared
     /* 0x28 */ f32 chkDist;    // distance from poly
 } DynaLineTest;
+
+typedef enum {
+    /* 0x00 */ BGCHECK_FLOORPROPERTY_NONE,
+    /* 0x01 */ BGCHECK_FLOORPROPERTY_1,
+    /* 0x02 */ BGCHECK_FLOORPROPERTY_2,
+    /* 0x03 */ BGCHECK_FLOORPROPERTY_3,
+    /* 0x04 */ BGCHECK_FLOORPROPERTY_4,
+    /* 0x05 */ BGCHECK_FLOORPROPERTY_VOID_PIT,
+    /* 0x06 */ BGCHECK_FLOORPROPERTY_GRAB_ADJACENT_WALL,
+    /* 0x07 */ BGCHECK_FLOORPROPERTY_STOP_ALL_MOMENTUM,
+    /* 0x08 */ BGCHECK_FLOORPROPERTY_STOP_XZ_MOMENTUM,
+    /* 0x09 */ BGCHECK_FLOORPROPERTY_NO_JUMPING,
+    /* 0x0A */ BGCHECK_FLOORPROPERTY_10,
+    /* 0x0B */ BGCHECK_FLOORPROPERTY_FALLING_DIVE,
+    /* 0x0C */ BGCHECK_FLOORPROPERTY_VOID_PIT_LARGE,
+    /* 0x0D */ BGCHECK_FLOORPROPERTY_MAX
+} FloorProperty;
 
 typedef enum {
     /* 0x00 */ BGCHECK_FLOORSPECIALPROPERTY_NONE,
