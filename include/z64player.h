@@ -473,9 +473,9 @@ typedef enum {
 } PlayerMoveSfxType;
 
 typedef enum {
-    PLAYER_CLIMBSTATUS_MOVING_DOWN = -1,
-    PLAYER_CLIMBSTATUS_MOVING_UP,
-    PLAYER_CLIMBSTATUS_KNOCKED_DOWN
+    /* -1 */ PLAYER_CLIMBSTATUS_MOVING_DOWN = -1,
+    /*  0 */ PLAYER_CLIMBSTATUS_MOVING_UP,
+    /*  1 */ PLAYER_CLIMBSTATUS_KNOCKED_DOWN
 } PlayerClimbStatus;
 
 typedef enum {
@@ -516,12 +516,20 @@ typedef enum {
 } PlayerMagicSpells;
 
 typedef enum {
-    /* 0x00 */ PLAYER_RELATIVESTICKINPUT_NONE = -1,
-    /* 0x01 */ PLAYER_RELATIVESTICKINPUT_FORWARD,
-    /* 0x02 */ PLAYER_RELATIVESTICKINPUT_LEFT,
-    /* 0x03 */ PLAYER_RELATIVESTICKINPUT_BACKWARD,
-    /* 0x04 */ PLAYER_RELATIVESTICKINPUT_RIGHT
+    /* -1 */ PLAYER_RELATIVESTICKINPUT_NONE = -1,
+    /*  0 */ PLAYER_RELATIVESTICKINPUT_FORWARD,
+    /*  1 */ PLAYER_RELATIVESTICKINPUT_LEFT,
+    /*  2 */ PLAYER_RELATIVESTICKINPUT_BACKWARD,
+    /*  3 */ PLAYER_RELATIVESTICKINPUT_RIGHT
 } PlayerRelativeAnalogStickInputs;
+
+typedef enum {
+    /* 0x00 */ PLAYER_WALLJUMPTYPE_NONE,
+    /* 0x01 */ PLAYER_WALLJUMPTYPE_HOP_UP,
+    /* 0x02 */ PLAYER_WALLJUMPTYPE_SMALL_CLIMB_UP,
+    /* 0x03 */ PLAYER_WALLJUMPTYPE_LARGE_CLIMB_UP,
+    /* 0x04 */ PLAYER_WALLJUMPTYPE_JUMP_UP_TO_LEDGE
+} PlayerTouchedWallJumpType;
 
 #define PLAYER_ANIMSFXFLAGS_0 (1 << 11) // 0x0800
 #define PLAYER_ANIMSFXFLAGS_1 (1 << 12) // 0x1000
@@ -769,7 +777,7 @@ typedef struct Player {
     /* 0x06B6 */ Vec3s      headRot;
     /* 0x06BC */ Vec3s      upperBodyRot;
     /* 0x06C2 */ s16        unk_6C2;
-    /* 0x06C4 */ f32        unk_6C4;
+    /* 0x06C4 */ f32        sinkingOffsetY;
     /* 0x06C8 */ SkelAnime  skelAnime2;
     /* 0x070C */ Vec3s      jointTable2[PLAYER_LIMB_BUF_COUNT];
     /* 0x079C */ Vec3s      morphTable2[PLAYER_LIMB_BUF_COUNT];
@@ -795,7 +803,7 @@ typedef struct Player {
         /* 0x084F */ s8 climbStatus;
     };
     /* 0x0850 */ s16        unk_850; // multipurpose timer
-    /* 0x0854 */ f32        unk_854;
+    /* 0x0854 */ f32        rippleTimer;
     union {
         /* 0x0858 */ f32        spinAttackTimer;
         /* 0x0858 */ f32        reelPullDir;
@@ -821,8 +829,8 @@ typedef struct Player {
     /* 0x0880 */ f32        speedLimit;
     /* 0x0884 */ f32        wallHeight; // height used to determine whether link can climb or grab a ledge at the top
     /* 0x0888 */ f32        wallDistance; // distance to the colliding wall plane
-    /* 0x088C */ u8         unk_88C;
-    /* 0x088D */ u8         unk_88D;
+    /* 0x088C */ u8         touchedWallJumpType;
+    /* 0x088D */ u8         wallTouchTimer;
     /* 0x088E */ u8         unk_88E;
     /* 0x088F */ u8         unk_88F;
     /* 0x0890 */ u8         runDamageTimer;
@@ -831,8 +839,8 @@ typedef struct Player {
     /* 0x0893 */ u8         hoverBootsTimer;
     /* 0x0894 */ s16        fallStartHeight; // last truncated Y position before falling
     /* 0x0896 */ s16        fallDistance; // truncated Y distance the player has fallen so far (positive is down)
-    /* 0x0898 */ s16        unk_898;
-    /* 0x089A */ s16        unk_89A;
+    /* 0x0898 */ s16        angleToGroundX;
+    /* 0x089A */ s16        angleToGroundY;
     /* 0x089C */ s16        unk_89C;
     /* 0x089E */ u16        moveSfxType;
     /* 0x08A0 */ u8         unk_8A0;
@@ -860,7 +868,7 @@ typedef struct Player {
     /* 0x0A84 */ s16        unk_A84;
     /* 0x0A86 */ s8         unk_A86;
     /* 0x0A87 */ u8         unk_A87;
-    /* 0x0A88 */ Vec3f      unk_A88; // previous body part 0 position
+    /* 0x0A88 */ Vec3f      prevWaistPos; // previous body part 0 position
 } Player; // size = 0xA94
 
 #endif

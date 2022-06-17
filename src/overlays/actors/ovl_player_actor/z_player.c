@@ -198,7 +198,7 @@ void func_80844AF4(Player* this, PlayState* play);
 void Player_ChargeSpinAttack(Player* this, PlayState* play);
 void func_80845000(Player* this, PlayState* play);
 void func_80845308(Player* this, PlayState* play);
-void func_80845668(Player* this, PlayState* play);
+void Player_JumpUpToLedge(Player* this, PlayState* play);
 void Player_RunMiniCutsceneFunc(Player* this, PlayState* play);
 void func_80845CA4(Player* this, PlayState* play);
 void func_80845EF8(Player* this, PlayState* play);
@@ -356,7 +356,7 @@ void Player_StartTalkingWithActor(PlayState* play, Actor* actor);
 // .bss part 1
 static s32 D_80858AA0;
 static s32 D_80858AA4;
-static Vec3f D_80858AA8;
+static Vec3f sWallIntersectPos;
 static Input* sControlInput;
 
 // .data
@@ -365,106 +365,134 @@ static u8 D_80853410[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
 
 static PlayerAgeProperties sAgeProperties[] = {
     {
-        56.0f,
-        90.0f,
-        1.0f,
-        111.0f,
-        70.0f,
-        79.4f,
-        59.0f,
-        41.0f,
-        19.0f,
-        36.0f,
-        44.8f,
-        56.0f,
-        68.0f,
-        70.0f,
-        18.0f,
-        15.0f,
-        70.0f,
-        { 9, 4671, 359 },
+        56.0f,            // ageProperties->ceilingCheckHeight
+        90.0f,            // ageProperties->unk_04
+        1.0f,             // ageProperties->translationScale
+        111.0f,           // ageProperties->unk_0C
+        70.0f,            // ageProperties->unk_10
+        79.4f,            // ageProperties->unk_14
+        59.0f,            // ageProperties->unk_18
+        41.0f,            // ageProperties->unk_1C
+        19.0f,            // ageProperties->unk_20
+        36.0f,            // ageProperties->unk_24
+        44.8f,            // ageProperties->waterSurface
+        56.0f,            // ageProperties->diveWaterSurface
+        68.0f,            // ageProperties->unk_30
+        70.0f,            // ageProperties->unk_34
+        18.0f,            // ageProperties->wallCheckRadius
+        15.0f,            // ageProperties->unk_3C
+        70.0f,            // ageProperties->unk_40
+        { 9, 4671, 359 }, // ageProperties->unk_44
         {
-            { 8, 4694, 380 },
-            { 9, 6122, 359 },
-            { 8, 4694, 380 },
-            { 9, 6122, 359 },
+            { 8, 4694, 380 }, // ageProperties->unk_4A[0]
+            { 9, 6122, 359 }, // ageProperties->unk_4A[1]
+            { 8, 4694, 380 }, // ageProperties->unk_4A[2]
+            { 9, 6122, 359 }, // ageProperties->unk_4A[3]
         },
         {
-            { 9, 6122, 359 },
-            { 9, 7693, 380 },
-            { 9, 6122, 359 },
-            { 9, 7693, 380 },
+            { 9, 6122, 359 }, // ageProperties->unk_62[0]
+            { 9, 7693, 380 }, // ageProperties->unk_62[1]
+            { 9, 6122, 359 }, // ageProperties->unk_62[2]
+            { 9, 7693, 380 }, // ageProperties->unk_62[3]
         },
         {
-            { 8, 4694, 380 },
-            { 9, 6122, 359 },
+            { 8, 4694, 380 }, // ageProperties->unk_7A[0]
+            { 9, 6122, 359 }, // ageProperties->unk_7A[1]
         },
         {
-            { -1592, 4694, 380 },
-            { -1591, 6122, 359 },
+            { -1592, 4694, 380 }, // ageProperties->unk_86[0]
+            { -1591, 6122, 359 }, // ageProperties->unk_86[1]
         },
-        0,
-        0x80,
-        &gPlayerAnim_002718,
-        &gPlayerAnim_002720,
-        &gPlayerAnim_002838,
-        &gPlayerAnim_002E70,
-        &gPlayerAnim_002E78,
-        { &gPlayerAnim_002E80, &gPlayerAnim_002E88, &gPlayerAnim_002D90, &gPlayerAnim_002D98 },
-        { &gPlayerAnim_002D70, &gPlayerAnim_002D78 },
-        { &gPlayerAnim_002E50, &gPlayerAnim_002E58 },
-        { &gPlayerAnim_002E68, &gPlayerAnim_002E60 },
+        0,                   // ageProperties->ageVoiceSfxOffset
+        0x80,                // ageProperties->ageMoveSfxOffset
+        &gPlayerAnim_002718, // ageProperties->chestOpenAnim
+        &gPlayerAnim_002720, // ageProperties->timeTravelStartAnim
+        &gPlayerAnim_002838, // ageProperties->timeTravelEndAnim
+        &gPlayerAnim_002E70, // ageProperties->startClimb1Anim
+        &gPlayerAnim_002E78, // ageProperties->startClimb2Anim
+        {
+            &gPlayerAnim_002E80, // ageProperties->verticalClimbAnim[0]
+            &gPlayerAnim_002E88, // ageProperties->verticalClimbAnim[1]
+            &gPlayerAnim_002D90, // ageProperties->verticalClimbAnim[2]
+            &gPlayerAnim_002D98  // ageProperties->verticalClimbAnim[3]
+        },
+        {
+            &gPlayerAnim_002D70, // ageProperties->horizontalClimbAnim[0]
+            &gPlayerAnim_002D78  // ageProperties->horizontalClimbAnim[1]
+        },
+        {
+            &gPlayerAnim_002E50, // ageProperties->endClimb1Anim[0]
+            &gPlayerAnim_002E58  // ageProperties->endClimb1Anim[1]
+        },
+        {
+            &gPlayerAnim_002E68, // ageProperties->endClimb2Anim[0]
+            &gPlayerAnim_002E60  // ageProperties->endClimb2Anim[1]
+        },
     },
     {
-        40.0f,
-        60.0f,
-        11.0f / 17.0f,
-        71.0f,
-        50.0f,
-        47.0f,
-        39.0f,
-        27.0f,
-        19.0f,
-        22.0f,
-        29.6f,
-        32.0f,
-        48.0f,
-        70.0f * (11.0f / 17.0f),
-        14.0f,
-        12.0f,
-        55.0f,
-        { -24, 3565, 876 },
+        40.0f,                   // ageProperties->ceilingCheckHeight
+        60.0f,                   // ageProperties->unk_04
+        11.0f / 17.0f,           // ageProperties->translationScale
+        71.0f,                   // ageProperties->unk_0C
+        50.0f,                   // ageProperties->unk_10
+        47.0f,                   // ageProperties->unk_14
+        39.0f,                   // ageProperties->unk_18
+        27.0f,                   // ageProperties->unk_1C
+        19.0f,                   // ageProperties->unk_20
+        22.0f,                   // ageProperties->unk_24
+        29.6f,                   // ageProperties->waterSurface
+        32.0f,                   // ageProperties->diveWaterSurface
+        48.0f,                   // ageProperties->unk_30
+        70.0f * (11.0f / 17.0f), // ageProperties->unk_34
+        14.0f,                   // ageProperties->wallCheckRadius
+        12.0f,                   // ageProperties->unk_3C
+        55.0f,                   // ageProperties->unk_40
+        { -24, 3565, 876 },      // ageProperties->unk_44
         {
-            { -24, 3474, 862 },
-            { -24, 4977, 937 },
-            { 8, 4694, 380 },
-            { 9, 6122, 359 },
+            { -24, 3474, 862 }, // ageProperties->unk_4A[0]
+            { -24, 4977, 937 }, // ageProperties->unk_4A[1]
+            { 8, 4694, 380 },   // ageProperties->unk_4A[2]
+            { 9, 6122, 359 },   // ageProperties->unk_4A[3]
         },
         {
-            { -24, 4977, 937 },
-            { -24, 6495, 937 },
-            { 9, 6122, 359 },
-            { 9, 7693, 380 },
+            { -24, 4977, 937 }, // ageProperties->unk_62[0]
+            { -24, 6495, 937 }, // ageProperties->unk_62[1]
+            { 9, 6122, 359 },   // ageProperties->unk_62[2]
+            { 9, 7693, 380 },   // ageProperties->unk_62[3]
         },
         {
-            { 8, 4694, 380 },
-            { 9, 6122, 359 },
+            { 8, 4694, 380 }, // ageProperties->unk_7A[0]
+            { 9, 6122, 359 }, // ageProperties->unk_7A[1]
         },
         {
-            { -1592, 4694, 380 },
-            { -1591, 6122, 359 },
+            { -1592, 4694, 380 }, // ageProperties->unk_86[0]
+            { -1591, 6122, 359 }, // ageProperties->unk_86[1]
         },
-        0x20,
-        0,
-        &gPlayerAnim_002318,
-        &gPlayerAnim_002360,
-        &gPlayerAnim_0023A8,
-        &gPlayerAnim_0023E0,
-        &gPlayerAnim_0023E8,
-        { &gPlayerAnim_0023F0, &gPlayerAnim_0023F8, &gPlayerAnim_002D90, &gPlayerAnim_002D98 },
-        { &gPlayerAnim_002D70, &gPlayerAnim_002D78 },
-        { &gPlayerAnim_0023C0, &gPlayerAnim_0023C8 },
-        { &gPlayerAnim_0023D8, &gPlayerAnim_0023D0 },
+        0x20,                // ageProperties->ageVoiceSfxOffset
+        0,                   // ageProperties->ageMoveSfxOffset
+        &gPlayerAnim_002318, // ageProperties->chestOpenAnim
+        &gPlayerAnim_002360, // ageProperties->timeTravelStartAnim
+        &gPlayerAnim_0023A8, // ageProperties->timeTravelEndAnim
+        &gPlayerAnim_0023E0, // ageProperties->startClimb1Anim
+        &gPlayerAnim_0023E8, // ageProperties->startClimb2Anim
+        {
+            &gPlayerAnim_0023F0, // ageProperties->verticalClimbAnim[0]
+            &gPlayerAnim_0023F8, // ageProperties->verticalClimbAnim[1]
+            &gPlayerAnim_002D90, // ageProperties->verticalClimbAnim[2]
+            &gPlayerAnim_002D98  // ageProperties->verticalClimbAnim[3]
+        },
+        {
+            &gPlayerAnim_002D70, // ageProperties->horizontalClimbAnim[0]
+            &gPlayerAnim_002D78  // ageProperties->horizontalClimbAnim[1]
+        },
+        {
+            &gPlayerAnim_0023C0, // ageProperties->endClimb1Anim[0]
+            &gPlayerAnim_0023C8  // ageProperties->endClimb1Anim[1]
+        },
+        {
+            &gPlayerAnim_0023D8, // ageProperties->endClimb2Anim[0]
+            &gPlayerAnim_0023D0  // ageProperties->endClimb2Anim[1]
+        },
     },
 };
 
@@ -483,7 +511,7 @@ static s16 sConveyorYaw = 0;
 static f32 sPlayerYDistToFloor = 0.0f;
 static s32 sFloorProperty = BGCHECK_FLOORPROPERTY_NONE;
 static s32 sYawToTouchedWall = 0;
-static s32 D_8085360C = 0;
+static s32 sYawToTouchedWall2 = 0;
 static s16 D_80853610 = 0;
 static s32 D_80853614 = 0;
 static s32 D_80853618 = 0;
@@ -3227,7 +3255,7 @@ void func_80836BEC(Player* this, PlayState* play) {
     }
 }
 
-s32 func_80836FAC(PlayState* play, Player* this, f32* targetSpeed, s16* yawTarget, f32 step) {
+s32 Player_SetSpeedAndYaw(PlayState* play, Player* this, f32* targetSpeed, s16* yawTarget, f32 step) {
     f32 temp_f2;
     f32 temp_f0;
     f32 temp_f14;
@@ -3254,12 +3282,12 @@ s32 func_80836FAC(PlayState* play, Player* this, f32* targetSpeed, s16* yawTarge
         }
 
         if (sAnalogStickDistance != 0.0f) {
-            temp_f0 = Math_SinS(this->unk_898);
+            temp_f0 = Math_SinS(this->angleToGroundX);
             speedLimit = this->speedLimit;
             temp_f14 = CLAMP(temp_f0, 0.0f, 0.6f);
 
-            if (this->unk_6C4 != 0.0f) {
-                speedLimit = speedLimit - (this->unk_6C4 * 0.008f);
+            if (this->sinkingOffsetY != 0.0f) {
+                speedLimit = speedLimit - (this->sinkingOffsetY * 0.008f);
                 if (speedLimit < 2.0f) {
                     speedLimit = 2.0f;
                 }
@@ -3280,7 +3308,7 @@ s32 func_8083721C(Player* this) {
 }
 
 s32 func_80837268(Player* this, f32* targetSpeed, s16* yawTarget, f32 step, PlayState* play) {
-    if (!func_80836FAC(play, this, targetSpeed, yawTarget, step)) {
+    if (!Player_SetSpeedAndYaw(play, this, targetSpeed, yawTarget, step)) {
         *yawTarget = this->actor.shape.rot.y;
 
         if (this->targetActor != NULL) {
@@ -3803,7 +3831,7 @@ s32 Player_UpdateDamage(Player* this, PlayState* play) {
             this->unk_A86 = 0;
         }
     } else {
-        sp68 = ((Player_GetHeight(this) - 8.0f) < (this->unk_6C4 * this->actor.scale.y));
+        sp68 = ((Player_GetHeight(this) - 8.0f) < (this->sinkingOffsetY * this->actor.scale.y));
 
         if (sp68 || (this->actor.bgCheckFlags & BGCHECKFLAG_CRUSHED) || (sFloorSpecialProperty == BGCHECK_FLOORSPECIALPROPERTY_VOID_ON_TOUCH) ||
             (this->stateFlags2 & PLAYER_STATE2_FORCE_VOID_OUT)) {
@@ -3973,7 +4001,7 @@ void Player_SetupJump(Player* this, LinkAnimationHeader* anim, f32 yVel, PlaySta
 }
 
 s32 func_80838A14(Player* this, PlayState* play) {
-    s32 sp3C;
+    s32 canJumpToLedge;
     LinkAnimationHeader* sp38;
     f32 sp34;
     f32 temp;
@@ -3981,16 +4009,16 @@ s32 func_80838A14(Player* this, PlayState* play) {
     f32 wallPolyNormalZ;
     f32 sp24;
 
-    if (!(this->stateFlags1 & PLAYER_STATE1_HOLDING_ACTOR) && (this->unk_88C >= 2) &&
+    if (!(this->stateFlags1 & PLAYER_STATE1_HOLDING_ACTOR) && (this->touchedWallJumpType >= PLAYER_WALLJUMPTYPE_SMALL_CLIMB_UP) &&
         (!(this->stateFlags1 & PLAYER_STATE1_SWIMMING) || (this->ageProperties->unk_14 > this->wallHeight))) {
-        sp3C = 0;
+        canJumpToLedge = false;
 
         if (Player_IsSwimming(this)) {
             if (this->actor.yDistToWater < 50.0f) {
-                if ((this->unk_88C < 2) || (this->wallHeight > this->ageProperties->unk_10)) {
+                if ((this->touchedWallJumpType < PLAYER_WALLJUMPTYPE_SMALL_CLIMB_UP) || (this->wallHeight > this->ageProperties->unk_10)) {
                     return 0;
                 }
-            } else if ((this->currentBoots != PLAYER_BOOTS_IRON) || (this->unk_88C > 2)) {
+            } else if ((this->currentBoots != PLAYER_BOOTS_IRON) || (this->touchedWallJumpType > PLAYER_WALLJUMPTYPE_SMALL_CLIMB_UP)) {
                 return 0;
             }
         } else if (!(this->actor.bgCheckFlags & BGCHECKFLAG_GROUND) ||
@@ -3999,18 +4027,18 @@ s32 func_80838A14(Player* this, PlayState* play) {
         }
 
         if ((this->actor.wallBgId != BGCHECK_SCENE) && (sTouchedWallFlags & 0x40)) {
-            if (this->unk_88D >= 6) {
+            if (this->wallTouchTimer >= 6) {
                 this->stateFlags2 |= PLAYER_STATE2_CAN_CLIMB_PUSH_PULL_WALL;
                 if (CHECK_BTN_ALL(sControlInput->press.button, BTN_A)) {
-                    sp3C = 1;
+                    canJumpToLedge = true;
                 }
             }
-        } else if ((this->unk_88D >= 6) || CHECK_BTN_ALL(sControlInput->press.button, BTN_A)) {
-            sp3C = 1;
+        } else if ((this->wallTouchTimer >= 6) || CHECK_BTN_ALL(sControlInput->press.button, BTN_A)) {
+            canJumpToLedge = true;
         }
 
-        if (sp3C != 0) {
-            Player_SetActionFunc(play, this, func_80845668, 0);
+        if (canJumpToLedge != false) {
+            Player_SetActionFunc(play, this, Player_JumpUpToLedge, 0);
 
             this->stateFlags1 |= PLAYER_STATE1_JUMPING;
 
@@ -4056,7 +4084,7 @@ s32 func_80838A14(Player* this, PlayState* play) {
 
             return 1;
         }
-    } else if ((this->actor.bgCheckFlags & BGCHECKFLAG_GROUND) && (this->unk_88C == 1) && (this->unk_88D >= 3)) {
+    } else if ((this->actor.bgCheckFlags & BGCHECKFLAG_GROUND) && (this->touchedWallJumpType == PLAYER_WALLJUMPTYPE_HOP_UP) && (this->wallTouchTimer >= 3)) {
         temp = (this->wallHeight * 0.08f) + 5.5f;
         Player_SetupJump(this, &gPlayerAnim_002FE0, temp, play);
         this->linearVelocity = 2.5f;
@@ -4320,17 +4348,17 @@ f32 Player_RaycastFloorWithOffset2(PlayState* play, Player* this, Vec3f* arg2, V
     return Player_RaycastFloorWithOffset(play, this, arg2, arg3, &sp24, &sp20);
 }
 
-s32 func_80839768(PlayState* play, Player* this, Vec3f* arg2, CollisionPoly** arg3, s32* arg4, Vec3f* arg5) {
-    Vec3f sp44;
-    Vec3f sp38;
+s32 Player_WallLineTestWithOffset(PlayState* play, Player* this, Vec3f* posOffset, CollisionPoly** wallPoly, s32* bgId, Vec3f* posResult) {
+    Vec3f posA;
+    Vec3f posB;
 
-    sp44.x = this->actor.world.pos.x;
-    sp44.y = this->actor.world.pos.y + arg2->y;
-    sp44.z = this->actor.world.pos.z;
+    posA.x = this->actor.world.pos.x;
+    posA.y = this->actor.world.pos.y + posOffset->y;
+    posA.z = this->actor.world.pos.z;
 
-    Player_GetWorldPosRelativeToPlayer(this, &this->actor.world.pos, arg2, &sp38);
+    Player_GetWorldPosRelativeToPlayer(this, &this->actor.world.pos, posOffset, &posB);
 
-    return BgCheck_EntityLineTest1(&play->colCtx, &sp44, &sp38, arg5, arg3, true, false, false, true, arg4);
+    return BgCheck_EntityLineTest1(&play->colCtx, &posA, &posB, posResult, wallPoly, true, false, false, true, bgId);
 }
 
 s32 Player_ShouldOpenDoor(Player* this, PlayState* play) {
@@ -4626,7 +4654,7 @@ void func_8083A388(PlayState* play, Player* this) {
     Player_SetActionFunc(play, this, func_8084B78C, 0);
 }
 
-void func_8083A3B0(PlayState* play, Player* this) {
+void Player_SetupClimbDownFromLedge(PlayState* play, Player* this) {
     s32 sp1C = this->unk_850;
     s32 sp18 = this->unk_84F;
 
@@ -4680,64 +4708,64 @@ s32 Player_StartJump(Player* this, PlayState* play) {
     return 1;
 }
 
-void func_8083A5C4(PlayState* play, Player* this, CollisionPoly* arg2, f32 arg3, LinkAnimationHeader* arg4) {
-    f32 nx = COLPOLY_GET_NORMAL(arg2->normal.x);
-    f32 nz = COLPOLY_GET_NORMAL(arg2->normal.z);
+void func_8083A5C4(PlayState* play, Player* this, CollisionPoly* colPoly, f32 distToPoly, LinkAnimationHeader* arg4) {
+    f32 nx = COLPOLY_GET_NORMAL(colPoly->normal.x);
+    f32 nz = COLPOLY_GET_NORMAL(colPoly->normal.z);
 
     Player_SetActionFunc(play, this, func_8084BBE4, 0);
     Player_ResetAttributesAndHeldActor(play, this);
     Player_PlayAnimOnce(play, this, arg4);
 
-    this->actor.world.pos.x -= (arg3 + 1.0f) * nx;
-    this->actor.world.pos.z -= (arg3 + 1.0f) * nz;
+    this->actor.world.pos.x -= (distToPoly + 1.0f) * nx;
+    this->actor.world.pos.z -= (distToPoly + 1.0f) * nz;
     this->actor.shape.rot.y = this->currentYaw = Math_Atan2S(nz, nx);
 
     Player_ClearAttentionModeAndStopMoving(this);
     func_80832CFC(this);
 }
 
-s32 func_8083A6AC(Player* this, PlayState* play) {
-    CollisionPoly* sp84;
-    s32 sp80;
-    Vec3f sp74;
-    Vec3f sp68;
-    f32 temp1;
+s32 Player_HangFromLedgeSlip(Player* this, PlayState* play) {
+    CollisionPoly* colPoly;
+    s32 polyBgId;
+    Vec3f pos;
+    Vec3f colPolyPos;
+    f32 dist;
 
-    if ((this->actor.yDistToWater < -80.0f) && (ABS(this->unk_898) < 2730) && (ABS(this->unk_89A) < 2730)) {
-        sp74.x = this->actor.prevPos.x - this->actor.world.pos.x;
-        sp74.z = this->actor.prevPos.z - this->actor.world.pos.z;
+    if ((this->actor.yDistToWater < -80.0f) && (ABS(this->angleToGroundX) < DEG_TO_BINANG(15.0f)) && (ABS(this->angleToGroundY) < DEG_TO_BINANG(15.0f))) {
+        pos.x = this->actor.prevPos.x - this->actor.world.pos.x;
+        pos.z = this->actor.prevPos.z - this->actor.world.pos.z;
 
-        temp1 = sqrtf(SQ(sp74.x) + SQ(sp74.z));
-        if (temp1 != 0.0f) {
-            temp1 = 5.0f / temp1;
+        dist = sqrtf(SQ(pos.x) + SQ(pos.z));
+        if (dist != 0.0f) {
+            dist = 5.0f / dist;
         } else {
-            temp1 = 0.0f;
+            dist = 0.0f;
         }
 
-        sp74.x = this->actor.prevPos.x + (sp74.x * temp1);
-        sp74.y = this->actor.world.pos.y;
-        sp74.z = this->actor.prevPos.z + (sp74.z * temp1);
+        pos.x = this->actor.prevPos.x + (pos.x * dist);
+        pos.y = this->actor.world.pos.y;
+        pos.z = this->actor.prevPos.z + (pos.z * dist);
 
-        if (BgCheck_EntityLineTest1(&play->colCtx, &this->actor.world.pos, &sp74, &sp68, &sp84, true, false, false,
-                                    true, &sp80) &&
-            (ABS(sp84->normal.y) < 600)) {
-            f32 nx = COLPOLY_GET_NORMAL(sp84->normal.x);
-            f32 ny = COLPOLY_GET_NORMAL(sp84->normal.y);
-            f32 nz = COLPOLY_GET_NORMAL(sp84->normal.z);
-            f32 sp54;
-            s32 shouldGrabAdjacentWall;
+        if (BgCheck_EntityLineTest1(&play->colCtx, &this->actor.world.pos, &pos, &colPolyPos, &colPoly, true, false, false,
+                                    true, &polyBgId) &&
+            (ABS(colPoly->normal.y) < 600)) {
+            f32 nx = COLPOLY_GET_NORMAL(colPoly->normal.x);
+            f32 ny = COLPOLY_GET_NORMAL(colPoly->normal.y);
+            f32 nz = COLPOLY_GET_NORMAL(colPoly->normal.z);
+            f32 distToPoly;
+            s32 shouldClimbDownAdjacentWall;
 
-            sp54 = Math3D_UDistPlaneToPos(nx, ny, nz, sp84->dist, &this->actor.world.pos);
+            distToPoly = Math3D_UDistPlaneToPos(nx, ny, nz, colPoly->dist, &this->actor.world.pos);
 
-            shouldGrabAdjacentWall = sFloorProperty == BGCHECK_FLOORPROPERTY_GRAB_ADJACENT_WALL;
-            if (!shouldGrabAdjacentWall && (func_80041DB8(&play->colCtx, sp84, sp80) & 8)) {
-                shouldGrabAdjacentWall = 1;
+            shouldClimbDownAdjacentWall = sFloorProperty == BGCHECK_FLOORPROPERTY_CLIMB_DOWN_ADJACENT_WALL;
+            if (!shouldClimbDownAdjacentWall && (func_80041DB8(&play->colCtx, colPoly, polyBgId) & 8)) {
+                shouldClimbDownAdjacentWall = true;
             }
 
-            func_8083A5C4(play, this, sp84, sp54, shouldGrabAdjacentWall ? &gPlayerAnim_002D88 : &gPlayerAnim_002F10);
+            func_8083A5C4(play, this, colPoly, distToPoly, shouldClimbDownAdjacentWall ? &gPlayerAnim_002D88 : &gPlayerAnim_002F10);
 
-            if (shouldGrabAdjacentWall) {
-                Player_SetupMiniCsFunc(play, this, func_8083A3B0);
+            if (shouldClimbDownAdjacentWall) {
+                Player_SetupMiniCsFunc(play, this, Player_SetupClimbDownFromLedge);
 
                 this->currentYaw += 0x8000;
                 this->actor.shape.rot.y = this->currentYaw;
@@ -4746,7 +4774,7 @@ s32 func_8083A6AC(Player* this, PlayState* play) {
                 func_80832F54(play, this, 0x9F);
 
                 this->unk_850 = -1;
-                this->unk_84F = shouldGrabAdjacentWall;
+                this->unk_84F = shouldClimbDownAdjacentWall;
             } else {
                 this->stateFlags1 |= PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP;
                 this->stateFlags1 &= ~PLAYER_STATE1_Z_PARALLEL_MODE;
@@ -4771,7 +4799,7 @@ static Vec3f sWaterRaycastOffset = { 0.0f, 0.0f, 100.0f };
 void Player_SetupMidairBehavior(Player* this, PlayState* play) {
     s32 yawDiff;
     CollisionPoly* floorPoly;
-    s32 bgId;
+    s32 floorBgId;
     WaterBox* waterbox;
     Vec3f raycastPos;
     f32 floorPosY;
@@ -4811,12 +4839,12 @@ void Player_SetupMidairBehavior(Player* this, PlayState* play) {
                 this->moveSfxType = this->prevMoveSfxType;
 
                 if ((this->actor.bgCheckFlags & BGCHECKFLAG_GROUND_LEAVE) && !(this->stateFlags1 & PLAYER_STATE1_SWIMMING) &&
-                    (sFloorProperty != BGCHECK_FLOORPROPERTY_GRAB_ADJACENT_WALL) && (sFloorProperty != BGCHECK_FLOORPROPERTY_NO_JUMPING) && (sPlayerYDistToFloor > 20.0f) && (this->isMeleeWeaponAttacking == 0) &&
+                    (sFloorProperty != BGCHECK_FLOORPROPERTY_CLIMB_DOWN_ADJACENT_WALL) && (sFloorProperty != BGCHECK_FLOORPROPERTY_NO_JUMPING) && (sPlayerYDistToFloor > 20.0f) && (this->isMeleeWeaponAttacking == 0) &&
                     (ABS(yawDiff) < DEG_TO_BINANG(45.0f)) && (this->linearVelocity > 3.0f)) {
 
                     if ((sFloorProperty == BGCHECK_FLOORPROPERTY_FALLING_DIVE) && !(this->stateFlags1 & PLAYER_STATE1_HOLDING_ACTOR)) {
 
-                        floorPosY = Player_RaycastFloorWithOffset(play, this, &sWaterRaycastOffset, &raycastPos, &floorPoly, &bgId);
+                        floorPosY = Player_RaycastFloorWithOffset(play, this, &sWaterRaycastOffset, &raycastPos, &floorPoly, &floorBgId);
                         waterPosY = this->actor.world.pos.y;
 
                         if (WaterBox_GetSurface1(play, &play->colCtx, raycastPos.x, raycastPos.z, &waterPosY, &waterbox) &&
@@ -4831,7 +4859,7 @@ void Player_SetupMidairBehavior(Player* this, PlayState* play) {
                     return;
                 }
 
-                if ((sFloorProperty == BGCHECK_FLOORPROPERTY_NO_JUMPING) || (sPlayerYDistToFloor <= this->ageProperties->unk_34) || !func_8083A6AC(this, play)) {
+                if ((sFloorProperty == BGCHECK_FLOORPROPERTY_NO_JUMPING) || (sPlayerYDistToFloor <= this->ageProperties->unk_34) || !Player_HangFromLedgeSlip(this, play)) {
                     Player_PlayAnimLoop(play, this, &gPlayerAnim_003040);
                     return;
                 }
@@ -5773,7 +5801,7 @@ void func_8083D36C(PlayState* play, Player* this) {
     this->stateFlags1 |= PLAYER_STATE1_SWIMMING;
     this->stateFlags2 |= PLAYER_STATE2_DIVING;
     this->stateFlags1 &= ~(PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALLING);
-    this->unk_854 = 0.0f;
+    this->rippleTimer = 0.0f;
 
     Player_SetBootData(play, this);
 }
@@ -5789,7 +5817,7 @@ void func_8083D53C(PlayState* play, Player* this) {
         }
     }
 
-    if ((func_80845668 != this->actionFunc) && (Player_ClimbOntoLedge != this->actionFunc)) {
+    if ((Player_JumpUpToLedge != this->actionFunc) && (Player_ClimbOntoLedge != this->actionFunc)) {
         if (this->ageProperties->diveWaterSurface < this->actor.yDistToWater) {
             if (!(this->stateFlags1 & PLAYER_STATE1_SWIMMING) ||
                 (!((this->currentBoots == PLAYER_BOOTS_IRON) && (this->actor.bgCheckFlags & BGCHECKFLAG_GROUND)) &&
@@ -5811,66 +5839,66 @@ void func_8083D53C(PlayState* play, Player* this) {
 
 void func_8083D6EC(PlayState* play, Player* this) {
     Vec3f ripplePos;
-    f32 temp1;
-    f32 temp2;
-    f32 temp3;
-    f32 temp4;
+    f32 unsinkSpeed;
+    f32 maxSinkSpeed;
+    f32 sinkSpeed;
+    f32 posDiffMag;
 
     this->actor.minVelocityY = -20.0f;
     this->actor.gravity = REG(68) / 100.0f;
 
     if (Player_IsFloorSinkingSand(sFloorSpecialProperty)) {
-        temp1 = fabsf(this->linearVelocity) * 20.0f;
-        temp3 = 0.0f;
+        unsinkSpeed = fabsf(this->linearVelocity) * 20.0f;
+        sinkSpeed = 0.0f;
 
         if (sFloorSpecialProperty == BGCHECK_FLOORSPECIALPROPERTY_SHALLOW_SAND) {
-            if (this->unk_6C4 > 1300.0f) {
-                temp2 = this->unk_6C4;
+            if (this->sinkingOffsetY > 1300.0f) {
+                maxSinkSpeed = this->sinkingOffsetY;
             } else {
-                temp2 = 1300.0f;
+                maxSinkSpeed = 1300.0f;
             }
             if (this->currentBoots == PLAYER_BOOTS_HOVER) {
-                temp1 += temp1;
+                unsinkSpeed += unsinkSpeed;
             } else if (this->currentBoots == PLAYER_BOOTS_IRON) {
-                temp1 *= 0.3f;
+                unsinkSpeed *= 0.3f;
             }
         } else {
-            temp2 = 20000.0f;
+            maxSinkSpeed = 20000.0f;
             if (this->currentBoots != PLAYER_BOOTS_HOVER) {
-                temp1 += temp1;
+                unsinkSpeed += unsinkSpeed;
             } else if ((sFloorSpecialProperty == BGCHECK_FLOORSPECIALPROPERTY_QUICKSAND_NO_HORSE) || (this->currentBoots == PLAYER_BOOTS_IRON)) {
-                temp1 = 0;
+                unsinkSpeed = 0;
             }
         }
 
         if (this->currentBoots != PLAYER_BOOTS_HOVER) {
-            temp3 = (temp2 - this->unk_6C4) * 0.02f;
-            temp3 = CLAMP(temp3, 0.0f, 300.0f);
+            sinkSpeed = (maxSinkSpeed - this->sinkingOffsetY) * 0.02f;
+            sinkSpeed = CLAMP(sinkSpeed, 0.0f, 300.0f);
             if (this->currentBoots == PLAYER_BOOTS_IRON) {
-                temp3 += temp3;
+                sinkSpeed += sinkSpeed;
             }
         }
 
-        this->unk_6C4 += temp3 - temp1;
-        this->unk_6C4 = CLAMP(this->unk_6C4, 0.0f, temp2);
+        this->sinkingOffsetY += sinkSpeed - unsinkSpeed;
+        this->sinkingOffsetY = CLAMP(this->sinkingOffsetY, 0.0f, maxSinkSpeed);
 
-        this->actor.gravity -= this->unk_6C4 * 0.004f;
+        this->actor.gravity -= this->sinkingOffsetY * 0.004f;
     } else {
-        this->unk_6C4 = 0.0f;
+        this->sinkingOffsetY = 0.0f;
     }
 
     if (this->actor.bgCheckFlags & BGCHECKFLAG_WATER) {
         if (this->actor.yDistToWater < 50.0f) {
-            temp4 = fabsf(this->bodyPartsPos[PLAYER_BODYPART_WAIST].x - this->unk_A88.x) +
-                    fabsf(this->bodyPartsPos[PLAYER_BODYPART_WAIST].y - this->unk_A88.y) +
-                    fabsf(this->bodyPartsPos[PLAYER_BODYPART_WAIST].z - this->unk_A88.z);
-            if (temp4 > 4.0f) {
-                temp4 = 4.0f;
+            posDiffMag = fabsf(this->bodyPartsPos[PLAYER_BODYPART_WAIST].x - this->prevWaistPos.x) +
+                    fabsf(this->bodyPartsPos[PLAYER_BODYPART_WAIST].y - this->prevWaistPos.y) +
+                    fabsf(this->bodyPartsPos[PLAYER_BODYPART_WAIST].z - this->prevWaistPos.z);
+            if (posDiffMag > 4.0f) {
+                posDiffMag = 4.0f;
             }
-            this->unk_854 += temp4;
+            this->rippleTimer += posDiffMag;
 
-            if (this->unk_854 > 15.0f) {
-                this->unk_854 = 0.0f;
+            if (this->rippleTimer > 15.0f) {
+                this->rippleTimer = 0.0f;
 
                 ripplePos.x = (Rand_ZeroOne() * 10.0f) + this->actor.world.pos.x;
                 ripplePos.y = this->actor.world.pos.y + this->actor.yDistToWater;
@@ -6336,7 +6364,7 @@ s32 func_8083EC18(Player* this, PlayState* play, u32 arg2) {
                     f32 sp34 = this->wallDistance;
                     LinkAnimationHeader* sp30;
 
-                    Player_SetupMiniCsFunc(play, this, func_8083A3B0);
+                    Player_SetupMiniCsFunc(play, this, Player_SetupClimbDownFromLedge);
                     this->stateFlags1 |= PLAYER_STATE1_CLIMBING;
                     this->stateFlags1 &= ~PLAYER_STATE1_SWIMMING;
 
@@ -7408,7 +7436,7 @@ void func_80841CC4(Player* this, s32 arg1, PlayState* play) {
 
     Math_ScaledStepToS(&this->unk_89C, target, 400);
 
-    if ((this->modelAnimType == PLAYER_ANIMTYPE_HOLDING_TWO_HAND_WEAPON) || ((this->unk_89C == 0) && (this->unk_6C4 <= 0.0f))) {
+    if ((this->modelAnimType == PLAYER_ANIMTYPE_HOLDING_TWO_HAND_WEAPON) || ((this->unk_89C == 0) && (this->sinkingOffsetY <= 0.0f))) {
         if (arg1 == 0) {
             LinkAnimation_LoadToJoint(play, &this->skelAnime, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_WALKING, this->modelAnimType),
                                       this->walkFrame);
@@ -7422,7 +7450,7 @@ void func_80841CC4(Player* this, s32 arg1, PlayState* play) {
     if (this->unk_89C != 0) {
         rate = this->unk_89C / 10922.0f;
     } else {
-        rate = this->unk_6C4 * 0.0006f;
+        rate = this->sinkingOffsetY * 0.0006f;
     }
 
     rate *= fabsf(this->linearVelocity) * 0.5f;
@@ -8281,7 +8309,7 @@ void Player_UpdateMidair(Player* this, PlayState* play) {
                         !(this->stateFlags1 & (PLAYER_STATE1_HOLDING_ACTOR | PLAYER_STATE1_SWIMMING)) && (this->linearVelocity > 0.0f)) {
                         if ((this->wallHeight >= 150.0f) && (this->relativeAnalogStickInputs[this->inputFrameCounter] == 0)) {
                             func_8083EC18(this, play, sTouchedWallFlags);
-                        } else if ((this->unk_88C >= 2) && (this->wallHeight < 150.0f) &&
+                        } else if ((this->touchedWallJumpType >= PLAYER_WALLJUMPTYPE_SMALL_CLIMB_UP) && (this->wallHeight < 150.0f) &&
                                    (((this->actor.world.pos.y - this->actor.floorHeight) + this->wallHeight) >
                                     (70.0f * this->ageProperties->translationScale))) {
                             AnimationContext_DisableQueue(play);
@@ -8374,7 +8402,7 @@ void Player_Rolling(Player* this, PlayState* play) {
             }
         } else {
             if (this->linearVelocity >= 7.0f) {
-                if (((this->actor.bgCheckFlags & BGCHECKFLAG_PLAYER_WALL_INTERACT) && (D_8085360C < 0x2000)) ||
+                if (((this->actor.bgCheckFlags & BGCHECKFLAG_PLAYER_WALL_INTERACT) && (sYawToTouchedWall2 < 0x2000)) ||
                     ((this->cylinder.base.ocFlags1 & OC1_HIT) &&
                      (cylinderOc = this->cylinder.base.oc,
                       ((cylinderOc->id == ACTOR_EN_WOOD02) &&
@@ -8697,7 +8725,7 @@ void func_80845308(Player* this, PlayState* play) {
     }
 }
 
-void func_80845668(Player* this, PlayState* play) {
+void Player_JumpUpToLedge(Player* this, PlayState* play) {
     s32 sp3C;
     f32 temp1;
     s32 temp2;
@@ -9628,63 +9656,63 @@ s32 func_80847A78(Player* this) {
     }
 
     sFloorSpecialProperty = BGCHECK_FLOORSPECIALPROPERTY_NONE;
-    this->unk_898 = this->unk_89A = D_80853610 = 0;
+    this->angleToGroundX = this->angleToGroundY = D_80853610 = 0;
 
     return 1;
 }
 
-static Vec3f D_80854798 = { 0.0f, 18.0f, 0.0f };
+static Vec3f sWallCheckOffset = { 0.0f, 18.0f, 0.0f };
 
 void func_80847BA0(PlayState* play, Player* this) {
-    u8 spC7 = 0;
+    u8 wallJumpType = 0;
     CollisionPoly* floorPoly;
-    Vec3f spB4;
-    f32 spB0;
-    f32 spAC;
-    f32 spA8;
-    u32 spA4;
+    Vec3f playerPos;
+    f32 wallCheckRadius;
+    f32 wallCheckHeight;
+    f32 ceilingCheckHeight;
+    u32 updBgcheckFlags;
 
     sFloorProperty = this->floorProperty;
 
     if (this->stateFlags2 & PLAYER_STATE2_INSIDE_CRAWLSPACE) {
-        spB0 = 10.0f;
-        spAC = 15.0f;
-        spA8 = 30.0f;
+        wallCheckRadius = 10.0f;
+        wallCheckHeight = 15.0f;
+        ceilingCheckHeight = 30.0f;
     } else {
-        spB0 = this->ageProperties->wallCheckRadius;
-        spAC = 26.0f;
-        spA8 = this->ageProperties->ceilingCheckHeight;
+        wallCheckRadius = this->ageProperties->wallCheckRadius;
+        wallCheckHeight = 26.0f;
+        ceilingCheckHeight = this->ageProperties->ceilingCheckHeight;
     }
 
     if (this->stateFlags1 & (PLAYER_STATE1_IN_CUTSCENE | PLAYER_STATE1_FALLING_INTO_GROTTO_OR_VOID)) {
         if (this->stateFlags1 & PLAYER_STATE1_FALLING_INTO_GROTTO_OR_VOID) {
             this->actor.bgCheckFlags &= ~BGCHECKFLAG_GROUND;
-            spA4 = UPDBGCHECKINFO_FLAG_3 | UPDBGCHECKINFO_FLAG_4 | UPDBGCHECKINFO_FLAG_5;
+            updBgcheckFlags = UPDBGCHECKINFO_FLAG_3 | UPDBGCHECKINFO_FLAG_4 | UPDBGCHECKINFO_FLAG_5;
         } else if ((this->stateFlags1 & PLAYER_STATE1_EXITING_SCENE) && ((this->unk_A84 - (s32)this->actor.world.pos.y) >= 100)) {
-            spA4 = UPDBGCHECKINFO_FLAG_0 | UPDBGCHECKINFO_FLAG_3 | UPDBGCHECKINFO_FLAG_4 | UPDBGCHECKINFO_FLAG_5;
+            updBgcheckFlags = UPDBGCHECKINFO_FLAG_0 | UPDBGCHECKINFO_FLAG_3 | UPDBGCHECKINFO_FLAG_4 | UPDBGCHECKINFO_FLAG_5;
         } else if (!(this->stateFlags1 & PLAYER_STATE1_EXITING_SCENE) &&
                    ((func_80845EF8 == this->actionFunc) || (func_80845CA4 == this->actionFunc))) {
             this->actor.bgCheckFlags &= ~(BGCHECKFLAG_WALL | BGCHECKFLAG_PLAYER_WALL_INTERACT);
-            spA4 = UPDBGCHECKINFO_FLAG_2 | UPDBGCHECKINFO_FLAG_3 | UPDBGCHECKINFO_FLAG_4 | UPDBGCHECKINFO_FLAG_5;
+            updBgcheckFlags = UPDBGCHECKINFO_FLAG_2 | UPDBGCHECKINFO_FLAG_3 | UPDBGCHECKINFO_FLAG_4 | UPDBGCHECKINFO_FLAG_5;
         } else {
-            spA4 = UPDBGCHECKINFO_FLAG_0 | UPDBGCHECKINFO_FLAG_1 | UPDBGCHECKINFO_FLAG_2 | UPDBGCHECKINFO_FLAG_3 |
+            updBgcheckFlags = UPDBGCHECKINFO_FLAG_0 | UPDBGCHECKINFO_FLAG_1 | UPDBGCHECKINFO_FLAG_2 | UPDBGCHECKINFO_FLAG_3 |
                    UPDBGCHECKINFO_FLAG_4 | UPDBGCHECKINFO_FLAG_5;
         }
     } else {
-        spA4 = UPDBGCHECKINFO_FLAG_0 | UPDBGCHECKINFO_FLAG_1 | UPDBGCHECKINFO_FLAG_2 | UPDBGCHECKINFO_FLAG_3 |
+        updBgcheckFlags = UPDBGCHECKINFO_FLAG_0 | UPDBGCHECKINFO_FLAG_1 | UPDBGCHECKINFO_FLAG_2 | UPDBGCHECKINFO_FLAG_3 |
                UPDBGCHECKINFO_FLAG_4 | UPDBGCHECKINFO_FLAG_5;
     }
 
     if (this->stateFlags3 & PLAYER_STATE3_IGNORE_CEILING_FLOOR_AND_WATER) {
-        spA4 &= ~(UPDBGCHECKINFO_FLAG_1 | UPDBGCHECKINFO_FLAG_2);
+        updBgcheckFlags &= ~(UPDBGCHECKINFO_FLAG_1 | UPDBGCHECKINFO_FLAG_2);
     }
 
-    if (spA4 & UPDBGCHECKINFO_FLAG_2) {
+    if (updBgcheckFlags & UPDBGCHECKINFO_FLAG_2) {
         this->stateFlags3 |= PLAYER_STATE3_CHECKING_FLOOR_AND_WATER_COLLISION;
     }
 
-    Math_Vec3f_Copy(&spB4, &this->actor.world.pos);
-    Actor_UpdateBgCheckInfo(play, &this->actor, spAC, spB0, spA8, spA4);
+    Math_Vec3f_Copy(&playerPos, &this->actor.world.pos);
+    Actor_UpdateBgCheckInfo(play, &this->actor, wallCheckHeight, wallCheckRadius, ceilingCheckHeight, updBgcheckFlags);
 
     if (this->actor.bgCheckFlags & BGCHECKFLAG_CEILING) {
         this->actor.velocity.y = 0.0f;
@@ -9744,21 +9772,21 @@ void func_80847BA0(PlayState* play, Player* this) {
     this->actor.bgCheckFlags &= ~BGCHECKFLAG_PLAYER_WALL_INTERACT;
 
     if (this->actor.bgCheckFlags & BGCHECKFLAG_WALL) {
-        CollisionPoly* spA0;
-        s32 sp9C;
+        CollisionPoly* wallPoly;
+        s32 wallBgId;
         s16 wallYawDiff;
         s32 pad;
 
-        D_80854798.y = 18.0f;
-        D_80854798.z = this->ageProperties->wallCheckRadius + 10.0f;
+        sWallCheckOffset.y = 18.0f;
+        sWallCheckOffset.z = this->ageProperties->wallCheckRadius + 10.0f;
 
         if (!(this->stateFlags2 & PLAYER_STATE2_INSIDE_CRAWLSPACE) &&
-            func_80839768(play, this, &D_80854798, &spA0, &sp9C, &D_80858AA8)) {
+            Player_WallLineTestWithOffset(play, this, &sWallCheckOffset, &wallPoly, &wallBgId, &sWallIntersectPos)) {
             this->actor.bgCheckFlags |= BGCHECKFLAG_PLAYER_WALL_INTERACT;
-            if (this->actor.wallPoly != spA0) {
-                this->actor.wallPoly = spA0;
-                this->actor.wallBgId = sp9C;
-                this->actor.wallYaw = Math_Atan2S(spA0->normal.z, spA0->normal.x);
+            if (this->actor.wallPoly != wallPoly) {
+                this->actor.wallPoly = wallPoly;
+                this->actor.wallBgId = wallBgId;
+                this->actor.wallYaw = Math_Atan2S(wallPoly->normal.z, wallPoly->normal.x);
             }
         }
 
@@ -9770,19 +9798,20 @@ void func_80847BA0(PlayState* play, Player* this) {
 
         wallYawDiff = this->currentYaw - (s16)(this->actor.wallYaw + 0x8000);
 
-        D_8085360C = ABS(wallYawDiff);
+        sYawToTouchedWall2 = ABS(wallYawDiff);
 
-        spB0 = D_8085360C * 0.00008f;
-        if (!(this->actor.bgCheckFlags & BGCHECKFLAG_GROUND) || spB0 >= 1.0f) {
+        wallCheckRadius = sYawToTouchedWall2 * 0.00008f;
+        if (!(this->actor.bgCheckFlags & BGCHECKFLAG_GROUND) || wallCheckRadius >= 1.0f) {
             this->speedLimit = R_RUN_SPEED_LIMIT / 100.0f;
         } else {
-            spAC = (R_RUN_SPEED_LIMIT / 100.0f * spB0);
-            this->speedLimit = spAC;
-            if (spAC < 0.1f) {
+            wallCheckHeight = (R_RUN_SPEED_LIMIT / 100.0f * wallCheckRadius);
+            this->speedLimit = wallCheckHeight;
+            if (wallCheckHeight < 0.1f) {
                 this->speedLimit = 0.1f;
             }
         }
 
+        // Check if player can climb/jump onto a ledge above the wall
         if ((this->actor.bgCheckFlags & BGCHECKFLAG_PLAYER_WALL_INTERACT) && (sYawToTouchedWall < DEG_TO_BINANG(67.5f))) {
             CollisionPoly* wallPoly = this->actor.wallPoly;
 
@@ -9791,51 +9820,53 @@ void func_80847BA0(PlayState* play, Player* this) {
                 f32 wallPolyNormalY = COLPOLY_GET_NORMAL(wallPoly->normal.y);
                 f32 wallPolyNormalZ = COLPOLY_GET_NORMAL(wallPoly->normal.z);
                 f32 wallHeight;
-                CollisionPoly* sp7C;
-                CollisionPoly* sp78;
-                s32 sp74;
-                Vec3f sp68;
-                f32 sp64;
-                f32 sp60;
-                s32 temp3;
+                CollisionPoly* floorPoly2;
+                CollisionPoly* wallPoly2;
+                s32 wallBgId;
+                Vec3f checkPos;
+                f32 ledgePosY;
+                f32 ceilingPosY;
+                s32 yawDiff;
 
                 this->wallDistance = Math3D_UDistPlaneToPos(wallPolyNormalX, wallPolyNormalY, wallPolyNormalZ,
                                                             wallPoly->dist, &this->actor.world.pos);
 
-                spB0 = this->wallDistance + 10.0f;
-                sp68.x = this->actor.world.pos.x - (spB0 * wallPolyNormalX);
-                sp68.z = this->actor.world.pos.z - (spB0 * wallPolyNormalZ);
-                sp68.y = this->actor.world.pos.y + this->ageProperties->unk_0C;
+                wallCheckRadius = this->wallDistance + 10.0f;
+                checkPos.x = this->actor.world.pos.x - (wallCheckRadius * wallPolyNormalX);
+                checkPos.z = this->actor.world.pos.z - (wallCheckRadius * wallPolyNormalZ);
+                checkPos.y = this->actor.world.pos.y + this->ageProperties->unk_0C;
 
-                sp64 = BgCheck_EntityRaycastFloor1(&play->colCtx, &sp7C, &sp68);
-                wallHeight = sp64 - this->actor.world.pos.y;
+                ledgePosY = BgCheck_EntityRaycastFloor1(&play->colCtx, &floorPoly2, &checkPos);
+                wallHeight = ledgePosY - this->actor.world.pos.y;
                 this->wallHeight = wallHeight;
 
                 if ((this->wallHeight < 18.0f) ||
-                    BgCheck_EntityCheckCeiling(&play->colCtx, &sp60, &this->actor.world.pos,
-                                               (sp64 - this->actor.world.pos.y) + 20.0f, &sp78, &sp74, &this->actor)) {
+                    BgCheck_EntityCheckCeiling(&play->colCtx, &ceilingPosY, &this->actor.world.pos,
+                                               (ledgePosY - this->actor.world.pos.y) + 20.0f, &wallPoly2, &wallBgId,
+                                               &this->actor)) {
                     this->wallHeight = 399.96002f;
                 } else {
-                    D_80854798.y = (sp64 + 5.0f) - this->actor.world.pos.y;
+                    sWallCheckOffset.y = (ledgePosY + 5.0f) - this->actor.world.pos.y;
 
-                    if (func_80839768(play, this, &D_80854798, &sp78, &sp74, &D_80858AA8) &&
-                        (temp3 = this->actor.wallYaw - Math_Atan2S(sp78->normal.z, sp78->normal.x),
-                         ABS(temp3) < 0x4000) &&
-                        !func_80041E18(&play->colCtx, sp78, sp74)) {
+                    if (Player_WallLineTestWithOffset(play, this, &sWallCheckOffset, &wallPoly2, &wallBgId,
+                                                      &sWallIntersectPos) &&
+                        (yawDiff = this->actor.wallYaw - Math_Atan2S(wallPoly2->normal.z, wallPoly2->normal.x),
+                         ABS(yawDiff) < DEG_TO_BINANG(90.0f)) &&
+                        !func_80041E18(&play->colCtx, wallPoly2, wallBgId)) {
                         this->wallHeight = 399.96002f;
-                    } else if (func_80041DE4(&play->colCtx, wallPoly, this->actor.wallBgId) == 0) {
+                    } else if (func_80041DE4(&play->colCtx, wallPoly, this->actor.wallBgId) == false) {
                         if (this->ageProperties->unk_1C <= this->wallHeight) {
-                            if (ABS(sp7C->normal.y) > 28000) {
+                            if (ABS(floorPoly2->normal.y) > 28000) {
                                 if (this->ageProperties->unk_14 <= this->wallHeight) {
-                                    spC7 = 4;
+                                    wallJumpType = PLAYER_WALLJUMPTYPE_JUMP_UP_TO_LEDGE;
                                 } else if (this->ageProperties->unk_18 <= this->wallHeight) {
-                                    spC7 = 3;
+                                    wallJumpType = PLAYER_WALLJUMPTYPE_LARGE_CLIMB_UP;
                                 } else {
-                                    spC7 = 2;
+                                    wallJumpType = PLAYER_WALLJUMPTYPE_SMALL_CLIMB_UP;
                                 }
                             }
                         } else {
-                            spC7 = 1;
+                            wallJumpType = PLAYER_WALLJUMPTYPE_HOP_UP;
                         }
                     }
                 }
@@ -9843,17 +9874,17 @@ void func_80847BA0(PlayState* play, Player* this) {
         }
     } else {
         this->speedLimit = R_RUN_SPEED_LIMIT / 100.0f;
-        this->unk_88D = 0;
+        this->wallTouchTimer = 0;
         this->wallHeight = 0.0f;
     }
 
-    if (spC7 == this->unk_88C) {
-        if ((this->linearVelocity != 0.0f) && (this->unk_88D < 100)) {
-            this->unk_88D++;
+    if (wallJumpType == this->touchedWallJumpType) {
+        if ((this->linearVelocity != 0.0f) && (this->wallTouchTimer < 100)) {
+            this->wallTouchTimer++;
         }
     } else {
-        this->unk_88C = spC7;
-        this->unk_88D = 0;
+        this->touchedWallJumpType = wallJumpType;
+        this->wallTouchTimer = 0;
     }
 
     if (this->actor.bgCheckFlags & BGCHECKFLAG_GROUND) {
@@ -9863,9 +9894,9 @@ void func_80847BA0(PlayState* play, Player* this) {
             f32 floorPolyNormalX;
             f32 invFloorPolyNormalY;
             f32 floorPolyNormalZ;
-            f32 sp4C;
+            f32 sin;
             s32 pad2;
-            f32 sp44;
+            f32 cos;
             s32 pad3;
 
             if (this->actor.floorBgId != BGCHECK_SCENE) {
@@ -9876,19 +9907,19 @@ void func_80847BA0(PlayState* play, Player* this) {
             invFloorPolyNormalY = 1.0f / COLPOLY_GET_NORMAL(floorPoly->normal.y);
             floorPolyNormalZ = COLPOLY_GET_NORMAL(floorPoly->normal.z);
 
-            sp4C = Math_SinS(this->currentYaw);
-            sp44 = Math_CosS(this->currentYaw);
+            sin = Math_SinS(this->currentYaw);
+            cos = Math_CosS(this->currentYaw);
 
-            this->unk_898 =
-                Math_Atan2S(1.0f, (-(floorPolyNormalX * sp4C) - (floorPolyNormalZ * sp44)) * invFloorPolyNormalY);
-            this->unk_89A =
-                Math_Atan2S(1.0f, (-(floorPolyNormalX * sp44) - (floorPolyNormalZ * sp4C)) * invFloorPolyNormalY);
+            this->angleToGroundX =
+                Math_Atan2S(1.0f, (-(floorPolyNormalX * sin) - (floorPolyNormalZ * cos)) * invFloorPolyNormalY);
+            this->angleToGroundY =
+                Math_Atan2S(1.0f, (-(floorPolyNormalX * cos) - (floorPolyNormalZ * sin)) * invFloorPolyNormalY);
 
-            sp4C = Math_SinS(this->actor.shape.rot.y);
-            sp44 = Math_CosS(this->actor.shape.rot.y);
+            sin = Math_SinS(this->actor.shape.rot.y);
+            cos = Math_CosS(this->actor.shape.rot.y);
 
             D_80853610 =
-                Math_Atan2S(1.0f, (-(floorPolyNormalX * sp4C) - (floorPolyNormalZ * sp44)) * invFloorPolyNormalY);
+                Math_Atan2S(1.0f, (-(floorPolyNormalX * sin) - (floorPolyNormalZ * cos)) * invFloorPolyNormalY);
 
             func_8083E318(play, this, floorPoly);
         }
@@ -9956,7 +9987,7 @@ void Player_UpdateCamAndSeqModes(PlayState* play, Player* this) {
                     camMode = CAM_MODE_TARGET;
                 }
             } else if (this->stateFlags1 & (PLAYER_STATE1_JUMPING | PLAYER_STATE1_CLIMBING)) {
-                if ((func_80845668 == this->actionFunc) || (this->stateFlags1 & PLAYER_STATE1_CLIMBING)) {
+                if ((Player_JumpUpToLedge == this->actionFunc) || (this->stateFlags1 & PLAYER_STATE1_CLIMBING)) {
                     camMode = CAM_MODE_CLIMB;
                 } else {
                     camMode = CAM_MODE_JUMP;
@@ -10138,13 +10169,71 @@ static s8 D_808547C4[] = {
     60, 61, 62, 63,  64,  -65, -66, 68, 11, 69, 70, 71, 8,  8,   72, 73, 78,  79, 80,  89,  90, 91, 92, 77, 19, 94,
 };
 
-static Vec3f D_80854814 = { 0.0f, 0.0f, 200.0f };
+static Vec3f sHorseRaycastOffset = { 0.0f, 0.0f, 200.0f };
 
 static f32 sWaterConveyorSpeeds[] = { 2.0f, 4.0f, 7.0f };
 static f32 sFloorConveyorSpeeds[] = { 0.5f, 1.0f, 3.0f };
 
 void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     s32 pad;
+
+    // // TESTING
+
+    // GfxPrint printer;
+    // Gfx* gfx;
+
+    // OPEN_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
+
+    // gfx = POLY_OPA_DISP + 1;
+    // gSPDisplayList(OVERLAY_DISP++, gfx);
+
+    // GfxPrint_Init(&printer);
+    // GfxPrint_Open(&printer, gfx);
+
+    // GfxPrint_SetColor(&printer, 255, 0, 255, 255);
+    // GfxPrint_SetPos(&printer, 10, 10);
+    // GfxPrint_Printf(&printer, "anim1: %x", this->skelAnime.animation);
+    // GfxPrint_SetPos(&printer, 10, 11);
+    // GfxPrint_Printf(&printer, "anim2: %x", this->skelAnime2.animation);
+
+    // gfx = GfxPrint_Close(&printer);
+    // GfxPrint_Destroy(&printer);
+
+    // gSPEndDisplayList(gfx++);
+    // gSPBranchList(POLY_OPA_DISP, gfx);
+    // POLY_OPA_DISP = gfx;
+
+    // CLOSE_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
+
+    // // END TESTING
+
+    // // TESTING
+
+    // GfxPrint printer;
+    // Gfx* gfx;
+
+    // OPEN_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
+
+    // gfx = POLY_OPA_DISP + 1;
+    // gSPDisplayList(OVERLAY_DISP++, gfx);
+
+    // GfxPrint_Init(&printer);
+    // GfxPrint_Open(&printer, gfx);
+
+    // GfxPrint_SetColor(&printer, 255, 0, 255, 255);
+    // GfxPrint_SetPos(&printer, 10, 10);
+    // GfxPrint_Printf(&printer, "this->sinkingOffsetY: %f", this->sinkingOffsetY);
+
+    // gfx = GfxPrint_Close(&printer);
+    // GfxPrint_Destroy(&printer);
+
+    // gSPEndDisplayList(gfx++);
+    // gSPBranchList(POLY_OPA_DISP, gfx);
+    // POLY_OPA_DISP = gfx;
+
+    // CLOSE_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
+
+    // // END TESTING
 
     sControlInput = input;
 
@@ -10305,7 +10394,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
 
             if ((this->pushedSpeed != 0.0f) && !Player_InCsMode(play) &&
                 !(this->stateFlags1 & (PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP | PLAYER_STATE1_CLIMBING_ONTO_LEDGE | PLAYER_STATE1_CLIMBING)) &&
-                (func_80845668 != this->actionFunc) && (Player_UpdateMagicSpell != this->actionFunc)) {
+                (Player_JumpUpToLedge != this->actionFunc) && (Player_UpdateMagicSpell != this->actionFunc)) {
                 this->actor.velocity.x += this->pushedSpeed * Math_SinS(this->pushedYaw);
                 this->actor.velocity.z += this->pushedSpeed * Math_CosS(this->pushedYaw);
             }
@@ -10318,18 +10407,18 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
 
             if (!(this->stateFlags1 & PLAYER_STATE1_EXITING_SCENE) && (this->stateFlags1 & PLAYER_STATE1_RIDING_HORSE)) {
                 EnHorse* rideActor = (EnHorse*)this->rideActor;
-                CollisionPoly* sp5C;
-                s32 sp58;
-                Vec3f sp4C;
+                CollisionPoly* floorPoly;
+                s32 floorBgId;
+                Vec3f raycastPos;
 
                 if (!(rideActor->actor.bgCheckFlags & BGCHECKFLAG_GROUND)) {
-                    Player_RaycastFloorWithOffset(play, this, &D_80854814, &sp4C, &sp5C, &sp58);
+                    Player_RaycastFloorWithOffset(play, this, &sHorseRaycastOffset, &raycastPos, &floorPoly, &floorBgId);
                 } else {
-                    sp5C = rideActor->actor.floorPoly;
-                    sp58 = rideActor->actor.floorBgId;
+                    floorPoly = rideActor->actor.floorPoly;
+                    floorBgId = rideActor->actor.floorBgId;
                 }
 
-                if ((sp5C != NULL) && func_80839034(play, this, sp5C, sp58)) {
+                if ((floorPoly != NULL) && func_80839034(play, this, floorPoly, floorBgId)) {
                     if (DREG(25) != 0) {
                         DREG(25) = 0;
                     } else {
@@ -10524,7 +10613,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     }
 
     Math_Vec3f_Copy(&this->actor.home.pos, &this->actor.world.pos);
-    Math_Vec3f_Copy(&this->unk_A88, &this->bodyPartsPos[PLAYER_BODYPART_WAIST]);
+    Math_Vec3f_Copy(&this->prevWaistPos, &this->bodyPartsPos[PLAYER_BODYPART_WAIST]);
 
     if (this->stateFlags1 & (PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE | PLAYER_STATE1_IN_CUTSCENE)) {
         this->actor.colChkInfo.mass = MASS_IMMOVABLE;
@@ -11521,8 +11610,8 @@ s32 func_8084C89C(PlayState* play, Player* this, s32 arg2, f32* arg3) {
 
     *arg3 = Player_RaycastFloorWithOffset2(play, this, &D_808548FC[arg2], &sp40);
 
-    return (sp4C < *arg3) && (*arg3 < sp50) && !func_80839768(play, this, &D_80854914[arg2], &sp30, &sp2C, &sp34) &&
-           !func_80839768(play, this, &D_8085492C[arg2], &sp30, &sp2C, &sp34);
+    return (sp4C < *arg3) && (*arg3 < sp50) && !Player_WallLineTestWithOffset(play, this, &D_80854914[arg2], &sp30, &sp2C, &sp34) &&
+           !Player_WallLineTestWithOffset(play, this, &D_8085492C[arg2], &sp30, &sp2C, &sp34);
 }
 
 s32 func_8084C9BC(Player* this, PlayState* play) {

@@ -983,7 +983,7 @@ void func_8008F87C(PlayState* play, Player* this, SkelAnime* skelAnime, Vec3f* p
 
         sp7C = D_80126058[(void)0, gSaveContext.linkAge];
         sp78 = D_80126060[(void)0, gSaveContext.linkAge];
-        sp74 = D_80126068[(void)0, gSaveContext.linkAge] - this->unk_6C4;
+        sp74 = D_80126068[(void)0, gSaveContext.linkAge] - this->sinkingOffsetY;
 
         Matrix_Push();
         Matrix_TranslateRotateZYX(pos, rot);
@@ -1072,7 +1072,7 @@ s32 Player_OverrideLimbDrawGameplayCommon(PlayState* play, s32 limbIndex, Gfx** 
             }
         }
 
-        pos->y -= this->unk_6C4;
+        pos->y -= this->sinkingOffsetY;
 
         if (this->unk_6C2 != 0) {
             Matrix_Translate(pos->x, ((Math_CosS(this->unk_6C2) - 1.0f) * 200.0f) + pos->y, pos->z, MTXMODE_APPLY);
