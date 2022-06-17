@@ -4289,34 +4289,34 @@ s32 func_80839034(PlayState* play, Player* this, CollisionPoly* poly, u32 bgId) 
     return 0;
 }
 
-void func_808395DC(Player* this, Vec3f* arg1, Vec3f* arg2, Vec3f* arg3) {
+void Player_GetWorldPosRelativeToPlayer(Player* this, Vec3f* playerPos, Vec3f* posOffset, Vec3f* worldPos) {
     f32 cos = Math_CosS(this->actor.shape.rot.y);
     f32 sin = Math_SinS(this->actor.shape.rot.y);
 
-    arg3->x = arg1->x + ((arg2->x * cos) + (arg2->z * sin));
-    arg3->y = arg1->y + arg2->y;
-    arg3->z = arg1->z + ((arg2->z * cos) - (arg2->x * sin));
+    worldPos->x = playerPos->x + ((posOffset->x * cos) + (posOffset->z * sin));
+    worldPos->y = playerPos->y + posOffset->y;
+    worldPos->z = playerPos->z + ((posOffset->z * cos) - (posOffset->x * sin));
 }
 
-Actor* Player_SpawnFairy(PlayState* play, Player* this, Vec3f* arg2, Vec3f* arg3, s32 type) {
+Actor* Player_SpawnFairy(PlayState* play, Player* this, Vec3f* playerPos, Vec3f* posOffset, s32 type) {
     Vec3f pos;
 
-    func_808395DC(this, arg2, arg3, &pos);
+    Player_GetWorldPosRelativeToPlayer(this, playerPos, posOffset, &pos);
 
     return Actor_Spawn(&play->actorCtx, play, ACTOR_EN_ELF, pos.x, pos.y, pos.z, 0, 0, 0, type);
 }
 
-f32 func_808396F4(PlayState* play, Player* this, Vec3f* arg2, Vec3f* arg3, CollisionPoly** arg4, s32* arg5) {
-    func_808395DC(this, &this->actor.world.pos, arg2, arg3);
+f32 Player_RaycastFloorWithOffset(PlayState* play, Player* this, Vec3f* posOffset, Vec3f* pos, CollisionPoly** colPoly, s32* bgId) {
+    Player_GetWorldPosRelativeToPlayer(this, &this->actor.world.pos, posOffset, pos);
 
-    return BgCheck_EntityRaycastFloor3(&play->colCtx, arg4, arg5, arg3);
+    return BgCheck_EntityRaycastFloor3(&play->colCtx, colPoly, bgId, pos);
 }
 
-f32 func_8083973C(PlayState* play, Player* this, Vec3f* arg2, Vec3f* arg3) {
+f32 Player_RaycastFloorWithOffset2(PlayState* play, Player* this, Vec3f* arg2, Vec3f* arg3) {
     CollisionPoly* sp24;
     s32 sp20;
 
-    return func_808396F4(play, this, arg2, arg3, &sp24, &sp20);
+    return Player_RaycastFloorWithOffset(play, this, arg2, arg3, &sp24, &sp20);
 }
 
 s32 func_80839768(PlayState* play, Player* this, Vec3f* arg2, CollisionPoly** arg3, s32* arg4, Vec3f* arg5) {
@@ -4327,7 +4327,7 @@ s32 func_80839768(PlayState* play, Player* this, Vec3f* arg2, CollisionPoly** ar
     sp44.y = this->actor.world.pos.y + arg2->y;
     sp44.z = this->actor.world.pos.z;
 
-    func_808395DC(this, &this->actor.world.pos, arg2, &sp38);
+    Player_GetWorldPosRelativeToPlayer(this, &this->actor.world.pos, arg2, &sp38);
 
     return BgCheck_EntityLineTest1(&play->colCtx, &sp44, &sp38, arg5, arg3, true, false, false, true, arg4);
 }
@@ -4769,12 +4769,12 @@ static Vec3f D_8085451C = { 0.0f, 0.0f, 100.0f };
 
 void func_8083AA10(Player* this, PlayState* play) {
     s32 sp5C;
-    CollisionPoly* sp58;
-    s32 sp54;
+    CollisionPoly* floorPoly;
+    s32 bgId;
     WaterBox* sp50;
-    Vec3f sp44;
+    Vec3f floorPos;
     f32 sp40;
-    f32 sp3C;
+    f32 playerPosY;
 
     this->fallDistance = this->fallStartHeight - (s32)this->actor.world.pos.y;
 
@@ -4815,11 +4815,11 @@ void func_8083AA10(Player* this, PlayState* play) {
 
                     if ((D_80853604 == 11) && !(this->stateFlags1 & PLAYER_STATE1_HOLDING_ACTOR)) {
 
-                        sp40 = func_808396F4(play, this, &D_8085451C, &sp44, &sp58, &sp54);
-                        sp3C = this->actor.world.pos.y;
+                        sp40 = Player_RaycastFloorWithOffset(play, this, &D_8085451C, &floorPos, &floorPoly, &bgId);
+                        playerPosY = this->actor.world.pos.y;
 
-                        if (WaterBox_GetSurface1(play, &play->colCtx, sp44.x, sp44.z, &sp3C, &sp50) &&
-                            ((sp3C - sp40) > 50.0f)) {
+                        if (WaterBox_GetSurface1(play, &play->colCtx, floorPos.x, floorPos.z, &playerPosY, &sp50) &&
+                            ((playerPosY - sp40) > 50.0f)) {
                             Player_SetupJump(this, &gPlayerAnim_003158, 6.0f, play);
                             Player_SetActionFunc(play, this, func_80844A44, 0);
                             return;
@@ -5231,15 +5231,15 @@ s32 func_8083BC7C(Player* this, PlayState* play) {
 }
 
 void func_8083BCD0(Player* this, PlayState* play, s32 relativeStickInput) {
-    Player_SetupJumpWithSfx(this, sManualJumpAnims[relativeStickInput][0], !(relativeStickInput & PLAYER_RELATIVESTICKINPUT_FORWARD) ? 5.8f : 3.5f, play, NA_SE_VO_LI_SWORD_N);
+    Player_SetupJumpWithSfx(this, sManualJumpAnims[relativeStickInput][0], !(relativeStickInput & PLAYER_RELATIVESTICKINPUT_LEFT) ? 5.8f : 3.5f, play, NA_SE_VO_LI_SWORD_N);
 
     if (relativeStickInput) {}
 
     this->unk_850 = 1;
-    this->unk_84F = relativeStickInput;
+    this->relativeStickInput = relativeStickInput;
 
     this->currentYaw = this->actor.shape.rot.y + (relativeStickInput << 0xE);
-    this->linearVelocity = !(relativeStickInput & PLAYER_RELATIVESTICKINPUT_FORWARD) ? 6.0f : 8.5f;
+    this->linearVelocity = !(relativeStickInput & PLAYER_RELATIVESTICKINPUT_LEFT) ? 6.0f : 8.5f;
 
     this->stateFlags2 |= PLAYER_STATE2_BACKFLIPPING_OR_SIDEHOPPING;
 
@@ -5943,7 +5943,7 @@ void func_8083DC54(Player* this, PlayState* play) {
         Math_SmoothStepToS(&this->actor.focus.rot.x, -20000, 10, 4000, 800);
     } else {
         sp46 = 0;
-        temp1 = func_8083973C(play, this, &D_8085456C, &sp34);
+        temp1 = Player_RaycastFloorWithOffset2(play, this, &D_8085456C, &sp34);
         if (temp1 > BGCHECK_Y_MIN) {
             temp2 = Math_Atan2S(40.0f, this->actor.world.pos.y - temp1);
             sp46 = CLAMP(temp2, -4000, 4000);
@@ -8070,7 +8070,7 @@ void func_80843A38(Player* this, PlayState* play) {
     Player_PlayAnimSfx(this, D_808545DC);
 }
 
-static Vec3f D_808545E4 = { 0.0f, 0.0f, 5.0f };
+static Vec3f sDeathReviveFairyPosOffset = { 0.0f, 0.0f, 5.0f };
 
 void func_80843AE8(PlayState* play, Player* this) {
     if (this->unk_850 != 0) {
@@ -8100,7 +8100,7 @@ void func_80843AE8(PlayState* play, Player* this) {
         }
     } else if (this->unk_84F != 0) {
         this->unk_850 = 60;
-        Player_SpawnFairy(play, this, &this->actor.world.pos, &D_808545E4, FAIRY_REVIVE_DEATH);
+        Player_SpawnFairy(play, this, &this->actor.world.pos, &sDeathReviveFairyPosOffset, FAIRY_REVIVE_DEATH);
         func_8002F7DC(&this->actor, NA_SE_EV_FIATY_HEAL - SFX_FLAG);
         OnePointCutscene_Init(play, 9908, 125, &this->actor, CAM_ID_MAIN);
     } else if (play->gameOverCtx.state == GAMEOVER_DEATH_WAIT_GROUND) {
@@ -9304,7 +9304,7 @@ static void (*D_80854738[])(PlayState* play, Player* this) = {
     func_8083CA54, func_8083CA20, func_8083CA54, func_8083CA9C,
 };
 
-static Vec3f D_80854778 = { 0.0f, 50.0f, 0.0f };
+static Vec3f sNaviPosOffset = { 0.0f, 50.0f, 0.0f };
 
 void Player_Init(Actor* thisx, PlayState* play2) {
     Player* this = (Player*)thisx;
@@ -9400,7 +9400,7 @@ void Player_Init(Actor* thisx, PlayState* play2) {
 
     if (initMode != 0) {
         if ((gSaveContext.gameMode == 0) || (gSaveContext.gameMode == 3)) {
-            this->naviActor = Player_SpawnFairy(play, this, &thisx->world.pos, &D_80854778, FAIRY_NAVI);
+            this->naviActor = Player_SpawnFairy(play, this, &thisx->world.pos, &sNaviPosOffset, FAIRY_NAVI);
             if (gSaveContext.dogParams != 0) {
                 gSaveContext.dogParams |= 0x8000;
             }
@@ -10145,6 +10145,34 @@ static f32 sFloorConveyorSpeeds[] = { 0.5f, 1.0f, 3.0f };
 void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     s32 pad;
 
+    // // TESTING
+
+    // GfxPrint printer;
+    // Gfx* gfx;
+
+    // OPEN_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
+
+    // gfx = POLY_OPA_DISP + 1;
+    // gSPDisplayList(OVERLAY_DISP++, gfx);
+
+    // GfxPrint_Init(&printer);
+    // GfxPrint_Open(&printer, gfx);
+
+    // GfxPrint_SetColor(&printer, 255, 0, 255, 255);
+    // GfxPrint_SetPos(&printer, 10, 10);
+    // GfxPrint_Printf(&printer, "relativeStickInput: %d", this->relativeAnalogStickInputs[this->inputFrameCounter]);
+
+    // gfx = GfxPrint_Close(&printer);
+    // GfxPrint_Destroy(&printer);
+
+    // gSPEndDisplayList(gfx++);
+    // gSPBranchList(POLY_OPA_DISP, gfx);
+    // POLY_OPA_DISP = gfx;
+
+    // CLOSE_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
+
+    // // END TESTING
+
     sControlInput = input;
 
     if (this->unk_A86 < 0) {
@@ -10322,7 +10350,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
                 Vec3f sp4C;
 
                 if (!(rideActor->actor.bgCheckFlags & BGCHECKFLAG_GROUND)) {
-                    func_808396F4(play, this, &D_80854814, &sp4C, &sp5C, &sp58);
+                    Player_RaycastFloorWithOffset(play, this, &D_80854814, &sp4C, &sp5C, &sp58);
                 } else {
                     sp5C = rideActor->actor.floorPoly;
                     sp58 = rideActor->actor.floorBgId;
@@ -10558,7 +10586,7 @@ void Player_Update(Actor* thisx, PlayState* play) {
                 gSaveContext.dogParams = 0;
             } else {
                 gSaveContext.dogParams &= 0x7FFF;
-                func_808395DC(this, &this->actor.world.pos, &D_80854838, &sDogSpawnPos);
+                Player_GetWorldPosRelativeToPlayer(this, &this->actor.world.pos, &D_80854838, &sDogSpawnPos);
                 dogParams = gSaveContext.dogParams;
 
                 dog = Actor_Spawn(&play->actorCtx, play, ACTOR_EN_DOG, sDogSpawnPos.x, sDogSpawnPos.y, sDogSpawnPos.z,
@@ -11155,7 +11183,7 @@ void func_8084B9E4(Player* this, PlayState* play) {
     }
 
     if (this->stateFlags2 & PLAYER_STATE2_MOVING_PUSH_PULL_WALL) {
-        temp2 = func_8083973C(play, this, &D_80854880, &sp5C) - this->actor.world.pos.y;
+        temp2 = Player_RaycastFloorWithOffset2(play, this, &D_80854880, &sp5C) - this->actor.world.pos.y;
         if (fabsf(temp2) < 20.0f) {
             sp44.x = this->actor.world.pos.x;
             sp44.z = this->actor.world.pos.z;
@@ -11314,7 +11342,7 @@ void func_8084BF1C(Player* this, PlayState* play) {
 
                 if (sp84 > 0) {
                     D_8085488C.y = this->ageProperties->unk_40;
-                    temp_f0 = func_8083973C(play, this, &D_8085488C, &sp5C);
+                    temp_f0 = Player_RaycastFloorWithOffset2(play, this, &D_8085488C, &sp5C);
 
                     if (this->actor.world.pos.y < temp_f0) {
                         if (this->unk_84F != 0) {
@@ -11518,7 +11546,7 @@ s32 func_8084C89C(PlayState* play, Player* this, s32 arg2, f32* arg3) {
     sp50 = rideActor->actor.world.pos.y + 20.0f;
     sp4C = rideActor->actor.world.pos.y - 20.0f;
 
-    *arg3 = func_8083973C(play, this, &D_808548FC[arg2], &sp40);
+    *arg3 = Player_RaycastFloorWithOffset2(play, this, &D_808548FC[arg2], &sp40);
 
     return (sp4C < *arg3) && (*arg3 < sp50) && !func_80839768(play, this, &D_80854914[arg2], &sp30, &sp2C, &sp34) &&
            !func_80839768(play, this, &D_8085492C[arg2], &sp30, &sp2C, &sp34);
@@ -12487,7 +12515,7 @@ void func_8084ECA4(Player* this, PlayState* play) {
     }
 }
 
-static Vec3f D_80854A1C = { 0.0f, 0.0f, 5.0f };
+static Vec3f sBottleFairyPosOffset = { 0.0f, 0.0f, 5.0f };
 
 void func_8084EED8(Player* this, PlayState* play) {
     if (LinkAnimation_Update(play, &this->skelAnime)) {
@@ -12497,7 +12525,7 @@ void func_8084EED8(Player* this, PlayState* play) {
     }
 
     if (LinkAnimation_OnFrame(&this->skelAnime, 37.0f)) {
-        Player_SpawnFairy(play, this, &this->leftHandPos, &D_80854A1C, FAIRY_REVIVE_BOTTLE);
+        Player_SpawnFairy(play, this, &this->leftHandPos, &sBottleFairyPosOffset, FAIRY_REVIVE_BOTTLE);
         Player_UpdateBottleHeld(play, this, ITEM_BOTTLE, PLAYER_AP_BOTTLE);
         func_8002F7DC(&this->actor, NA_SE_EV_BOTTLE_CAP_OPEN);
         func_8002F7DC(&this->actor, NA_SE_EV_FIATY_HEAL - SFX_FLAG);
@@ -13025,7 +13053,7 @@ void Player_MeleeWeaponAttack(Player* this, PlayState* play) {
                 Vec3f shockwavePos;
                 f32 sp2C;
 
-                shockwavePos.y = func_8083973C(play, this, &D_80854A40, &shockwavePos);
+                shockwavePos.y = Player_RaycastFloorWithOffset2(play, this, &D_80854A40, &shockwavePos);
                 sp2C = this->actor.world.pos.y - shockwavePos.y;
 
                 Math_ScaledStepToS(&this->actor.focus.rot.x, Math_Atan2S(45.0f, sp2C), 800);
