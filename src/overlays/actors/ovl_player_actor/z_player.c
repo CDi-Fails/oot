@@ -4429,8 +4429,8 @@ s32 Player_ShouldOpenDoor(Player* this, PlayState* play) {
 
                 if (doorShutter->dyna.actor.category == ACTORCAT_DOOR) {
                     this->doorBgCamIndex = play->transiActorCtx.list[(u16)doorShutter->dyna.actor.params >> 10]
-                                        .sides[(doorDirection > 0) ? 0 : 1]
-                                        .effects;
+                                               .sides[(doorDirection > 0) ? 0 : 1]
+                                               .bgCamIndex;
 
                     Actor_DisableLens(play);
                 }
@@ -4502,7 +4502,7 @@ s32 Player_ShouldOpenDoor(Player* this, PlayState* play) {
                         Camera_ChangeDoorCam(Play_GetCamera(play, CAM_ID_MAIN), doorActor,
                                              play->transiActorCtx.list[(u16)doorActor->params >> 10]
                                                  .sides[(doorDirection > 0) ? 0 : 1]
-                                                 .effects,
+                                                 .bgCamIndex,
                                              0, 38.0f * D_808535EC, 26.0f * D_808535EC, 10.0f * D_808535EC);
                     }
                 }
@@ -4890,11 +4890,19 @@ s32 Player_SetupCameraMode(PlayState* play, Player* this) {
     return Camera_ChangeMode(Play_GetCamera(play, CAM_ID_MAIN), cameraMode);
 }
 
+<<<<<<< HEAD
 s32 Player_SetupCutscene(PlayState* play, Player* this) {
     if (this->attentionMode == PLAYER_ATTENTIONMODE_CUTSCENE) {
         Player_SetActionFunc(play, this, func_80852E14, 0);
         if (this->csFlag != 0) {
             this->stateFlags1 |= PLAYER_STATE1_IN_CUTSCENE;
+=======
+s32 func_8083ADD4(PlayState* play, Player* this) {
+    if (this->unk_6AD == 3) {
+        func_80835C58(play, this, func_80852E14, 0);
+        if (this->doorBgCamIndex != 0) {
+            this->stateFlags1 |= PLAYER_STATE1_29;
+>>>>>>> upstream/master
         }
         Player_InactivateMeleeWeapon(this);
         return 1;
