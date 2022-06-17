@@ -387,10 +387,10 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
 
                             if (player->meleeWeaponAnimation <= PLAYER_MWA_FORWARD_COMBO_2H) {
                                 sStickTilt = 0.0f;
-                            } else if (player->meleeWeaponAnimation <= PLAYER_MWA_RIGHT_COMBO_2H) {
+                            } else if (player->meleeWeaponAnimation <= PLAYER_MWA_LEFT_COMBO_2H) {
                                 sStickTilt = 127.0f;
                                 sStickAngle += 0x4000;
-                            } else if (player->meleeWeaponAnimation <= PLAYER_MWA_LEFT_COMBO_2H) {
+                            } else if (player->meleeWeaponAnimation <= PLAYER_MWA_RIGHT_COMBO_2H) {
                                 sStickTilt = 127.0f;
                                 sStickAngle -= 0x4000;
                             } else if (player->meleeWeaponAnimation <= PLAYER_MWA_HAMMER_SIDE) {

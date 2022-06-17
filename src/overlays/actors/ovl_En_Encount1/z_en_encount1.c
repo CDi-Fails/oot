@@ -108,7 +108,7 @@ void EnEncount1_SpawnLeevers(EnEncount1* this, PlayState* play) {
     if ((this->timer == 0) && (play->csCtx.state == CS_STATE_IDLE) && (this->curNumSpawn <= this->maxCurSpawns) &&
         (this->curNumSpawn < 5)) {
         floorType = func_80041D4C(&play->colCtx, player->actor.floorPoly, player->actor.floorBgId);
-        if ((floorType != 4) && (floorType != 7) && (floorType != 12)) {
+        if ((floorType != BGCHECK_FLOORSPECIALPROPERTY_SHALLOW_SAND) && (floorType != BGCHECK_FLOORSPECIALPROPERTY_QUICKSAND_NO_HORSE) && (floorType != BGCHECK_FLOORSPECIALPROPERTY_QUICKSAND_HORSE_CAN_CROSS)) {
             this->numLeeverSpawns = 0;
         } else if (!(this->reduceLeevers && (this->actor.xzDistToPlayer > 1300.0f))) {
             spawnLimit = 5;

@@ -2852,7 +2852,7 @@ s32 EnHorse_CalcFloorHeight(EnHorse* this, PlayState* play, Vec3f* pos, Collisio
 
     if ((*floorPoly)->normal.y * COLPOLY_NORMAL_FRAC < 0.81915206f || // cos(35 degrees)
         SurfaceType_IsHorseBlocked(&play->colCtx, *floorPoly, bgId) ||
-        func_80041D4C(&play->colCtx, *floorPoly, bgId) == 7) {
+        func_80041D4C(&play->colCtx, *floorPoly, bgId) == BGCHECK_FLOORSPECIALPROPERTY_QUICKSAND_NO_HORSE) {
         return 3; // Horse blocked surface
     }
     return 0;
@@ -2981,7 +2981,7 @@ void EnHorse_CheckFloors(EnHorse* this, PlayState* play) {
 
         if (ny < 0.81915206f || // cos(35 degrees)
             SurfaceType_IsHorseBlocked(&play->colCtx, this->actor.floorPoly, this->actor.floorBgId) ||
-            func_80041D4C(&play->colCtx, this->actor.floorPoly, this->actor.floorBgId) == 7) {
+            func_80041D4C(&play->colCtx, this->actor.floorPoly, this->actor.floorBgId) == BGCHECK_FLOORSPECIALPROPERTY_QUICKSAND_NO_HORSE) {
             if (this->actor.speedXZ >= 0.0f) {
                 EnHorse_ObstructMovement(this, play, 4, galloping);
             } else {
@@ -3250,7 +3250,7 @@ void EnHorse_UpdateBgCheckInfo(EnHorse* this, PlayState* play) {
     ny = obstacleFloor->normal.y * COLPOLY_NORMAL_FRAC;
     if (ny < 0.81915206f || // cos(35 degrees)
         (SurfaceType_IsHorseBlocked(&play->colCtx, obstacleFloor, bgId) != 0) ||
-        (func_80041D4C(&play->colCtx, obstacleFloor, bgId) == 7)) {
+        (func_80041D4C(&play->colCtx, obstacleFloor, bgId) == BGCHECK_FLOORSPECIALPROPERTY_QUICKSAND_NO_HORSE)) {
         if (movingFast == true && this->action != ENHORSE_ACT_STOPPING) {
             this->stateFlags |= ENHORSE_FORCE_REVERSING;
             EnHorse_StartBraking(this, play);
@@ -3287,7 +3287,7 @@ void EnHorse_UpdateBgCheckInfo(EnHorse* this, PlayState* play) {
     ny = obstacleFloor->normal.y * COLPOLY_NORMAL_FRAC;
     if (ny < 0.81915206f || // cos(35 degrees)
         SurfaceType_IsHorseBlocked(&play->colCtx, obstacleFloor, bgId) ||
-        func_80041D4C(&play->colCtx, obstacleFloor, bgId) == 7) {
+        func_80041D4C(&play->colCtx, obstacleFloor, bgId) == BGCHECK_FLOORSPECIALPROPERTY_QUICKSAND_NO_HORSE) {
         if (movingFast == true && this->action != ENHORSE_ACT_STOPPING) {
             this->stateFlags |= ENHORSE_FORCE_REVERSING;
             EnHorse_StartBraking(this, play);

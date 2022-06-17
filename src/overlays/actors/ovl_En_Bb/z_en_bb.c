@@ -695,7 +695,7 @@ void EnBb_Down(EnBb* this, PlayState* play) {
         if (this->actor.params == ENBB_RED) {
             s32 floorType = func_80041D4C(&play->colCtx, this->actor.floorPoly, this->actor.floorBgId);
 
-            if ((floorType == 2) || (floorType == 3) || (floorType == 9)) {
+            if ((floorType == BGCHECK_FLOORSPECIALPROPERTY_HURT_FLOOR) || (floorType == BGCHECK_FLOORSPECIALPROPERTY_FIRE_HURT_FLOOR) || (floorType == BGCHECK_FLOORSPECIALPROPERTY_VOID_ON_TOUCH)) {
                 this->moveMode = BBMOVE_HIDDEN;
                 this->timer = 10;
                 this->actionState++;
@@ -813,7 +813,7 @@ void EnBb_Red(EnBb* this, PlayState* play) {
             }
             if (this->actor.bgCheckFlags & BGCHECKFLAG_GROUND) {
                 floorType = func_80041D4C(&play->colCtx, this->actor.floorPoly, this->actor.floorBgId);
-                if ((floorType == 2) || (floorType == 3) || (floorType == 9)) {
+                if ((floorType == BGCHECK_FLOORSPECIALPROPERTY_HURT_FLOOR) || (floorType == BGCHECK_FLOORSPECIALPROPERTY_FIRE_HURT_FLOOR) || (floorType == BGCHECK_FLOORSPECIALPROPERTY_VOID_ON_TOUCH)) {
                     this->moveMode = BBMOVE_HIDDEN;
                     this->timer = 10;
                     this->actionState++;
