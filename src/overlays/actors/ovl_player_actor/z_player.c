@@ -4890,19 +4890,11 @@ s32 Player_SetupCameraMode(PlayState* play, Player* this) {
     return Camera_ChangeMode(Play_GetCamera(play, CAM_ID_MAIN), cameraMode);
 }
 
-<<<<<<< HEAD
 s32 Player_SetupCutscene(PlayState* play, Player* this) {
     if (this->attentionMode == PLAYER_ATTENTIONMODE_CUTSCENE) {
         Player_SetActionFunc(play, this, func_80852E14, 0);
         if (this->csFlag != 0) {
             this->stateFlags1 |= PLAYER_STATE1_IN_CUTSCENE;
-=======
-s32 func_8083ADD4(PlayState* play, Player* this) {
-    if (this->unk_6AD == 3) {
-        func_80835C58(play, this, func_80852E14, 0);
-        if (this->doorBgCamIndex != 0) {
-            this->stateFlags1 |= PLAYER_STATE1_29;
->>>>>>> upstream/master
         }
         Player_InactivateMeleeWeapon(this);
         return 1;
