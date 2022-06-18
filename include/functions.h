@@ -1061,7 +1061,7 @@ s32 Player_HasMirrorShieldEquipped(PlayState* play);
 s32 Player_HasMirrorShieldSetToDraw(PlayState* play);
 s32 Player_ActionToMagicSpell(Player* this, s32 actionParam);
 s32 Player_HoldsHookshot(Player* this);
-s32 func_8008F128(Player* this);
+s32 Player_IsShootingHookshot(Player* this);
 s32 Player_ActionToMeleeWeapon(s32 actionParam);
 s32 Player_GetMeleeWeaponHeld(Player* this);
 s32 Player_HoldsTwoHandedWeapon(Player* this);

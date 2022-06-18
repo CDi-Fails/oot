@@ -705,7 +705,7 @@ s32 Player_HoldsHookshot(Player* this) {
     return (this->heldItemActionParam == PLAYER_AP_HOOKSHOT) || (this->heldItemActionParam == PLAYER_AP_LONGSHOT);
 }
 
-s32 func_8008F128(Player* this) {
+s32 Player_IsShootingHookshot(Player* this) {
     return Player_HoldsHookshot(this) && (this->heldActor == NULL);
 }
 

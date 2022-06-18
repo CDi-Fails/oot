@@ -546,10 +546,10 @@ typedef enum {
 #define PLAYER_LOOKFLAGS_OVERRIDE_UPPERBODY_ROT_Y (1 << 7) // 0x00080
 #define PLAYER_LOOKFLAGS_OVERRIDE_UPPERBODY_ROT_Z (1 << 8) // 0x00100
 
-#define PLAYER_ANIMFLAG_0 (1 << 0)
+#define PLAYER_ANIMFLAG_UPDATE_XZ (1 << 0)
 #define PLAYER_ANIMFLAG_UPDATE_Y (1 << 1)
-#define PLAYER_ANIMFLAG_2 (1 << 2)
-#define PLAYER_ANIMFLAG_3 (1 << 3)
+#define PLAYER_ANIMFLAG_NO_AGE_Y_TRANSLATION_SCALE (1 << 2)
+#define PLAYER_ANIMFLAG_KEEP_ANIM_Y_TRANSLATION (1 << 3)
 #define PLAYER_ANIMFLAG_NO_MOVE (1 << 4)
 #define PLAYER_ANIMFLAG_5 (1 << 5)
 #define PLAYER_ANIMFLAG_6 (1 << 6)
@@ -802,7 +802,10 @@ typedef struct Player {
         /* 0x084F */ s8 relativeStickInput;
         /* 0x084F */ s8 climbStatus;
     };
-    /* 0x0850 */ s16        unk_850; // multipurpose timer
+    union {
+        /* 0x0850 */ s16        unk_850; // multipurpose timer
+        /* 0x0850 */ s16        mashTimer;
+    };
     /* 0x0854 */ f32        rippleTimer;
     union {
         /* 0x0858 */ f32        spinAttackTimer;
