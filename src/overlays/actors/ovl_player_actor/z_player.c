@@ -988,11 +988,11 @@ static LinkAnimationHeader* sIdleAnims[][2] = {
     { &gPlayerAnim_003418, &gPlayerAnim_003418 }, { &gPlayerAnim_003428, &gPlayerAnim_003428 }
 };
 
-static PlayerAnimSfxEntry D_80853DEC[] = {
+static PlayerAnimSfxEntry sIdleSneezeAnimSfx[] = {
     { NA_SE_VO_LI_SNEEZE, -0x2008 },
 };
 
-static PlayerAnimSfxEntry D_80853DF0[] = {
+static PlayerAnimSfxEntry sIdleSweatAnimSfx[] = {
     { NA_SE_VO_LI_SWEAT, -0x2012 },
 };
 
@@ -1041,7 +1041,7 @@ static PlayerAnimSfxEntry D_80853E4C[] = {
 };
 
 static PlayerAnimSfxEntry* sIdleAnimSfx[] = {
-    D_80853DEC, D_80853DF0, D_80853DF4, D_80853DF8, D_80853DFC, D_80853E10,
+    sIdleSneezeAnimSfx, sIdleSweatAnimSfx, D_80853DF4, D_80853DF8, D_80853DFC, D_80853E10,
     D_80853E28, D_80853E34, D_80853E44, D_80853E4C, NULL,
 };
 
@@ -8389,7 +8389,7 @@ void Player_UpdateMidair(Player* this, PlayState* play) {
     }
 }
 
-static PlayerAnimSfxEntry D_8085460C[] = {
+static PlayerAnimSfxEntry sRollAnimSfx[] = {
     { NA_SE_VO_LI_SWORD_N, 0x2001 },
     { NA_SE_PL_WALK_GROUND, 0x1806 },
     { NA_SE_PL_ROLL, 0x806 },
@@ -8469,7 +8469,7 @@ void Player_Rolling(Player* this, PlayState* play) {
                     func_8002F8F0(&this->actor, NA_SE_PL_ROLL_DUST - SFX_FLAG);
                 }
 
-                Player_PlayAnimSfx(this, D_8085460C);
+                Player_PlayAnimSfx(this, sRollAnimSfx);
             }
         }
     }
@@ -9019,7 +9019,7 @@ void func_80846050(Player* this, PlayState* play) {
     Math_ScaledStepToS(&this->unk_3BC.y, 0, 4000);
 }
 
-static PlayerAnimSfxEntry D_8085461C[] = {
+static PlayerAnimSfxEntry sThrowStonePillarAnimSfx[] = {
     { NA_SE_VO_LI_SWORD_L, 0x2031 },
     { NA_SE_VO_LI_SWORD_N, -0x20E6 },
 };
@@ -9053,7 +9053,7 @@ void func_80846120(Player* this, PlayState* play) {
         return;
     }
 
-    Player_PlayAnimSfx(this, D_8085461C);
+    Player_PlayAnimSfx(this, sThrowStonePillarAnimSfx);
 }
 
 void func_80846260(Player* this, PlayState* play) {
@@ -11134,7 +11134,7 @@ void func_8084B840(PlayState* play, Player* this, f32 arg2) {
     }
 }
 
-static PlayerAnimSfxEntry D_80854870[] = {
+static PlayerAnimSfxEntry sPushPullWallAnimSfx[] = {
     { NA_SE_PL_SLIP, 0x1003 },
     { NA_SE_PL_SLIP, -0x1015 },
 };
@@ -11154,7 +11154,7 @@ void func_8084B898(Player* this, PlayState* play) {
         }
     }
 
-    Player_PlayAnimSfx(this, D_80854870);
+    Player_PlayAnimSfx(this, sPushPullWallAnimSfx);
     func_8083F524(play, this);
 
     if (!func_8083F9D0(play, this)) {
@@ -11175,7 +11175,7 @@ void func_8084B898(Player* this, PlayState* play) {
     }
 }
 
-static PlayerAnimSfxEntry D_80854878[] = {
+static PlayerAnimSfxEntry sPushPullWallAnim2Sfx[] = {
     { NA_SE_PL_SLIP, 0x1004 },
     { NA_SE_PL_SLIP, -0x1018 },
 };
@@ -11205,7 +11205,7 @@ void func_8084B9E4(Player* this, PlayState* play) {
                 Player_PlayVoiceSfxForAge(this, NA_SE_VO_LI_PUSH);
             }
         } else {
-            Player_PlayAnimSfx(this, D_80854878);
+            Player_PlayAnimSfx(this, sPushPullWallAnim2Sfx);
         }
     }
 
@@ -11462,7 +11462,7 @@ void func_8084BF1C(Player* this, PlayState* play) {
 static f32 D_80854898[] = { 10.0f, 20.0f };
 static f32 D_808548A0[] = { 40.0f, 50.0f };
 
-static PlayerAnimSfxEntry D_808548A8[] = {
+static PlayerAnimSfxEntry sClimbLadderAnimSfx[] = {
     { NA_SE_PL_WALK_LADDER, 0x80A },
     { NA_SE_PL_WALK_LADDER, 0x814 },
     { NA_SE_PL_WALK_LADDER, -0x81E },
@@ -11493,7 +11493,7 @@ void func_8084C5F8(Player* this, PlayState* play) {
     sp38 = D_80854898;
 
     if (this->genericTimer != 0) {
-        Player_PlayAnimSfx(this, D_808548A8);
+        Player_PlayAnimSfx(this, sClimbLadderAnimSfx);
         sp38 = D_808548A0;
     }
 
@@ -11686,7 +11686,7 @@ static u8 D_80854998[2][2] = {
 
 static Vec3s D_8085499C = { -69, 7146, -266 };
 
-static PlayerAnimSfxEntry D_808549A4[] = {
+static PlayerAnimSfxEntry sHorseIdleAnimSfx[] = {
     { NA_SE_PL_CALM_HIT, 0x830 }, { NA_SE_PL_CALM_HIT, 0x83A },  { NA_SE_PL_CALM_HIT, 0x844 },
     { NA_SE_PL_CALM_PAT, 0x85C }, { NA_SE_PL_CALM_PAT, 0x86E },  { NA_SE_PL_CALM_PAT, 0x87E },
     { NA_SE_PL_CALM_PAT, 0x884 }, { NA_SE_PL_CALM_PAT, -0x888 },
@@ -11755,7 +11755,7 @@ void Player_RideHorse(Player* this, PlayState* play) {
         } else if (LinkAnimation_Update(play, &this->skelAnime)) {
             this->genericTimer = 99;
         } else if (this->skelAnime.animation == &gPlayerAnim_0033B8) {
-            Player_PlayAnimSfx(this, D_808549A4);
+            Player_PlayAnimSfx(this, sHorseIdleAnimSfx);
         }
     } else {
         this->skelAnime.curFrame = rideActor->curFrame;
@@ -11864,7 +11864,7 @@ void Player_RideHorse(Player* this, PlayState* play) {
     }
 }
 
-static PlayerAnimSfxEntry D_808549C4[] = {
+static PlayerAnimSfxEntry sHorseDismountAnimSfx[] = {
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, 0x2800 },
     { NA_SE_PL_GET_OFF_HORSE, 0x80A },
     { NA_SE_PL_SLIPDOWN, -0x819 },
@@ -11892,21 +11892,21 @@ void func_8084D3E4(Player* this, PlayState* play) {
         Camera_ChangeSetting(Play_GetCamera(play, CAM_ID_MAIN), CAM_SET_NORMAL0);
 
         if (this->mountSide < 0) {
-            D_808549C4[0].field = 0x2828;
+            sHorseDismountAnimSfx[0].field = 0x2828;
         } else {
-            D_808549C4[0].field = 0x281D;
+            sHorseDismountAnimSfx[0].field = 0x281D;
         }
-        Player_PlayAnimSfx(this, D_808549C4);
+        Player_PlayAnimSfx(this, sHorseDismountAnimSfx);
     }
 }
 
-static PlayerAnimSfxEntry D_808549D0[] = {
+static PlayerAnimSfxEntry sSwimAnimSfx[] = {
     { NA_SE_PL_SWIM, -0x800 },
 };
 
 void func_8084D530(Player* this, f32* arg1, f32 arg2, s16 arg3) {
     Player_UpdateSwimMovement(this, arg1, arg2, arg3);
-    Player_PlayAnimSfx(this, D_808549D0);
+    Player_PlayAnimSfx(this, sSwimAnimSfx);
 }
 
 void func_8084D574(PlayState* play, Player* this, s16 arg2) {
@@ -12389,12 +12389,12 @@ void func_8084E6D4(Player* this, PlayState* play) {
     }
 }
 
-static PlayerAnimSfxEntry D_808549F0[] = {
+static PlayerAnimSfxEntry sSwingSwordAnimSfx[] = {
     { NA_SE_IT_MASTER_SWORD_SWING, -0x83C },
 };
 
-void func_8084E988(Player* this) {
-    Player_PlayAnimSfx(this, D_808549F0);
+void Player_PlaySwingSwordSfx(Player* this) {
+    Player_PlayAnimSfx(this, sSwingSwordAnimSfx);
 }
 
 static PlayerAnimSfxEntry D_808549F4[] = {
@@ -12421,7 +12421,7 @@ void func_8084E9AC(Player* this, PlayState* play) {
         if (!LINK_IS_ADULT) {
             Player_PlayAnimSfx(this, D_808549F4);
         } else {
-            func_8084E988(this);
+            Player_PlaySwingSwordSfx(this);
         }
     }
 }
@@ -12581,7 +12581,7 @@ static BottleDropInfo D_80854A28[] = {
     { ACTOR_EN_INSECT, INSECT_TYPE_FIRST_DROPPED },
 };
 
-static PlayerAnimSfxEntry D_80854A34[] = {
+static PlayerAnimSfxEntry sBottleDropAnimSfx[] = {
     { NA_SE_VO_LI_AUTO_JUMP, 0x2026 },
     { NA_SE_EV_BOTTLE_CAP_OPEN, -0x828 },
 };
@@ -12607,10 +12607,10 @@ void Player_DropItemFromBottle(Player* this, PlayState* play) {
         return;
     }
 
-    Player_PlayAnimSfx(this, D_80854A34);
+    Player_PlayAnimSfx(this, sBottleDropAnimSfx);
 }
 
-static PlayerAnimSfxEntry D_80854A3C[] = {
+static PlayerAnimSfxEntry sExchangeItemAnimSfx[] = {
     { NA_SE_PL_PUT_OUT_ITEM, -0x81E },
 };
 
@@ -12663,7 +12663,7 @@ void func_8084F104(Player* this, PlayState* play) {
             }
         }
     } else if (this->genericTimer >= 0) {
-        Player_PlayAnimSfx(this, D_80854A3C);
+        Player_PlayAnimSfx(this, sExchangeItemAnimSfx);
     }
 
     if ((this->unk_84F == 0) && (this->targetActor != NULL)) {
@@ -13193,13 +13193,13 @@ static LinkAnimationHeader* D_80854A70[] = {
 
 static u8 D_80854A7C[] = { 70, 10, 10 };
 
-static PlayerAnimSfxEntry D_80854A80[] = {
+static PlayerAnimSfxEntry sMagicSpellCastAnimSfx[] = {
     { NA_SE_PL_SKIP, 0x814 },
     { NA_SE_VO_LI_SWORD_N, 0x2014 },
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, -0x301A },
 };
 
-static PlayerAnimSfxEntry D_80854A8C[][2] = {
+static PlayerAnimSfxEntry sMagicSpellAnimSfx[][2] = {
     {
         { 0, 0x4014 },
         { NA_SE_VO_LI_MAGIC_FROL, -0x201E },
@@ -13264,9 +13264,9 @@ void Player_UpdateMagicSpell(Player* this, PlayState* play) {
             }
         } else if (this->unk_84F >= 0) {
             if (this->genericTimer == 0) {
-                Player_PlayAnimSfx(this, D_80854A80);
+                Player_PlayAnimSfx(this, sMagicSpellCastAnimSfx);
             } else if (this->genericTimer == 1) {
-                Player_PlayAnimSfx(this, D_80854A8C[this->unk_84F]);
+                Player_PlayAnimSfx(this, sMagicSpellAnimSfx[this->unk_84F]);
                 if ((this->unk_84F == 2) && LinkAnimation_OnFrame(&this->skelAnime, 30.0f)) {
                     this->stateFlags1 &= ~(PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE | PLAYER_STATE1_IN_CUTSCENE);
                 }
@@ -13386,7 +13386,7 @@ static PlayerAnimSfxEntry sGetUpFromDekuTreeStoryAnimSfx[] = {
     { NA_SE_PL_CALM_HIT, -0x840 },
 };
 
-static PlayerAnimSfxEntry D_80854B00[] = {
+static PlayerAnimSfxEntry sSurprisedStumbleBackFallAnimSfx[] = {
     { NA_SE_VO_LI_SURPRISE, 0x2003 },
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, 0x300F },
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, 0x3018 },
@@ -13394,7 +13394,7 @@ static PlayerAnimSfxEntry D_80854B00[] = {
     { NA_SE_VO_LI_FALL_L, -0x201F },
 };
 
-static PlayerAnimSfxEntry D_80854B14[] = {
+static PlayerAnimSfxEntry sFallToKneeAnimSfx[] = {
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, -0x300A },
 };
 
@@ -13538,7 +13538,7 @@ static CutsceneModeEntry sCutsceneModeUpdateFuncs[] = {
     { -1, Player_CutsceneDrawAndBrandishSword },         // PLAYER_CSMODE_DRAW_AND_BRANDISH_SWORD
     { -1, Player_CutsceneCloseEyes },                    // PLAYER_CSMODE_CLOSE_EYES
     { -1, Player_CutsceneOpenEyes },                     // PLAYER_CSMODE_OPEN_EYES
-    { 18, D_80854B00 },                                  // PLAYER_CSMODE_SURPRIED_STUMBLE_BACK_AND_FALL
+    { 18, sSurprisedStumbleBackFallAnimSfx },                                  // PLAYER_CSMODE_SURPRIED_STUMBLE_BACK_AND_FALL
     { -1, Player_CutsceneSurfaceFromDive },              // PLAYER_CSMODE_SURFACE_FROM_DIVE
     { 11, NULL },                                        // PLAYER_CSMODE_GET_ITEM_IN_WATER
     { 11, NULL },                                        // PLAYER_CSMODE_GENTLE_KNOCKBACK_INTO_SIT
@@ -13565,7 +13565,7 @@ static CutsceneModeEntry sCutsceneModeUpdateFuncs[] = {
     { 12, &gPlayerAnim_002388 },                         // PLAYER_CSMODE_LOOK_AROUND_SURPRISED
     { -1, Player_CutsceneInspectGroundCarefully },       // PLAYER_CSMODE_INSPECT_GROUND_CAREFULLY
     { 11, NULL },                                        // PLAYER_CSMODE_STARTLED_BY_GORONS_FALLING
-    { 18, D_80854B14 },                                  // PLAYER_CSMODE_FALL_TO_KNEE
+    { 18, sFallToKneeAnimSfx },                                  // PLAYER_CSMODE_FALL_TO_KNEE
     { 11, NULL },                                        // PLAYER_CSMODE_FLAT_ON_BACK
     { 11, NULL },                                        // PLAYER_CSMODE_RAISE_FROM_FLAT_ON_BACK
     { 11, NULL },                                        // PLAYER_CSMODE_START_SPIN_ATTACK
@@ -13830,14 +13830,14 @@ void Player_CutsceneWait(PlayState* play, Player* this, CsCmdActorAction* arg2) 
     }
 }
 
-static PlayerAnimSfxEntry D_80855188[] = {
+static PlayerAnimSfxEntry sTurnAroundSurprisedAnimSfx[] = {
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, 0x302A },
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, -0x3030 },
 };
 
 void Player_CutsceneTurnAroundSurprisedLong(PlayState* play, Player* this, CsCmdActorAction* arg2) {
     LinkAnimation_Update(play, &this->skelAnime);
-    Player_PlayAnimSfx(this, D_80855188);
+    Player_PlayAnimSfx(this, sTurnAroundSurprisedAnimSfx);
 }
 
 void Player_CutsceneSetupEnterWarp(PlayState* play, Player* this, CsCmdActorAction* arg2) {
@@ -13925,7 +13925,7 @@ static struct_808551A4 D_808551A4[] = {
     { NA_SE_IT_SWORD_STICK_STN, NA_SE_VO_LI_SWORD_N },
 };
 
-static PlayerAnimSfxEntry D_808551AC[] = {
+static PlayerAnimSfxEntry sSwordIntoPedestalAnimSfx[] = {
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, 0x401D },
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, -0x4027 },
 };
@@ -13957,7 +13957,7 @@ void Player_CutsceneSwordIntoPedestal(PlayState* play, Player* this, CsCmdActorA
             Player_PlayVoiceSfxForAge(this, NA_SE_VO_LI_SWORD_L);
         }
     } else {
-        Player_PlayAnimSfx(this, D_808551AC);
+        Player_PlayAnimSfx(this, sSwordIntoPedestalAnimSfx);
     }
 }
 
@@ -13966,7 +13966,7 @@ void Player_CutsceneSetupWarpToSages(PlayState* play, Player* this, CsCmdActorAc
                          0.0f);
 }
 
-static PlayerAnimSfxEntry D_808551B4[] = {
+static PlayerAnimSfxEntry sWarpToSagesAnimSfx[] = {
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, -0x281E },
 };
 
@@ -13980,7 +13980,7 @@ void Player_CutsceneWarpToSages(PlayState* play, Player* this, CsCmdActorAction*
             LinkAnimation_Change(play, &this->skelAnime, &gPlayerAnim_003298, (2.0f / 3.0f), 10.0f,
                                  Animation_GetLastFrame(&gPlayerAnim_003298), ANIMMODE_ONCE, -8.0f);
         }
-        Player_PlayAnimSfx(this, D_808551B4);
+        Player_PlayAnimSfx(this, sWarpToSagesAnimSfx);
     }
 }
 
@@ -14002,7 +14002,7 @@ void Player_CutsceneSetupStartPlayOcarina(PlayState* play, Player* this, CsCmdAc
     Player_SetModels(this, Player_ActionToModelGroup(this, this->itemActionParam));
 }
 
-static PlayerAnimSfxEntry D_808551B8[] = {
+static PlayerAnimSfxEntry sDrawAndBrandishSwordAnimSfx[] = {
     { NA_SE_IT_SWORD_PICKOUT, -0x80C },
 };
 
@@ -14012,7 +14012,7 @@ void Player_CutsceneDrawAndBrandishSword(PlayState* play, Player* this, CsCmdAct
     if (LinkAnimation_OnFrame(&this->skelAnime, 6.0f)) {
         Player_CutsceneDrawSword(play, this, 0);
     } else {
-        Player_PlayAnimSfx(this, D_808551B8);
+        Player_PlayAnimSfx(this, sDrawAndBrandishSwordAnimSfx);
     }
 }
 
@@ -14063,7 +14063,7 @@ void Player_CutsceneSetupSleepingRestless(PlayState* play, Player* this, CsCmdAc
     Player_AnimPlaybackType7(play, this, &gPlayerAnim_002420);
 }
 
-static PlayerAnimSfxEntry D_808551BC[] = {
+static PlayerAnimSfxEntry sAwakenAnimSfx[] = {
     { NA_SE_VO_LI_RELAX, 0x2023 },
     { NA_SE_PL_SLIPDOWN, 0x8EC },
     { NA_SE_PL_SLIPDOWN, -0x900 },
@@ -14074,14 +14074,14 @@ void Player_CutsceneAwaken(PlayState* play, Player* this, CsCmdActorAction* arg2
         Player_PlayAnimLoopWithMovement(play, this, &gPlayerAnim_002430, 0x9C);
         this->genericTimer = 1;
     } else if (this->genericTimer == 0) {
-        Player_PlayAnimSfx(this, D_808551BC);
+        Player_PlayAnimSfx(this, sAwakenAnimSfx);
         if (LinkAnimation_OnFrame(&this->skelAnime, 240.0f)) {
             this->actor.shape.shadowDraw = ActorShadow_DrawFeet;
         }
     }
 }
 
-static PlayerAnimSfxEntry D_808551C8[] = {
+static PlayerAnimSfxEntry sGetOffBedAnimSfx[] = {
     { NA_SE_PL_LAND_LADDER, 0x843 },
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, 0x4854 },
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, 0x485A },
@@ -14090,7 +14090,7 @@ static PlayerAnimSfxEntry D_808551C8[] = {
 
 void Player_CutsceneGetOffBed(PlayState* play, Player* this, CsCmdActorAction* arg2) {
     LinkAnimation_Update(play, &this->skelAnime);
-    Player_PlayAnimSfx(this, D_808551C8);
+    Player_PlayAnimSfx(this, sGetOffBedAnimSfx);
 }
 
 void Player_CutsceneSetupBlownBackward(PlayState* play, Player* this, CsCmdActorAction* arg2) {
@@ -14112,7 +14112,7 @@ void func_808520BC(PlayState* play, Player* this, CsCmdActorAction* arg2) {
     this->actor.world.pos.z = distZ * sp4 + startZ;
 }
 
-static PlayerAnimSfxEntry D_808551D8[] = {
+static PlayerAnimSfxEntry sBlownBackwardAnimSfx[] = {
     { NA_SE_PL_BOUND, 0x1014 },
     { NA_SE_PL_BOUND, -0x101E },
 };
@@ -14120,7 +14120,7 @@ static PlayerAnimSfxEntry D_808551D8[] = {
 void Player_CutsceneBlownBackward(PlayState* play, Player* this, CsCmdActorAction* arg2) {
     func_808520BC(play, this, arg2);
     LinkAnimation_Update(play, &this->skelAnime);
-    Player_PlayAnimSfx(this, D_808551D8);
+    Player_PlayAnimSfx(this, sBlownBackwardAnimSfx);
 }
 
 void Player_CutsceneRaisedByWarp(PlayState* play, Player* this, CsCmdActorAction* arg2) {
@@ -14158,22 +14158,22 @@ void Player_CutsceneDrawSwordChild(PlayState* play, Player* this, CsCmdActorActi
     }
 }
 
-static PlayerAnimSfxEntry D_808551E0[] = {
+static PlayerAnimSfxEntry sTurnAroundSlowlyAnimSfx[] = {
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, 0x300A },
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, -0x3018 },
 };
 
 void Player_CutsceneTurnAroundSlowly(PlayState* play, Player* this, CsCmdActorAction* arg2) {
-    func_80851F14(play, this, &gPlayerAnim_002770, D_808551E0);
+    func_80851F14(play, this, &gPlayerAnim_002770, sTurnAroundSlowlyAnimSfx);
 }
 
-static PlayerAnimSfxEntry D_808551E8[] = {
+static PlayerAnimSfxEntry sInspectGroundCarefullyAnimSfx[] = {
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, 0x400F },
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, -0x4023 },
 };
 
 void Player_CutsceneInspectGroundCarefully(PlayState* play, Player* this, CsCmdActorAction* arg2) {
-    func_80851F14(play, this, &gPlayerAnim_002830, D_808551E8);
+    func_80851F14(play, this, &gPlayerAnim_002830, sInspectGroundCarefullyAnimSfx);
 }
 
 void Player_CutsceneStartPassOcarina(PlayState* play, Player* this, CsCmdActorAction* arg2) {
@@ -14196,21 +14196,21 @@ void func_80852414(PlayState* play, Player* this, LinkAnimationHeader* anim, Pla
     }
 }
 
-static PlayerAnimSfxEntry D_808551F0[] = {
+static PlayerAnimSfxEntry sStepBackCautiouslyAnimSfx[] = {
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, 0x300F },
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, -0x3021 },
 };
 
 void Player_CutsceneStepBackCautiously(PlayState* play, Player* this, CsCmdActorAction* arg2) {
-    func_80852414(play, this, &gPlayerAnim_002378, D_808551F0);
+    func_80852414(play, this, &gPlayerAnim_002378, sStepBackCautiouslyAnimSfx);
 }
 
-static PlayerAnimSfxEntry D_808551F8[] = {
+static PlayerAnimSfxEntry sDesperateLookAtZeldasCrystalAnimSfx[] = {
     { NA_SE_PL_KNOCK, -0x84E },
 };
 
 void Player_CutsceneDesperateLookAtZeldasCrystal(PlayState* play, Player* this, CsCmdActorAction* arg2) {
-    func_80852414(play, this, &gPlayerAnim_0027D0, D_808551F8);
+    func_80852414(play, this, &gPlayerAnim_0027D0, sDesperateLookAtZeldasCrystalAnimSfx);
 }
 
 void Player_CutsceneSetupSpinAttackIdle(PlayState* play, Player* this, CsCmdActorAction* arg2) {
@@ -14315,7 +14315,7 @@ void Player_CutsceneGetSwordBack(PlayState* play, Player* this, CsCmdActorAction
         Item_Give(play, ITEM_SWORD_MASTER);
         Player_CutsceneDrawSword(play, this, 0);
     } else {
-        func_8084E988(this);
+        Player_PlaySwingSwordSfx(this);
     }
 }
 
