@@ -10214,64 +10214,6 @@ static f32 sFloorConveyorSpeeds[] = { 0.5f, 1.0f, 3.0f };
 void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     s32 pad;
 
-    // // TESTING
-
-    // GfxPrint printer;
-    // Gfx* gfx;
-
-    // OPEN_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
-
-    // gfx = POLY_OPA_DISP + 1;
-    // gSPDisplayList(OVERLAY_DISP++, gfx);
-
-    // GfxPrint_Init(&printer);
-    // GfxPrint_Open(&printer, gfx);
-
-    // GfxPrint_SetColor(&printer, 255, 0, 255, 255);
-    // GfxPrint_SetPos(&printer, 10, 10);
-    // GfxPrint_Printf(&printer, "anim1: %x", this->skelAnime.animation);
-    // GfxPrint_SetPos(&printer, 10, 11);
-    // GfxPrint_Printf(&printer, "anim2: %x", this->skelAnime2.animation);
-
-    // gfx = GfxPrint_Close(&printer);
-    // GfxPrint_Destroy(&printer);
-
-    // gSPEndDisplayList(gfx++);
-    // gSPBranchList(POLY_OPA_DISP, gfx);
-    // POLY_OPA_DISP = gfx;
-
-    // CLOSE_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
-
-    // // END TESTING
-
-    // // TESTING
-
-    // GfxPrint printer;
-    // Gfx* gfx;
-
-    // OPEN_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
-
-    // gfx = POLY_OPA_DISP + 1;
-    // gSPDisplayList(OVERLAY_DISP++, gfx);
-
-    // GfxPrint_Init(&printer);
-    // GfxPrint_Open(&printer, gfx);
-
-    // GfxPrint_SetColor(&printer, 255, 0, 255, 255);
-    // GfxPrint_SetPos(&printer, 10, 10);
-    // GfxPrint_Printf(&printer, "Player_IsShootingHookshot: %d", Player_IsShootingHookshot(this));
-
-    // gfx = GfxPrint_Close(&printer);
-    // GfxPrint_Destroy(&printer);
-
-    // gSPEndDisplayList(gfx++);
-    // gSPBranchList(POLY_OPA_DISP, gfx);
-    // POLY_OPA_DISP = gfx;
-
-    // CLOSE_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
-
-    // // END TESTING
-
     sControlInput = input;
 
     if (this->unk_A86 < 0) {
