@@ -822,7 +822,7 @@ typedef struct Player {
         /* 0x084F */ s8 climbStatus;
     };
     union {
-        /* 0x0850 */ s16        unk_850; // multipurpose timer
+        /* 0x0850 */ s16        genericTimer; // multipurpose timer
         /* 0x0850 */ s16        mashTimer;
     };
     /* 0x0854 */ f32        rippleTimer;
