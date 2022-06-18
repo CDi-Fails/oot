@@ -330,17 +330,17 @@ void Player_CutsceneTurnAroundSlowly(PlayState* play, Player* this, CsCmdActorAc
 void Player_CutsceneDesperateLookAtZeldasCrystal(PlayState* play, Player* this, CsCmdActorAction* arg2);
 void Player_CutsceneStepBackCautiously(PlayState* play, Player* this, CsCmdActorAction* arg2);
 void Player_CutsceneSetupSpinAttackIdle(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void func_808524D0(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void func_80852514(PlayState* play, Player* this, CsCmdActorAction* arg2);
+void Player_CutsceneSpinAttackIdle(PlayState* play, Player* this, CsCmdActorAction* arg2);
+void Player_CutsceneInspectWeapon(PlayState* play, Player* this, CsCmdActorAction* arg2);
 void Player_SetupDoNothing4(PlayState* play, Player* this, CsCmdActorAction* arg2);
 void Player_DoNothing5(PlayState* play, Player* this, CsCmdActorAction* arg2);
 void Player_CutsceneSetupKnockedToGroundDamaged(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void func_808525C0(PlayState* play, Player* this, CsCmdActorAction* arg2);
+void Player_CutsceneKnockedToGroundDamaged(PlayState* play, Player* this, CsCmdActorAction* arg2);
 void Player_CutsceneSetupGetSwordBack(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void func_80852648(PlayState* play, Player* this, CsCmdActorAction* arg2);
+void Player_CutsceneSwordKnockedFromHand(PlayState* play, Player* this, CsCmdActorAction* arg2);
 void Player_LearnOcarinaSong(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void func_8085283C(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void func_808528C8(PlayState* play, Player* this, CsCmdActorAction* arg2);
+void Player_CutsceneGetSwordBack(PlayState* play, Player* this, CsCmdActorAction* arg2);
+void Player_CutsceneGanonKillCombo(PlayState* play, Player* this, CsCmdActorAction* arg2);
 void Player_CutsceneEnd(PlayState* play, Player* this, CsCmdActorAction* arg2);
 void func_808529D0(PlayState* play, Player* this, CsCmdActorAction* arg2);
 void func_80852C50(PlayState* play, Player* this, CsCmdActorAction* arg2);
@@ -13457,215 +13457,215 @@ static PlayerAnimSfxEntry D_80854B14[] = {
 };
 
 static CutsceneModeEntry sCutsceneModeInitFuncs[] = {
-    { 0, NULL },                                   // PLAYER_CSMODE_NONE
+    { 0, NULL },                                        // PLAYER_CSMODE_NONE
     { -1, Player_CutsceneSetupIdle },                   // PLAYER_CSMODE_IDLE
-    { 2, &gPlayerAnim_002790 },                    // PLAYER_CSMODE_TURN_AROUND_SURPRISED_SHORT
-    { 0, NULL },                                   // PLAYER_CSMODE_UNK_3
-    { 0, NULL },                                   // PLAYER_CSMODE_UNK_4
-    { 3, &gPlayerAnim_002740 },                    // PLAYER_CSMODE_SURPRISED
-    { 0, NULL },                                   // PLAYER_CSMODE_UNK_6
-    { 0, NULL },                                   // PLAYER_CSMODE_END
+    { 2, &gPlayerAnim_002790 },                         // PLAYER_CSMODE_TURN_AROUND_SURPRISED_SHORT
+    { 0, NULL },                                        // PLAYER_CSMODE_UNK_3
+    { 0, NULL },                                        // PLAYER_CSMODE_UNK_4
+    { 3, &gPlayerAnim_002740 },                         // PLAYER_CSMODE_SURPRISED
+    { 0, NULL },                                        // PLAYER_CSMODE_UNK_6
+    { 0, NULL },                                        // PLAYER_CSMODE_END
     { -1, Player_CutsceneSetupIdle },                   // PLAYER_CSMODE_WAIT
-    { 2, &gPlayerAnim_002778 },                    // PLAYER_CSMODE_TURN_AROUND_SURPRISED_LONG
+    { 2, &gPlayerAnim_002778 },                         // PLAYER_CSMODE_TURN_AROUND_SURPRISED_LONG
     { -1, Player_CutsceneSetupEnterWarp },              // PLAYER_CSMODE_ENTER_WARP
-    { 3, &gPlayerAnim_002860 },                    // PLAYER_CSMODE_RAISED_BY_WARP
+    { 3, &gPlayerAnim_002860 },                         // PLAYER_CSMODE_RAISED_BY_WARP
     { -1, Player_CutsceneSetupFightStance },            // PLAYER_CSMODE_FIGHT_STANCE
-    { 7, &gPlayerAnim_002348 },                    // PLAYER_CSMODE_START_GET_SPIRITUAL_STONE
-    { 5, &gPlayerAnim_002350 },                    // PLAYER_CSMODE_GET_SPIRITUAL_STONE
-    { 5, &gPlayerAnim_002358 },                    // PLAYER_CSMODE_END_GET_SPIRITUAL_STONE
-    { 5, &gPlayerAnim_0023B0 },                    // PLAYER_CSMODE_GET_UP_FROM_DEKU_TREE_STORY
-    { 7, &gPlayerAnim_0023B8 },                    // PLAYER_CSMODE_SIT_LISTENING_TO_DEKU_TREE_STORY
+    { 7, &gPlayerAnim_002348 },                         // PLAYER_CSMODE_START_GET_SPIRITUAL_STONE
+    { 5, &gPlayerAnim_002350 },                         // PLAYER_CSMODE_GET_SPIRITUAL_STONE
+    { 5, &gPlayerAnim_002358 },                         // PLAYER_CSMODE_END_GET_SPIRITUAL_STONE
+    { 5, &gPlayerAnim_0023B0 },                         // PLAYER_CSMODE_GET_UP_FROM_DEKU_TREE_STORY
+    { 7, &gPlayerAnim_0023B8 },                         // PLAYER_CSMODE_SIT_LISTENING_TO_DEKU_TREE_STORY
     { -1, Player_CutsceneSetupSwordIntoPedestal },      // PLAYER_CSMODE_SWORD_INTO_PEDESTAL
-    { 2, &gPlayerAnim_002728 },                    // PLAYER_CSMODE_REACT_TO_QUAKE
-    { 2, &gPlayerAnim_002738 },                    // PLAYER_CSMODE_END_REACT_TO_QUAKE
-    { 0, NULL },                                   // PLAYER_CSMODE_UNK_21
+    { 2, &gPlayerAnim_002728 },                         // PLAYER_CSMODE_REACT_TO_QUAKE
+    { 2, &gPlayerAnim_002738 },                         // PLAYER_CSMODE_END_REACT_TO_QUAKE
+    { 0, NULL },                                        // PLAYER_CSMODE_UNK_21
     { -1, Player_CutsceneSetupWarpToSages },            // PLAYER_CSMODE_WARP_TO_SAGES
-    { 3, &gPlayerAnim_0027A8 },                    // PLAYER_CSMODE_LOOK_AT_SELF
-    { 9, &gPlayerAnim_002DB0 },                    // PLAYER_CSMODE_KNOCKED_TO_GROUND
-    { 2, &gPlayerAnim_002DC0 },                    // PLAYER_CSMODE_GET_UP_FROM_GROUND
+    { 3, &gPlayerAnim_0027A8 },                         // PLAYER_CSMODE_LOOK_AT_SELF
+    { 9, &gPlayerAnim_002DB0 },                         // PLAYER_CSMODE_KNOCKED_TO_GROUND
+    { 2, &gPlayerAnim_002DC0 },                         // PLAYER_CSMODE_GET_UP_FROM_GROUND
     { -1, Player_CutsceneSetupStartPlayOcarina },       // PLAYER_CSMODE_START_PLAY_OCARINA
-    { 2, &gPlayerAnim_003098 },                    // PLAYER_CSMODE_END_PLAY_OCARINA
-    { 3, &gPlayerAnim_002780 },                    // PLAYER_CSMODE_GET_ITEM
+    { 2, &gPlayerAnim_003098 },                         // PLAYER_CSMODE_END_PLAY_OCARINA
+    { 3, &gPlayerAnim_002780 },                         // PLAYER_CSMODE_GET_ITEM
     { -1, Player_CutsceneSetupIdle },                   // PLAYER_CSMODE_IDLE_2
-    { 2, &gPlayerAnim_003088 },                    // PLAYER_CSMODE_DRAW_AND_BRANDISH_SWORD
-    { 0, NULL },                                   // PLAYER_CSMODE_CLOSE_EYES
-    { 0, NULL },                                   // PLAYER_CSMODE_OPEN_EYES
-    { 5, &gPlayerAnim_002320 },                    // PLAYER_CSMODE_SURPRIED_STUMBLE_BACK_AND_FALL
+    { 2, &gPlayerAnim_003088 },                         // PLAYER_CSMODE_DRAW_AND_BRANDISH_SWORD
+    { 0, NULL },                                        // PLAYER_CSMODE_CLOSE_EYES
+    { 0, NULL },                                        // PLAYER_CSMODE_OPEN_EYES
+    { 5, &gPlayerAnim_002320 },                         // PLAYER_CSMODE_SURPRIED_STUMBLE_BACK_AND_FALL
     { -1, Player_CutsceneSetupSwimIdle },               // PLAYER_CSMODE_SURFACE_FROM_DIVE
     { -1, Player_CutsceneSetupGetItemInWater },         // PLAYER_CSMODE_GET_ITEM_IN_WATER
-    { 5, &gPlayerAnim_002328 },                    // PLAYER_CSMODE_GENTLE_KNOCKBACK_INTO_SIT
-    { 16, &gPlayerAnim_002F90 },                   // PLAYER_CSMODE_GRABBED_AND_CARRIED_BY_NECK
-    { -1, Player_CutsceneSetupSleepingRestless },                  // PLAYER_CSMODE_SLEEPING_RESTLESS
-    { -1, Player_CutsceneSetupSleeping }, // PLAYER_CSMODE_SLEEPING
-    { 6, &gPlayerAnim_002410 },                    // PLAYER_CSMODE_AWAKEN
-    { 6, &gPlayerAnim_002418 },                    // PLAYER_CSMODE_GET_OFF_BED
+    { 5, &gPlayerAnim_002328 },                         // PLAYER_CSMODE_GENTLE_KNOCKBACK_INTO_SIT
+    { 16, &gPlayerAnim_002F90 },                        // PLAYER_CSMODE_GRABBED_AND_CARRIED_BY_NECK
+    { -1, Player_CutsceneSetupSleepingRestless },       // PLAYER_CSMODE_SLEEPING_RESTLESS
+    { -1, Player_CutsceneSetupSleeping },               // PLAYER_CSMODE_SLEEPING
+    { 6, &gPlayerAnim_002410 },                         // PLAYER_CSMODE_AWAKEN
+    { 6, &gPlayerAnim_002418 },                         // PLAYER_CSMODE_GET_OFF_BED
     { -1, Player_CutsceneSetupBlownBackward },          // PLAYER_CSMODE_BLOWN_BACKWARD
-    { 5, &gPlayerAnim_002390 },                    // PLAYER_CSMODE_STAND_UP_AND_WATCH
-    { -1, func_808521F4 },                         // PLAYER_CSMODE_IDLE_3
-    { -1, func_8085225C },                         // PLAYER_CSMODE_STOP
-    { -1, func_80852280 },                         // PLAYER_CSMODE_STOP_2
-    { 5, &gPlayerAnim_0023A0 },                    // PLAYER_CSMODE_LOOK_THROUGH_PEEPHOLE
-    { 5, &gPlayerAnim_002368 },                    // PLAYER_CSMODE_STEP_BACK_CAUTIOUSLY
+    { 5, &gPlayerAnim_002390 },                         // PLAYER_CSMODE_STAND_UP_AND_WATCH
+    { -1, func_808521F4 },                              // PLAYER_CSMODE_IDLE_3
+    { -1, func_8085225C },                              // PLAYER_CSMODE_STOP
+    { -1, func_80852280 },                              // PLAYER_CSMODE_STOP_2
+    { 5, &gPlayerAnim_0023A0 },                         // PLAYER_CSMODE_LOOK_THROUGH_PEEPHOLE
+    { 5, &gPlayerAnim_002368 },                         // PLAYER_CSMODE_STEP_BACK_CAUTIOUSLY
     { -1, Player_CutsceneSetupIdle },                   // PLAYER_CSMODE_IDLE_4
-    { 5, &gPlayerAnim_002370 },                    // PLAYER_CSMODE_DRAW_SWORD_CHILD
-    { 5, &gPlayerAnim_0027B0 },                    // PLAYER_CSMODE_JUMP_TO_ZELDAS_CRYSTAL
-    { 5, &gPlayerAnim_0027B8 },                    // PLAYER_CSMODE_DESPERATE_LOOKING_AT_ZELDAS_CRYSTAL
-    { 5, &gPlayerAnim_0027C0 },                    // PLAYER_CSMODE_LOOK_UP_AT_ZELDAS_CRYSTAL_VANISHING
-    { 3, &gPlayerAnim_002768 },                    // PLAYER_CSMODE_TURN_AROUND_SLOWLY
-    { 3, &gPlayerAnim_0027D8 },                    // PLAYER_CSMODE_END_SHIELD_EYES_WITH_HAND
-    { 4, &gPlayerAnim_0027E0 },                    // PLAYER_CSMODE_SHIELD_EYES_WITH_HAND
-    { 3, &gPlayerAnim_002380 },                    // PLAYER_CSMODE_LOOK_AROUND_SURPRISED
-    { 3, &gPlayerAnim_002828 },                    // PLAYER_CSMODE_INSPECT_GROUND_CAREFULLY
-    { 6, &gPlayerAnim_002470 },                    // PLAYER_CSMODE_STARTLED_BY_GORONS_FALLING
-    { 6, &gPlayerAnim_0032A8 },                    // PLAYER_CSMODE_FALL_TO_KNEE
-    { 14, &gPlayerAnim_0032A0 },                   // PLAYER_CSMODE_FLAT_ON_BACK
-    { 3, &gPlayerAnim_0032A0 },                    // PLAYER_CSMODE_RAISE_FROM_FLAT_ON_BACK
-    { 5, &gPlayerAnim_002AE8 },                    // PLAYER_CSMODE_START_SPIN_ATTACK
-    { 16, &gPlayerAnim_002450 },                   // PLAYER_CSMODE_ZELDA_CLOUDS_CUTSCENE_IDLE
-    { 15, &gPlayerAnim_002460 },                   // PLAYER_CSMODE_ZELDA_CLOUDS_CUTSCENE_START_PASS_OCARINA
-    { 15, &gPlayerAnim_002458 },                   // PLAYER_CSMODE_ZELDA_CLOUDS_CUTSCENE_END_PASS_OCARINA
-    { 3, &gPlayerAnim_002440 },                    // PLAYER_CSMODE_START_LOOK_AROUND_AFTER_SWORD_WARP
-    { 3, &gPlayerAnim_002438 },                    // PLAYER_CSMODE_END_LOOK_AROUND_AFTER_SWORD_WARP
-    { 3, &gPlayerAnim_002C88 },                    // PLAYER_CSMODE_LOOK_AROUND_AND_AT_SELF_QUICKLY
-    { 6, &gPlayerAnim_003450 },                    // PLAYER_CSMODE_START_LEARN_OCARINA_SONG_ADULT
-    { 6, &gPlayerAnim_003448 },                    // PLAYER_CSMODE_END_LEARN_OCARINA_SONG_ADULT
-    { 6, &gPlayerAnim_003460 },                    // PLAYER_CSMODE_START_LEARN_OCARINA_SONG_CHILD
-    { 6, &gPlayerAnim_003440 },                    // PLAYER_CSMODE_END_LEARN_OCARINA_SONG_CHILD
-    { 3, &gPlayerAnim_002798 },                    // PLAYER_CSMODE_RESIST_DARK_MAGIC
-    { 3, &gPlayerAnim_002818 },                    // PLAYER_CSMODE_TRIFORCE_HAND_RESONATES
-    { 4, &gPlayerAnim_002848 },                    // PLAYER_CSMODE_STARE_DOWN_STARTLED
-    { 3, &gPlayerAnim_002850 },                    // PLAYER_CSMODE_LOOK_UP_STARTLED
-    { 3, &gPlayerAnim_0034E0 },                    // PLAYER_CSMODE_LOOK_TO_CHARACTER_AT_SIDE_SMILING
-    { 3, &gPlayerAnim_0034D8 },                    // PLAYER_CSMODE_LOOK_TO_CHARACTER_ABOVE_SMILING
-    { 6, &gPlayerAnim_0034C8 },                    // PLAYER_CSMODE_SURPRISED_DEFENSE
-    { 3, &gPlayerAnim_003470 },                    // PLAYER_CSMODE_START_HALF_TURN_SURPRISED
-    { 3, &gPlayerAnim_003478 },                    // PLAYER_CSMODE_END_HALF_TURN_SURPRISED
-    { 3, &gPlayerAnim_0034C0 },                    // PLAYER_CSMODE_START_LOOK_UP_DEFENSE
-    { 3, &gPlayerAnim_003480 },                    // PLAYER_CSMODE_LOOK_UP_DEFENSE_IDLE
-    { 3, &gPlayerAnim_003490 },                    // PLAYER_CSMODE_END_LOOK_UP_DEFENSE
-    { 3, &gPlayerAnim_003488 },                    // PLAYER_CSMODE_START_SWORD_KNOCKED_FROM_HAND
-    { 3, &gPlayerAnim_003498 },                    // PLAYER_CSMODE_SWORD_KNOCKED_FROM_HAND_IDLE
-    { 3, &gPlayerAnim_0034B0 },                    // PLAYER_CSMODE_END_SWORD_KNOCKED_FROM_HAND
+    { 5, &gPlayerAnim_002370 },                         // PLAYER_CSMODE_DRAW_SWORD_CHILD
+    { 5, &gPlayerAnim_0027B0 },                         // PLAYER_CSMODE_JUMP_TO_ZELDAS_CRYSTAL
+    { 5, &gPlayerAnim_0027B8 },                         // PLAYER_CSMODE_DESPERATE_LOOKING_AT_ZELDAS_CRYSTAL
+    { 5, &gPlayerAnim_0027C0 },                         // PLAYER_CSMODE_LOOK_UP_AT_ZELDAS_CRYSTAL_VANISHING
+    { 3, &gPlayerAnim_002768 },                         // PLAYER_CSMODE_TURN_AROUND_SLOWLY
+    { 3, &gPlayerAnim_0027D8 },                         // PLAYER_CSMODE_END_SHIELD_EYES_WITH_HAND
+    { 4, &gPlayerAnim_0027E0 },                         // PLAYER_CSMODE_SHIELD_EYES_WITH_HAND
+    { 3, &gPlayerAnim_002380 },                         // PLAYER_CSMODE_LOOK_AROUND_SURPRISED
+    { 3, &gPlayerAnim_002828 },                         // PLAYER_CSMODE_INSPECT_GROUND_CAREFULLY
+    { 6, &gPlayerAnim_002470 },                         // PLAYER_CSMODE_STARTLED_BY_GORONS_FALLING
+    { 6, &gPlayerAnim_0032A8 },                         // PLAYER_CSMODE_FALL_TO_KNEE
+    { 14, &gPlayerAnim_0032A0 },                        // PLAYER_CSMODE_FLAT_ON_BACK
+    { 3, &gPlayerAnim_0032A0 },                         // PLAYER_CSMODE_RAISE_FROM_FLAT_ON_BACK
+    { 5, &gPlayerAnim_002AE8 },                         // PLAYER_CSMODE_START_SPIN_ATTACK
+    { 16, &gPlayerAnim_002450 },                        // PLAYER_CSMODE_ZELDA_CLOUDS_CUTSCENE_IDLE
+    { 15, &gPlayerAnim_002460 },                        // PLAYER_CSMODE_ZELDA_CLOUDS_CUTSCENE_START_PASS_OCARINA
+    { 15, &gPlayerAnim_002458 },                        // PLAYER_CSMODE_ZELDA_CLOUDS_CUTSCENE_END_PASS_OCARINA
+    { 3, &gPlayerAnim_002440 },                         // PLAYER_CSMODE_START_LOOK_AROUND_AFTER_SWORD_WARP
+    { 3, &gPlayerAnim_002438 },                         // PLAYER_CSMODE_END_LOOK_AROUND_AFTER_SWORD_WARP
+    { 3, &gPlayerAnim_002C88 },                         // PLAYER_CSMODE_LOOK_AROUND_AND_AT_SELF_QUICKLY
+    { 6, &gPlayerAnim_003450 },                         // PLAYER_CSMODE_START_LEARN_OCARINA_SONG_ADULT
+    { 6, &gPlayerAnim_003448 },                         // PLAYER_CSMODE_END_LEARN_OCARINA_SONG_ADULT
+    { 6, &gPlayerAnim_003460 },                         // PLAYER_CSMODE_START_LEARN_OCARINA_SONG_CHILD
+    { 6, &gPlayerAnim_003440 },                         // PLAYER_CSMODE_END_LEARN_OCARINA_SONG_CHILD
+    { 3, &gPlayerAnim_002798 },                         // PLAYER_CSMODE_RESIST_DARK_MAGIC
+    { 3, &gPlayerAnim_002818 },                         // PLAYER_CSMODE_TRIFORCE_HAND_RESONATES
+    { 4, &gPlayerAnim_002848 },                         // PLAYER_CSMODE_STARE_DOWN_STARTLED
+    { 3, &gPlayerAnim_002850 },                         // PLAYER_CSMODE_LOOK_UP_STARTLED
+    { 3, &gPlayerAnim_0034E0 },                         // PLAYER_CSMODE_LOOK_TO_CHARACTER_AT_SIDE_SMILING
+    { 3, &gPlayerAnim_0034D8 },                         // PLAYER_CSMODE_LOOK_TO_CHARACTER_ABOVE_SMILING
+    { 6, &gPlayerAnim_0034C8 },                         // PLAYER_CSMODE_SURPRISED_DEFENSE
+    { 3, &gPlayerAnim_003470 },                         // PLAYER_CSMODE_START_HALF_TURN_SURPRISED
+    { 3, &gPlayerAnim_003478 },                         // PLAYER_CSMODE_END_HALF_TURN_SURPRISED
+    { 3, &gPlayerAnim_0034C0 },                         // PLAYER_CSMODE_START_LOOK_UP_DEFENSE
+    { 3, &gPlayerAnim_003480 },                         // PLAYER_CSMODE_LOOK_UP_DEFENSE_IDLE
+    { 3, &gPlayerAnim_003490 },                         // PLAYER_CSMODE_END_LOOK_UP_DEFENSE
+    { 3, &gPlayerAnim_003488 },                         // PLAYER_CSMODE_START_SWORD_KNOCKED_FROM_HAND
+    { 3, &gPlayerAnim_003498 },                         // PLAYER_CSMODE_SWORD_KNOCKED_FROM_HAND_IDLE
+    { 3, &gPlayerAnim_0034B0 },                         // PLAYER_CSMODE_END_SWORD_KNOCKED_FROM_HAND
     { -1, Player_CutsceneSetupSpinAttackIdle },         // PLAYER_CSMODE_SPIN_ATTACK_IDLE
-    { 3, &gPlayerAnim_003420 },                    // PLAYER_CSMODE_INSPECT_WEAPON
+    { 3, &gPlayerAnim_003420 },                         // PLAYER_CSMODE_INSPECT_WEAPON
     { -1, Player_SetupDoNothing4 },                     // PLAYER_CSMODE_UNK_91
     { -1, Player_CutsceneSetupKnockedToGroundDamaged }, // PLAYER_CSMODE_KNOCKED_TO_GROUND_WITH_DAMAGE_EFFECT
-    { 3, &gPlayerAnim_003250 },                    // PLAYER_CSMODE_REACT_TO_HEAT
+    { 3, &gPlayerAnim_003250 },                         // PLAYER_CSMODE_REACT_TO_HEAT
     { -1, Player_CutsceneSetupGetSwordBack },           // PLAYER_CSMODE_GET_SWORD_BACK
-    { 3, &gPlayerAnim_002810 },                    // PLAYER_CSMODE_CAUGHT_BY_GUARD
-    { 3, &gPlayerAnim_002838 },                    // PLAYER_CSMODE_GET_SWORD_BACK_2
-    { 3, &gPlayerAnim_002CD0 },                    // PLAYER_CSMODE_START_GANON_KILL_COMBO
-    { 3, &gPlayerAnim_002CD8 },                    // PLAYER_CSMODE_END_GANON_KILL_COMBO
-    { 3, &gPlayerAnim_002868 },                    // PLAYER_CSMODE_WATCH_ZELDA_STUN_GANON
-    { 3, &gPlayerAnim_0027E8 },                    // PLAYER_CSMODE_START_LOOK_AT_SWORD_GLOW
-    { 3, &gPlayerAnim_0027F8 },                    // PLAYER_CSMODE_LOOK_AT_SWORD_GLOW_IDLE
-    { 3, &gPlayerAnim_002800 },                    // PLAYER_CSMODE_END_LOOK_AT_SWORD_GLOW
+    { 3, &gPlayerAnim_002810 },                         // PLAYER_CSMODE_CAUGHT_BY_GUARD
+    { 3, &gPlayerAnim_002838 },                         // PLAYER_CSMODE_GET_SWORD_BACK_2
+    { 3, &gPlayerAnim_002CD0 },                         // PLAYER_CSMODE_START_GANON_KILL_COMBO
+    { 3, &gPlayerAnim_002CD8 },                         // PLAYER_CSMODE_END_GANON_KILL_COMBO
+    { 3, &gPlayerAnim_002868 },                         // PLAYER_CSMODE_WATCH_ZELDA_STUN_GANON
+    { 3, &gPlayerAnim_0027E8 },                         // PLAYER_CSMODE_START_LOOK_AT_SWORD_GLOW
+    { 3, &gPlayerAnim_0027F8 },                         // PLAYER_CSMODE_LOOK_AT_SWORD_GLOW_IDLE
+    { 3, &gPlayerAnim_002800 },                         // PLAYER_CSMODE_END_LOOK_AT_SWORD_GLOW
 };
 
 static CutsceneModeEntry sCutsceneModeUpdateFuncs[] = {
-    { 0, NULL },                              // PLAYER_CSMODE_NONE
-    { -1, Player_CutsceneIdle },                    // PLAYER_CSMODE_IDLE
-    { -1, Player_CutsceneTurnAroundSurprisedShort },                    // PLAYER_CSMODE_TURN_AROUND_SURPRISED_SHORT
-    { -1, func_80851998 },                    // PLAYER_CSMODE_UNK_3
-    { -1, func_808519C0 },                    // PLAYER_CSMODE_UNK_4
-    { 11, NULL },                             // PLAYER_CSMODE_SURPRISED
-    { -1, func_80852C50 },                    // PLAYER_CSMODE_UNK_6
-    { -1, Player_CutsceneEnd },                    // PLAYER_CSMODE_END
-    { -1, Player_CutsceneWait },                    // PLAYER_CSMODE_WAIT
-    { -1, Player_CutsceneTurnAroundSurprisedLong },                    // PLAYER_CSMODE_TURN_AROUND_SURPRISED_LONG
+    { 0, NULL },                                         // PLAYER_CSMODE_NONE
+    { -1, Player_CutsceneIdle },                         // PLAYER_CSMODE_IDLE
+    { -1, Player_CutsceneTurnAroundSurprisedShort },     // PLAYER_CSMODE_TURN_AROUND_SURPRISED_SHORT
+    { -1, func_80851998 },                               // PLAYER_CSMODE_UNK_3
+    { -1, func_808519C0 },                               // PLAYER_CSMODE_UNK_4
+    { 11, NULL },                                        // PLAYER_CSMODE_SURPRISED
+    { -1, func_80852C50 },                               // PLAYER_CSMODE_UNK_6
+    { -1, Player_CutsceneEnd },                          // PLAYER_CSMODE_END
+    { -1, Player_CutsceneWait },                         // PLAYER_CSMODE_WAIT
+    { -1, Player_CutsceneTurnAroundSurprisedLong },      // PLAYER_CSMODE_TURN_AROUND_SURPRISED_LONG
     { -1, Player_CutsceneEnterWarp },                    // PLAYER_CSMODE_ENTER_WARP
-    { -1, Player_CutsceneRaisedByWarp },                    // PLAYER_CSMODE_RAISED_BY_WARP
-    { -1, Player_CutsceneFightStance },                    // PLAYER_CSMODE_FIGHT_STANCE
-    { 11, NULL },                             // PLAYER_CSMODE_START_GET_SPIRITUAL_STONE
-    { 11, NULL },                             // PLAYER_CSMODE_GET_SPIRITUAL_STONE
-    { 11, NULL },                             // PLAYER_CSMODE_END_GET_SPIRITUAL_STONE
-    { 18, sGetUpFromDekuTreeStoryAnimSfx },                       // PLAYER_CSMODE_GET_UP_FROM_DEKU_TREE_STORY
-    { 11, NULL },                             // PLAYER_CSMODE_SIT_LISTENING_TO_DEKU_TREE_STORY
-    { -1, Player_CutsceneSwordIntoPedestal },                    // PLAYER_CSMODE_SWORD_INTO_PEDESTAL
-    { 12, &gPlayerAnim_002730 },              // PLAYER_CSMODE_REACT_TO_QUAKE
-    { 11, NULL },                             // PLAYER_CSMODE_END_REACT_TO_QUAKE
-    { 0, NULL },                              // PLAYER_CSMODE_UNK_21
-    { -1, Player_CutsceneWarpToSages },                    // PLAYER_CSMODE_WARP_TO_SAGES
-    { 11, NULL },                             // PLAYER_CSMODE_LOOK_AT_SELF
-    { -1, Player_CutsceneKnockedToGround },                    // PLAYER_CSMODE_KNOCKED_TO_GROUND
-    { 11, NULL },                             // PLAYER_CSMODE_GET_UP_FROM_GROUND
-    { 17, &gPlayerAnim_0030A8 },              // PLAYER_CSMODE_START_PLAY_OCARINA
-    { 11, NULL },                             // PLAYER_CSMODE_END_PLAY_OCARINA
-    { 11, NULL },                             // PLAYER_CSMODE_GET_ITEM
-    { 11, NULL },                             // PLAYER_CSMODE_IDLE_2
-    { -1, Player_CutsceneDrawAndBrandishSword },                    // PLAYER_CSMODE_DRAW_AND_BRANDISH_SWORD
-    { -1, Player_CutsceneCloseEyes },         // PLAYER_CSMODE_CLOSE_EYES
-    { -1, Player_CutsceneOpenEyes },          // PLAYER_CSMODE_OPEN_EYES
-    { 18, D_80854B00 },                       // PLAYER_CSMODE_SURPRIED_STUMBLE_BACK_AND_FALL
-    { -1, Player_CutsceneSurfaceFromDive },   // PLAYER_CSMODE_SURFACE_FROM_DIVE
-    { 11, NULL },                             // PLAYER_CSMODE_GET_ITEM_IN_WATER
-    { 11, NULL },                             // PLAYER_CSMODE_GENTLE_KNOCKBACK_INTO_SIT
-    { 11, NULL },                             // PLAYER_CSMODE_GRABBED_AND_CARRIED_BY_NECK
-    { 11, NULL },                             // PLAYER_CSMODE_SLEEPING_RESTLESS
-    { -1, Player_CutsceneSleeping }, // PLAYER_CSMODE_SLEEPING
-    { -1, Player_CutsceneAwaken },                    // PLAYER_CSMODE_AWAKEN
+    { -1, Player_CutsceneRaisedByWarp },                 // PLAYER_CSMODE_RAISED_BY_WARP
+    { -1, Player_CutsceneFightStance },                  // PLAYER_CSMODE_FIGHT_STANCE
+    { 11, NULL },                                        // PLAYER_CSMODE_START_GET_SPIRITUAL_STONE
+    { 11, NULL },                                        // PLAYER_CSMODE_GET_SPIRITUAL_STONE
+    { 11, NULL },                                        // PLAYER_CSMODE_END_GET_SPIRITUAL_STONE
+    { 18, sGetUpFromDekuTreeStoryAnimSfx },              // PLAYER_CSMODE_GET_UP_FROM_DEKU_TREE_STORY
+    { 11, NULL },                                        // PLAYER_CSMODE_SIT_LISTENING_TO_DEKU_TREE_STORY
+    { -1, Player_CutsceneSwordIntoPedestal },            // PLAYER_CSMODE_SWORD_INTO_PEDESTAL
+    { 12, &gPlayerAnim_002730 },                         // PLAYER_CSMODE_REACT_TO_QUAKE
+    { 11, NULL },                                        // PLAYER_CSMODE_END_REACT_TO_QUAKE
+    { 0, NULL },                                         // PLAYER_CSMODE_UNK_21
+    { -1, Player_CutsceneWarpToSages },                  // PLAYER_CSMODE_WARP_TO_SAGES
+    { 11, NULL },                                        // PLAYER_CSMODE_LOOK_AT_SELF
+    { -1, Player_CutsceneKnockedToGround },              // PLAYER_CSMODE_KNOCKED_TO_GROUND
+    { 11, NULL },                                        // PLAYER_CSMODE_GET_UP_FROM_GROUND
+    { 17, &gPlayerAnim_0030A8 },                         // PLAYER_CSMODE_START_PLAY_OCARINA
+    { 11, NULL },                                        // PLAYER_CSMODE_END_PLAY_OCARINA
+    { 11, NULL },                                        // PLAYER_CSMODE_GET_ITEM
+    { 11, NULL },                                        // PLAYER_CSMODE_IDLE_2
+    { -1, Player_CutsceneDrawAndBrandishSword },         // PLAYER_CSMODE_DRAW_AND_BRANDISH_SWORD
+    { -1, Player_CutsceneCloseEyes },                    // PLAYER_CSMODE_CLOSE_EYES
+    { -1, Player_CutsceneOpenEyes },                     // PLAYER_CSMODE_OPEN_EYES
+    { 18, D_80854B00 },                                  // PLAYER_CSMODE_SURPRIED_STUMBLE_BACK_AND_FALL
+    { -1, Player_CutsceneSurfaceFromDive },              // PLAYER_CSMODE_SURFACE_FROM_DIVE
+    { 11, NULL },                                        // PLAYER_CSMODE_GET_ITEM_IN_WATER
+    { 11, NULL },                                        // PLAYER_CSMODE_GENTLE_KNOCKBACK_INTO_SIT
+    { 11, NULL },                                        // PLAYER_CSMODE_GRABBED_AND_CARRIED_BY_NECK
+    { 11, NULL },                                        // PLAYER_CSMODE_SLEEPING_RESTLESS
+    { -1, Player_CutsceneSleeping },                     // PLAYER_CSMODE_SLEEPING
+    { -1, Player_CutsceneAwaken },                       // PLAYER_CSMODE_AWAKEN
     { -1, Player_CutsceneGetOffBed },                    // PLAYER_CSMODE_GET_OFF_BED
-    { -1, Player_CutsceneBlownBackward },                    // PLAYER_CSMODE_BLOWN_BACKWARD
-    { 13, &gPlayerAnim_002398 },              // PLAYER_CSMODE_STAND_UP_AND_WATCH
-    { -1, Player_CutsceneIdle3 },                    // PLAYER_CSMODE_IDLE_3
-    { 0, NULL },                              // PLAYER_CSMODE_STOP
-    { 0, NULL },                              // PLAYER_CSMODE_STOP_2
-    { 11, NULL },                             // PLAYER_CSMODE_LOOK_THROUGH_PEEPHOLE
-    { -1, Player_CutsceneStepBackCautiously },                    // PLAYER_CSMODE_STEP_BACK_CAUTIOUSLY
-    { -1, Player_CutsceneWait },                    // PLAYER_CSMODE_IDLE_4
-    { -1, Player_CutsceneDrawSwordChild },                    // PLAYER_CSMODE_DRAW_SWORD_CHILD
-    { 13, &gPlayerAnim_0027D0 },              // PLAYER_CSMODE_JUMP_TO_ZELDAS_CRYSTAL
-    { -1, Player_CutsceneDesperateLookAtZeldasCrystal },                    // PLAYER_CSMODE_DESPERATE_LOOKING_AT_ZELDAS_CRYSTAL
-    { 13, &gPlayerAnim_0027C8 },              // PLAYER_CSMODE_LOOK_UP_AT_ZELDAS_CRYSTAL_VANISHING
-    { -1, Player_CutsceneTurnAroundSlowly },                    // PLAYER_CSMODE_TURN_AROUND_SLOWLY
-    { 11, NULL },                             // PLAYER_CSMODE_END_SHIELD_EYES_WITH_HAND
-    { 11, NULL },                             // PLAYER_CSMODE_SHIELD_EYES_WITH_HAND
-    { 12, &gPlayerAnim_002388 },              // PLAYER_CSMODE_LOOK_AROUND_SURPRISED
-    { -1, Player_CutsceneInspectGroundCarefully },                    // PLAYER_CSMODE_INSPECT_GROUND_CAREFULLY
-    { 11, NULL },                             // PLAYER_CSMODE_STARTLED_BY_GORONS_FALLING
-    { 18, D_80854B14 },                       // PLAYER_CSMODE_FALL_TO_KNEE
-    { 11, NULL },                             // PLAYER_CSMODE_FLAT_ON_BACK
-    { 11, NULL },                             // PLAYER_CSMODE_RAISE_FROM_FLAT_ON_BACK
-    { 11, NULL },                             // PLAYER_CSMODE_START_SPIN_ATTACK
-    { 11, NULL },                             // PLAYER_CSMODE_ZELDA_CLOUDS_CUTSCENE_IDLE
-    { -1, Player_CutsceneStartPassOcarina },                    // PLAYER_CSMODE_ZELDA_CLOUDS_CUTSCENE_START_PASS_OCARINA
-    { 17, &gPlayerAnim_002450 },              // PLAYER_CSMODE_ZELDA_CLOUDS_CUTSCENE_END_PASS_OCARINA
-    { 12, &gPlayerAnim_002448 },              // PLAYER_CSMODE_START_LOOK_AROUND_AFTER_SWORD_WARP
-    { 12, &gPlayerAnim_002450 },              // PLAYER_CSMODE_END_LOOK_AROUND_AFTER_SWORD_WARP
-    { 11, NULL },                             // PLAYER_CSMODE_LOOK_AROUND_AND_AT_SELF_QUICKLY
-    { -1, Player_LearnOcarinaSong },          // PLAYER_CSMODE_START_LEARN_OCARINA_SONG_ADULT
-    { 17, &gPlayerAnim_003468 },              // PLAYER_CSMODE_END_LEARN_OCARINA_SONG_ADULT
-    { -1, Player_LearnOcarinaSong },          // PLAYER_CSMODE_START_LEARN_OCARINA_SONG_CHILD
-    { 17, &gPlayerAnim_003468 },              // PLAYER_CSMODE_END_LEARN_OCARINA_SONG_CHILD
-    { 12, &gPlayerAnim_0027A0 },              // PLAYER_CSMODE_RESIST_DARK_MAGIC
-    { 12, &gPlayerAnim_002820 },              // PLAYER_CSMODE_TRIFORCE_HAND_RESONATES
-    { 11, NULL },                             // PLAYER_CSMODE_STARE_DOWN_STARTLED
-    { 12, &gPlayerAnim_002858 },              // PLAYER_CSMODE_LOOK_UP_STARTLED
-    { 12, &gPlayerAnim_0034D0 },              // PLAYER_CSMODE_LOOK_TO_CHARACTER_AT_SIDE_SMILING
-    { 13, &gPlayerAnim_0034F0 },              // PLAYER_CSMODE_LOOK_TO_CHARACTER_ABOVE_SMILING
-    { 12, &gPlayerAnim_0034E8 },              // PLAYER_CSMODE_SURPRISED_DEFENSE
-    { 12, &gPlayerAnim_0034A8 },              // PLAYER_CSMODE_START_HALF_TURN_SURPRISED
-    { 11, NULL },                             // PLAYER_CSMODE_END_HALF_TURN_SURPRISED
-    { 11, NULL },                             // PLAYER_CSMODE_START_LOOK_UP_DEFENSE
-    { 11, NULL },                             // PLAYER_CSMODE_LOOK_UP_DEFENSE_IDLE
-    { 11, NULL },                             // PLAYER_CSMODE_END_LOOK_UP_DEFENSE
-    { -1, func_80852648 },                    // PLAYER_CSMODE_START_SWORD_KNOCKED_FROM_HAND
-    { 11, NULL },                             // PLAYER_CSMODE_SWORD_KNOCKED_FROM_HAND_IDLE
-    { 12, &gPlayerAnim_0034A0 },              // PLAYER_CSMODE_END_SWORD_KNOCKED_FROM_HAND
-    { -1, func_808524D0 },                    // PLAYER_CSMODE_SPIN_ATTACK_IDLE
-    { -1, func_80852514 },                    // PLAYER_CSMODE_INSPECT_WEAPON
-    { -1, Player_DoNothing5 },                // PLAYER_CSMODE_UNK_91
-    { -1, func_808525C0 },                    // PLAYER_CSMODE_KNOCKED_TO_GROUND_WITH_DAMAGE_EFFECT
-    { 11, NULL },                             // PLAYER_CSMODE_REACT_TO_HEAT
-    { 11, NULL },                             // PLAYER_CSMODE_GET_SWORD_BACK
-    { 11, NULL },                             // PLAYER_CSMODE_CAUGHT_BY_GUARD
-    { -1, func_8085283C },                    // PLAYER_CSMODE_GET_SWORD_BACK_2
-    { -1, func_808528C8 },                    // PLAYER_CSMODE_START_GANON_KILL_COMBO
-    { -1, func_808528C8 },                    // PLAYER_CSMODE_END_GANON_KILL_COMBO
-    { 12, &gPlayerAnim_002870 },              // PLAYER_CSMODE_WATCH_ZELDA_STUN_GANON
-    { 12, &gPlayerAnim_0027F0 },              // PLAYER_CSMODE_START_LOOK_AT_SWORD_GLOW
-    { 12, &gPlayerAnim_002808 },              // PLAYER_CSMODE_LOOK_AT_SWORD_GLOW_IDLE
-    { 12, &gPlayerAnim_002450 },              // PLAYER_CSMODE_END_LOOK_AT_SWORD_GLOW
+    { -1, Player_CutsceneBlownBackward },                // PLAYER_CSMODE_BLOWN_BACKWARD
+    { 13, &gPlayerAnim_002398 },                         // PLAYER_CSMODE_STAND_UP_AND_WATCH
+    { -1, Player_CutsceneIdle3 },                        // PLAYER_CSMODE_IDLE_3
+    { 0, NULL },                                         // PLAYER_CSMODE_STOP
+    { 0, NULL },                                         // PLAYER_CSMODE_STOP_2
+    { 11, NULL },                                        // PLAYER_CSMODE_LOOK_THROUGH_PEEPHOLE
+    { -1, Player_CutsceneStepBackCautiously },           // PLAYER_CSMODE_STEP_BACK_CAUTIOUSLY
+    { -1, Player_CutsceneWait },                         // PLAYER_CSMODE_IDLE_4
+    { -1, Player_CutsceneDrawSwordChild },               // PLAYER_CSMODE_DRAW_SWORD_CHILD
+    { 13, &gPlayerAnim_0027D0 },                         // PLAYER_CSMODE_JUMP_TO_ZELDAS_CRYSTAL
+    { -1, Player_CutsceneDesperateLookAtZeldasCrystal }, // PLAYER_CSMODE_DESPERATE_LOOKING_AT_ZELDAS_CRYSTAL
+    { 13, &gPlayerAnim_0027C8 },                         // PLAYER_CSMODE_LOOK_UP_AT_ZELDAS_CRYSTAL_VANISHING
+    { -1, Player_CutsceneTurnAroundSlowly },             // PLAYER_CSMODE_TURN_AROUND_SLOWLY
+    { 11, NULL },                                        // PLAYER_CSMODE_END_SHIELD_EYES_WITH_HAND
+    { 11, NULL },                                        // PLAYER_CSMODE_SHIELD_EYES_WITH_HAND
+    { 12, &gPlayerAnim_002388 },                         // PLAYER_CSMODE_LOOK_AROUND_SURPRISED
+    { -1, Player_CutsceneInspectGroundCarefully },       // PLAYER_CSMODE_INSPECT_GROUND_CAREFULLY
+    { 11, NULL },                                        // PLAYER_CSMODE_STARTLED_BY_GORONS_FALLING
+    { 18, D_80854B14 },                                  // PLAYER_CSMODE_FALL_TO_KNEE
+    { 11, NULL },                                        // PLAYER_CSMODE_FLAT_ON_BACK
+    { 11, NULL },                                        // PLAYER_CSMODE_RAISE_FROM_FLAT_ON_BACK
+    { 11, NULL },                                        // PLAYER_CSMODE_START_SPIN_ATTACK
+    { 11, NULL },                                        // PLAYER_CSMODE_ZELDA_CLOUDS_CUTSCENE_IDLE
+    { -1, Player_CutsceneStartPassOcarina },             // PLAYER_CSMODE_ZELDA_CLOUDS_CUTSCENE_START_PASS_OCARINA
+    { 17, &gPlayerAnim_002450 },                         // PLAYER_CSMODE_ZELDA_CLOUDS_CUTSCENE_END_PASS_OCARINA
+    { 12, &gPlayerAnim_002448 },                         // PLAYER_CSMODE_START_LOOK_AROUND_AFTER_SWORD_WARP
+    { 12, &gPlayerAnim_002450 },                         // PLAYER_CSMODE_END_LOOK_AROUND_AFTER_SWORD_WARP
+    { 11, NULL },                                        // PLAYER_CSMODE_LOOK_AROUND_AND_AT_SELF_QUICKLY
+    { -1, Player_LearnOcarinaSong },                     // PLAYER_CSMODE_START_LEARN_OCARINA_SONG_ADULT
+    { 17, &gPlayerAnim_003468 },                         // PLAYER_CSMODE_END_LEARN_OCARINA_SONG_ADULT
+    { -1, Player_LearnOcarinaSong },                     // PLAYER_CSMODE_START_LEARN_OCARINA_SONG_CHILD
+    { 17, &gPlayerAnim_003468 },                         // PLAYER_CSMODE_END_LEARN_OCARINA_SONG_CHILD
+    { 12, &gPlayerAnim_0027A0 },                         // PLAYER_CSMODE_RESIST_DARK_MAGIC
+    { 12, &gPlayerAnim_002820 },                         // PLAYER_CSMODE_TRIFORCE_HAND_RESONATES
+    { 11, NULL },                                        // PLAYER_CSMODE_STARE_DOWN_STARTLED
+    { 12, &gPlayerAnim_002858 },                         // PLAYER_CSMODE_LOOK_UP_STARTLED
+    { 12, &gPlayerAnim_0034D0 },                         // PLAYER_CSMODE_LOOK_TO_CHARACTER_AT_SIDE_SMILING
+    { 13, &gPlayerAnim_0034F0 },                         // PLAYER_CSMODE_LOOK_TO_CHARACTER_ABOVE_SMILING
+    { 12, &gPlayerAnim_0034E8 },                         // PLAYER_CSMODE_SURPRISED_DEFENSE
+    { 12, &gPlayerAnim_0034A8 },                         // PLAYER_CSMODE_START_HALF_TURN_SURPRISED
+    { 11, NULL },                                        // PLAYER_CSMODE_END_HALF_TURN_SURPRISED
+    { 11, NULL },                                        // PLAYER_CSMODE_START_LOOK_UP_DEFENSE
+    { 11, NULL },                                        // PLAYER_CSMODE_LOOK_UP_DEFENSE_IDLE
+    { 11, NULL },                                        // PLAYER_CSMODE_END_LOOK_UP_DEFENSE
+    { -1, Player_CutsceneSwordKnockedFromHand },         // PLAYER_CSMODE_START_SWORD_KNOCKED_FROM_HAND
+    { 11, NULL },                                        // PLAYER_CSMODE_SWORD_KNOCKED_FROM_HAND_IDLE
+    { 12, &gPlayerAnim_0034A0 },                         // PLAYER_CSMODE_END_SWORD_KNOCKED_FROM_HAND
+    { -1, Player_CutsceneSpinAttackIdle },               // PLAYER_CSMODE_SPIN_ATTACK_IDLE
+    { -1, Player_CutsceneInspectWeapon },                // PLAYER_CSMODE_INSPECT_WEAPON
+    { -1, Player_DoNothing5 },                           // PLAYER_CSMODE_UNK_91
+    { -1, Player_CutsceneKnockedToGroundDamaged },       // PLAYER_CSMODE_KNOCKED_TO_GROUND_WITH_DAMAGE_EFFECT
+    { 11, NULL },                                        // PLAYER_CSMODE_REACT_TO_HEAT
+    { 11, NULL },                                        // PLAYER_CSMODE_GET_SWORD_BACK
+    { 11, NULL },                                        // PLAYER_CSMODE_CAUGHT_BY_GUARD
+    { -1, Player_CutsceneGetSwordBack },                 // PLAYER_CSMODE_GET_SWORD_BACK_2
+    { -1, Player_CutsceneGanonKillCombo },               // PLAYER_CSMODE_START_GANON_KILL_COMBO
+    { -1, Player_CutsceneGanonKillCombo },               // PLAYER_CSMODE_END_GANON_KILL_COMBO
+    { 12, &gPlayerAnim_002870 },                         // PLAYER_CSMODE_WATCH_ZELDA_STUN_GANON
+    { 12, &gPlayerAnim_0027F0 },                         // PLAYER_CSMODE_START_LOOK_AT_SWORD_GLOW
+    { 12, &gPlayerAnim_002808 },                         // PLAYER_CSMODE_LOOK_AT_SWORD_GLOW_IDLE
+    { 12, &gPlayerAnim_002450 },                         // PLAYER_CSMODE_END_LOOK_AT_SWORD_GLOW
 };
 
 void Player_StopAnimAndMovement(PlayState* play, Player* this, LinkAnimationHeader* anim) {
@@ -14275,13 +14275,13 @@ void Player_CutsceneSetupSpinAttackIdle(PlayState* play, Player* this, CsCmdActo
     func_80837704(play, this);
 }
 
-void func_808524D0(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSpinAttackIdle(PlayState* play, Player* this, CsCmdActorAction* arg2) {
     sControlInput->press.button |= BTN_B;
 
     Player_ChargeSpinAttack(this, play);
 }
 
-void func_80852514(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneInspectWeapon(PlayState* play, Player* this, CsCmdActorAction* arg2) {
     Player_ChargeSpinAttack(this, play);
 }
 
@@ -14306,7 +14306,7 @@ static void (*D_808551FC[])(Player* this, PlayState* play) = {
     func_80843A38,
 };
 
-void func_808525C0(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneKnockedToGroundDamaged(PlayState* play, Player* this, CsCmdActorAction* arg2) {
     D_808551FC[this->genericTimer](this, play);
 }
 
@@ -14315,7 +14315,7 @@ void Player_CutsceneSetupGetSwordBack(PlayState* play, Player* this, CsCmdActorA
     Player_PlayAnimOnceSlowed(play, this, &gPlayerAnim_002838);
 }
 
-void func_80852648(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSwordKnockedFromHand(PlayState* play, Player* this, CsCmdActorAction* arg2) {
     LinkAnimation_Update(play, &this->skelAnime);
 
     if (LinkAnimation_OnFrame(&this->skelAnime, 10.0f)) {
@@ -14366,7 +14366,7 @@ void Player_LearnOcarinaSong(PlayState* play, Player* this, CsCmdActorAction* ar
     EffectSsKiraKira_SpawnDispersed(play, &sparklePos, &zeroVec, &zeroVec, &primColor, &envColor, 600, -10);
 }
 
-void func_8085283C(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneGetSwordBack(PlayState* play, Player* this, CsCmdActorAction* arg2) {
     if (LinkAnimation_Update(play, &this->skelAnime)) {
         Player_CutsceneEnd(play, this, arg2);
     } else if (this->genericTimer == 0) {
@@ -14377,7 +14377,7 @@ void func_8085283C(PlayState* play, Player* this, CsCmdActorAction* arg2) {
     }
 }
 
-void func_808528C8(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneGanonKillCombo(PlayState* play, Player* this, CsCmdActorAction* arg2) {
     if (LinkAnimation_Update(play, &this->skelAnime)) {
         Player_SetupMeleeAttack(this, 0.0f, 99.0f, this->skelAnime.endFrame - 8.0f);
     }
