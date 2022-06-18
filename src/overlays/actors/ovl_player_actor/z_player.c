@@ -287,7 +287,7 @@ void Player_AnimPlaybackType10(PlayState* play, Player* this, void* anim);
 void Player_AnimPlaybackType11(PlayState* play, Player* this, void* anim);
 void Player_AnimPlaybackType16(PlayState* play, Player* this, void* anim);
 void Player_AnimPlaybackType12(PlayState* play, Player* this, void* anim);
-void Player_AnimPlaybackType17(PlayState* play, Player* this, void* arg2);
+void Player_AnimPlaybackType17(PlayState* play, Player* this, void* animSfxEntry);
 void Player_CutsceneSetupSwimIdle(PlayState* play, Player* this, CsCmdActorAction* arg2);
 void Player_CutsceneSurfaceFromDive(PlayState* play, Player* this, CsCmdActorAction* arg2);
 void Player_CutsceneIdle(PlayState* play, Player* this, CsCmdActorAction* arg2);
@@ -13714,9 +13714,9 @@ void Player_AnimPlaybackType12(PlayState* play, Player* this, void* anim) {
     }
 }
 
-void Player_AnimPlaybackType17(PlayState* play, Player* this, void* arg2) {
+void Player_AnimPlaybackType17(PlayState* play, Player* this, void* animSfxEntry) {
     LinkAnimation_Update(play, &this->skelAnime);
-    Player_PlayAnimSfx(this, arg2);
+    Player_PlayAnimSfx(this, animSfxEntry);
 }
 
 void Player_LookAtCutsceneTargetActor(Player* this) {
