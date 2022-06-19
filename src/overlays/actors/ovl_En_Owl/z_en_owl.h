@@ -15,7 +15,7 @@ typedef struct EnOwl {
     /* 0x0198 */ SkelAnime skelAnime;
     /* 0x01DC */ Vec3s jointTable[21];
     /* 0x025A */ Vec3s morphTable[21];
-    /* 0x02D8 */ SkelAnime skelAnime2;
+    /* 0x02D8 */ SkelAnime skelAnimeUpper;
     /* 0x031C */ Vec3s jointTable2[16];
     /* 0x037C */ Vec3s morphTable2[16];
     /* 0x03DC */ SkelAnime* curSkelAnime;

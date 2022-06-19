@@ -550,6 +550,16 @@ typedef enum {
     /* 0x0F */ PLAYER_SPAWNMODE_WALKING_PRESERVE_MOMENTUM
 } PlayerSpawnModes;
 
+typedef enum {
+    /* -3 */ PLAYER_FPSITEM_HOOKSHOT_UNPRIMED = -3,
+    /* -2 */ PLAYER_FPSITEM_SLINGSHOT_UNPRIMED = -2,
+    /* -1 */ PLAYER_FPSITEM_BOW_UNPRIMED = -1,
+    /*  0 */ PLAYER_FPSITEM_NONE,
+    /*  1 */ PLAYER_FPSITEM_BOW_PRIMED,
+    /*  2 */ PLAYER_FPSITEM_SLINGSHOT_PRIMED,
+    /*  3 */ PLAYER_FPSITEM_HOOKSHOT_PRIMED
+} PlayerFpsItems;
+
 #define PLAYER_ANIMSFXFLAGS_0 (1 << 11) // 0x0800
 #define PLAYER_ANIMSFXFLAGS_1 (1 << 12) // 0x1000
 #define PLAYER_ANIMSFXFLAGS_2 (1 << 13) // 0x2000
@@ -797,7 +807,7 @@ typedef struct Player {
     /* 0x06BC */ Vec3s      upperBodyRot;
     /* 0x06C2 */ s16        unk_6C2;
     /* 0x06C4 */ f32        sinkingOffsetY;
-    /* 0x06C8 */ SkelAnime  skelAnime2;
+    /* 0x06C8 */ SkelAnime  skelAnimeUpper;
     /* 0x070C */ Vec3s      jointTable2[PLAYER_LIMB_BUF_COUNT];
     /* 0x079C */ Vec3s      morphTable2[PLAYER_LIMB_BUF_COUNT];
     /* 0x082C */ PlayerUpperActionFunc upperActionFunc;
