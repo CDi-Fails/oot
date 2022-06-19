@@ -113,7 +113,7 @@ void EnOwl_Init(Actor* thisx, PlayState* play) {
     Actor_ProcessInitChain(&this->actor, sInitChain);
     ActorShape_Init(&this->actor.shape, 0, ActorShadow_DrawCircle, 36.0f);
     SkelAnime_InitFlex(play, &this->skelAnime, &gOwlFlyingSkel, &gOwlFlyAnim, this->jointTable, this->morphTable, 21);
-    SkelAnime_InitFlex(play, &this->skelAnimeUpper, &gOwlPerchingSkel, &gOwlPerchAnim, this->jointTable2, this->morphTable2,
+    SkelAnime_InitFlex(play, &this->skelAnimeUpper, &gOwlPerchingSkel, &gOwlPerchAnim, this->jointTableUpper, this->morphTableUpper,
                        16);
     Collider_InitCylinder(play, &this->collider);
     Collider_SetCylinder(play, &this->collider, &this->actor, &sOwlCylinderInit);

@@ -808,8 +808,8 @@ typedef struct Player {
     /* 0x06C2 */ s16        unk_6C2;
     /* 0x06C4 */ f32        sinkingOffsetY;
     /* 0x06C8 */ SkelAnime  skelAnimeUpper;
-    /* 0x070C */ Vec3s      jointTable2[PLAYER_LIMB_BUF_COUNT];
-    /* 0x079C */ Vec3s      morphTable2[PLAYER_LIMB_BUF_COUNT];
+    /* 0x070C */ Vec3s      jointTableUpper[PLAYER_LIMB_BUF_COUNT];
+    /* 0x079C */ Vec3s      morphTableUpper[PLAYER_LIMB_BUF_COUNT];
     /* 0x082C */ PlayerUpperActionFunc upperActionFunc;
     /* 0x0830 */ f32        unk_830;
     /* 0x0834 */ s16        fpsItemTimer;
@@ -837,11 +837,13 @@ typedef struct Player {
     };
     /* 0x0854 */ f32        rippleTimer;
     union {
+        /* 0x0858 */ f32        unk_858;
         /* 0x0858 */ f32        spinAttackTimer;
         /* 0x0858 */ f32        reelPullDir;
     };
     union {
         /* 0x085C */ f32        unk_85C; // stick length among other things
+        /* 0x085C */ f32        bowStringScale;
         /* 0x085C */ f32        dekuStickLength;
     };
     union {
@@ -864,7 +866,7 @@ typedef struct Player {
     /* 0x088C */ u8         touchedWallJumpType;
     /* 0x088D */ u8         wallTouchTimer;
     /* 0x088E */ u8         unk_88E;
-    /* 0x088F */ u8         unk_88F;
+    /* 0x088F */ u8         damageFlashTimer;
     /* 0x0890 */ u8         runDamageTimer;
     /* 0x0891 */ u8         shockTimer;
     /* 0x0892 */ u8         unk_892;
@@ -901,6 +903,8 @@ typedef struct Player {
     /* 0x0A86 */ s8         unk_A86;
     /* 0x0A87 */ u8         unk_A87;
     /* 0x0A88 */ Vec3f      prevWaistPos; // previous body part 0 position
+    // TESTING
+    s8 spinAttackFunc;
 } Player; // size = 0xA94
 
 #endif
