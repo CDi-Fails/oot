@@ -169,7 +169,7 @@ void Player_SpawnWalkingPreserveMomentum(PlayState* play, Player* this);
 s32 Player_SetupMountHorse(Player* this, PlayState* play);
 s32 Player_SetupGetItemOrHoldBehavior(Player* this, PlayState* play);
 s32 Player_SetupPutDownOrThrowActor(Player* this, PlayState* play);
-s32 Player_SetupGrabPushPullWall(Player* this, PlayState* play);
+s32 Player_SetupBeginGrabPushPullWall(Player* this, PlayState* play);
 void Player_TargetingStandingStill(Player* this, PlayState* play);
 void Player_ZParallelStandingStill(Player* this, PlayState* play);
 void Player_StandingStill(Player* this, PlayState* play);
@@ -219,9 +219,9 @@ void Player_SpawnFromWarpSong(PlayState* play, Player* this);
 void Player_SetupSpawnFromFaroresWind(PlayState* play, Player* this);
 void func_8084B1D8(Player* this, PlayState* play);
 void func_8084B530(Player* this, PlayState* play);
-void func_8084B78C(Player* this, PlayState* play);
-void func_8084B898(Player* this, PlayState* play);
-void func_8084B9E4(Player* this, PlayState* play);
+void Player_GrabPushPullWall(Player* this, PlayState* play);
+void Player_PushWall(Player* this, PlayState* play);
+void Player_PullWall(Player* this, PlayState* play);
 void Player_GrabLedge(Player* this, PlayState* play);
 void Player_ClimbOntoLedge(Player* this, PlayState* play);
 void func_8084BF1C(Player* this, PlayState* play);
@@ -1337,7 +1337,7 @@ BAD_RETURN(s32) Player_StopMovement(Player* this) {
     this->linearVelocity = 0.0f;
 }
 
-// return type can't be void due to regalloc in func_8083F72C
+// return type can't be void due to regalloc in Player_BeginGrabPushPullWall
 BAD_RETURN(s32) Player_ClearAttentionModeAndStopMoving(Player* this) {
     Player_StopMovement(this);
     this->attentionMode = PLAYER_ATTENTIONMODE_NONE;
@@ -3358,7 +3358,7 @@ static s32 (*sSubActions[])(Player* this, PlayState* play) = {
     Player_SetupGetItemOrHoldBehavior, // 2
     Player_SetupMountHorse,            // 3
     Player_SetupSpeakOrCheck,          // 4
-    Player_SetupGrabPushPullWall,      // 5
+    Player_SetupBeginGrabPushPullWall,      // 5
     Player_SetupRollOrPutAway,         // 6
     Player_SetupMeleeWeaponAttack,     // 7
     Player_SetupStartChargeSpinAttack, // 8
@@ -4363,17 +4363,17 @@ Actor* Player_SpawnFairy(PlayState* play, Player* this, Vec3f* playerPos, Vec3f*
     return Actor_Spawn(&play->actorCtx, play, ACTOR_EN_ELF, pos.x, pos.y, pos.z, 0, 0, 0, type);
 }
 
-f32 Player_RaycastFloorWithOffset(PlayState* play, Player* this, Vec3f* posOffset, Vec3f* pos, CollisionPoly** colPoly, s32* bgId) {
-    Player_GetWorldPosRelativeToPlayer(this, &this->actor.world.pos, posOffset, pos);
+f32 Player_RaycastFloorWithOffset(PlayState* play, Player* this, Vec3f* posOffset, Vec3f* raycastPos, CollisionPoly** colPoly, s32* bgId) {
+    Player_GetWorldPosRelativeToPlayer(this, &this->actor.world.pos, posOffset, raycastPos);
 
-    return BgCheck_EntityRaycastFloor3(&play->colCtx, colPoly, bgId, pos);
+    return BgCheck_EntityRaycastFloor3(&play->colCtx, colPoly, bgId, raycastPos);
 }
 
-f32 Player_RaycastFloorWithOffset2(PlayState* play, Player* this, Vec3f* arg2, Vec3f* arg3) {
-    CollisionPoly* sp24;
-    s32 sp20;
+f32 Player_RaycastFloorWithOffset2(PlayState* play, Player* this, Vec3f* posOffset, Vec3f* raycastPos) {
+    CollisionPoly* colPoly;
+    s32 polyBgId;
 
-    return Player_RaycastFloorWithOffset(play, this, arg2, arg3, &sp24, &sp20);
+    return Player_RaycastFloorWithOffset(play, this, posOffset, raycastPos, &colPoly, &polyBgId);
 }
 
 s32 Player_WallLineTestWithOffset(PlayState* play, Player* this, Vec3f* posOffset, CollisionPoly** wallPoly, s32* bgId, Vec3f* posResult) {
@@ -4680,8 +4680,8 @@ void Player_SetupRideHorse(PlayState* play, Player* this) {
     Player_SetActionFuncPreserveMoveFlags(play, this, Player_RideHorse, 0);
 }
 
-void func_8083A388(PlayState* play, Player* this) {
-    Player_SetActionFunc(play, this, func_8084B78C, 0);
+void Player_SetupGrabPushPullWall(PlayState* play, Player* this) {
+    Player_SetActionFunc(play, this, Player_GrabPushPullWall, 0);
 }
 
 void Player_SetupClimbDownFromLedge(PlayState* play, Player* this) {
@@ -6510,44 +6510,45 @@ s32 func_8083F0C8(Player* this, PlayState* play, u32 arg2) {
     return 0;
 }
 
-s32 func_8083F360(PlayState* play, Player* this, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
+s32 Player_SetPositionAndYawOnClimbWall(PlayState* play, Player* this, f32 yOffset, f32 xzDistToWall, f32 xzCheckBScale, f32 xzCheckAScale) {
     CollisionPoly* wallPoly;
-    s32 sp78;
-    Vec3f sp6C;
-    Vec3f sp60;
-    Vec3f sp54;
+    s32 wallBgId;
+    Vec3f checkPosA;
+    Vec3f checkPosB;
+    Vec3f posResult;
     f32 yawCos;
     f32 yawSin;
-    s32 temp;
+    s32 yawTarget;
     f32 wallPolyNormalX;
     f32 wallPolyNormalZ;
 
     yawCos = Math_CosS(this->actor.shape.rot.y);
     yawSin = Math_SinS(this->actor.shape.rot.y);
 
-    sp6C.x = this->actor.world.pos.x + (arg4 * yawSin);
-    sp6C.z = this->actor.world.pos.z + (arg4 * yawCos);
-    sp60.x = this->actor.world.pos.x + (arg3 * yawSin);
-    sp60.z = this->actor.world.pos.z + (arg3 * yawCos);
-    sp60.y = sp6C.y = this->actor.world.pos.y + arg1;
+    checkPosA.x = this->actor.world.pos.x + (xzCheckAScale * yawSin);
+    checkPosA.z = this->actor.world.pos.z + (xzCheckAScale * yawCos);
+    checkPosB.x = this->actor.world.pos.x + (xzCheckBScale * yawSin);
+    checkPosB.z = this->actor.world.pos.z + (xzCheckBScale * yawCos);
+    checkPosB.y = checkPosA.y = this->actor.world.pos.y + yOffset;
 
-    if (BgCheck_EntityLineTest1(&play->colCtx, &sp6C, &sp60, &sp54, &this->actor.wallPoly, true, false, false, true,
-                                &sp78)) {
+    if (BgCheck_EntityLineTest1(&play->colCtx, &checkPosA, &checkPosB, &posResult, &this->actor.wallPoly, true, false, false, true,
+                                &wallBgId)) {
+
         wallPoly = this->actor.wallPoly;
 
         this->actor.bgCheckFlags |= BGCHECKFLAG_PLAYER_WALL_INTERACT;
-        this->actor.wallBgId = sp78;
+        this->actor.wallBgId = wallBgId;
 
-        sTouchedWallFlags = func_80041DB8(&play->colCtx, wallPoly, sp78);
+        sTouchedWallFlags = func_80041DB8(&play->colCtx, wallPoly, wallBgId);
 
         wallPolyNormalX = COLPOLY_GET_NORMAL(wallPoly->normal.x);
         wallPolyNormalZ = COLPOLY_GET_NORMAL(wallPoly->normal.z);
-        temp = Math_Atan2S(-wallPolyNormalZ, -wallPolyNormalX);
-        Math_ScaledStepToS(&this->actor.shape.rot.y, temp, 800);
+        yawTarget = Math_Atan2S(-wallPolyNormalZ, -wallPolyNormalX);
+        Math_ScaledStepToS(&this->actor.shape.rot.y, yawTarget, 800);
 
         this->currentYaw = this->actor.shape.rot.y;
-        this->actor.world.pos.x = sp54.x - (Math_SinS(this->actor.shape.rot.y) * arg2);
-        this->actor.world.pos.z = sp54.z - (Math_CosS(this->actor.shape.rot.y) * arg2);
+        this->actor.world.pos.x = posResult.x - (Math_SinS(this->actor.shape.rot.y) * xzDistToWall);
+        this->actor.world.pos.z = posResult.z - (Math_CosS(this->actor.shape.rot.y) * xzDistToWall);
 
         return 1;
     }
@@ -6557,8 +6558,8 @@ s32 func_8083F360(PlayState* play, Player* this, f32 arg1, f32 arg2, f32 arg3, f
     return 0;
 }
 
-s32 func_8083F524(PlayState* play, Player* this) {
-    return func_8083F360(play, this, 26.0f, this->ageProperties->wallCheckRadius + 5.0f, 30.0f, 0.0f);
+s32 Player_PushPullSetPositionAndYaw(PlayState* play, Player* this) {
+    return Player_SetPositionAndYawOnClimbWall(play, this, 26.0f, this->ageProperties->wallCheckRadius + 5.0f, 30.0f, 0.0f);
 }
 
 s32 func_8083F570(Player* this, PlayState* play) {
@@ -6601,9 +6602,9 @@ s32 func_8083F570(Player* this, PlayState* play) {
     return 0;
 }
 
-void func_8083F72C(Player* this, LinkAnimationHeader* anim, PlayState* play) {
-    if (!Player_SetupMiniCsFunc(play, this, func_8083A388)) {
-        Player_SetActionFunc(play, this, func_8084B78C, 0);
+void Player_BeginGrabPushPullWall(Player* this, LinkAnimationHeader* anim, PlayState* play) {
+    if (!Player_SetupMiniCsFunc(play, this, Player_SetupGrabPushPullWall)) {
+        Player_SetActionFunc(play, this, Player_GrabPushPullWall, 0);
     }
 
     Player_PlayAnimOnce(play, this, anim);
@@ -6612,7 +6613,7 @@ void func_8083F72C(Player* this, LinkAnimationHeader* anim, PlayState* play) {
     this->actor.shape.rot.y = this->currentYaw = this->actor.wallYaw + 0x8000;
 }
 
-s32 Player_SetupGrabPushPullWall(Player* this, PlayState* play) {
+s32 Player_SetupBeginGrabPushPullWall(Player* this, PlayState* play) {
     DynaPolyActor* wallPolyActor;
 
     if (!(this->stateFlags1 & PLAYER_STATE1_HOLDING_ACTOR) && (this->actor.bgCheckFlags & BGCHECKFLAG_PLAYER_WALL_INTERACT) &&
@@ -6653,7 +6654,7 @@ s32 Player_SetupGrabPushPullWall(Player* this, PlayState* play) {
                     this->unk_3C4 = NULL;
                 }
 
-                func_8083F72C(this, &gPlayerAnim_0030F8, play);
+                Player_BeginGrabPushPullWall(this, &gPlayerAnim_0030F8, play);
 
                 return 1;
             }
@@ -6663,7 +6664,7 @@ s32 Player_SetupGrabPushPullWall(Player* this, PlayState* play) {
     return 0;
 }
 
-s32 func_8083F9D0(PlayState* play, Player* this) {
+s32 Player_SetupPushPullWallIdle(PlayState* play, Player* this) {
     if ((this->actor.bgCheckFlags & BGCHECKFLAG_PLAYER_WALL_INTERACT) &&
         ((this->stateFlags2 & PLAYER_STATE2_MOVING_PUSH_PULL_WALL) || CHECK_BTN_ALL(sControlInput->cur.button, BTN_A))) {
         DynaPolyActor* wallPolyActor = NULL;
@@ -6687,14 +6688,14 @@ s32 func_8083F9D0(PlayState* play, Player* this) {
     return 1;
 }
 
-void func_8083FAB8(Player* this, PlayState* play) {
-    Player_SetActionFunc(play, this, func_8084B898, 0);
+void Player_SetupPushWall(Player* this, PlayState* play) {
+    Player_SetActionFunc(play, this, Player_PushWall, 0);
     this->stateFlags2 |= PLAYER_STATE2_MOVING_PUSH_PULL_WALL;
     Player_PlayAnimOnce(play, this, &gPlayerAnim_0030F0);
 }
 
-void func_8083FB14(Player* this, PlayState* play) {
-    Player_SetActionFunc(play, this, func_8084B9E4, 0);
+void Player_SetupPullWall(Player* this, PlayState* play) {
+    Player_SetActionFunc(play, this, Player_PullWall, 0);
     this->stateFlags2 |= PLAYER_STATE2_MOVING_PUSH_PULL_WALL;
     Player_PlayAnimOnce(play, this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_END_PULL_OBJECT, this->modelAnimType));
 }
@@ -6773,15 +6774,15 @@ s32 func_8083FD78(Player* this, f32* arg1, s16* arg2, PlayState* play) {
     return 0;
 }
 
-s32 func_8083FFB8(Player* this, f32* arg1, s16* arg2) {
-    s16 temp1 = *arg2 - this->actor.shape.rot.y;
-    u16 temp2 = ABS(temp1);
-    f32 temp3 = Math_CosS(temp2);
+s32 Player_GetPushPullDirection(Player* this, f32* targetVelocity, s16* targetYaw) {
+    s16 yawDiff = *targetYaw - this->actor.shape.rot.y;
+    u16 absYawDiff = ABS(yawDiff);
+    f32 cos = Math_CosS(absYawDiff);
 
-    *arg1 *= temp3;
+    *targetVelocity *= cos;
 
-    if (*arg1 != 0.0f) {
-        if (temp3 > 0) {
+    if (*targetVelocity != 0.0f) {
+        if (cos > 0) {
             return 1;
         } else {
             return -1;
@@ -10237,34 +10238,6 @@ static f32 sFloorConveyorSpeeds[] = { 0.5f, 1.0f, 3.0f };
 void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     s32 pad;
 
-    // // TESTING
-
-    // GfxPrint printer;
-    // Gfx* gfx;
-
-    // OPEN_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
-
-    // gfx = POLY_OPA_DISP + 1;
-    // gSPDisplayList(OVERLAY_DISP++, gfx);
-
-    // GfxPrint_Init(&printer);
-    // GfxPrint_Open(&printer, gfx);
-
-    // GfxPrint_SetColor(&printer, 255, 0, 255, 255);
-    // GfxPrint_SetPos(&printer, 10, 10);
-    // GfxPrint_Printf(&printer, "func: %d", this->fpsItemType);
-
-    // gfx = GfxPrint_Close(&printer);
-    // GfxPrint_Destroy(&printer);
-
-    // gSPEndDisplayList(gfx++);
-    // gSPBranchList(POLY_OPA_DISP, gfx);
-    // POLY_OPA_DISP = gfx;
-
-    // CLOSE_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
-
-    // // END TESTING
-
     sControlInput = input;
 
     if (this->unk_A86 < 0) {
@@ -11154,22 +11127,22 @@ void func_8084B530(Player* this, PlayState* play) {
     }
 }
 
-void func_8084B78C(Player* this, PlayState* play) {
+void Player_GrabPushPullWall(Player* this, PlayState* play) {
     f32 targetVelocity;
     s16 targetYaw;
-    s32 temp;
+    s32 pushPullDir;
 
     this->stateFlags2 |= PLAYER_STATE2_CAN_GRAB_PUSH_PULL_WALL | PLAYER_STATE2_ALWAYS_DISABLE_MOVE_ROTATION | PLAYER_STATE2_ENABLE_PUSH_PULL_CAM;
-    func_8083F524(play, this);
+    Player_PushPullSetPositionAndYaw(play, this);
 
     if (LinkAnimation_Update(play, &this->skelAnime)) {
-        if (!func_8083F9D0(play, this)) {
+        if (!Player_SetupPushPullWallIdle(play, this)) {
             Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
-            temp = func_8083FFB8(this, &targetVelocity, &targetYaw);
-            if (temp > 0) {
-                func_8083FAB8(this, play);
-            } else if (temp < 0) {
-                func_8083FB14(this, play);
+            pushPullDir = Player_GetPushPullDirection(this, &targetVelocity, &targetYaw);
+            if (pushPullDir > 0) {
+                Player_SetupPushWall(this, play);
+            } else if (pushPullDir < 0) {
+                Player_SetupPullWall(this, play);
             }
         }
     }
@@ -11190,10 +11163,10 @@ static PlayerAnimSfxEntry sPushPullWallAnimSfx[] = {
     { NA_SE_PL_SLIP, -0x1015 },
 };
 
-void func_8084B898(Player* this, PlayState* play) {
+void Player_PushWall(Player* this, PlayState* play) {
     f32 targetVelocity;
     s16 targetYaw;
-    s32 temp;
+    s32 pushPullDir;
 
     this->stateFlags2 |= PLAYER_STATE2_CAN_GRAB_PUSH_PULL_WALL | PLAYER_STATE2_ALWAYS_DISABLE_MOVE_ROTATION | PLAYER_STATE2_ENABLE_PUSH_PULL_CAM;
 
@@ -11206,15 +11179,15 @@ void func_8084B898(Player* this, PlayState* play) {
     }
 
     Player_PlayAnimSfx(this, sPushPullWallAnimSfx);
-    func_8083F524(play, this);
+    Player_PushPullSetPositionAndYaw(play, this);
 
-    if (!func_8083F9D0(play, this)) {
+    if (!Player_SetupPushPullWallIdle(play, this)) {
         Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
-        temp = func_8083FFB8(this, &targetVelocity, &targetYaw);
-        if (temp < 0) {
-            func_8083FB14(this, play);
-        } else if (temp == 0) {
-            func_8083F72C(this, &gPlayerAnim_0030E0, play);
+        pushPullDir = Player_GetPushPullDirection(this, &targetVelocity, &targetYaw);
+        if (pushPullDir < 0) {
+            Player_SetupPullWall(this, play);
+        } else if (pushPullDir == 0) {
+            Player_BeginGrabPushPullWall(this, &gPlayerAnim_0030E0, play);
         } else {
             this->stateFlags2 |= PLAYER_STATE2_MOVING_PUSH_PULL_WALL;
         }
@@ -11231,19 +11204,19 @@ static PlayerAnimSfxEntry sPushPullWallAnim2Sfx[] = {
     { NA_SE_PL_SLIP, -0x1018 },
 };
 
-static Vec3f D_80854880 = { 0.0f, 26.0f, -40.0f };
+static Vec3f sPullWallRaycastOffset = { 0.0f, 26.0f, -40.0f };
 
-void func_8084B9E4(Player* this, PlayState* play) {
+void Player_PullWall(Player* this, PlayState* play) {
     LinkAnimationHeader* anim;
     f32 targetVelocity;
     s16 targetYaw;
-    s32 temp1;
-    Vec3f sp5C;
-    f32 temp2;
-    CollisionPoly* sp54;
-    s32 sp50;
-    Vec3f sp44;
-    Vec3f sp38;
+    s32 pushPullDir;
+    Vec3f raycastPos;
+    f32 floorY;
+    CollisionPoly* colPoly;
+    s32 polyBgId;
+    Vec3f lineCheckPos;
+    Vec3f posResult;
 
     anim = GET_PLAYER_ANIM(PLAYER_ANIMGROUP_PULL_OBJECT, this->modelAnimType);
     this->stateFlags2 |= PLAYER_STATE2_CAN_GRAB_PUSH_PULL_WALL | PLAYER_STATE2_ALWAYS_DISABLE_MOVE_ROTATION | PLAYER_STATE2_ENABLE_PUSH_PULL_CAM;
@@ -11260,27 +11233,27 @@ void func_8084B9E4(Player* this, PlayState* play) {
         }
     }
 
-    func_8083F524(play, this);
+    Player_PushPullSetPositionAndYaw(play, this);
 
-    if (!func_8083F9D0(play, this)) {
+    if (!Player_SetupPushPullWallIdle(play, this)) {
         Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
-        temp1 = func_8083FFB8(this, &targetVelocity, &targetYaw);
-        if (temp1 > 0) {
-            func_8083FAB8(this, play);
-        } else if (temp1 == 0) {
-            func_8083F72C(this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_PUSH_OBJECT, this->modelAnimType), play);
+        pushPullDir = Player_GetPushPullDirection(this, &targetVelocity, &targetYaw);
+        if (pushPullDir > 0) {
+            Player_SetupPushWall(this, play);
+        } else if (pushPullDir == 0) {
+            Player_BeginGrabPushPullWall(this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_PUSH_OBJECT, this->modelAnimType), play);
         } else {
             this->stateFlags2 |= PLAYER_STATE2_MOVING_PUSH_PULL_WALL;
         }
     }
 
     if (this->stateFlags2 & PLAYER_STATE2_MOVING_PUSH_PULL_WALL) {
-        temp2 = Player_RaycastFloorWithOffset2(play, this, &D_80854880, &sp5C) - this->actor.world.pos.y;
-        if (fabsf(temp2) < 20.0f) {
-            sp44.x = this->actor.world.pos.x;
-            sp44.z = this->actor.world.pos.z;
-            sp44.y = sp5C.y;
-            if (!BgCheck_EntityLineTest1(&play->colCtx, &sp44, &sp5C, &sp38, &sp54, true, false, false, true, &sp50)) {
+        floorY = Player_RaycastFloorWithOffset2(play, this, &sPullWallRaycastOffset, &raycastPos) - this->actor.world.pos.y;
+        if (fabsf(floorY) < 20.0f) {
+            lineCheckPos.x = this->actor.world.pos.x;
+            lineCheckPos.z = this->actor.world.pos.z;
+            lineCheckPos.y = raycastPos.y;
+            if (!BgCheck_EntityLineTest1(&play->colCtx, &lineCheckPos, &raycastPos, &posResult, &colPoly, true, false, false, true, &polyBgId)) {
                 func_8084B840(play, this, -2.0f);
                 return;
             }
@@ -11419,7 +11392,7 @@ void func_8084BF1C(Player* this, PlayState* play) {
 
         Actor_UpdateBgCheckInfo(play, &this->actor, 26.0f, 6.0f, this->ageProperties->ceilingCheckHeight,
                                 UPDBGCHECKINFO_FLAG_0 | UPDBGCHECKINFO_FLAG_1 | UPDBGCHECKINFO_FLAG_2);
-        func_8083F360(play, this, 26.0f, this->ageProperties->unk_3C, 50.0f, -20.0f);
+        Player_SetPositionAndYawOnClimbWall(play, this, 26.0f, this->ageProperties->unk_3C, 50.0f, -20.0f);
     }
 
     if ((this->genericTimer < 0) || !func_8083FBC0(this, play)) {
