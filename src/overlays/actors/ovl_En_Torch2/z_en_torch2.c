@@ -574,7 +574,7 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
         if (!Actor_ApplyDamage(&this->actor)) {
             func_800F5B58();
             this->actor.flags &= ~(ACTOR_FLAG_0 | ACTOR_FLAG_2);
-            this->damageType = 2;
+            this->acHitEffect = 2;
             this->unk_8A4 = 6.0f;
             this->unk_8A8 = 6.0f;
             this->unk_8A0 = this->actor.colChkInfo.damage;
@@ -595,7 +595,7 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
             } else {
                 this->actor.flags &= ~ACTOR_FLAG_0;
                 this->unk_8A0 = this->actor.colChkInfo.damage;
-                this->damageType = 1;
+                this->acHitEffect = 1;
                 this->unk_8A8 = 6.0f;
                 this->unk_8A4 = 8.0f;
                 this->unk_8A2 = this->actor.yawTowardsPlayer + 0x8000;

@@ -560,14 +560,13 @@ typedef enum {
     /*  3 */ PLAYER_FPSITEM_HOOKSHOT_PRIMED
 } PlayerFpsItems;
 
-// For use OUTSIDE of Player_SetupDamage
 typedef enum {
-    /* 0 */ PLAYER_DAMAGETYPE_NONE,
-    /* 1 */ PLAYER_DAMAGETYPE_KNOCKBACK,
-    /* 2 */ PLAYER_DAMAGETYPE_DEFAULT,
-    /* 3 */ PLAYER_DAMAGETYPE_ELECTRIC,
-    /* 4 */ PLAYER_DAMAGETYPE_ICE
-} PlayerDamageTypes;
+    /* 0 */ PLAYER_DMGREACTION_NONE,
+    /* 1 */ PLAYER_DMGREACTION_KNOCKBACK,
+    /* 2 */ PLAYER_DMGREACTION_HOP,
+    /* 3 */ PLAYER_DMGREACTION_FROZEN,
+    /* 4 */ PLAYER_DMGREACTION_ELECTRIC_SHOCKED
+} PlayerDamageReaction;
 
 #define PLAYER_ANIMSFXFLAGS_0 (1 << 11) // 0x0800
 #define PLAYER_ANIMSFXFLAGS_1 (1 << 12) // 0x1000
@@ -887,7 +886,7 @@ typedef struct Player {
     /* 0x089C */ s16        unk_89C;
     /* 0x089E */ u16        moveSfxType;
     /* 0x08A0 */ u8         unk_8A0;
-    /* 0x08A1 */ u8         damageType;
+    /* 0x08A1 */ u8         acHitEffect;
     /* 0x08A2 */ s16        unk_8A2;
     /* 0x08A4 */ f32        unk_8A4;
     /* 0x08A8 */ f32        unk_8A8;
@@ -912,8 +911,6 @@ typedef struct Player {
     /* 0x0A86 */ s8         unk_A86;
     /* 0x0A87 */ u8         unk_A87;
     /* 0x0A88 */ Vec3f      prevWaistPos; // previous body part 0 position
-    // TESTING
-    s8 spinAttackFunc;
 } Player; // size = 0xA94
 
 #endif

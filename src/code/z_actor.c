@@ -1662,11 +1662,11 @@ s32 Actor_NotMounted(PlayState* play, Actor* horse) {
     }
 }
 
-void func_8002F698(PlayState* play, Actor* actor, f32 arg2, s16 arg3, f32 arg4, u32 damageType, u32 arg6) {
+void func_8002F698(PlayState* play, Actor* actor, f32 arg2, s16 arg3, f32 arg4, u32 acHitEffect, u32 arg6) {
     Player* player = GET_PLAYER(play);
 
     player->unk_8A0 = arg6;
-    player->damageType = damageType;
+    player->acHitEffect = acHitEffect;
     player->unk_8A2 = arg3;
     player->unk_8A4 = arg2;
     player->unk_8A8 = arg4;
