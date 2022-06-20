@@ -501,8 +501,8 @@ s32 Player_InCsMode(PlayState* play) {
     return Player_InBlockingCsMode(play, this) || (this->attentionMode == PLAYER_ATTENTIONMODE_ITEM_CUTSCENE);
 }
 
-s32 Player_IsTargeting(Player* this) {
-    return (this->stateFlags1 & PLAYER_STATE1_TARGETING);
+s32 Player_IsZTargetingEnemy(Player* this) {
+    return (this->stateFlags1 & PLAYER_STATE1_Z_TARGETING_ENEMY);
 }
 
 s32 Player_IsChildWithHylianShield(Player* this) {
@@ -599,9 +599,9 @@ void Player_UpdateBottleHeld(PlayState* play, Player* this, s32 item, s32 action
     this->itemActionParam = actionParam;
 }
 
-void Player_ForceDisableTargeting(Player* this) {
+void Player_ForceDisableZTargeting(Player* this) {
     this->targetActor = NULL;
-    this->stateFlags2 &= ~PLAYER_STATE2_USING_SWITCH_TARGETING;
+    this->stateFlags2 &= ~PLAYER_STATE2_USING_SWITCH_Z_TARGETING;
 }
 
 void func_8008EE08(Player* this) {
@@ -609,13 +609,13 @@ void func_8008EE08(Player* this) {
         (this->stateFlags1 & (PLAYER_STATE1_CLIMBING | PLAYER_STATE1_RIDING_HORSE | PLAYER_STATE1_SWIMMING)) ||
         (!(this->stateFlags1 & (PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALLING)) &&
          ((this->actor.world.pos.y - this->actor.floorHeight) < 100.0f))) {
-        this->stateFlags1 &= ~(PLAYER_STATE1_UNUSED_TARGETING_FLAG | PLAYER_STATE1_FORCE_STRAFING | PLAYER_STATE1_Z_PARALLEL_MODE | PLAYER_STATE1_JUMPING |
-                               PLAYER_STATE1_FREEFALLING | PLAYER_STATE1_UNK_Z_PARALLEL_STATE);
+        this->stateFlags1 &= ~(PLAYER_STATE1_UNUSED_Z_TARGETING_FLAG | PLAYER_STATE1_FORCE_STRAFING | PLAYER_STATE1_Z_TARGETING_PASSIVE | PLAYER_STATE1_JUMPING |
+                               PLAYER_STATE1_FREEFALLING | PLAYER_STATE1_30);
     } else if (!(this->stateFlags1 & (PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALLING | PLAYER_STATE1_CLIMBING))) {
         this->stateFlags1 |= PLAYER_STATE1_FREEFALLING;
     }
 
-    Player_ForceDisableTargeting(this);
+    Player_ForceDisableZTargeting(this);
 }
 
 void func_8008EEAC(PlayState* play, Actor* actor) {

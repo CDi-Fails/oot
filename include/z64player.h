@@ -575,6 +575,7 @@ typedef enum {
     /* 3 */ PLAYER_DMGEFFECT_ELECTRIC_KNOCKBACK
 } PlayerDamageEffect;
 
+// Used in enemy colliders
 typedef enum {
     /* 0 */ PLAYER_HITEFFECTAC_DEFAULT,
     /* 1 */ PLAYER_HITEFFECTAC_FIRE,
@@ -587,6 +588,13 @@ typedef enum {
     /* 0 */ PLAYER_HITEFFECTAT_DEFAULT,
     /* 1 */ PLAYER_HITEFFECTAT_ELECTRIC
 } PlayerHitEffectAT;
+
+typedef enum {
+    /* -1 */ PLAYER_HURTFLOORTYPE_NONE = -1,
+    /*  0 */ PLAYER_HURTFLOORTYPE_DEFAULT,
+    /*  1 */ PLAYER_HURTFLOORTYPE_FIRE,
+    /*  2 */ PLAYER_HURTFLOORTYPE_MAX
+} PlayerHurtFloorType;
 
 #define PLAYER_ANIMSFXFLAGS_0 (1 << 11) // 0x0800
 #define PLAYER_ANIMSFXFLAGS_1 (1 << 12) // 0x1000
@@ -663,7 +671,7 @@ typedef struct {
 #define PLAYER_STATE1_SWINGING_BOTTLE (1 << 1)
 #define PLAYER_STATE1_END_HOOKSHOT_MOVE (1 << 2)
 #define PLAYER_STATE1_AIMING_FPS_ITEM (1 << 3)
-#define PLAYER_STATE1_TARGETING (1 << 4)
+#define PLAYER_STATE1_Z_TARGETING_ENEMY (1 << 4)
 #define PLAYER_STATE1_INPUT_DISABLED (1 << 5)
 #define PLAYER_STATE1_TALKING (1 << 6)
 #define PLAYER_STATE1_IN_DEATH_CUTSCENE (1 << 7)
@@ -674,9 +682,9 @@ typedef struct {
 #define PLAYER_STATE1_CHARGING_SPIN_ATTACK (1 << 12)
 #define PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP (1 << 13)
 #define PLAYER_STATE1_CLIMBING_ONTO_LEDGE (1 << 14)
-#define PLAYER_STATE1_UNUSED_TARGETING_FLAG (1 << 15)
+#define PLAYER_STATE1_UNUSED_Z_TARGETING_FLAG (1 << 15)
 #define PLAYER_STATE1_FORCE_STRAFING (1 << 16)
-#define PLAYER_STATE1_Z_PARALLEL_MODE (1 << 17)
+#define PLAYER_STATE1_Z_TARGETING_PASSIVE (1 << 17)
 #define PLAYER_STATE1_JUMPING (1 << 18)
 #define PLAYER_STATE1_FREEFALLING (1 << 19)
 #define PLAYER_STATE1_IN_FIRST_PERSON_MODE (1 << 20)
@@ -689,7 +697,7 @@ typedef struct {
 #define PLAYER_STATE1_SWIMMING (1 << 27)
 #define PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE (1 << 28)
 #define PLAYER_STATE1_IN_CUTSCENE (1 << 29)
-#define PLAYER_STATE1_UNK_Z_PARALLEL_STATE (1 << 30)
+#define PLAYER_STATE1_30 (1 << 30)
 #define PLAYER_STATE1_FALLING_INTO_GROTTO_OR_VOID (1 << 31)
 
 #define PLAYER_STATE2_CAN_GRAB_PUSH_PULL_WALL (1 << 0)
@@ -697,7 +705,7 @@ typedef struct {
 #define PLAYER_STATE2_CAN_CLIMB_PUSH_PULL_WALL (1 << 2)
 #define PLAYER_STATE2_MAKING_REACTABLE_NOISE (1 << 3)
 #define PLAYER_STATE2_MOVING_PUSH_PULL_WALL (1 << 4)
-#define PLAYER_STATE2_DISABLE_MOVE_ROTATION_WHILE_TARGETING (1 << 5)
+#define PLAYER_STATE2_DISABLE_MOVE_ROTATION_WHILE_Z_TARGETING (1 << 5)
 #define PLAYER_STATE2_ALWAYS_DISABLE_MOVE_ROTATION (1 << 6)
 #define PLAYER_STATE2_RESTRAINED_BY_ENEMY (1 << 7)
 #define PLAYER_STATE2_ENABLE_PUSH_PULL_CAM (1 << 8)
@@ -705,7 +713,7 @@ typedef struct {
 #define PLAYER_STATE2_DIVING (1 << 10)
 #define PLAYER_STATE2_ENABLE_DIVE_CAMERA_AND_TIMER (1 << 11)
 #define PLAYER_STATE2_IDLE_WHILE_CLIMBING (1 << 12)
-#define PLAYER_STATE2_USING_SWITCH_TARGETING (1 << 13)
+#define PLAYER_STATE2_USING_SWITCH_Z_TARGETING (1 << 13)
 #define PLAYER_STATE2_FROZEN_IN_ICE (1 << 14)
 #define PLAYER_STATE2_PAUSE_MOST_UPDATING (1 << 15)
 #define PLAYER_STATE2_CAN_ENTER_CRAWLSPACE (1 << 16)
@@ -921,9 +929,9 @@ typedef struct Player {
     /* 0x0A73 */ u8         unk_A73;
     /* 0x0A74 */ PlayerMiniCsFunc miniCsFunc;
     /* 0x0A78 */ s8         invincibilityTimer; // prevents damage when nonzero (positive = visible, counts towards zero each frame)
-    /* 0x0A79 */ u8         unk_A79;
+    /* 0x0A79 */ u8         hurtFloorTimer;
     /* 0x0A7A */ u8         floorProperty;
-    /* 0x0A7B */ u8         unk_A7B;
+    /* 0x0A7B */ u8         prevFloorSpecialProperty;
     /* 0x0A7C */ f32        analogStickDistance;
     /* 0x0A80 */ s16        analogStickAngle;
     /* 0x0A82 */ u16        prevMoveSfxType;

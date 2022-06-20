@@ -2130,7 +2130,7 @@ void Actor_UpdateAll(PlayState* play, ActorContext* actorCtx) {
 
     if ((actor != NULL) && (actor->update == NULL)) {
         actor = NULL;
-        Player_ForceDisableTargeting(player);
+        Player_ForceDisableZTargeting(player);
     }
 
     if ((actor == NULL) || (player->targetSwitchTimer < 5)) {
@@ -2871,7 +2871,7 @@ Actor* Actor_Delete(ActorContext* actorCtx, Actor* actor, PlayState* play) {
     }
 
     if ((player != NULL) && (actor == player->targetActor)) {
-        Player_ForceDisableTargeting(player);
+        Player_ForceDisableZTargeting(player);
         Camera_ChangeMode(Play_GetCamera(play, Play_GetActiveCamId(play)), 0);
     }
 
@@ -3429,12 +3429,12 @@ s16 Actor_TestFloorInDirection(Actor* actor, PlayState* play, f32 distance, s16 
 }
 
 /**
- * Returns true if the player is targeting the provided actor
+ * Returns true if the player is ztargeting the provided enemy actor
  */
 s32 Actor_IsTargeted(PlayState* play, Actor* actor) {
     Player* player = GET_PLAYER(play);
 
-    if ((player->stateFlags1 & PLAYER_STATE1_TARGETING) && actor->isTargeted) {
+    if ((player->stateFlags1 & PLAYER_STATE1_Z_TARGETING_ENEMY) && actor->isTargeted) {
         return true;
     } else {
         return false;
@@ -3442,12 +3442,12 @@ s32 Actor_IsTargeted(PlayState* play, Actor* actor) {
 }
 
 /**
- * Returns true if the player is targeting an actor other than the provided actor
+ * Returns true if the player is ztargeting an enemy actor other than the provided enemy actor
  */
 s32 Actor_OtherIsTargeted(PlayState* play, Actor* actor) {
     Player* player = GET_PLAYER(play);
 
-    if ((player->stateFlags1 & PLAYER_STATE1_TARGETING) && !actor->isTargeted) {
+    if ((player->stateFlags1 & PLAYER_STATE1_Z_TARGETING_ENEMY) && !actor->isTargeted) {
         return true;
     } else {
         return false;
