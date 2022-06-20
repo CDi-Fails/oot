@@ -1216,7 +1216,7 @@ void EnZf_Slash(EnZf* this, PlayState* play) {
                     if (yawDiff > 16000) {
                         this->actor.world.rot.y = this->actor.yawTowardsPlayer;
                         func_80B483E4(this, play);
-                    } else if (player->stateFlags1 & (PLAYER_STATE1_Z_TARGETING_ENEMY | PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP | PLAYER_STATE1_CLIMBING_ONTO_LEDGE)) {
+                    } else if (player->stateFlags1 & (PLAYER_STATE1_Z_TARGETING_UNFRIENDLY | PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP | PLAYER_STATE1_CLIMBING_ONTO_LEDGE)) {
                         if (this->actor.isTargeted) {
                             EnZf_SetupSlash(this);
                         } else {

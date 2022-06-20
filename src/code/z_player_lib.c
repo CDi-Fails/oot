@@ -501,8 +501,8 @@ s32 Player_InCsMode(PlayState* play) {
     return Player_InBlockingCsMode(play, this) || (this->attentionMode == PLAYER_ATTENTIONMODE_ITEM_CUTSCENE);
 }
 
-s32 Player_IsZTargetingEnemy(Player* this) {
-    return (this->stateFlags1 & PLAYER_STATE1_Z_TARGETING_ENEMY);
+s32 Player_IsUnfriendlyZTargeting(Player* this) {
+    return (this->stateFlags1 & PLAYER_STATE1_Z_TARGETING_UNFRIENDLY);
 }
 
 s32 Player_IsChildWithHylianShield(Player* this) {
@@ -609,7 +609,7 @@ void func_8008EE08(Player* this) {
         (this->stateFlags1 & (PLAYER_STATE1_CLIMBING | PLAYER_STATE1_RIDING_HORSE | PLAYER_STATE1_SWIMMING)) ||
         (!(this->stateFlags1 & (PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALLING)) &&
          ((this->actor.world.pos.y - this->actor.floorHeight) < 100.0f))) {
-        this->stateFlags1 &= ~(PLAYER_STATE1_UNUSED_Z_TARGETING_FLAG | PLAYER_STATE1_FORCE_STRAFING | PLAYER_STATE1_Z_TARGETING_PASSIVE | PLAYER_STATE1_JUMPING |
+        this->stateFlags1 &= ~(PLAYER_STATE1_UNUSED_Z_TARGETING_FLAG | PLAYER_STATE1_FORCE_STRAFING | PLAYER_STATE1_Z_TARGETING_FRIENDLY | PLAYER_STATE1_JUMPING |
                                PLAYER_STATE1_FREEFALLING | PLAYER_STATE1_30);
     } else if (!(this->stateFlags1 & (PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALLING | PLAYER_STATE1_CLIMBING))) {
         this->stateFlags1 |= PLAYER_STATE1_FREEFALLING;

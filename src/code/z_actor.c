@@ -3434,7 +3434,7 @@ s16 Actor_TestFloorInDirection(Actor* actor, PlayState* play, f32 distance, s16 
 s32 Actor_IsTargeted(PlayState* play, Actor* actor) {
     Player* player = GET_PLAYER(play);
 
-    if ((player->stateFlags1 & PLAYER_STATE1_Z_TARGETING_ENEMY) && actor->isTargeted) {
+    if ((player->stateFlags1 & PLAYER_STATE1_Z_TARGETING_UNFRIENDLY) && actor->isTargeted) {
         return true;
     } else {
         return false;
@@ -3447,7 +3447,7 @@ s32 Actor_IsTargeted(PlayState* play, Actor* actor) {
 s32 Actor_OtherIsTargeted(PlayState* play, Actor* actor) {
     Player* player = GET_PLAYER(play);
 
-    if ((player->stateFlags1 & PLAYER_STATE1_Z_TARGETING_ENEMY) && !actor->isTargeted) {
+    if ((player->stateFlags1 & PLAYER_STATE1_Z_TARGETING_UNFRIENDLY) && !actor->isTargeted) {
         return true;
     } else {
         return false;

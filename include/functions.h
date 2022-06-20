@@ -1040,7 +1040,7 @@ s32 FrameAdvance_Update(FrameAdvanceContext* frameAdvCtx, Input* input);
 void Player_SetBootData(PlayState* play, Player* this);
 s32 Player_InBlockingCsMode(PlayState* play, Player* this);
 s32 Player_InCsMode(PlayState* play);
-s32 Player_IsZTargetingEnemy(Player* this);
+s32 Player_IsUnfriendlyZTargeting(Player* this);
 s32 Player_IsChildWithHylianShield(Player* this);
 s32 Player_ActionToModelGroup(Player* this, s32 actionParam);
 void Player_SetModelsForHoldingShield(Player* this);
