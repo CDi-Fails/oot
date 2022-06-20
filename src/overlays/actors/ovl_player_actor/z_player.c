@@ -3894,7 +3894,7 @@ s32 Player_UpdateDamage(Player* this, PlayState* play) {
             Player_PlayVoiceSfxForAge(this, NA_SE_VO_LI_TAKEN_AWAY);
             play->unk_11DE9 = true;
             func_80078884(NA_SE_OC_ABYSS);
-        } else if ((this->damageEffect != PLAYER_DMGEFFECT_NONE) && ((this->damageEffect >= PLAYER_DMGEFFECT_HOP) || (this->invincibilityTimer == 0))) {
+        } else if ((this->damageEffect != PLAYER_DMGEFFECT_NONE) && ((this->damageEffect >= PLAYER_DMGEFFECT_KNOCKBACK) || (this->invincibilityTimer == 0))) {
             u8 damageReactions[] = { PLAYER_DMGREACTION_HOP, PLAYER_DMGREACTION_KNOCKBACK, PLAYER_DMGREACTION_KNOCKBACK };
 
             Player_PlayFallSfxAndCheckBurning(this);
