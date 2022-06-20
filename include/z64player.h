@@ -570,8 +570,8 @@ typedef enum {
 
 typedef enum {
     /* 0 */ PLAYER_DMGEFFECT_NONE,
-    /* 1 */ PLAYER_DMGEFFECT_KNOCKBACK,
-    /* 2 */ PLAYER_DMGEFFECT_HOP,
+    /* 1 */ PLAYER_DMGEFFECT_HOP,
+    /* 2 */ PLAYER_DMGEFFECT_KNOCKBACK,
     /* 3 */ PLAYER_DMGEFFECT_ELECTRIC_KNOCKBACK
 } PlayerDamageEffect;
 
