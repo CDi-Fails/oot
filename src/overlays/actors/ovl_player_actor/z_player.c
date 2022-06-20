@@ -3836,7 +3836,7 @@ void Player_BeginBurning(Player* this) {
 }
 
 void Player_PlayFallSfxAndCheckBurning(Player* this) {
-    if (this->actor.colChkInfo.acHitEffect == 1) {
+    if (this->actor.colChkInfo.acHitEffect == PLAYER_HITEFFECTAC_FIRE) {
         Player_BeginBurning(this);
     }
     Player_PlayVoiceSfxForAge(this, NA_SE_VO_LI_FALL_L);
@@ -3894,17 +3894,17 @@ s32 Player_UpdateDamage(Player* this, PlayState* play) {
             Player_PlayVoiceSfxForAge(this, NA_SE_VO_LI_TAKEN_AWAY);
             play->unk_11DE9 = true;
             func_80078884(NA_SE_OC_ABYSS);
-        } else if ((this->damageEffect != PLAYER_DMGEFFECT_NONE) && ((this->damageEffect >= PLAYER_DMGEFFECT_FORCE_HOP) || (this->invincibilityTimer == 0))) {
-            u8 initialDmgReactions[] = { PLAYER_DMGREACTION_HOP, PLAYER_DMGREACTION_KNOCKBACK, PLAYER_DMGREACTION_KNOCKBACK };
+        } else if ((this->damageEffect != PLAYER_DMGEFFECT_NONE) && ((this->damageEffect >= PLAYER_DMGEFFECT_HOP) || (this->invincibilityTimer == 0))) {
+            u8 damageReactions[] = { PLAYER_DMGREACTION_HOP, PLAYER_DMGREACTION_KNOCKBACK, PLAYER_DMGREACTION_KNOCKBACK };
 
             Player_PlayFallSfxAndCheckBurning(this);
 
-            if (this->damageEffect == PLAYER_DMGEFFECT_ELECTRIC) {
+            if (this->damageEffect == PLAYER_DMGEFFECT_ELECTRIC_KNOCKBACK) {
                 this->shockTimer = 40;
             }
 
             this->actor.colChkInfo.damage += this->damageAmount;
-            Player_SetupDamage(play, this, initialDmgReactions[this->damageEffect - 1], this->knockbackVelXZ, this->knockbackVelY, this->damageYaw, 20);
+            Player_SetupDamage(play, this, damageReactions[this->damageEffect - 1], this->knockbackVelXZ, this->knockbackVelY, this->damageYaw, 20);
         } else {
             sp64 = (this->shieldQuad.base.acFlags & AC_BOUNCED) != 0;
 
@@ -3969,11 +3969,11 @@ s32 Player_UpdateDamage(Player* this, PlayState* play) {
 
                 if (this->stateFlags1 & PLAYER_STATE1_SWIMMING) {
                     damageReaction = PLAYER_DMGREACTION_DEFAULT;
-                } else if (this->actor.colChkInfo.acHitEffect == 2) {
+                } else if (this->actor.colChkInfo.acHitEffect == PLAYER_HITEFFECTAC_ICE) {
                     damageReaction = PLAYER_DMGREACTION_FROZEN;
-                } else if (this->actor.colChkInfo.acHitEffect == 3) {
+                } else if (this->actor.colChkInfo.acHitEffect == PLAYER_HITEFFECTAC_ELECTRIC) {
                     damageReaction = PLAYER_DMGREACTION_ELECTRIC_SHOCKED;
-                } else if (this->actor.colChkInfo.acHitEffect == 4) {
+                } else if (this->actor.colChkInfo.acHitEffect == PLAYER_HITEFFECTAC_POWERFUL_HIT) {
                     damageReaction = PLAYER_DMGREACTION_KNOCKBACK;
                 } else {
                     Player_PlayFallSfxAndCheckBurning(this);
@@ -7911,7 +7911,7 @@ s32 func_80842DF4(PlayState* play, Player* this) {
             if ((func_80842AC4(play, this) == 0) && (this->heldItemActionParam != PLAYER_AP_HAMMER)) {
                 func_80842B7C(play, this);
 
-                if (this->actor.colChkInfo.atHitEffect == 1) {
+                if (this->actor.colChkInfo.atHitEffect == PLAYER_HITEFFECTAT_ELECTRIC) {
                     this->actor.colChkInfo.damage = 8;
                     Player_SetupDamage(play, this, PLAYER_DMGREACTION_ELECTRIC_SHOCKED, 0.0f, 0.0f, this->actor.shape.rot.y, 20);
                     return 1;

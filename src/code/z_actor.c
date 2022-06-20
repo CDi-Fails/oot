@@ -1673,7 +1673,7 @@ void Actor_SetPlayerDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s1
 }
 
 void Actor_SetPlayerKnockbackDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw, f32 knockbackVelY, u32 damageAmount) {
-    Actor_SetPlayerDamage(play, actor, knockbackVelXZ, damageYaw, knockbackVelY, PLAYER_DMGEFFECT_FORCE_KNOCKBACK, damageAmount);
+    Actor_SetPlayerDamage(play, actor, knockbackVelXZ, damageYaw, knockbackVelY, PLAYER_DMGEFFECT_KNOCKBACK, damageAmount);
 }
 
 void Actor_SetPlayerKnockbackNoDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw, f32 knockbackVelY) {
@@ -1681,7 +1681,7 @@ void Actor_SetPlayerKnockbackNoDamage(PlayState* play, Actor* actor, f32 knockba
 }
 
 void Actor_SetPlayerHopDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw, f32 knockbackVelY, u32 damageAmount) {
-    Actor_SetPlayerDamage(play, actor, knockbackVelXZ, damageYaw, knockbackVelY, PLAYER_DMGEFFECT_FORCE_HOP, damageAmount);
+    Actor_SetPlayerDamage(play, actor, knockbackVelXZ, damageYaw, knockbackVelY, PLAYER_DMGEFFECT_HOP, damageAmount);
 }
 
 void Actor_SetPlayerHopNoDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw, f32 knockbackVelY) {
