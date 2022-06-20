@@ -1662,30 +1662,30 @@ s32 Actor_NotMounted(PlayState* play, Actor* horse) {
     }
 }
 
-void func_8002F698(PlayState* play, Actor* actor, f32 arg2, s16 arg3, f32 arg4, u32 acHitEffect, u32 arg6) {
+void Actor_SetPlayerDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw, f32 knockbackVelY, u32 damageEffect, u32 damageAmount) {
     Player* player = GET_PLAYER(play);
 
-    player->unk_8A0 = arg6;
-    player->acHitEffect = acHitEffect;
-    player->unk_8A2 = arg3;
-    player->unk_8A4 = arg2;
-    player->unk_8A8 = arg4;
+    player->damageAmount = damageAmount;
+    player->damageEffect = damageEffect;
+    player->damageYaw = damageYaw;
+    player->knockbackVelXZ = knockbackVelXZ;
+    player->knockbackVelY = knockbackVelY;
 }
 
-void func_8002F6D4(PlayState* play, Actor* actor, f32 arg2, s16 arg3, f32 arg4, u32 arg5) {
-    func_8002F698(play, actor, arg2, arg3, arg4, 2, arg5);
+void Actor_SetPlayerKnockbackDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw, f32 knockbackVelY, u32 damageAmount) {
+    Actor_SetPlayerDamage(play, actor, knockbackVelXZ, damageYaw, knockbackVelY, PLAYER_DMGEFFECT_FORCE_KNOCKBACK, damageAmount);
 }
 
-void func_8002F71C(PlayState* play, Actor* actor, f32 arg2, s16 arg3, f32 arg4) {
-    func_8002F6D4(play, actor, arg2, arg3, arg4, 0);
+void Actor_SetPlayerKnockbackNoDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw, f32 knockbackVelY) {
+    Actor_SetPlayerKnockbackDamage(play, actor, knockbackVelXZ, damageYaw, knockbackVelY, 0);
 }
 
-void func_8002F758(PlayState* play, Actor* actor, f32 arg2, s16 arg3, f32 arg4, u32 arg5) {
-    func_8002F698(play, actor, arg2, arg3, arg4, 1, arg5);
+void Actor_SetPlayerHopDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw, f32 knockbackVelY, u32 damageAmount) {
+    Actor_SetPlayerDamage(play, actor, knockbackVelXZ, damageYaw, knockbackVelY, PLAYER_DMGEFFECT_FORCE_HOP, damageAmount);
 }
 
-void func_8002F7A0(PlayState* play, Actor* actor, f32 arg2, s16 arg3, f32 arg4) {
-    func_8002F758(play, actor, arg2, arg3, arg4, 0);
+void Actor_SetPlayerHopNoDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw, f32 knockbackVelY) {
+    Actor_SetPlayerHopDamage(play, actor, knockbackVelXZ, damageYaw, knockbackVelY, 0);
 }
 
 void func_8002F7DC(Actor* actor, u16 sfxId) {

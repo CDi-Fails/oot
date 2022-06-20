@@ -561,12 +561,27 @@ typedef enum {
 } PlayerFpsItems;
 
 typedef enum {
-    /* 0 */ PLAYER_DMGREACTION_NONE,
+    /* 0 */ PLAYER_DMGREACTION_DEFAULT,
     /* 1 */ PLAYER_DMGREACTION_KNOCKBACK,
     /* 2 */ PLAYER_DMGREACTION_HOP,
     /* 3 */ PLAYER_DMGREACTION_FROZEN,
     /* 4 */ PLAYER_DMGREACTION_ELECTRIC_SHOCKED
 } PlayerDamageReaction;
+
+typedef enum {
+    /* 0 */ PLAYER_DMGEFFECT_NONE,
+    /* 1 */ PLAYER_DMGEFFECT_FORCE_KNOCKBACK,
+    /* 2 */ PLAYER_DMGEFFECT_FORCE_HOP,
+    /* 3 */ PLAYER_DMGEFFECT_ELECTRIC
+} PlayerDamageEffect;
+
+typedef enum {
+    /* 0 */ PLAYER_ACHITEFFECT_DEFAULT,
+    /* 1 */ PLAYER_ACHITEFFECT_KNOCKBACK,
+    /* 2 */ PLAYER_ACHITEFFECT_HOP,
+    /* 3 */ PLAYER_ACHITEFFECT_FROZEN,
+    /* 4 */ PLAYER_ACHITEFFECT_ELECTRIC_SHOCKED
+} PlayerAcHitEffect;
 
 #define PLAYER_ANIMSFXFLAGS_0 (1 << 11) // 0x0800
 #define PLAYER_ANIMSFXFLAGS_1 (1 << 12) // 0x1000
@@ -885,11 +900,11 @@ typedef struct Player {
     /* 0x089A */ s16        angleToFloorY;
     /* 0x089C */ s16        unk_89C;
     /* 0x089E */ u16        moveSfxType;
-    /* 0x08A0 */ u8         unk_8A0;
-    /* 0x08A1 */ u8         acHitEffect;
-    /* 0x08A2 */ s16        unk_8A2;
-    /* 0x08A4 */ f32        unk_8A4;
-    /* 0x08A8 */ f32        unk_8A8;
+    /* 0x08A0 */ u8         damageAmount;
+    /* 0x08A1 */ u8         damageEffect;
+    /* 0x08A2 */ s16        damageYaw;
+    /* 0x08A4 */ f32        knockbackVelXZ;
+    /* 0x08A8 */ f32        knockbackVelY;
     /* 0x08AC */ f32        pushedSpeed; // Pushing player, examples include water currents, floor conveyors, climbing sloped surfaces
     /* 0x08B0 */ s16        pushedYaw; // Yaw direction of player being pushed
     /* 0x08B4 */ WeaponInfo meleeWeaponInfo[3];

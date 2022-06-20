@@ -3894,17 +3894,17 @@ s32 Player_UpdateDamage(Player* this, PlayState* play) {
             Player_PlayVoiceSfxForAge(this, NA_SE_VO_LI_TAKEN_AWAY);
             play->unk_11DE9 = true;
             func_80078884(NA_SE_OC_ABYSS);
-        } else if ((this->acHitEffect != 0) && ((this->acHitEffect >= 2) || (this->invincibilityTimer == 0))) {
-            u8 damageReactions[] = { PLAYER_DMGREACTION_HOP, PLAYER_DMGREACTION_KNOCKBACK, PLAYER_DMGREACTION_KNOCKBACK };
+        } else if ((this->damageEffect != PLAYER_DMGEFFECT_NONE) && ((this->damageEffect >= PLAYER_DMGEFFECT_FORCE_HOP) || (this->invincibilityTimer == 0))) {
+            u8 initialDmgReactions[] = { PLAYER_DMGREACTION_HOP, PLAYER_DMGREACTION_KNOCKBACK, PLAYER_DMGREACTION_KNOCKBACK };
 
             Player_PlayFallSfxAndCheckBurning(this);
 
-            if (this->acHitEffect == 3) {
+            if (this->damageEffect == PLAYER_DMGEFFECT_ELECTRIC) {
                 this->shockTimer = 40;
             }
 
-            this->actor.colChkInfo.damage += this->unk_8A0;
-            Player_SetupDamage(play, this, damageReactions[this->acHitEffect - 1], this->unk_8A4, this->unk_8A8, this->unk_8A2, 20);
+            this->actor.colChkInfo.damage += this->damageAmount;
+            Player_SetupDamage(play, this, initialDmgReactions[this->damageEffect - 1], this->knockbackVelXZ, this->knockbackVelY, this->damageYaw, 20);
         } else {
             sp64 = (this->shieldQuad.base.acFlags & AC_BOUNCED) != 0;
 
@@ -3968,16 +3968,16 @@ s32 Player_UpdateDamage(Player* this, PlayState* play) {
                 }
 
                 if (this->stateFlags1 & PLAYER_STATE1_SWIMMING) {
-                    damageReaction = PLAYER_DMGREACTION_NONE;
+                    damageReaction = PLAYER_DMGREACTION_DEFAULT;
                 } else if (this->actor.colChkInfo.acHitEffect == 2) {
                     damageReaction = PLAYER_DMGREACTION_FROZEN;
                 } else if (this->actor.colChkInfo.acHitEffect == 3) {
                     damageReaction = PLAYER_DMGREACTION_ELECTRIC_SHOCKED;
                 } else if (this->actor.colChkInfo.acHitEffect == 4) {
-                    damageReaction = 1;
+                    damageReaction = PLAYER_DMGREACTION_KNOCKBACK;
                 } else {
                     Player_PlayFallSfxAndCheckBurning(this);
-                    damageReaction = PLAYER_DMGREACTION_NONE;
+                    damageReaction = PLAYER_DMGREACTION_DEFAULT;
                 }
 
                 Player_SetupDamage(play, this, damageReaction, 4.0f, 5.0f, Actor_WorldYawTowardActor(ac, &this->actor), 20);
@@ -3996,7 +3996,7 @@ s32 Player_UpdateDamage(Player* this, PlayState* play) {
                      ((this->currentTunic != PLAYER_TUNIC_GORON) || (this->unk_A79 >= D_808544F4[sp48])))) {
                     this->unk_A79 = 0;
                     this->actor.colChkInfo.damage = 4;
-                    Player_SetupDamage(play, this, 0, 4.0f, 5.0f, this->actor.shape.rot.y, 20);
+                    Player_SetupDamage(play, this, PLAYER_DMGREACTION_DEFAULT, 4.0f, 5.0f, this->actor.shape.rot.y, 20);
                 } else {
                     return 0;
                 }
@@ -8060,14 +8060,14 @@ void func_8084377C(Player* this, PlayState* play) {
 
     Player_RoundUpInvincibilityTimer(this);
 
-    if (!(this->stateFlags1 & PLAYER_STATE1_IN_CUTSCENE) && (this->genericTimer == 0) && (this->acHitEffect != 0)) {
-        s16 temp = this->actor.shape.rot.y - this->unk_8A2;
+    if (!(this->stateFlags1 & PLAYER_STATE1_IN_CUTSCENE) && (this->genericTimer == 0) && (this->damageEffect != 0)) {
+        s16 temp = this->actor.shape.rot.y - this->damageYaw;
 
-        this->currentYaw = this->actor.shape.rot.y = this->unk_8A2;
-        this->linearVelocity = this->unk_8A4;
+        this->currentYaw = this->actor.shape.rot.y = this->damageYaw;
+        this->linearVelocity = this->knockbackVelXZ;
 
         if (ABS(temp) > 0x4000) {
-            this->actor.shape.rot.y = this->unk_8A2 + 0x8000;
+            this->actor.shape.rot.y = this->damageYaw + 0x8000;
         }
 
         if (this->actor.velocity.y < 0.0f) {
@@ -8083,7 +8083,7 @@ void func_8084377C(Player* this, PlayState* play) {
                 Player_SetupStandStill(this, play);
             }
         } else if ((this->stateFlags1 & PLAYER_STATE1_IN_CUTSCENE) ||
-                   (!(this->cylinder.base.acFlags & AC_HIT) && (this->acHitEffect == 0))) {
+                   (!(this->cylinder.base.acFlags & AC_HIT) && (this->damageEffect == PLAYER_DMGEFFECT_NONE))) {
             if (this->stateFlags1 & PLAYER_STATE1_IN_CUTSCENE) {
                 this->genericTimer++;
             } else {
@@ -10253,7 +10253,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
 
     // GfxPrint_SetColor(&printer, 255, 0, 255, 255);
     // GfxPrint_SetPos(&printer, 10, 10);
-    // GfxPrint_Printf(&printer, "damageEffect: %d", this->acHitEffect);
+    // GfxPrint_Printf(&printer, "damageEffect: %d", this->damageEffect);
 
     // gfx = GfxPrint_Close(&printer);
     // GfxPrint_Destroy(&printer);
@@ -10603,7 +10603,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
         temp_f0 = this->actor.world.pos.y - this->actor.prevPos.y;
 
         this->doorType = PLAYER_DOORTYPE_NONE;
-        this->acHitEffect = 0;
+        this->damageEffect = PLAYER_DMGEFFECT_NONE;
         this->forcedTargetActor = NULL;
 
         phi_f12 =
