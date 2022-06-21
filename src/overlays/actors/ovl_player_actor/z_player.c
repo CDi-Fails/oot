@@ -2403,7 +2403,7 @@ s32 func_8083499C(Player* this, PlayState* play) {
 }
 
 s32 func_808349DC(Player* this, PlayState* play) {
-    if (Player_CanDefend(play, this)) {
+    if (Player_CanDefend(play, this) || func_8083499C(this, play)) {
         return 1;
     } else {
         return 0;
