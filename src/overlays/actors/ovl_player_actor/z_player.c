@@ -7109,7 +7109,7 @@ void Player_StandingStill(Player* this, PlayState* play) {
             Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.018f, play);
 
             if (targetVelocity != 0.0f) {
-                Player_SetupZTargetRunning(this, play, targetYaw);
+                // Player_SetupZTargetRunning(this, play, targetYaw);
                 return;
             }
 
