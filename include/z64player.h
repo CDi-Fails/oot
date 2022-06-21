@@ -739,7 +739,7 @@ typedef struct {
 #define PLAYER_STATE3_ENDING_MELEE_ATTACK (1 << 3)
 #define PLAYER_STATE3_CHECKING_FLOOR_AND_WATER_COLLISION (1 << 4)
 #define PLAYER_STATE3_FORCE_PULL_OCARINA (1 << 5)
-#define PLAYER_STATE3_RESTORE_NAYRUS_LOVE (1 << 6)
+#define PLAYER_STATE3_RESTORE_NAYRUS_LOVE (1 << 6) // Set by ocarina effects actors when destroyed to signal Nayru's Love may be restored (see `ACTOROVL_ALLOC_ABSOLUTE`)
 #define PLAYER_STATE3_MOVING_ALONG_HOOKSHOT_PATH (1 << 7)
 
 typedef void (*PlayerActionFunc)(struct Player*, struct PlayState*);
