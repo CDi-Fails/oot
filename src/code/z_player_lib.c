@@ -1516,14 +1516,14 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
                     Matrix_MtxFToYXZRotS(&sp14C, &spB8, 0);
 
                     if (hookedActor->flags & ACTOR_FLAG_17) {
-                        hookedActor->world.rot.x = hookedActor->shape.rot.x = spB8.x - this->unk_3BC.x;
+                        hookedActor->world.rot.x = hookedActor->shape.rot.x = spB8.x - this->leftHandRot.x;
                     } else {
-                        hookedActor->world.rot.y = hookedActor->shape.rot.y = this->actor.shape.rot.y + this->unk_3BC.y;
+                        hookedActor->world.rot.y = hookedActor->shape.rot.y = this->actor.shape.rot.y + this->leftHandRot.y;
                     }
                 }
             } else {
                 Matrix_Get(&this->mf_9E0);
-                Matrix_MtxFToYXZRotS(&this->mf_9E0, &this->unk_3BC, 0);
+                Matrix_MtxFToYXZRotS(&this->mf_9E0, &this->leftHandRot, 0);
             }
         }
     } else if (limbIndex == PLAYER_LIMB_R_HAND) {
@@ -1581,7 +1581,7 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
         if (this->actor.scale.y >= 0.0f) {
             if ((this->heldItemActionParam == PLAYER_AP_HOOKSHOT) ||
                 (this->heldItemActionParam == PLAYER_AP_LONGSHOT)) {
-                Matrix_MultVec3f(&D_80126184, &this->unk_3C8);
+                Matrix_MultVec3f(&D_80126184, &this->hookshotHeldPos);
 
                 if (heldActor != NULL) {
                     MtxF sp44;

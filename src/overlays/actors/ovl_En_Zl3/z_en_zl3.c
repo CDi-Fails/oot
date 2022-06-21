@@ -202,11 +202,11 @@ s32 EnZl3_UpdateSkelAnime(EnZl3* this) {
 }
 
 s32 func_80B5396C(EnZl3* this) {
-    return this->unk_3C8;
+    return this->hookshotHeldPos;
 }
 
 void func_80B53974(EnZl3* this, u8 arg1) {
-    this->unk_3C8 = arg1;
+    this->hookshotHeldPos = arg1;
 }
 
 void func_80B53980(EnZl3* thisx, s16 y, s32 idx) {
@@ -797,7 +797,7 @@ void func_80B54FB4(EnZl3* this, PlayState* play) {
     this->drawConfig = 1;
     func_80B54F18(this, play);
     this->actor.shape.rot.z = 0;
-    this->unk_3C4 = this->actor.world.rot.z;
+    this->pushPullActor = this->actor.world.rot.z;
     this->actor.world.rot.z = this->actor.shape.rot.z;
     osSyncPrintf("ゼルダ姫のEn_Zl3_Actor_inFinal_Initは通った!!!!!!!!!!!!!!!!!!!!!!!!!\n");
 }
@@ -1800,15 +1800,15 @@ s32 func_80B576C8(EnZl3* this, PlayState* play) {
 }
 
 void func_80B57704(EnZl3* this, PlayState* play) {
-    s32 unk_3C4 = this->unk_3C4;
+    s32 pushPullActor = this->pushPullActor;
 
-    Flags_SetSwitch(play, unk_3C4);
+    Flags_SetSwitch(play, pushPullActor);
 }
 
 void func_80B5772C(EnZl3* this, PlayState* play) {
-    s32 unk_3C4 = this->unk_3C4;
+    s32 pushPullActor = this->pushPullActor;
 
-    Flags_UnsetSwitch(play, unk_3C4);
+    Flags_UnsetSwitch(play, pushPullActor);
 }
 
 void func_80B57754(EnZl3* this, PlayState* play) {
@@ -2524,7 +2524,7 @@ void func_80B59828(EnZl3* this, PlayState* play) {
         newRotY = func_80B571A8(this);
         this->actor.shape.rot.y = newRotY;
         this->actor.world.rot.y = newRotY;
-        this->unk_3C4 = this->actor.world.rot.z;
+        this->pushPullActor = this->actor.world.rot.z;
         this->actor.shape.rot.z = 0;
         this->actor.world.rot.z = this->actor.shape.rot.z;
         this->action = 28;

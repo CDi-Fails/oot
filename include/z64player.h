@@ -760,7 +760,7 @@ typedef struct Player {
     /* 0x0155 */ char       unk_155[0x003];
     /* 0x0158 */ u8         modelGroup;
     /* 0x0159 */ u8         nextModelGroup;
-    /* 0x015A */ s8         unk_15A;
+    /* 0x015A */ s8         itemChangeAnim;
     /* 0x015B */ u8         modelAnimType;
     /* 0x015C */ u8         leftHandType;
     /* 0x015D */ u8         rightHandType;
@@ -782,9 +782,9 @@ typedef struct Player {
     /* 0x03A8 */ s16        unk_3A8[2];
     /* 0x03AC */ Actor*     heldActor;
     /* 0x03B0 */ Vec3f      leftHandPos;
-    /* 0x03BC */ Vec3s      unk_3BC;
-    /* 0x03C4 */ Actor*     unk_3C4;
-    /* 0x03C8 */ Vec3f      unk_3C8;
+    /* 0x03BC */ Vec3s      leftHandRot;
+    /* 0x03C4 */ Actor*     pushPullActor;
+    /* 0x03C8 */ Vec3f      hookshotHeldPos;
     /* 0x03D4 */ char       unk_3D4[0x058];
     /* 0x042C */ s8         doorType;
     /* 0x042D */ s8         doorDirection;
@@ -798,12 +798,12 @@ typedef struct Player {
     /* 0x0440 */ Actor*     rideActor;
     /* 0x0444 */ u8         csMode;
     /* 0x0445 */ u8         prevCsMode;
-    /* 0x0446 */ u8         unk_446;
+    /* 0x0446 */ u8         csAction;
     /* 0x0447 */ u8         unk_447;
     /* 0x0448 */ Actor*     csTargetActor;
     /* 0x044C */ char       unk_44C[0x004];
-    /* 0x0450 */ Vec3f      unk_450;
-    /* 0x045C */ Vec3f      unk_45C;
+    /* 0x0450 */ Vec3f      csStartPos;
+    /* 0x045C */ Vec3f      csEndPos;
     /* 0x0468 */ char       unk_468[0x002];
     union {
         /* 0x046A */ s16 csFlag;
@@ -891,8 +891,8 @@ typedef struct Player {
     /* 0x0864 */ f32        unk_864;
     /* 0x0868 */ f32        walkFrame;
     /* 0x086C */ f32        unk_86C;
-    /* 0x0870 */ f32        unk_870;
-    /* 0x0874 */ f32        unk_874;
+    /* 0x0870 */ f32        leftRightBlendWeight;
+    /* 0x0874 */ f32        leftRightBlendWeightTarget;
     /* 0x0878 */ f32        unk_878;
     /* 0x087C */ s16        unk_87C;
     /* 0x087E */ s16        unk_87E;

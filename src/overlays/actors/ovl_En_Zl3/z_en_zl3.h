@@ -52,8 +52,8 @@ typedef struct EnZl3 {
     /* 0x0370 */ s32 unk_370;
     /* 0x0374 */ s32 unk_374;
     /* 0x0378 */ ColliderCylinder collider;
-    /* 0x03C4 */ s32 unk_3C4;
-    /* 0x03C8 */ u8 unk_3C8;
+    /* 0x03C4 */ s32 pushPullActor;
+    /* 0x03C8 */ u8 hookshotHeldPos;
     /* 0x03CC */ f32 unk_3CC;
     /* 0x03D0 */ s16 unk_3D0;
     /* 0x03D4 */ BossGanon2* ganon;

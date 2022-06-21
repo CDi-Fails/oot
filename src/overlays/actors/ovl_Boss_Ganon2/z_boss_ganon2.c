@@ -202,7 +202,7 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
                 this->unk_39C = 1;
                 sZelda = (EnZl3*)Actor_SpawnAsChild(&play->actorCtx, &this->actor, play, ACTOR_EN_ZL3, 970.0f, 1086.0f,
                                                     -200.0f, 0, 0, 0, 1);
-                sZelda->unk_3C8 = 0;
+                sZelda->hookshotHeldPos = 0;
                 sZelda->actor.world.pos.x = 970.0f;
                 sZelda->actor.world.pos.y = 1086.0f;
                 sZelda->actor.world.pos.z = -214.0f;
@@ -265,11 +265,11 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
                 Message_StartTextbox(play, 0x70D4, NULL);
             }
             if (this->unk_398 == 40) {
-                sZelda->unk_3C8 = 1;
+                sZelda->hookshotHeldPos = 1;
                 Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_LOOK_TO_CHARACTER_AT_SIDE_SMILING);
             }
             if (this->unk_398 == 85) {
-                sZelda->unk_3C8 = 2;
+                sZelda->hookshotHeldPos = 2;
                 Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_LOOK_TO_CHARACTER_ABOVE_SMILING);
             }
             this->subCamEye.x = 930.0f;
@@ -298,14 +298,14 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
                 Audio_QueueSeqCmd(SEQ_PLAYER_BGM_MAIN << 24 | NA_BGM_STOP);
             }
             if (this->unk_398 == 20) {
-                sZelda->unk_3C8 = 3;
+                sZelda->hookshotHeldPos = 3;
                 Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_SURPRISED_DEFENSE);
             }
             if (this->unk_398 == 55) {
                 this->unk_39C = 4;
                 this->unk_398 = 0;
                 this->unk_410.x = 0.0f;
-                sZelda->unk_3C8 = 4;
+                sZelda->hookshotHeldPos = 4;
                 Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_SURPRISED_DEFENSE);
             }
             break;
@@ -369,7 +369,7 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
                 this->unk_339 = 4;
             }
             if (this->unk_398 == 30) {
-                sZelda->unk_3C8 = 5;
+                sZelda->hookshotHeldPos = 5;
                 Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_START_HALF_TURN_SURPRISED);
             }
             if (this->unk_398 == 50) {
@@ -793,7 +793,7 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
             this->subCamAt.z = sZelda->actor.world.pos.z - 20.0f;
             this->subCamUp.z = -0.5f;
             if (this->unk_398 == 13) {
-                sZelda->unk_3C8 = 6;
+                sZelda->hookshotHeldPos = 6;
             }
             if (this->unk_398 == 50) {
                 this->unk_39C = 27;
@@ -882,7 +882,7 @@ void func_808FD5F4(BossGanon2* this, PlayState* play) {
                 func_808FFDB0(this, play);
                 this->unk_1A2[1] = 50;
                 this->actor.flags |= ACTOR_FLAG_0;
-                sZelda->unk_3C8 = 7;
+                sZelda->hookshotHeldPos = 7;
             }
             break;
     }
@@ -1487,7 +1487,7 @@ void func_8090120C(BossGanon2* this, PlayState* play) {
             Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_WAIT);
             this->unk_39C = 1;
             this->unk_398 = 0;
-            sZelda->unk_3C8 = 9;
+            sZelda->hookshotHeldPos = 9;
             this->unk_31C = 0;
             this->unk_1A2[2] = 0;
             this->unk_336 = 0;
@@ -1578,7 +1578,7 @@ void func_8090120C(BossGanon2* this, PlayState* play) {
             if (this->unk_398 > 10) {
                 Math_ApproachZeroF(&this->unk_37C, 1.0f, 10.0f);
                 if (this->unk_398 == 30) {
-                    sZelda->unk_3C8 = 10;
+                    sZelda->hookshotHeldPos = 10;
                 }
                 this->unk_339 = 23;
                 Math_ApproachZeroF(&play->envCtx.lightBlend, 1.0f, 0.05f);
@@ -1750,7 +1750,7 @@ void func_8090120C(BossGanon2* this, PlayState* play) {
             if (this->unk_398 == 40) {
                 this->unk_39C = 9;
                 this->unk_398 = 0;
-                sZelda->unk_3C8 = 11;
+                sZelda->hookshotHeldPos = 11;
                 Message_StartTextbox(play, 0x70D9, NULL);
                 this->unk_336 = 0;
                 play->envCtx.lightBlend = 0.0f;
@@ -1791,10 +1791,10 @@ void func_8090120C(BossGanon2* this, PlayState* play) {
             }
             Math_ApproachF(&this->unk_410.x, 1.0f, 1.0f, 0.01f);
             if (this->unk_398 == 10) {
-                sZelda->unk_3C8 = 12;
+                sZelda->hookshotHeldPos = 12;
             }
             if (this->unk_398 == 110) {
-                sZelda->unk_3C8 = 13;
+                sZelda->hookshotHeldPos = 13;
             }
             if (this->unk_398 == 140) {
                 Audio_PlayActorSound2(&sZelda->actor, NA_SE_EV_HUMAN_BOUND);
@@ -1853,7 +1853,7 @@ void func_80902348(BossGanon2* this, PlayState* play) {
                 }
 
                 Actor_SetPlayerKnockbackDamage(play, &this->actor, 15.0f, this->actor.yawTowardsPlayer + phi_v0_2, 2.0f, 0);
-                sZelda->unk_3C8 = 8;
+                sZelda->hookshotHeldPos = 8;
                 this->unk_316 = 10;
                 break;
             }
@@ -1872,7 +1872,7 @@ void func_80902348(BossGanon2* this, PlayState* play) {
 
             player->isBurning = true;
             Actor_SetPlayerKnockbackDamage(play, &this->actor, 10.0f, Math_Atan2S(temp_f12, temp_f2), 0.0f, 0x10);
-            sZelda->unk_3C8 = 8;
+            sZelda->hookshotHeldPos = 8;
         }
     }
 }

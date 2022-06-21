@@ -731,7 +731,7 @@ void BossGanon_IntroCutscene(BossGanon* this, PlayState* play) {
             this->csState = 9;
             this->csTimer = 0;
             Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_WAIT);
-            sZelda->unk_3C8 = 0;
+            sZelda->hookshotHeldPos = 0;
             this->triforceType = GDF_TRIFORCE_ZELDA;
             this->fwork[GDF_TRIFORCE_SCALE] = 10.0f;
             this->fwork[GDF_TRIFORCE_PRIM_A] = 0.0f;
@@ -750,7 +750,7 @@ void BossGanon_IntroCutscene(BossGanon* this, PlayState* play) {
             Math_ApproachF(&this->fwork[GDF_TRIFORCE_ENV_G], 200.0f, 1.0f, 3.0f);
 
             if (this->csTimer == 30) {
-                sZelda->unk_3C8 = 1;
+                sZelda->hookshotHeldPos = 1;
             }
 
             if (this->csTimer >= 32) {
@@ -842,7 +842,7 @@ void BossGanon_IntroCutscene(BossGanon* this, PlayState* play) {
                 this->csTimer = 0;
                 BossGanon_SetIntroCsCamera(this, 11);
                 this->unk_198 = 2;
-                sZelda->unk_3C8 = 2;
+                sZelda->hookshotHeldPos = 2;
                 this->timers[2] = 110;
                 this->envLightMode = 3;
             }
@@ -1605,7 +1605,7 @@ void BossGanon_DeathAndTowerCutscene(BossGanon* this, PlayState* play) {
                 sZelda->actor.world.pos.x = -472.0f;
                 sZelda->actor.world.pos.y = 4352.0f;
                 sZelda->actor.world.pos.z = -200.0f;
-                sZelda->unk_3C8 = 3;
+                sZelda->hookshotHeldPos = 3;
             }
             break;
 
@@ -1643,11 +1643,11 @@ void BossGanon_DeathAndTowerCutscene(BossGanon* this, PlayState* play) {
             }
 
             if (this->csTimer == 10) {
-                sZelda->unk_3C8 = 8;
+                sZelda->hookshotHeldPos = 8;
             }
 
             if (this->csTimer == 50) {
-                sZelda->unk_3C8 = 4;
+                sZelda->hookshotHeldPos = 4;
             }
 
             if (this->csTimer == 100) {
@@ -1680,7 +1680,7 @@ void BossGanon_DeathAndTowerCutscene(BossGanon* this, PlayState* play) {
             func_80078884(NA_SE_EV_EARTHQUAKE - SFX_FLAG);
 
             if (this->csTimer == 20) {
-                sZelda->unk_3C8 = 5;
+                sZelda->hookshotHeldPos = 5;
                 Actor_SetPlayerCutscene(play, &this->actor, PLAYER_CSMODE_LOOK_AROUND_SURPRISED);
             }
 
@@ -1737,7 +1737,7 @@ void BossGanon_DeathAndTowerCutscene(BossGanon* this, PlayState* play) {
             func_80078884(NA_SE_EV_EARTHQUAKE - SFX_FLAG);
 
             if (this->csTimer == 70) {
-                sZelda->unk_3C8 = 6;
+                sZelda->hookshotHeldPos = 6;
             }
 
             if (this->csTimer == 90) {
@@ -1765,7 +1765,7 @@ void BossGanon_DeathAndTowerCutscene(BossGanon* this, PlayState* play) {
             this->csCamAt.z = (sZelda->actor.world.pos.z - 25.0f) + 80.0f;
 
             if ((this->csTimer > 50) && (Message_GetState(&play->msgCtx) == TEXT_STATE_NONE)) {
-                sZelda->unk_3C8 = 7;
+                sZelda->hookshotHeldPos = 7;
                 this->csState = 108;
                 this->csTimer = 0;
             }
@@ -4330,8 +4330,8 @@ void func_808E2544(Actor* thisx, PlayState* play) {
     }
 
     this->unk_2EC[this->unk_1A6] = this->actor.world.pos;
-    this->unk_3C4[this->unk_1A6].x = BINANG_TO_RAD_ALT(this->actor.world.rot.x);
-    this->unk_3C4[this->unk_1A6].y = BINANG_TO_RAD_ALT(this->actor.world.rot.y);
+    this->pushPullActor[this->unk_1A6].x = BINANG_TO_RAD_ALT(this->actor.world.rot.x);
+    this->pushPullActor[this->unk_1A6].y = BINANG_TO_RAD_ALT(this->actor.world.rot.y);
 
     switch (this->unk_1C2) {
         if (1) {}
@@ -4564,8 +4564,8 @@ void func_808E324C(Actor* thisx, PlayState* play) {
     for (i = 0; i < 12; i++) {
         temp = (s16)(((this->unk_1A6 - i) + 0xF) % 15);
         Matrix_Translate(this->unk_2EC[temp].x, this->unk_2EC[temp].y, this->unk_2EC[temp].z, MTXMODE_NEW);
-        Matrix_RotateY(this->unk_3C4[temp].y, MTXMODE_APPLY);
-        Matrix_RotateX(-this->unk_3C4[temp].x, MTXMODE_APPLY);
+        Matrix_RotateY(this->pushPullActor[temp].y, MTXMODE_APPLY);
+        Matrix_RotateX(-this->pushPullActor[temp].x, MTXMODE_APPLY);
         Matrix_Scale(this->actor.scale.x, this->actor.scale.y, this->actor.scale.z, MTXMODE_APPLY);
         Matrix_RotateY(M_PI / 2, MTXMODE_APPLY);
         Matrix_ToMtx(mtx, "../z_boss_ganon.c", 10520);

@@ -1032,12 +1032,12 @@ void func_80AECE20(EnRu1* this, PlayState* play) {
 void func_80AECEB4(EnRu1* this, PlayState* play) {
     s32 pad;
     Player* player = GET_PLAYER(play);
-    Vec3f* player_unk_450 = &player->unk_450;
+    Vec3f* player_csStartPos = &player->csStartPos;
     Vec3f* pos = &this->actor.world.pos;
     s16 shapeRotY = this->actor.shape.rot.y;
 
-    player_unk_450->x = ((kREG(2) + 30.0f) * Math_SinS(shapeRotY)) + pos->x;
-    player_unk_450->z = ((kREG(2) + 30.0f) * Math_CosS(shapeRotY)) + pos->z;
+    player_csStartPos->x = ((kREG(2) + 30.0f) * Math_SinS(shapeRotY)) + pos->x;
+    player_csStartPos->z = ((kREG(2) + 30.0f) * Math_CosS(shapeRotY)) + pos->z;
 }
 
 s32 func_80AECF6C(EnRu1* this, PlayState* play) {
@@ -1052,9 +1052,9 @@ s32 func_80AECF6C(EnRu1* this, PlayState* play) {
     this->unk_26C += 1.0f;
     if ((player->actor.speedXZ == 0.0f) && (this->unk_26C >= 3.0f)) {
         otherPlayer = GET_PLAYER(play);
-        player->actor.world.pos.x = otherPlayer->unk_450.x;
-        player->actor.world.pos.y = otherPlayer->unk_450.y;
-        player->actor.world.pos.z = otherPlayer->unk_450.z;
+        player->actor.world.pos.x = otherPlayer->csStartPos.x;
+        player->actor.world.pos.y = otherPlayer->csStartPos.y;
+        player->actor.world.pos.z = otherPlayer->csStartPos.z;
         shapeRotY = &player->actor.shape.rot.y;
         temp1 = this->actor.world.pos.x - player->actor.world.pos.x;
         temp2 = this->actor.world.pos.z - player->actor.world.pos.z;

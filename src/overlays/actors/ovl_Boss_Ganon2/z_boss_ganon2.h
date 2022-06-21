@@ -84,7 +84,7 @@ typedef struct BossGanon2 {
     /* 0x03A4 */ Vec3f subCamEye;
     /* 0x03B0 */ Vec3f subCamAt;
     /* 0x03BC */ Vec3f subCamUp;
-    /* 0x03C8 */ char unk_3C8[0x48];
+    /* 0x03C8 */ char hookshotHeldPos[0x48];
     /* 0x0410 */ Vec3f unk_410;
     /* 0x041C */ f32 unk_41C;
     /* 0x0420 */ f32 unk_420;

@@ -124,7 +124,7 @@ s32 ArmsHook_CheckForCancel(ArmsHook* this) {
             ((player->stateFlags1 & (PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_TAKING_DAMAGE)))) {
             this->timer = 0;
             ArmsHook_DetachHookFromActor(this);
-            Math_Vec3f_Copy(&this->actor.world.pos, &player->unk_3C8);
+            Math_Vec3f_Copy(&this->actor.world.pos, &player->hookshotHeldPos);
             return 1;
         }
     }
@@ -200,7 +200,7 @@ void ArmsHook_Shoot(ArmsHook* this, PlayState* play) {
             }
         }
 
-        bodyDistDiff = Math_Vec3f_DistXYZAndStoreDiff(&player->unk_3C8, &this->actor.world.pos, &bodyDistDiffVec);
+        bodyDistDiff = Math_Vec3f_DistXYZAndStoreDiff(&player->hookshotHeldPos, &this->actor.world.pos, &bodyDistDiffVec);
         if (bodyDistDiff < 30.0f) {
             velocity = 0.0f;
             phi_f16 = 0.0f;
@@ -228,7 +228,7 @@ void ArmsHook_Shoot(ArmsHook* this, PlayState* play) {
                 Math_Vec3f_Diff(&grabbed->world.pos, &this->grabbedDistDiff, &this->actor.world.pos);
                 phi_f16 = 1.0f;
             } else {
-                Math_Vec3f_Sum(&player->unk_3C8, &newPos, &this->actor.world.pos);
+                Math_Vec3f_Sum(&player->hookshotHeldPos, &newPos, &this->actor.world.pos);
                 if (grabbed != NULL) {
                     Math_Vec3f_Sum(&this->actor.world.pos, &this->grabbedDistDiff, &grabbed->world.pos);
                 }
@@ -325,7 +325,7 @@ void ArmsHook_Draw(Actor* thisx, PlayState* play) {
                   G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
         gSPDisplayList(POLY_OPA_DISP++, gLinkAdultHookshotTipDL);
         Matrix_Translate(this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z, MTXMODE_NEW);
-        Math_Vec3f_Diff(&player->unk_3C8, &this->actor.world.pos, &sp78);
+        Math_Vec3f_Diff(&player->hookshotHeldPos, &this->actor.world.pos, &sp78);
         sp58 = SQ(sp78.x) + SQ(sp78.z);
         sp5C = sqrtf(sp58);
         Matrix_RotateY(Math_FAtan2F(sp78.x, sp78.z), MTXMODE_APPLY);
