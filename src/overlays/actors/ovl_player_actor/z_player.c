@@ -3337,7 +3337,7 @@ s32 Player_SetOrGetVelocityAndYaw(Player* this, f32* velocity, s16* yaw, f32 arg
 
 // Indices into sSubActions, negative sign signals to stop processing the array
 static s8 sTargetEnemyStandStillSubActions[] = { 13, 2, 4, 9, 10, 11, 8, -7 };
-static s8 sFriendlyZTargetingStandStillSubActions[] = { 13, 1, 2, 5, 3, 4, 9, 10, 11, 7, 8, -6 };
+static s8 sFriendlyTargetingStandStillSubActions[] = { 13, 1, 2, 5, 3, 4, 9, 10, 11, 7, 8, -6 };
 static s8 sEndSidewalkSubActions[] = { 13, 1, 2, 3, 4, 9, 10, 11, 8, 7, -6 };
 static s8 sFriendlyBackwalkSubActions[] = { 13, 2, 4, 9, 10, 11, 8, -7 };
 static s8 sSidewalkSubActions[] = { 13, 2, 4, 9, 10, 11, 12, 8, -7 };
@@ -5568,7 +5568,7 @@ void Player_SetupRunning(Player* this, PlayState* play) {
     this->unk_864 = this->walkFrame = 0.0f;
 }
 
-void func_8083C8DC(Player* this, PlayState* play, s16 arg2) {
+void Player_SetupZTargetRunning(Player* this, PlayState* play, s16 arg2) {
     this->actor.shape.rot.y = this->currentYaw = arg2;
     Player_SetupRunning(this, play);
 }
@@ -6715,7 +6715,7 @@ s32 func_8083FBC0(Player* this, PlayState* play) {
     return 1;
 }
 
-s32 Player_GetUnfriendlyMoveDirection(Player* this, f32 targetVelocity, s16 targetYaw) {
+s32 Player_GetUnfriendlyZTargetMoveDirection(Player* this, f32 targetVelocity, s16 targetYaw) {
     f32 targetYawDiff = (s16)(targetYaw - this->actor.shape.rot.y);
     f32 yawRatio;
 
@@ -6736,17 +6736,17 @@ s32 Player_GetUnfriendlyMoveDirection(Player* this, f32 targetVelocity, s16 targ
 }
 
 // Updates focus and look angles, then returns direction to move in?
-s32 Player_GetFriendlyZTargetingMoveDirection(Player* this, f32* arg1, s16* arg2, PlayState* play) {
-    s16 sp2E = *arg2 - this->targetYaw;
+s32 Player_GetFriendlyZTargetingMoveDirection(Player* this, f32* targetVelocity, s16* targetYaw, PlayState* play) {
+    s16 sp2E = *targetYaw - this->targetYaw;
     u16 sp2C = ABS(sp2E);
 
     if ((Actor_PlayerIsAimingPrimedFPSItem(this) || Player_IsAimingPrimedBoomerang(this)) && (this->targetActor == NULL)) {
-        *arg1 *= Math_SinS(sp2C);
+        *targetVelocity *= Math_SinS(sp2C);
 
-        if (*arg1 != 0.0f) {
-            *arg2 = (((sp2E >= 0) ? 1 : -1) << 0xE) + this->actor.shape.rot.y;
+        if (*targetVelocity != 0.0f) {
+            *targetYaw = (((sp2E >= 0) ? 1 : -1) << 0xE) + this->actor.shape.rot.y;
         } else {
-            *arg2 = this->actor.shape.rot.y;
+            *targetYaw = this->actor.shape.rot.y;
         }
 
         if (this->targetActor != NULL) {
@@ -6757,12 +6757,12 @@ s32 Player_GetFriendlyZTargetingMoveDirection(Player* this, f32* arg1, s16* arg2
         }
     } else {
         if (this->targetActor != NULL) {
-            return Player_GetUnfriendlyMoveDirection(this, *arg1, *arg2);
+            return Player_GetUnfriendlyZTargetMoveDirection(this, *targetVelocity, *targetYaw);
         } else {
             func_8083DC54(this, play);
-            if ((*arg1 != 0.0f) && (sp2C < 6000)) {
+            if ((*targetVelocity != 0.0f) && (sp2C < 6000)) {
                 return 1;
-            } else if (*arg1 > Math_SinS((0x4000 - (sp2C >> 1))) * 200.0f) {
+            } else if (*targetVelocity > Math_SinS((0x4000 - (sp2C >> 1))) * 200.0f) {
                 return -1;
             }
         }
@@ -6875,7 +6875,7 @@ void Player_SetupWalkSfx(Player* this, f32 frameStep) {
 void Player_UnfriendlyZTargetStandingStill(Player* this, PlayState* play) {
     f32 targetVelocity;
     s16 targetYaw;
-    s32 temp1;
+    s32 moveDir;
     u32 walkFrame;
     s16 targetYawDiff;
     s32 absTargetYawDiff;
@@ -6910,14 +6910,14 @@ void Player_UnfriendlyZTargetStandingStill(Player* this, PlayState* play) {
 
         Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
 
-        temp1 = Player_GetUnfriendlyMoveDirection(this, targetVelocity, targetYaw);
+        moveDir = Player_GetUnfriendlyZTargetMoveDirection(this, targetVelocity, targetYaw);
 
-        if (temp1 > 0) {
-            func_8083C8DC(this, play, targetYaw);
+        if (moveDir > 0) {
+            Player_SetupZTargetRunning(this, play, targetYaw);
             return;
         }
 
-        if (temp1 < 0) {
+        if (moveDir < 0) {
             Player_SetupUnfriendlyBackwalk(this, targetYaw, play);
             return;
         }
@@ -6957,7 +6957,7 @@ void Player_UnfriendlyZTargetStandingStill(Player* this, PlayState* play) {
 void Player_FriendlyZTargetStandingStill(Player* this, PlayState* play) {
     f32 targetVelocity;
     s16 targetYaw;
-    s32 temp1;
+    s32 moveDir;
     s16 targetYawDiff;
     s32 absTargetYawDiff;
 
@@ -6968,7 +6968,7 @@ void Player_FriendlyZTargetStandingStill(Player* this, PlayState* play) {
 
     Player_StepLinearVelocityToZero(this);
 
-    if (!Player_SetupSubAction(play, this, sFriendlyZTargetingStandStillSubActions, 1)) {
+    if (!Player_SetupSubAction(play, this, sFriendlyTargetingStandStillSubActions, 1)) {
         if (Player_SetupBeginUnfriendlyZTargeting(this)) {
             Player_SetupUnfriendlyZTarget(this, play);
             return;
@@ -6987,14 +6987,14 @@ void Player_FriendlyZTargetStandingStill(Player* this, PlayState* play) {
 
         Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
 
-        temp1 = Player_GetFriendlyZTargetingMoveDirection(this, &targetVelocity, &targetYaw, play);
+        moveDir = Player_GetFriendlyZTargetingMoveDirection(this, &targetVelocity, &targetYaw, play);
 
-        if (temp1 > 0) {
-            func_8083C8DC(this, play, targetYaw);
+        if (moveDir > 0) {
+            Player_SetupZTargetRunning(this, play, targetYaw);
             return;
         }
 
-        if (temp1 < 0) {
+        if (moveDir < 0) {
             Player_SetupFriendlyBackwalk(this, targetYaw, play);
             return;
         }
@@ -7109,7 +7109,7 @@ void Player_StandingStill(Player* this, PlayState* play) {
             Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.018f, play);
 
             if (targetVelocity != 0.0f) {
-                func_8083C8DC(this, play, targetYaw);
+                Player_SetupZTargetRunning(this, play, targetYaw);
                 return;
             }
 
@@ -7183,7 +7183,7 @@ void Player_EndSidewalk(Player* this, PlayState* play) {
         temp1 = Player_GetFriendlyZTargetingMoveDirection(this, &targetVelocity, &targetYaw, play);
 
         if (temp1 > 0) {
-            func_8083C8DC(this, play, targetYaw);
+            Player_SetupZTargetRunning(this, play, targetYaw);
             return;
         }
 
@@ -7291,7 +7291,7 @@ void Player_FriendlyBackwalk(Player* this, PlayState* play) {
 
     if (!Player_SetupSubAction(play, this, sFriendlyBackwalkSubActions, 1)) {
         if (!Player_IsZTargetingSetupBeginUnfriendly(this)) {
-            func_8083C8DC(this, play, this->currentYaw);
+            Player_SetupZTargetRunning(this, play, this->currentYaw);
             return;
         }
 
@@ -7394,7 +7394,7 @@ void Player_Sidewalk(Player* this, PlayState* play) {
         if (Player_IsFriendlyZTargeting(this)) {
             moveDir = Player_GetFriendlyZTargetingMoveDirection(this, &targetVelocity, &targetYaw, play);
         } else {
-            moveDir = Player_GetUnfriendlyMoveDirection(this, targetVelocity, targetYaw);
+            moveDir = Player_GetUnfriendlyZTargetMoveDirection(this, targetVelocity, targetYaw);
         }
 
         if (moveDir > 0) {
@@ -7605,7 +7605,7 @@ void Player_ZTargetingRun(Player* this, PlayState* play) {
 
         if (!func_8083C484(this, &targetVelocity, &targetYaw)) {
             if ((Player_IsFriendlyZTargeting(this) && (targetVelocity != 0.0f) && (Player_GetFriendlyZTargetingMoveDirection(this, &targetVelocity, &targetYaw, play) <= 0)) ||
-                (!Player_IsFriendlyZTargeting(this) && (Player_GetUnfriendlyMoveDirection(this, targetVelocity, targetYaw) <= 0))) {
+                (!Player_IsFriendlyZTargeting(this) && (Player_GetUnfriendlyZTargetMoveDirection(this, targetVelocity, targetYaw) <= 0))) {
                 Player_SetupStandingStillType(this, play);
                 return;
             }
@@ -7638,7 +7638,7 @@ void Player_UnfriendlyBackwalk(Player* this, PlayState* play) {
         if ((this->skelAnime.morphWeight == 0.0f) && (this->skelAnime.curFrame > 5.0f)) {
             Player_StepLinearVelocityToZero(this);
 
-            if ((this->skelAnime.curFrame > 10.0f) && (Player_GetUnfriendlyMoveDirection(this, targetVelocity, targetYaw) < 0)) {
+            if ((this->skelAnime.curFrame > 10.0f) && (Player_GetUnfriendlyZTargetMoveDirection(this, targetVelocity, targetYaw) < 0)) {
                 Player_SetupUnfriendlyBackwalk(this, targetYaw, play);
                 return;
             }
@@ -7665,7 +7665,7 @@ void Player_EndUnfriendlyBackwalk(Player* this, PlayState* play) {
         if (this->linearVelocity == 0.0f) {
             this->currentYaw = this->actor.shape.rot.y;
 
-            if (Player_GetUnfriendlyMoveDirection(this, targetVelocity, targetYaw) > 0) {
+            if (Player_GetUnfriendlyZTargetMoveDirection(this, targetVelocity, targetYaw) > 0) {
                 Player_SetupRunning(this, play);
                 return;
             }
@@ -10237,6 +10237,30 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
 
     // // TESTING
 
+    // s32 i;
+
+    // typedef struct {
+    //     void* func;
+    //     char name[60];
+    // } TestFuncs;
+
+    // static TestFuncs testFuncs[] = {
+    //     { Player_FriendlyZTargetStandingStill, "Player_FriendlyZTargetStandingStill" },
+    //     { Player_UnfriendlyZTargetStandingStill, "Player_UnfriendlyZTargetStandingStill" },
+    //     { Player_FriendlyBackwalk, "Player_FriendlyBackwalk" },
+    //     { Player_UnfriendlyBackwalk, "Player_UnfriendlyBackwalk" },
+    //     { Player_Sidewalk, "Player_Sidewalk" },
+    //     { Player_Turn, "Player_Turn" },
+    //     { Player_ZTargetingRun, "Player_ZTargetingRun" },
+    //     { Player_Run, "Player_Run" },
+    //     { Player_ChargeSpinAttack, "Player_ChargeSpinAttack" },
+    //     { Player_ForwardBackWalkChargingSpinAttack, "Player_ForwardBackWalkChargingSpinAttack" },
+    //     { Player_SidewalkChargingSpinAttack, "Player_SidewalkChargingSpinAttack" },
+    //     { Player_Rolling, "Player_Rolling" },
+    //     { Player_UpdateMidair, "Player_UpdateMidair" },
+    //     { Player_HoldActor, "Player_HoldActor" },
+    // };
+
     // GfxPrint printer;
     // Gfx* gfx;
 
@@ -10249,8 +10273,12 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     // GfxPrint_Open(&printer, gfx);
 
     // GfxPrint_SetColor(&printer, 255, 0, 255, 255);
-    // GfxPrint_SetPos(&printer, 10, 10);
-    // GfxPrint_Printf(&printer, "damageEffect: %d", this->damageEffect);
+    // GfxPrint_SetPos(&printer, 2, 10);
+    // for (i = 0; i < ARRAY_COUNT(testFuncs); i++) {
+    //     if (testFuncs[i].func == this->actionFunc) {
+    //         GfxPrint_Printf(&printer, "%s", testFuncs[i].name);
+    //     }
+    // }
 
     // gfx = GfxPrint_Close(&printer);
     // GfxPrint_Destroy(&printer);
