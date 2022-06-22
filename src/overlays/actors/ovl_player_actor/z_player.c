@@ -2246,7 +2246,7 @@ void Player_SetupItem(Player* this, PlayState* play) {
 }
 
 // Sets FPS item ID and type of ammo, then returns ammo count of the FPS item
-s32 Player_SetupFpsItemAmmo(PlayState* play, Player* this, s32* itemPtr, s32* typePtr) {
+s32 Player_GetFpsItemAmmo(PlayState* play, Player* this, s32* itemPtr, s32* typePtr) {
     if (LINK_IS_ADULT) {
         *itemPtr = ITEM_BOW;
         if (this->stateFlags1 & PLAYER_STATE1_RIDING_HORSE) {
@@ -2285,7 +2285,7 @@ s32 Player_SetupReadyFpsItemToShoot(Player* this, PlayState* play) {
         if (this->fpsItemType >= PLAYER_FPSITEM_NONE) {
             func_8002F7DC(&this->actor, sFpsItemReadySfx[ABS(this->fpsItemType) - 1]);
 
-            if (!Player_HoldsHookshot(this) && (Player_SetupFpsItemAmmo(play, this, &item, &arrowType) > 0)) {
+            if (!Player_HoldsHookshot(this) && (Player_GetFpsItemAmmo(play, this, &item, &arrowType) > 0)) {
                 magicArrowType = arrowType - ARROW_FIRE;
 
                 if (this->fpsItemType >= PLAYER_FPSITEM_NONE) {
@@ -2307,9 +2307,9 @@ s32 Player_SetupReadyFpsItemToShoot(Player* this, PlayState* play) {
     return 0;
 }
 
-void Player_SetupItemChangeSfx(PlayState* play, Player* this) {
+void Player_ChangeItemWithSfx(PlayState* play, Player* this) {
     if (this->heldItemActionParam != PLAYER_AP_NONE) {
-        if (func_8008F2BC(this, this->heldItemActionParam) >= 0) {
+        if (Player_GetSwordItemAP(this, this->heldItemActionParam) >= 0) {
             Player_PlayReactableSfx(this, NA_SE_IT_SWORD_PUTAWAY);
         } else {
             Player_PlayReactableSfx(this, NA_SE_PL_CHANGE_ARMS);
@@ -2318,7 +2318,7 @@ void Player_SetupItemChangeSfx(PlayState* play, Player* this) {
 
     Player_UseItem(play, this, this->heldItemId);
 
-    if (func_8008F2BC(this, this->heldItemActionParam) >= 0) {
+    if (Player_GetSwordItemAP(this, this->heldItemActionParam) >= 0) {
         Player_PlayReactableSfx(this, NA_SE_IT_SWORD_PICKOUT);
     } else if (this->heldItemActionParam != PLAYER_AP_NONE) {
         Player_PlayReactableSfx(this, NA_SE_PL_CHANGE_ARMS);
@@ -2327,7 +2327,7 @@ void Player_SetupItemChangeSfx(PlayState* play, Player* this) {
 
 void Player_SetupHeldItemUpperActionFunc(PlayState* play, Player* this) {
     if (Player_BeginChangeItem == this->upperActionFunc) {
-        Player_SetupItemChangeSfx(play, this);
+        Player_ChangeItemWithSfx(play, this);
     }
 
     Player_SetUpperActionFunc(this, sUpperBodyFuncs[this->heldItemActionParam]);
@@ -2395,7 +2395,7 @@ void Player_SetupChangeItem(PlayState* play, Player* this) {
     itemChangeFrame = (this->skelAnimeUpper.playSpeed < 0.0f) ? itemChangeFrame - 1.0f : itemChangeFrame;
 
     if (LinkAnimation_OnFrame(&this->skelAnimeUpper, itemChangeFrame)) {
-        Player_SetupItemChangeSfx(play, this);
+        Player_ChangeItemWithSfx(play, this);
     }
 
     Player_SetupBeginUnfriendlyZTargeting(this);
@@ -2581,7 +2581,7 @@ s32 Player_UpdateShotFpsItem(PlayState* play, Player* this) {
 
     if (this->heldActor != NULL) {
         if (!Player_HoldsHookshot(this)) {
-            Player_SetupFpsItemAmmo(play, this, &item, &arrowType);
+            Player_GetFpsItemAmmo(play, this, &item, &arrowType);
 
             if (gSaveContext.minigameState == 1) {
                 play->interfaceCtx.hbaAmmo--;

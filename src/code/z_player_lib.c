@@ -763,7 +763,7 @@ s32 Player_GetExplosiveHeld(Player* this) {
     return Player_ActionToExplosive(this, this->heldItemActionParam);
 }
 
-s32 func_8008F2BC(Player* this, s32 actionParam) {
+s32 Player_GetSwordItemAP(Player* this, s32 actionParam) {
     s32 sword = 0;
 
     if (actionParam != PLAYER_AP_LAST_USED) {
