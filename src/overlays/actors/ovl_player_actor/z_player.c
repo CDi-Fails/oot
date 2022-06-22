@@ -187,9 +187,9 @@ void Player_EndUnfriendlyBackwalk(Player* this, PlayState* play);
 void func_80843188(Player* this, PlayState* play);
 void func_808435C4(Player* this, PlayState* play);
 void func_8084370C(Player* this, PlayState* play);
-void func_8084377C(Player* this, PlayState* play);
-void func_80843954(Player* this, PlayState* play);
-void func_80843A38(Player* this, PlayState* play);
+void Player_StartKnockback(Player* this, PlayState* play);
+void Player_DownFromKnockback(Player* this, PlayState* play);
+void Player_GetUpFromKnockback(Player* this, PlayState* play);
 void Player_Die(Player* this, PlayState* play);
 void Player_UpdateMidair(Player* this, PlayState* play);
 void Player_Rolling(Player* this, PlayState* play);
@@ -3761,7 +3761,7 @@ void Player_SetupDamage(PlayState* play, Player* this, s32 damageReaction, f32 k
             Player_PlayVoiceSfxForAge(this, NA_SE_VO_LI_DAMAGE_S);
         } else if ((damageReaction == PLAYER_DMGREACTION_KNOCKBACK) || (damageReaction == PLAYER_DMGREACTION_HOP) || !(this->actor.bgCheckFlags & BGCHECKFLAG_GROUND) ||
                    (this->stateFlags1 & (PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP | PLAYER_STATE1_CLIMBING_ONTO_LEDGE | PLAYER_STATE1_CLIMBING))) {
-            Player_SetActionFunc(play, this, func_8084377C, 0);
+            Player_SetActionFunc(play, this, Player_StartKnockback, 0);
 
             this->stateFlags3 |= PLAYER_STATE3_MIDAIR;
 
@@ -8113,7 +8113,7 @@ void func_8084370C(Player* this, PlayState* play) {
     }
 }
 
-void func_8084377C(Player* this, PlayState* play) {
+void Player_StartKnockback(Player* this, PlayState* play) {
     this->stateFlags2 |= PLAYER_STATE2_DISABLE_MOVE_ROTATION_WHILE_Z_TARGETING | PLAYER_STATE2_ALWAYS_DISABLE_MOVE_ROTATION;
 
     Player_RoundUpInvincibilityTimer(this);
@@ -8145,7 +8145,7 @@ void func_8084377C(Player* this, PlayState* play) {
             if (this->stateFlags1 & PLAYER_STATE1_IN_CUTSCENE) {
                 this->genericTimer++;
             } else {
-                Player_SetActionFunc(play, this, func_80843954, 0);
+                Player_SetActionFunc(play, this, Player_DownFromKnockback, 0);
                 this->stateFlags1 |= PLAYER_STATE1_TAKING_DAMAGE;
             }
 
@@ -8160,7 +8160,7 @@ void func_8084377C(Player* this, PlayState* play) {
     }
 }
 
-void func_80843954(Player* this, PlayState* play) {
+void Player_DownFromKnockback(Player* this, PlayState* play) {
     this->stateFlags2 |= PLAYER_STATE2_DISABLE_MOVE_ROTATION_WHILE_Z_TARGETING | PLAYER_STATE2_ALWAYS_DISABLE_MOVE_ROTATION;
     Player_RoundUpInvincibilityTimer(this);
 
@@ -8170,7 +8170,7 @@ void func_80843954(Player* this, PlayState* play) {
         if (this->stateFlags1 & PLAYER_STATE1_IN_CUTSCENE) {
             this->genericTimer++;
         } else {
-            Player_SetActionFunc(play, this, func_80843A38, 0);
+            Player_SetActionFunc(play, this, Player_GetUpFromKnockback, 0);
             this->stateFlags1 |= PLAYER_STATE1_TAKING_DAMAGE;
         }
 
@@ -8180,13 +8180,13 @@ void func_80843954(Player* this, PlayState* play) {
     }
 }
 
-static PlayerAnimSfxEntry D_808545DC[] = {
+static PlayerAnimSfxEntry sKnockbackGetUpAnimSfx[] = {
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, 0x4014 },
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, -0x401E },
 };
 
-void func_80843A38(Player* this, PlayState* play) {
-    s32 sp24;
+void Player_GetUpFromKnockback(Player* this, PlayState* play) {
+    s32 interruptActionResult;
 
     this->stateFlags2 |= PLAYER_STATE2_DISABLE_MOVE_ROTATION_WHILE_Z_TARGETING;
     Player_RoundUpInvincibilityTimer(this);
@@ -8194,13 +8194,13 @@ void func_80843A38(Player* this, PlayState* play) {
     if (this->stateFlags1 & PLAYER_STATE1_IN_CUTSCENE) {
         LinkAnimation_Update(play, &this->skelAnime);
     } else {
-        sp24 = Player_SetupInterruptAction(play, this, &this->skelAnime, 16.0f);
-        if ((sp24 != 0) && (LinkAnimation_Update(play, &this->skelAnime) || (sp24 > 0))) {
+        interruptActionResult = Player_SetupInterruptAction(play, this, &this->skelAnime, 16.0f);
+        if ((interruptActionResult != 0) && (LinkAnimation_Update(play, &this->skelAnime) || (interruptActionResult > 0))) {
             Player_SetupStandingStillType(this, play);
         }
     }
 
-    Player_PlayAnimSfx(this, D_808545DC);
+    Player_PlayAnimSfx(this, sKnockbackGetUpAnimSfx);
 }
 
 static Vec3f sDeathReviveFairyPosOffset = { 0.0f, 0.0f, 5.0f };
@@ -8832,7 +8832,7 @@ void Player_SidewalkChargingSpinAttack(Player* this, PlayState* play) {
 void Player_JumpUpToLedge(Player* this, PlayState* play) {
     s32 animDone;
     f32 jumpVelocityY;
-    s32 interruptingSubAction;
+    s32 interruptActionResult;
     f32 landingSfxFrame;
 
     this->stateFlags2 |= PLAYER_STATE2_DISABLE_MOVE_ROTATION_WHILE_Z_TARGETING;
@@ -8863,14 +8863,14 @@ void Player_JumpUpToLedge(Player* this, PlayState* play) {
             return;
         }
     } else {
-        interruptingSubAction = Player_SetupInterruptAction(play, this, &this->skelAnime, 4.0f);
+        interruptActionResult = Player_SetupInterruptAction(play, this, &this->skelAnime, 4.0f);
 
-        if (interruptingSubAction == 0) {
+        if (interruptActionResult == 0) {
             this->stateFlags1 &= ~(PLAYER_STATE1_CLIMBING_ONTO_LEDGE | PLAYER_STATE1_JUMPING);
             return;
         }
 
-        if ((animDone != 0) || (interruptingSubAction > 0)) {
+        if ((animDone != 0) || (interruptActionResult > 0)) {
             Player_SetupStandingStillNoMorph(this, play);
             this->stateFlags1 &= ~(PLAYER_STATE1_CLIMBING_ONTO_LEDGE | PLAYER_STATE1_JUMPING);
             return;
@@ -10069,7 +10069,7 @@ void Player_UpdateCamAndSeqModes(PlayState* play, Player* this) {
             if ((this->actor.parent != NULL) && (this->stateFlags3 & PLAYER_STATE3_MOVING_ALONG_HOOKSHOT_PATH)) {
                 camMode = CAM_MODE_HOOKSHOT;
                 Camera_SetParam(Play_GetCamera(play, CAM_ID_MAIN), 8, this->actor.parent);
-            } else if (func_8084377C == this->actionFunc) {
+            } else if (Player_StartKnockback == this->actionFunc) {
                 camMode = CAM_MODE_STILL;
             } else if (this->stateFlags2 & PLAYER_STATE2_ENABLE_PUSH_PULL_CAM) {
                 camMode = CAM_MODE_PUSHPULL;
@@ -10142,13 +10142,13 @@ void Player_UpdateCamAndSeqModes(PlayState* play, Player* this) {
     }
 }
 
-static Vec3f D_808547A4 = { 0.0f, 0.5f, 0.0f };
-static Vec3f D_808547B0 = { 0.0f, 0.5f, 0.0f };
+static Vec3f sStickFlameVelocity = { 0.0f, 0.5f, 0.0f };
+static Vec3f sStickFlameAccel = { 0.0f, 0.5f, 0.0f };
 
-static Color_RGBA8 D_808547BC = { 255, 255, 100, 255 };
-static Color_RGBA8 D_808547C0 = { 255, 50, 0, 0 };
+static Color_RGBA8 sStickFlamePrimColor = { 255, 255, 100, 255 };
+static Color_RGBA8 sStickFlameEnvColor = { 255, 50, 0, 0 };
 
-void func_80848A04(PlayState* play, Player* this) {
+void Player_UpdateDekuStick(PlayState* play, Player* this) {
     f32 newDekuStickLength;
 
     if (this->dekuStickLength == 0.0f) {
@@ -10169,8 +10169,9 @@ void func_80848A04(PlayState* play, Player* this) {
         this->dekuStickLength = newDekuStickLength;
     }
 
-    func_8002836C(play, &this->meleeWeaponInfo[0].tip, &D_808547A4, &D_808547B0, &D_808547BC, &D_808547C0,
-                  newDekuStickLength * 200.0f, 0, 8);
+    // Spawn flame effect
+    func_8002836C(play, &this->meleeWeaponInfo[0].tip, &sStickFlameVelocity, &sStickFlameAccel, &sStickFlamePrimColor,
+                  &sStickFlameEnvColor, newDekuStickLength * 200.0f, 0, 8);
 }
 
 void Player_ElectricShock(PlayState* play, Player* this) {
@@ -10392,7 +10393,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     func_80836BEC(this, play);
 
     if ((this->heldItemActionParam == PLAYER_AP_STICK) && (this->stickFlameTimer != 0)) {
-        func_80848A04(play, this);
+        Player_UpdateDekuStick(play, this);
     } else if ((this->heldItemActionParam == PLAYER_AP_FISHING_POLE) && (this->stickFlameTimer < 0)) {
         this->stickFlameTimer++;
     }
@@ -14382,14 +14383,14 @@ void Player_CutsceneSetupKnockedToGroundDamaged(PlayState* play, Player* this, C
     Player_PlayVoiceSfxForAge(this, NA_SE_VO_LI_FALL_L);
 }
 
-static void (*D_808551FC[])(Player* this, PlayState* play) = {
-    func_8084377C,
-    func_80843954,
-    func_80843A38,
+static void (*sCsKnockedToGroundDamagedFuncs[])(Player* this, PlayState* play) = {
+    Player_StartKnockback,
+    Player_DownFromKnockback,
+    Player_GetUpFromKnockback,
 };
 
 void Player_CutsceneKnockedToGroundDamaged(PlayState* play, Player* this, CsCmdActorAction* arg2) {
-    D_808551FC[this->genericTimer](this, play);
+    sCsKnockedToGroundDamagedFuncs[this->genericTimer](this, play);
 }
 
 void Player_CutsceneSetupGetSwordBack(PlayState* play, Player* this, CsCmdActorAction* arg2) {
