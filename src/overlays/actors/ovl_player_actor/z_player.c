@@ -1123,7 +1123,7 @@ static s8 sItemActionParams[] = {
     PLAYER_AP_SWORD_BGS,
 };
 
-static s32 (*sUpperBodyFuncs[])(Player* this, PlayState* play) = {
+static s32 (*sUpperBodyItemFuncs[])(Player* this, PlayState* play) = {
     Player_SetupBeginZTargetingDefend, Player_SetupBeginZTargetingDefend, Player_SetupBeginZTargetingDefend, Player_SetupBeginZTargetingDefend2, Player_SetupBeginZTargetingDefend2, Player_SetupBeginZTargetingDefend2, Player_SetupBeginZTargetingDefend,
     Player_SetupBeginZTargetingDefend, Player_HoldFpsItem, Player_HoldFpsItem, Player_HoldFpsItem, Player_HoldFpsItem, Player_HoldFpsItem, Player_HoldFpsItem,
     Player_HoldFpsItem, Player_HoldFpsItem, Player_HoldFpsItem, Player_HoldFpsItem, Player_HoldActor, Player_HoldActor, Player_HoldBoomerang,
@@ -2330,7 +2330,7 @@ void Player_SetupHeldItemUpperActionFunc(PlayState* play, Player* this) {
         Player_ChangeItemWithSfx(play, this);
     }
 
-    Player_SetUpperActionFunc(this, sUpperBodyFuncs[this->heldItemActionParam]);
+    Player_SetUpperActionFunc(this, sUpperBodyItemFuncs[this->heldItemActionParam]);
     this->fpsItemTimer = 0;
     this->idleCounter = 0;
     Player_DetatchHeldActor(play, this);
@@ -2425,7 +2425,7 @@ s32 Player_BeginChangeItem(Player* this, PlayState* play) {
         ((Player_ItemToActionParam(this->heldItemId) == this->heldItemActionParam) &&
          (sUsingItemAlreadyInHand =
               (sUsingItemAlreadyInHand || ((this->modelAnimType != PLAYER_ANIMTYPE_HOLDING_TWO_HAND_WEAPON) && (play->shootingGalleryStatus == 0)))))) {
-        Player_SetUpperActionFunc(this, sUpperBodyFuncs[this->heldItemActionParam]);
+        Player_SetUpperActionFunc(this, sUpperBodyItemFuncs[this->heldItemActionParam]);
         this->fpsItemTimer = 0;
         this->idleCounter = 0;
         sUsingItemAlreadyInHand2 = sUsingItemAlreadyInHand;
@@ -2476,7 +2476,7 @@ s32 Player_EndDefend(Player* this, PlayState* play) {
     sUsingItemAlreadyInHand = sUsingItemAlreadyInHand2;
 
     if (sUsingItemAlreadyInHand || LinkAnimation_Update(play, &this->skelAnimeUpper)) {
-        Player_SetUpperActionFunc(this, sUpperBodyFuncs[this->heldItemActionParam]);
+        Player_SetUpperActionFunc(this, sUpperBodyItemFuncs[this->heldItemActionParam]);
         LinkAnimation_PlayLoop(play, &this->skelAnimeUpper, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_STANDING_STILL, this->modelAnimType));
         this->idleCounter = 0;
         this->upperActionFunc(this, play);
@@ -3406,7 +3406,7 @@ static s32 (*sSubActions[])(Player* this, PlayState* play) = {
     Player_SetupGetItemOrHoldBehavior, // 2
     Player_SetupMountHorse,            // 3
     Player_SetupSpeakOrCheck,          // 4
-    Player_SetupBeginGrabPushPullWall,      // 5
+    Player_SetupBeginGrabPushPullWall, // 5
     Player_SetupRollOrPutAway,         // 6
     Player_SetupMeleeWeaponAttack,     // 7
     Player_SetupStartChargeSpinAttack, // 8
@@ -10339,7 +10339,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     //     }
     // }
     // GfxPrint_SetPos(&printer, 2, 11);
-    // GfxPrint_Printf(&printer, "idleAnimType: %d", Player_IsPlayingIdleAnim(this));
+    // GfxPrint_Printf(&printer, "comboTimer: %d", this->comboTimer);
 
     // gfx = GfxPrint_Close(&printer);
     // GfxPrint_Destroy(&printer);
