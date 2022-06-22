@@ -561,6 +561,13 @@ typedef enum {
 } PlayerFpsItems;
 
 typedef enum {
+    /* -1 */ PLAYER_SHOOTSTATE_NONE = -1,
+    /*  0 */ PLAYER_SHOOTSTATE_DEFAULT,
+    /*  1 */ PLAYER_SHOOTSTATE_FIRE,
+    /*  2 */ PLAYER_SHOOTSTATE_MAX
+} PlayerFpsShootState;
+
+typedef enum {
     /* 0 */ PLAYER_DMGREACTION_DEFAULT,
     /* 1 */ PLAYER_DMGREACTION_KNOCKBACK,
     /* 2 */ PLAYER_DMGREACTION_HOP,
@@ -675,7 +682,7 @@ typedef struct {
 #define PLAYER_STATE1_INPUT_DISABLED (1 << 5)
 #define PLAYER_STATE1_TALKING (1 << 6)
 #define PLAYER_STATE1_IN_DEATH_CUTSCENE (1 << 7)
-#define PLAYER_STATE1_USE_ITEM_IMMEDIATELY (1 << 8)
+#define PLAYER_STATE1_BEGIN_CHANGE_ITEM (1 << 8)
 #define PLAYER_STATE1_PREPARED_TO_SHOOT (1 << 9)
 #define PLAYER_STATE1_GETTING_ITEM (1 << 10)
 #define PLAYER_STATE1_HOLDING_ACTOR (1 << 11)
@@ -834,7 +841,7 @@ typedef struct Player {
     /* 0x06A0 */ f32        unk_6A0;
     /* 0x06A4 */ f32        unk_6A4;
     /* 0x06A8 */ Actor*     ocarinaActor;
-    /* 0x06AC */ s8         unk_6AC;
+    /* 0x06AC */ s8         idleCounter;
     /* 0x06AD */ u8         attentionMode;
     /* 0x06AE */ u16        lookFlags;
     /* 0x06B0 */ s16        unk_6B0;
@@ -849,7 +856,7 @@ typedef struct Player {
     /* 0x082C */ PlayerUpperActionFunc upperActionFunc;
     /* 0x0830 */ f32        unk_830;
     /* 0x0834 */ s16        fpsItemTimer;
-    /* 0x0836 */ s8         unk_836;
+    /* 0x0836 */ s8         fpsItemShootState;
     /* 0x0837 */ u8         unk_837;
     /* 0x0838 */ f32        linearVelocity;
     /* 0x083C */ s16        currentYaw;
@@ -887,7 +894,7 @@ typedef struct Player {
         /* 0x0860 */ s16 stickFlameTimer;
         /* 0x0860 */ s16 fishingState;
     };
-    /* 0x0862 */ s8         unk_862; // get item draw ID + 1
+    /* 0x0862 */ s8         giDrawIdPlusOne; // get item draw ID + 1
     /* 0x0864 */ f32        unk_864;
     /* 0x0868 */ f32        walkFrame;
     /* 0x086C */ f32        unk_86C;

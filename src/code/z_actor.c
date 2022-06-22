@@ -970,18 +970,18 @@ f32 func_8002DCE4(Player* player) {
     }
 }
 
-s32 Actor_PlayerIsAimingFPSItem(Player* player) {
+s32 Actor_PlayerIsAimingFpsItem(Player* player) {
     return player->stateFlags1 & PLAYER_STATE1_AIMING_FPS_ITEM;
 }
 
-s32 Actor_PlayerIsAimingPrimedFPSItem(Player* player) {
-    return Actor_PlayerIsAimingFPSItem(player) && player->fpsItemTimer;
+s32 Actor_PlayerIsAimingPrimedFpsItem(Player* player) {
+    return Actor_PlayerIsAimingFpsItem(player) && player->fpsItemTimer;
 }
 
 s32 func_8002DDA8(PlayState* play) {
     Player* player = GET_PLAYER(play);
 
-    return (player->stateFlags1 & PLAYER_STATE1_HOLDING_ACTOR) || Actor_PlayerIsAimingPrimedFPSItem(player);
+    return (player->stateFlags1 & PLAYER_STATE1_HOLDING_ACTOR) || Actor_PlayerIsAimingPrimedFpsItem(player);
 }
 
 s32 Actor_PlayerIsMakingLoudNoise(PlayState* play) {

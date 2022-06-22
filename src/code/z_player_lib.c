@@ -1315,7 +1315,7 @@ void Player_DrawGetItemImpl(PlayState* play, Player* this, Vec3f* refPos, s32 dr
 void Player_DrawGetItem(PlayState* play, Player* this) {
     if (!this->giObjectLoading || osRecvMesg(&this->giObjectLoadQueue, NULL, OS_MESG_NOBLOCK) == 0) {
         this->giObjectLoading = false;
-        Player_DrawGetItemImpl(play, this, &sGetItemRefPos, ABS(this->unk_862));
+        Player_DrawGetItemImpl(play, this, &sGetItemRefPos, ABS(this->giDrawIdPlusOne));
     }
 }
 
@@ -1593,7 +1593,7 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
                     Matrix_MtxFToYXZRotS(&sp44, &heldActor->world.rot, 0);
                     heldActor->shape.rot = heldActor->world.rot;
 
-                    if (Actor_PlayerIsAimingPrimedFPSItem(this) != 0) {
+                    if (Actor_PlayerIsAimingPrimedFpsItem(this) != 0) {
                         Matrix_Translate(500.0f, 300.0f, 0.0f, MTXMODE_APPLY);
                         Player_DrawHookshotReticle(
                             play, this, (this->heldItemActionParam == PLAYER_AP_HOOKSHOT) ? 38600.0f : 77600.0f);
@@ -1601,8 +1601,8 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
                 }
             }
 
-            if ((this->unk_862 != 0) || ((Actor_PlayerIsAimingFPSItem(this) == 0) && (heldActor != NULL))) {
-                if (!(this->stateFlags1 & PLAYER_STATE1_GETTING_ITEM) && (this->unk_862 != 0) &&
+            if ((this->giDrawIdPlusOne != 0) || ((Actor_PlayerIsAimingFpsItem(this) == 0) && (heldActor != NULL))) {
+                if (!(this->stateFlags1 & PLAYER_STATE1_GETTING_ITEM) && (this->giDrawIdPlusOne != 0) &&
                     (this->exchangeItemId != EXCH_ITEM_NONE)) {
                     Math_Vec3f_Copy(&sGetItemRefPos, &this->leftHandPos);
                 } else {
@@ -1611,7 +1611,7 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
                     sGetItemRefPos.z = (this->bodyPartsPos[PLAYER_BODYPART_R_HAND].z + this->leftHandPos.z) * 0.5f;
                 }
 
-                if (this->unk_862 == 0) {
+                if (this->giDrawIdPlusOne == 0) {
                     Math_Vec3f_Copy(&heldActor->world.pos, &sGetItemRefPos);
                 }
             }
