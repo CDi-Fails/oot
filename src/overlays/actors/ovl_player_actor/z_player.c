@@ -129,7 +129,7 @@ typedef struct {
 
 void Player_DoNothing(PlayState* play, Player* this);
 void Player_DoNothing2(PlayState* play, Player* this);
-void Player_SetupBowOrHookshot(PlayState* play, Player* this);
+void Player_SetBowOrSlingshot(PlayState* play, Player* this);
 void Player_SetupDekuStick(PlayState* play, Player* this);
 void Player_SetupExplosive(PlayState* play, Player* this);
 void Player_SetupHookshot(PlayState* play, Player* this);
@@ -141,7 +141,7 @@ s32 Player_BeginChangeItem(Player* this, PlayState* play);
 s32 func_80834B5C(Player* this, PlayState* play);
 s32 Player_EndDefend(Player* this, PlayState* play);
 s32 Player_HoldFpsItem(Player* this, PlayState* play);
-s32 Player_PrimeFpsItemToShoot(Player* this, PlayState* play);
+s32 Player_ReadyFpsItemToShoot(Player* this, PlayState* play);
 s32 Player_AimFpsItem(Player* this, PlayState* play);
 s32 Player_EndAimFpsItem(Player* this, PlayState* play);
 s32 Player_HoldActor(Player* this, PlayState* play);
@@ -1138,8 +1138,8 @@ static s32 (*sUpperBodyFuncs[])(Player* this, PlayState* play) = {
 
 static void (*sItemChangeFuncs[])(PlayState* play, Player* this) = {
     Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_SetupDekuStick,
-    Player_DoNothing2, Player_SetupBowOrHookshot, Player_SetupBowOrHookshot, Player_SetupBowOrHookshot, Player_SetupBowOrHookshot, Player_SetupBowOrHookshot, Player_SetupBowOrHookshot,
-    Player_SetupBowOrHookshot, Player_SetupBowOrHookshot, Player_SetupHookshot, Player_SetupHookshot, Player_SetupExplosive, Player_SetupExplosive, Player_SetupBoomerang,
+    Player_DoNothing2, Player_SetBowOrSlingshot, Player_SetBowOrSlingshot, Player_SetBowOrSlingshot, Player_SetBowOrSlingshot, Player_SetBowOrSlingshot, Player_SetBowOrSlingshot,
+    Player_SetBowOrSlingshot, Player_SetBowOrSlingshot, Player_SetupHookshot, Player_SetupHookshot, Player_SetupExplosive, Player_SetupExplosive, Player_SetupBoomerang,
     Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing,
     Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing,
     Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing,
@@ -1342,7 +1342,7 @@ static u16 sUseItemButtons[] = { BTN_B, BTN_CLEFT, BTN_CDOWN, BTN_CRIGHT };
 
 static u8 sMagicSpellCosts[] = { 12, 24, 24, 12, 24, 12 };
 
-static u16 sFpsItemPrimedSfx[] = { NA_SE_IT_BOW_DRAW, NA_SE_IT_SLING_DRAW, NA_SE_IT_HOOKSHOT_READY };
+static u16 sFpsItemReadySfx[] = { NA_SE_IT_BOW_DRAW, NA_SE_IT_SLING_DRAW, NA_SE_IT_HOOKSHOT_READY };
 
 static u8 sMagicArrowCosts[] = { 4, 4, 8 };
 
@@ -1371,12 +1371,12 @@ static LinkAnimationHeader* sDeflectWithShieldAnims[] = {
     &gPlayerAnim_002A08,
 };
 
-static LinkAnimationHeader* sPrimeFpsItemWhileWalkingAnims[] = {
+static LinkAnimationHeader* sReadyFpsItemWhileWalkingAnims[] = {
     &gPlayerAnim_0026F0,
     &gPlayerAnim_002CC8,
 };
 
-static LinkAnimationHeader* sPrimeFpsItemAnims[] = {
+static LinkAnimationHeader* sReadyFpsItemAnims[] = {
     &gPlayerAnim_0026C0,
     &gPlayerAnim_002CC0,
 };
@@ -1866,12 +1866,12 @@ LinkAnimationHeader* Player_GetRunningAnim(Player* this) {
     }
 }
 
-s32 Player_IsAimingPrimedBoomerang(Player* this) {
+s32 Player_IsAimingReadyBoomerang(Player* this) {
     return Player_IsAimingBoomerang(this) && (this->fpsItemTimer != 0);
 }
 
 LinkAnimationHeader* Player_GetFightingRightAnim(Player* this) {
-    if (Player_IsAimingPrimedBoomerang(this)) {
+    if (Player_IsAimingReadyBoomerang(this)) {
         return &gPlayerAnim_002638;
     } else {
         return GET_PLAYER_ANIM(PLAYER_ANIMGROUP_FIGHTING_RIGHT_OF_ENEMY, this->modelAnimType);
@@ -1879,7 +1879,7 @@ LinkAnimationHeader* Player_GetFightingRightAnim(Player* this) {
 }
 
 LinkAnimationHeader* Player_GetFightingLeftAnim(Player* this) {
-    if (Player_IsAimingPrimedBoomerang(this)) {
+    if (Player_IsAimingReadyBoomerang(this)) {
         return &gPlayerAnim_002630;
     } else {
         return GET_PLAYER_ANIM(PLAYER_ANIMGROUP_FIGHTING_LEFT_OF_ENEMY, this->modelAnimType);
@@ -1887,7 +1887,7 @@ LinkAnimationHeader* Player_GetFightingLeftAnim(Player* this) {
 }
 
 LinkAnimationHeader* Player_GetEndSidewalkAnim(Player* this) {
-    if (Actor_PlayerIsAimingPrimedFpsItem(this)) {
+    if (Actor_PlayerIsAimingReadyFpsItem(this)) {
         return &gPlayerAnim_0026E8;
     } else {
         return GET_PLAYER_ANIM(PLAYER_ANIMGROUP_END_SIDEWALKING, this->modelAnimType);
@@ -1895,7 +1895,7 @@ LinkAnimationHeader* Player_GetEndSidewalkAnim(Player* this) {
 }
 
 LinkAnimationHeader* Player_GetSidewalkRightAnim(Player* this) {
-    if (Player_IsAimingPrimedBoomerang(this)) {
+    if (Player_IsAimingReadyBoomerang(this)) {
         return &gPlayerAnim_002620;
     } else {
         return GET_PLAYER_ANIM(PLAYER_ANIMGROUP_SIDEWALKING_RIGHT, this->modelAnimType);
@@ -1903,7 +1903,7 @@ LinkAnimationHeader* Player_GetSidewalkRightAnim(Player* this) {
 }
 
 LinkAnimationHeader* Player_GetSidewalkLeftAnim(Player* this) {
-    if (Player_IsAimingPrimedBoomerang(this)) {
+    if (Player_IsAimingReadyBoomerang(this)) {
         return &gPlayerAnim_002618;
     } else {
         return GET_PLAYER_ANIM(PLAYER_ANIMGROUP_SIDEWALKING_LEFT, this->modelAnimType);
@@ -1960,13 +1960,13 @@ void Player_SetupDekuStick(PlayState* play, Player* this) {
 void Player_DoNothing2(PlayState* play, Player* this) {
 }
 
-void Player_SetupBowOrHookshot(PlayState* play, Player* this) {
+void Player_SetBowOrSlingshot(PlayState* play, Player* this) {
     this->stateFlags1 |= PLAYER_STATE1_AIMING_FPS_ITEM;
 
     if (this->heldItemActionParam != PLAYER_AP_SLINGSHOT) {
-        this->fpsItemType = PLAYER_FPSITEM_BOW_UNPRIMED;
+        this->fpsItemType = PLAYER_FPSITEM_BOW;
     } else {
-        this->fpsItemType = PLAYER_FPSITEM_SLINGSHOT_UNPRIMED;
+        this->fpsItemType = PLAYER_FPSITEM_SLINGSHOT;
     }
 }
 
@@ -2006,7 +2006,7 @@ void Player_SetupExplosive(PlayState* play, Player* this) {
 
 void Player_SetupHookshot(PlayState* play, Player* this) {
     this->stateFlags1 |= PLAYER_STATE1_AIMING_FPS_ITEM;
-    this->fpsItemType = PLAYER_FPSITEM_HOOKSHOT_UNPRIMED;
+    this->fpsItemType = PLAYER_FPSITEM_HOOKSHOT;
 
     this->heldActor =
         Actor_SpawnAsChild(&play->actorCtx, &this->actor, play, ACTOR_ARMS_HOOK, this->actor.world.pos.x,
@@ -2036,10 +2036,10 @@ void Player_MeleeAttack(Player* this, s32 attackFlag) {
     u16 itemSfx;
     u16 voiceSfx;
 
-    if (this->isMeleeWeaponAttacking == 0) {
+    if (this->isMeleeWeaponAttacking == false) {
         if ((this->heldItemActionParam == PLAYER_AP_SWORD_BGS) && (gSaveContext.swordHealth > 0.0f)) {
             itemSfx = NA_SE_IT_HAMMER_SWING;
-        } else {
+        } else { 
             itemSfx = NA_SE_IT_SWORD_SWING;
         }
 
@@ -2231,7 +2231,7 @@ void Player_SetupBeginChangeItem(Player* this, PlayState* play) {
     this->stateFlags1 &= ~PLAYER_STATE1_BEGIN_CHANGE_ITEM;
 }
 
-void Player_SetupItemStart(Player* this, PlayState* play) {
+void Player_SetupItem(Player* this, PlayState* play) {
     if ((this->actor.category == ACTORCAT_PLAYER) && !(this->stateFlags1 & PLAYER_STATE1_BEGIN_CHANGE_ITEM) &&
         ((this->heldItemActionParam == this->itemActionParam) || (this->stateFlags1 & PLAYER_STATE1_SHIELDING)) &&
         (gSaveContext.health != 0) && (play->csCtx.state == CS_STATE_IDLE) && (this->csMode == PLAYER_CSMODE_NONE) &&
@@ -2268,7 +2268,7 @@ s32 Player_SetupFpsItemAmmo(PlayState* play, Player* this, s32* itemPtr, s32* ty
     }
 }
 
-s32 Player_SetupPrimeFpsItemToShoot(Player* this, PlayState* play) {
+s32 Player_SetupReadyFpsItemToShoot(Player* this, PlayState* play) {
     s32 item;
     s32 arrowType;
     s32 magicArrowType;
@@ -2277,13 +2277,13 @@ s32 Player_SetupPrimeFpsItemToShoot(Player* this, PlayState* play) {
         (gSaveContext.magicState != MAGIC_STATE_IDLE)) {
         func_80078884(NA_SE_SY_ERROR);
     } else {
-        Player_SetUpperActionFunc(this, Player_PrimeFpsItemToShoot);
+        Player_SetUpperActionFunc(this, Player_ReadyFpsItemToShoot);
 
-        this->stateFlags1 |= PLAYER_STATE1_PREPARED_TO_SHOOT;
+        this->stateFlags1 |= PLAYER_STATE1_READY_TO_SHOOT;
         this->fpsItemTimer = 14;
 
         if (this->fpsItemType >= PLAYER_FPSITEM_NONE) {
-            func_8002F7DC(&this->actor, sFpsItemPrimedSfx[ABS(this->fpsItemType) - 1]);
+            func_8002F7DC(&this->actor, sFpsItemReadySfx[ABS(this->fpsItemType) - 1]);
 
             if (!Player_HoldsHookshot(this) && (Player_SetupFpsItemAmmo(play, this, &item, &arrowType) > 0)) {
                 magicArrowType = arrowType - ARROW_FIRE;
@@ -2402,7 +2402,7 @@ void Player_SetupChangeItem(PlayState* play, Player* this) {
 }
 
 s32 func_8083499C(Player* this, PlayState* play) {
-    // Never passes due to Player_SetupItemStart running first, which ends up in PLAYER_STATE1_BEGIN_CHANGE_ITEM being unset
+    // Never passes due to Player_SetupItem running first, which ends up in PLAYER_STATE1_BEGIN_CHANGE_ITEM being unset
     if (this->stateFlags1 & PLAYER_STATE1_BEGIN_CHANGE_ITEM) {
         Player_SetupBeginChangeItem(this, play);
     } else {
@@ -2486,11 +2486,11 @@ s32 Player_EndDefend(Player* this, PlayState* play) {
     return 1;
 }
 
-s32 Player_SetupFpsItems(Player* this, PlayState* play) {
+s32 Player_SetupUseFpsItem(Player* this, PlayState* play) {
     LinkAnimationHeader* anim;
 
     if (this->heldItemActionParam != PLAYER_AP_BOOMERANG) {
-        if (!Player_SetupPrimeFpsItemToShoot(this, play)) {
+        if (!Player_SetupReadyFpsItemToShoot(this, play)) {
             return 0;
         }
 
@@ -2539,7 +2539,7 @@ s32 Player_SetupAimAttention(Player* this, PlayState* play) {
 s32 Player_CanUseFpsItem(Player* this, PlayState* play) {
     if ((this->doorType == PLAYER_DOORTYPE_NONE) && !(this->stateFlags1 & PLAYER_STATE1_AWAITING_THROWN_BOOMERANG)) {
         if (sUsingItemAlreadyInHand || Player_CheckShootingGalleryShootInput(play)) {
-            if (Player_SetupFpsItems(this, play)) {
+            if (Player_SetupUseFpsItem(this, play)) {
                 return Player_SetupAimAttention(this, play);
             }
         }
@@ -2613,7 +2613,7 @@ s32 Player_UpdateShotFpsItem(PlayState* play, Player* this) {
 
 static u16 sFpsItemNoAmmoSfx[] = { NA_SE_IT_BOW_FLICK, NA_SE_IT_SLING_FLICK };
 
-s32 Player_PrimeFpsItemToShoot(Player* this, PlayState* play) {
+s32 Player_ReadyFpsItemToShoot(Player* this, PlayState* play) {
     s32 holdingHookshot;
 
     if (!Player_HoldsHookshot(this)) {
@@ -2626,10 +2626,10 @@ s32 Player_PrimeFpsItemToShoot(Player* this, PlayState* play) {
     this->lookFlags |= PLAYER_LOOKFLAGS_OVERRIDE_UPPERBODY_ROT_Z;
 
     if ((this->fpsItemShootState == 0) && (Player_IsPlayingIdleAnim(this) == 0) && (this->skelAnime.animation == &gPlayerAnim_0026E8)) {
-        LinkAnimation_PlayOnce(play, &this->skelAnimeUpper, sPrimeFpsItemWhileWalkingAnims[holdingHookshot]);
+        LinkAnimation_PlayOnce(play, &this->skelAnimeUpper, sReadyFpsItemWhileWalkingAnims[holdingHookshot]);
         this->fpsItemShootState = -1;
     } else if (LinkAnimation_Update(play, &this->skelAnimeUpper)) {
-        LinkAnimation_PlayLoop(play, &this->skelAnimeUpper, sPrimeFpsItemAnims[holdingHookshot]);
+        LinkAnimation_PlayLoop(play, &this->skelAnimeUpper, sReadyFpsItemAnims[holdingHookshot]);
         this->fpsItemShootState = 1;
     } else if (this->fpsItemShootState == 1) {
         this->fpsItemShootState = 2;
@@ -2655,7 +2655,7 @@ s32 Player_PrimeFpsItemToShoot(Player* this, PlayState* play) {
         this->fpsItemTimer = 10;
         Player_StopMovement(this);
     } else {
-        this->stateFlags1 |= PLAYER_STATE1_PREPARED_TO_SHOOT;
+        this->stateFlags1 |= PLAYER_STATE1_READY_TO_SHOOT;
     }
 
     return 1;
@@ -2671,7 +2671,7 @@ s32 Player_AimFpsItem(Player* this, PlayState* play) {
     if (!Player_BeginZTargetingDefend(play, this) && (sUsingItemAlreadyInHand || ((this->fpsItemType < PLAYER_FPSITEM_NONE) && sUsingItemAlreadyInHand2) || Player_CheckShootingGalleryShootInput(play))) {
         this->fpsItemType = ABS(this->fpsItemType);
 
-        if (Player_SetupPrimeFpsItemToShoot(this, play)) {
+        if (Player_SetupReadyFpsItemToShoot(this, play)) {
             if (Player_HoldsHookshot(this)) {
                 this->fpsItemShootState = 1;
             } else {
@@ -3107,7 +3107,7 @@ s32 Player_SetupCurrentUpperAction(Player* this, PlayState* play) {
     }
 
     if (Player_CanUseItem(this)) {
-        Player_SetupItemStart(this, play);
+        Player_SetupItem(this, play);
         if (Player_ThrowDekuNut == this->actionFunc) {
             return 1;
         }
@@ -6040,7 +6040,7 @@ void func_8083DC54(Player* this, PlayState* play) {
     Vec3f sp34;
 
     if (this->targetActor != NULL) {
-        if (Actor_PlayerIsAimingPrimedFpsItem(this) || Player_IsAimingPrimedBoomerang(this)) {
+        if (Actor_PlayerIsAimingReadyFpsItem(this) || Player_IsAimingReadyBoomerang(this)) {
             Player_LookAtTargetActor(this, 1);
         } else {
             Player_LookAtTargetActor(this, 0);
@@ -6061,14 +6061,14 @@ void func_8083DC54(Player* this, PlayState* play) {
         Math_SmoothStepToS(&this->actor.focus.rot.x, sp46, 14, 4000, 30);
     }
 
-    Player_UpdateLookAngles(this, Actor_PlayerIsAimingPrimedFpsItem(this) || Player_IsAimingPrimedBoomerang(this));
+    Player_UpdateLookAngles(this, Actor_PlayerIsAimingReadyFpsItem(this) || Player_IsAimingReadyBoomerang(this));
 }
 
 void func_8083DDC8(Player* this, PlayState* play) {
     s16 targetPitch;
     s16 targetRoll;
 
-    if (!Actor_PlayerIsAimingPrimedFpsItem(this) && !Player_IsAimingPrimedBoomerang(this) && (this->linearVelocity > 5.0f)) {
+    if (!Actor_PlayerIsAimingReadyFpsItem(this) && !Player_IsAimingReadyBoomerang(this) && (this->linearVelocity > 5.0f)) {
         targetPitch = this->linearVelocity * 200.0f;
         targetRoll = (s16)(this->currentYaw - this->actor.shape.rot.y) * this->linearVelocity * 0.1f;
         targetPitch = CLAMP(targetPitch, -4000, 4000);
@@ -6778,7 +6778,7 @@ s32 Player_GetUnfriendlyZTargetMoveDirection(Player* this, f32 targetVelocity, s
     f32 yawRatio;
 
     if (this->targetActor != NULL) {
-        Player_LookAtTargetActor(this, Actor_PlayerIsAimingPrimedFpsItem(this) || Player_IsAimingPrimedBoomerang(this));
+        Player_LookAtTargetActor(this, Actor_PlayerIsAimingReadyFpsItem(this) || Player_IsAimingReadyBoomerang(this));
     }
 
     // Divide by 180 degrees
@@ -6798,7 +6798,7 @@ s32 Player_GetFriendlyZTargetingMoveDirection(Player* this, f32* targetVelocity,
     s16 sp2E = *targetYaw - this->targetYaw;
     u16 sp2C = ABS(sp2E);
 
-    if ((Actor_PlayerIsAimingPrimedFpsItem(this) || Player_IsAimingPrimedBoomerang(this)) && (this->targetActor == NULL)) {
+    if ((Actor_PlayerIsAimingReadyFpsItem(this) || Player_IsAimingReadyBoomerang(this)) && (this->targetActor == NULL)) {
         *targetVelocity *= Math_SinS(sp2C);
 
         if (*targetVelocity != 0.0f) {
@@ -9674,7 +9674,7 @@ void func_808473D4(PlayState* play, Player* this) {
                         } else {
                             doAction = DO_ACTION_CHECK;
                         }
-                    } else if (!Actor_PlayerIsAimingPrimedFpsItem(this) && !(this->stateFlags1 & PLAYER_STATE1_IN_FIRST_PERSON_MODE)) {
+                    } else if (!Actor_PlayerIsAimingReadyFpsItem(this) && !(this->stateFlags1 & PLAYER_STATE1_IN_FIRST_PERSON_MODE)) {
                         doAction = DO_ACTION_FASTER;
                     }
                 } else if ((this->stateFlags2 & PLAYER_STATE2_CAN_SPEAK_OR_CHECK) && (this->talkActor != NULL)) {
@@ -10095,7 +10095,7 @@ void Player_UpdateCamAndSeqModes(PlayState* play, Player* this) {
                     camMode = CAM_MODE_HANG;
                 }
             } else if (this->stateFlags1 & (PLAYER_STATE1_Z_TARGETING_FRIENDLY | PLAYER_STATE1_30)) {
-                if (Actor_PlayerIsAimingPrimedFpsItem(this) || Player_IsAimingPrimedBoomerang(this)) {
+                if (Actor_PlayerIsAimingReadyFpsItem(this) || Player_IsAimingReadyBoomerang(this)) {
                     camMode = CAM_MODE_BOWARROWZ;
                 } else if (this->stateFlags1 & PLAYER_STATE1_CLIMBING) {
                     camMode = CAM_MODE_CLIMBZ;
@@ -10627,7 +10627,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
             this->stateFlags2 &= ~(PLAYER_STATE2_CAN_SPEAK_OR_CHECK | PLAYER_STATE2_NAVI_REQUESTING_TALK);
         }
 
-        this->stateFlags1 &= ~(PLAYER_STATE1_SWINGING_BOTTLE | PLAYER_STATE1_PREPARED_TO_SHOOT | PLAYER_STATE1_CHARGING_SPIN_ATTACK | PLAYER_STATE1_SHIELDING);
+        this->stateFlags1 &= ~(PLAYER_STATE1_SWINGING_BOTTLE | PLAYER_STATE1_READY_TO_SHOOT | PLAYER_STATE1_CHARGING_SPIN_ATTACK | PLAYER_STATE1_SHIELDING);
         this->stateFlags2 &= ~(PLAYER_STATE2_CAN_GRAB_PUSH_PULL_WALL | PLAYER_STATE2_CAN_CLIMB_PUSH_PULL_WALL | PLAYER_STATE2_MAKING_REACTABLE_NOISE | PLAYER_STATE2_DISABLE_MOVE_ROTATION_WHILE_Z_TARGETING | PLAYER_STATE2_ALWAYS_DISABLE_MOVE_ROTATION |
                                PLAYER_STATE2_ENABLE_PUSH_PULL_CAM | PLAYER_STATE2_SPAWN_DUST_AT_FEET | PLAYER_STATE2_IDLE_WHILE_CLIMBING | PLAYER_STATE2_FROZEN_IN_ICE |
                                PLAYER_STATE2_CAN_ENTER_CRAWLSPACE | PLAYER_STATE2_CAN_DISMOUNT_HORSE | PLAYER_STATE2_ENABLE_REFLECTION);
@@ -11002,7 +11002,7 @@ s16 func_8084ABD8(PlayState* play, Player* this, s32 arg2, s16 arg3) {
     s16 temp2;
     s16 temp3;
 
-    if (!Actor_PlayerIsAimingPrimedFpsItem(this) && !Player_IsAimingPrimedBoomerang(this) && (arg2 == 0)) {
+    if (!Actor_PlayerIsAimingReadyFpsItem(this) && !Player_IsAimingReadyBoomerang(this) && (arg2 == 0)) {
         temp2 = sControlInput->rel.stick_y * 240.0f;
         Math_SmoothStepToS(&this->actor.focus.rot.x, temp2, 14, 4000, 30);
 
@@ -11025,7 +11025,7 @@ s16 func_8084ABD8(PlayState* play, Player* this, s32 arg2, s16 arg3) {
     }
 
     this->lookFlags |= PLAYER_LOOKFLAGS_OVERRIDE_FOCUS_ROT_Y;
-    return Player_UpdateLookAngles(this, (play->shootingGalleryStatus != 0) || Actor_PlayerIsAimingPrimedFpsItem(this) || Player_IsAimingPrimedBoomerang(this)) - arg3;
+    return Player_UpdateLookAngles(this, (play->shootingGalleryStatus != 0) || Actor_PlayerIsAimingReadyFpsItem(this) || Player_IsAimingReadyBoomerang(this)) - arg3;
 }
 
 void Player_UpdateSwimMovement(Player* this, f32* linearVelocity, f32 targetVelocity, s16 targetYaw) {
@@ -11133,7 +11133,7 @@ void func_8084B1D8(Player* this, PlayState* play) {
     if ((this->csMode != PLAYER_CSMODE_NONE) || (this->attentionMode == PLAYER_ATTENTIONMODE_NONE) || (this->attentionMode >= PLAYER_ATTENTIONMODE_ITEM_CUTSCENE) || Player_SetupBeginUnfriendlyZTargeting(this) ||
         (this->targetActor != NULL) || !Player_SetupCameraMode(play, this) ||
         (((this->attentionMode == PLAYER_ATTENTIONMODE_AIMING) && (CHECK_BTN_ANY(sControlInput->press.button, BTN_A | BTN_B | BTN_R) ||
-                                   Player_IsFriendlyZTargeting(this) || (!Actor_PlayerIsAimingPrimedFpsItem(this) && !Player_IsAimingPrimedBoomerang(this)))) ||
+                                   Player_IsFriendlyZTargeting(this) || (!Actor_PlayerIsAimingReadyFpsItem(this) && !Player_IsAimingReadyBoomerang(this)))) ||
          ((this->attentionMode == PLAYER_ATTENTIONMODE_C_UP) &&
           CHECK_BTN_ANY(sControlInput->press.button,
                         BTN_A | BTN_B | BTN_R | BTN_CUP | BTN_CLEFT | BTN_CRIGHT | BTN_CDOWN)))) {
@@ -11981,7 +11981,7 @@ void Player_RideHorse(Player* this, PlayState* play) {
 
         if ((this->csMode != PLAYER_CSMODE_NONE) || (!func_8084C9BC(this, play) && !Player_SetupItemCutsceneOrCUp(this, play))) {
             if (this->targetActor != NULL) {
-                if (Actor_PlayerIsAimingPrimedFpsItem(this) != 0) {
+                if (Actor_PlayerIsAimingReadyFpsItem(this) != 0) {
                     this->upperBodyRot.y = Player_LookAtTargetActor(this, 1) - this->actor.shape.rot.y;
                     this->upperBodyRot.y = CLAMP(this->upperBodyRot.y, -0x4AAA, 0x4AAA);
                     this->actor.focus.rot.y = this->actor.shape.rot.y + this->upperBodyRot.y;
@@ -11991,7 +11991,7 @@ void Player_RideHorse(Player* this, PlayState* play) {
                     Player_LookAtTargetActor(this, 0);
                 }
             } else {
-                if (Actor_PlayerIsAimingPrimedFpsItem(this) != 0) {
+                if (Actor_PlayerIsAimingReadyFpsItem(this) != 0) {
                     this->upperBodyRot.y = func_8084ABD8(play, this, 1, -5000) - this->actor.shape.rot.y;
                     this->upperBodyRot.y += 5000;
                     this->unk_6B0 = -5000;

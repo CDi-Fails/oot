@@ -1503,7 +1503,7 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
 
         if (this->actor.scale.y >= 0.0f) {
             if (!Player_HoldsHookshot(this) && ((hookedActor = this->heldActor) != NULL)) {
-                if (this->stateFlags1 & PLAYER_STATE1_PREPARED_TO_SHOOT) {
+                if (this->stateFlags1 & PLAYER_STATE1_READY_TO_SHOOT) {
                     Matrix_MultVec3f(&D_80126128, &hookedActor->world.pos);
                     Matrix_RotateZYX(0x69E8, -0x5708, 0x458E, MTXMODE_APPLY);
                     Matrix_Get(&sp14C);
@@ -1540,7 +1540,7 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
             Matrix_Push();
             Matrix_Translate(stringData->pos.x, stringData->pos.y, stringData->pos.z, MTXMODE_APPLY);
 
-            if ((this->stateFlags1 & PLAYER_STATE1_PREPARED_TO_SHOOT) && (this->fpsItemType >= 0) && (this->fpsItemTimer <= 10)) {
+            if ((this->stateFlags1 & PLAYER_STATE1_READY_TO_SHOOT) && (this->fpsItemType >= 0) && (this->fpsItemTimer <= 10)) {
                 Vec3f sp90;
                 f32 distXYZ;
 
@@ -1593,7 +1593,7 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
                     Matrix_MtxFToYXZRotS(&sp44, &heldActor->world.rot, 0);
                     heldActor->shape.rot = heldActor->world.rot;
 
-                    if (Actor_PlayerIsAimingPrimedFpsItem(this) != 0) {
+                    if (Actor_PlayerIsAimingReadyFpsItem(this) != 0) {
                         Matrix_Translate(500.0f, 300.0f, 0.0f, MTXMODE_APPLY);
                         Player_DrawHookshotReticle(
                             play, this, (this->heldItemActionParam == PLAYER_AP_HOOKSHOT) ? 38600.0f : 77600.0f);
