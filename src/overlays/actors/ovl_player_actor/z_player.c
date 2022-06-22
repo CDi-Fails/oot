@@ -141,7 +141,7 @@ s32 Player_BeginChangeItem(Player* this, PlayState* play);
 s32 func_80834B5C(Player* this, PlayState* play);
 s32 Player_EndDefend(Player* this, PlayState* play);
 s32 Player_HoldFpsItem(Player* this, PlayState* play);
-s32 Player_SetupShootFpsItem(Player* this, PlayState* play);
+s32 Player_PrimeFpsItemToShoot(Player* this, PlayState* play);
 s32 Player_AimFpsItem(Player* this, PlayState* play);
 s32 Player_EndAimFpsItem(Player* this, PlayState* play);
 s32 Player_HoldActor(Player* this, PlayState* play);
@@ -1913,7 +1913,7 @@ LinkAnimationHeader* Player_GetSidewalkLeftAnim(Player* this) {
 void Player_SetUpperActionFunc(Player* this, PlayerUpperActionFunc arg1) {
     this->upperActionFunc = arg1;
     this->fpsItemShootState = 0;
-    this->unk_830 = 0.0f;
+    this->upperInterpWeight = 0.0f;
     Player_StopInterruptableSfx(this);
 }
 
@@ -2099,11 +2099,11 @@ s32 Player_IsZTargetingSetupBeginUnfriendly(Player* this) {
     return Player_SetupBeginUnfriendlyZTargeting(this) || Player_IsFriendlyZTargeting(this);
 }
 
-void func_80833C3C(Player* this) {
+void Player_ResetLeftRightBlendWeight(Player* this) {
     this->leftRightBlendWeight = this->leftRightBlendWeightTarget = 0.0f;
 }
 
-s32 func_80833C50(Player* this, s32 item) {
+s32 Player_IsItemValid(Player* this, s32 item) {
     if ((item < ITEM_NONE_FE) && (Player_ItemToActionParam(item) == this->itemActionParam)) {
         return 1;
     } else {
@@ -2111,7 +2111,7 @@ s32 func_80833C50(Player* this, s32 item) {
     }
 }
 
-s32 func_80833C98(s32 item1, s32 actionParam) {
+s32 Player_IsWearableMaskValid(s32 item1, s32 actionParam) {
     if ((item1 < ITEM_NONE_FE) && (Player_ItemToActionParam(item1) == actionParam)) {
         return 1;
     } else {
@@ -2142,16 +2142,16 @@ void Player_SetupUseItem(Player* this, PlayState* play) {
 
     if (this->currentMask != PLAYER_MASK_NONE) {
         maskActionParam = this->currentMask - 1 + PLAYER_AP_MASK_KEATON;
-        if (!func_80833C98(C_BTN_ITEM(0), maskActionParam) && !func_80833C98(C_BTN_ITEM(1), maskActionParam) &&
-            !func_80833C98(C_BTN_ITEM(2), maskActionParam)) {
+        if (!Player_IsWearableMaskValid(C_BTN_ITEM(0), maskActionParam) && !Player_IsWearableMaskValid(C_BTN_ITEM(1), maskActionParam) &&
+            !Player_IsWearableMaskValid(C_BTN_ITEM(2), maskActionParam)) {
             this->currentMask = PLAYER_MASK_NONE;
         }
     }
 
     if (!(this->stateFlags1 & (PLAYER_STATE1_HOLDING_ACTOR | PLAYER_STATE1_IN_CUTSCENE)) && !Player_IsShootingHookshot(this)) {
         if (this->itemActionParam >= PLAYER_AP_FISHING_POLE) {
-            if (!func_80833C50(this, B_BTN_ITEM) && !func_80833C50(this, C_BTN_ITEM(0)) &&
-                !func_80833C50(this, C_BTN_ITEM(1)) && !func_80833C50(this, C_BTN_ITEM(2))) {
+            if (!Player_IsItemValid(this, B_BTN_ITEM) && !Player_IsItemValid(this, C_BTN_ITEM(0)) &&
+                !Player_IsItemValid(this, C_BTN_ITEM(1)) && !Player_IsItemValid(this, C_BTN_ITEM(2))) {
                 Player_UseItem(play, this, ITEM_NONE);
                 return;
             }
@@ -2245,7 +2245,8 @@ void Player_SetupItemStart(Player* this, PlayState* play) {
     }
 }
 
-s32 func_80834380(PlayState* play, Player* this, s32* itemPtr, s32* typePtr) {
+// Sets FPS item ID and type of ammo, then returns ammo count of the FPS item
+s32 Player_SetupFpsItemAmmo(PlayState* play, Player* this, s32* itemPtr, s32* typePtr) {
     if (LINK_IS_ADULT) {
         *itemPtr = ITEM_BOW;
         if (this->stateFlags1 & PLAYER_STATE1_RIDING_HORSE) {
@@ -2267,7 +2268,7 @@ s32 func_80834380(PlayState* play, Player* this, s32* itemPtr, s32* typePtr) {
     }
 }
 
-s32 func_8083442C(Player* this, PlayState* play) {
+s32 Player_SetupPrimeFpsItemToShoot(Player* this, PlayState* play) {
     s32 item;
     s32 arrowType;
     s32 magicArrowType;
@@ -2276,7 +2277,7 @@ s32 func_8083442C(Player* this, PlayState* play) {
         (gSaveContext.magicState != MAGIC_STATE_IDLE)) {
         func_80078884(NA_SE_SY_ERROR);
     } else {
-        Player_SetUpperActionFunc(this, Player_SetupShootFpsItem);
+        Player_SetUpperActionFunc(this, Player_PrimeFpsItemToShoot);
 
         this->stateFlags1 |= PLAYER_STATE1_PREPARED_TO_SHOOT;
         this->fpsItemTimer = 14;
@@ -2284,7 +2285,7 @@ s32 func_8083442C(Player* this, PlayState* play) {
         if (this->fpsItemType >= PLAYER_FPSITEM_NONE) {
             func_8002F7DC(&this->actor, sFpsItemPrimedSfx[ABS(this->fpsItemType) - 1]);
 
-            if (!Player_HoldsHookshot(this) && (func_80834380(play, this, &item, &arrowType) > 0)) {
+            if (!Player_HoldsHookshot(this) && (Player_SetupFpsItemAmmo(play, this, &item, &arrowType) > 0)) {
                 magicArrowType = arrowType - ARROW_FIRE;
 
                 if (this->fpsItemType >= PLAYER_FPSITEM_NONE) {
@@ -2489,7 +2490,7 @@ s32 Player_SetupFpsItems(Player* this, PlayState* play) {
     LinkAnimationHeader* anim;
 
     if (this->heldItemActionParam != PLAYER_AP_BOOMERANG) {
-        if (!func_8083442C(this, play)) {
+        if (!Player_SetupPrimeFpsItemToShoot(this, play)) {
             return 0;
         }
 
@@ -2580,7 +2581,7 @@ s32 Player_UpdateShotFpsItem(PlayState* play, Player* this) {
 
     if (this->heldActor != NULL) {
         if (!Player_HoldsHookshot(this)) {
-            func_80834380(play, this, &item, &arrowType);
+            Player_SetupFpsItemAmmo(play, this, &item, &arrowType);
 
             if (gSaveContext.minigameState == 1) {
                 play->interfaceCtx.hbaAmmo--;
@@ -2612,7 +2613,7 @@ s32 Player_UpdateShotFpsItem(PlayState* play, Player* this) {
 
 static u16 sFpsItemNoAmmoSfx[] = { NA_SE_IT_BOW_FLICK, NA_SE_IT_SLING_FLICK };
 
-s32 Player_SetupShootFpsItem(Player* this, PlayState* play) {
+s32 Player_PrimeFpsItemToShoot(Player* this, PlayState* play) {
     s32 holdingHookshot;
 
     if (!Player_HoldsHookshot(this)) {
@@ -2670,7 +2671,7 @@ s32 Player_AimFpsItem(Player* this, PlayState* play) {
     if (!Player_BeginZTargetingDefend(play, this) && (sUsingItemAlreadyInHand || ((this->fpsItemType < PLAYER_FPSITEM_NONE) && sUsingItemAlreadyInHand2) || Player_CheckShootingGalleryShootInput(play))) {
         this->fpsItemType = ABS(this->fpsItemType);
 
-        if (func_8083442C(this, play)) {
+        if (Player_SetupPrimeFpsItemToShoot(this, play)) {
             if (Player_HoldsHookshot(this)) {
                 this->fpsItemShootState = 1;
             } else {
@@ -3116,14 +3117,14 @@ s32 Player_SetupCurrentUpperAction(Player* this, PlayState* play) {
         return 0;
     }
 
-    if (this->unk_830 != 0.0f) {
+    if (this->upperInterpWeight != 0.0f) {
         if ((Player_IsPlayingIdleAnim(this) == 0) || (this->linearVelocity != 0.0f)) {
             AnimationContext_SetCopyFalse(play, this->skelAnime.limbCount, this->skelAnimeUpper.jointTable,
                                           this->skelAnime.jointTable, D_80853410);
         }
-        Math_StepToF(&this->unk_830, 0.0f, 0.25f);
+        Math_StepToF(&this->upperInterpWeight, 0.0f, 0.25f);
         AnimationContext_SetInterp(play, this->skelAnime.limbCount, this->skelAnime.jointTable,
-                                   this->skelAnimeUpper.jointTable, 1.0f - this->unk_830);
+                                   this->skelAnimeUpper.jointTable, 1.0f - this->upperInterpWeight);
     } else if ((Player_IsPlayingIdleAnim(this) == 0) || (this->linearVelocity != 0.0f)) {
         AnimationContext_SetCopyTrue(play, this->skelAnime.limbCount, this->skelAnime.jointTable,
                                      this->skelAnimeUpper.jointTable, D_80853410);
@@ -3807,7 +3808,7 @@ void Player_SetupDamage(PlayState* play, Player* this, s32 damageReaction, f32 k
             damageAnims = sLinkDamageAnims;
 
             Player_SetActionFunc(play, this, func_8084370C, 0);
-            func_80833C3C(this);
+            Player_ResetLeftRightBlendWeight(this);
 
             if (this->actor.colChkInfo.damage < 5) {
                 Player_RequestRumble(this, 120, 20, 10, 0);
@@ -5487,7 +5488,7 @@ s32 Player_SetupDefend(Player* this, PlayState* play) {
                     this->unk_86C = 1.0f;
                 } else {
                     this->unk_86C = 0.0f;
-                    func_80833C3C(this);
+                    Player_ResetLeftRightBlendWeight(this);
                 }
                 this->upperBodyRot.x = this->upperBodyRot.y = this->upperBodyRot.z = 0;
             }
@@ -6952,7 +6953,7 @@ void Player_UnfriendlyZTargetStandingStill(Player* this, PlayState* play) {
             this->genericTimer = 0;
             this->stateFlags3 &= ~PLAYER_STATE3_ENDING_MELEE_ATTACK;
         }
-        func_80833C3C(this);
+        Player_ResetLeftRightBlendWeight(this);
     } else {
         func_808401B0(play, this);
     }
@@ -7058,7 +7059,7 @@ void Player_FriendlyZTargetStandingStill(Player* this, PlayState* play) {
 
         if (targetVelocity > 4.9f) {
             Player_SetupSidewalk(this, play);
-            func_80833C3C(this);
+            Player_ResetLeftRightBlendWeight(this);
             return;
         }
         if (targetVelocity != 0.0f) {
@@ -7251,7 +7252,7 @@ void Player_EndSidewalk(Player* this, PlayState* play) {
 
         if (targetVelocity > 4.9f) {
             Player_SetupSidewalk(this, play);
-            func_80833C3C(this);
+            Player_ResetLeftRightBlendWeight(this);
             return;
         }
 
@@ -8442,7 +8443,7 @@ void Player_UpdateMidair(Player* this, PlayState* play) {
             anim = &gPlayerAnim_003150;
         } else if (Player_IsUnfriendlyZTargeting(this)) {
             anim = &gPlayerAnim_002538;
-            func_80833C3C(this);
+            Player_ResetLeftRightBlendWeight(this);
         } else if (this->fallDistance <= 80) {
             anim = GET_PLAYER_ANIM(PLAYER_ANIMGROUP_SHORT_JUMP_LANDING, this->modelAnimType);
         } else if ((this->fallDistance < 800) && (this->relativeAnalogStickInputs[this->inputFrameCounter] == 0) &&
@@ -14025,7 +14026,7 @@ void Player_CutsceneFightStance(PlayState* play, Player* this, CsCmdActorAction*
             this->genericTimer = 0;
         }
 
-        func_80833C3C(this);
+        Player_ResetLeftRightBlendWeight(this);
     } else {
         func_808401B0(play, this);
     }
