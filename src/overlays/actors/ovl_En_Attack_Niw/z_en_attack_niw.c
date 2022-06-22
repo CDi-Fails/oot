@@ -183,7 +183,7 @@ void func_809B5670(EnAttackNiw* this, PlayState* play) {
     f32 tmpf1;
     f32 tmpf2;
     f32 tmpf3;
-    Vec3f sp34;
+    Vec3f randOffsetSparklePos;
 
     this->actor.speedXZ = 10.0f;
 
@@ -191,12 +191,12 @@ void func_809B5670(EnAttackNiw* this, PlayState* play) {
     tmpf2 = (this->unk_298.y + play->view.at.y) - play->view.eye.y;
     tmpf3 = (this->unk_298.z + play->view.at.z) - play->view.eye.z;
 
-    sp34.x = play->view.at.x + tmpf1;
-    sp34.y = play->view.at.y + tmpf2;
-    sp34.z = play->view.at.z + tmpf3;
+    randOffsetSparklePos.x = play->view.at.x + tmpf1;
+    randOffsetSparklePos.y = play->view.at.y + tmpf2;
+    randOffsetSparklePos.z = play->view.at.z + tmpf3;
 
-    this->unk_2D4 = Math_Vec3f_Yaw(&this->actor.world.pos, &sp34);
-    this->unk_2D0 = Math_Vec3f_Pitch(&this->actor.world.pos, &sp34) * -1.0f;
+    this->unk_2D4 = Math_Vec3f_Yaw(&this->actor.world.pos, &randOffsetSparklePos);
+    this->unk_2D0 = Math_Vec3f_Pitch(&this->actor.world.pos, &randOffsetSparklePos) * -1.0f;
 
     Math_SmoothStepToS(&this->actor.world.rot.y, this->unk_2D4, 5, this->unk_2DC, 0);
     Math_SmoothStepToS(&this->actor.world.rot.x, this->unk_2D0, 5, this->unk_2DC, 0);
@@ -217,9 +217,9 @@ void func_809B5670(EnAttackNiw* this, PlayState* play) {
         this->unk_2E0 = 5.0f;
         this->unk_288 = 0.0f;
         this->actionFunc = func_809B59B0;
-    } else if (((this->actor.projectedPos.z > 0.0f) && (fabsf(sp34.x - this->actor.world.pos.x) < 50.0f) &&
-                (fabsf(sp34.y - this->actor.world.pos.y) < 50.0f) &&
-                (fabsf(sp34.z - this->actor.world.pos.z) < 50.0f)) ||
+    } else if (((this->actor.projectedPos.z > 0.0f) && (fabsf(randOffsetSparklePos.x - this->actor.world.pos.x) < 50.0f) &&
+                (fabsf(randOffsetSparklePos.y - this->actor.world.pos.y) < 50.0f) &&
+                (fabsf(randOffsetSparklePos.z - this->actor.world.pos.z) < 50.0f)) ||
                (this->actor.bgCheckFlags & BGCHECKFLAG_GROUND)) {
 
         this->unk_2D4 = this->actor.yawTowardsPlayer;

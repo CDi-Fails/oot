@@ -107,7 +107,7 @@ void func_808BC65C(BgTreemouth* this, PlayState* play) {
 }
 
 void func_808BC6F8(BgTreemouth* this, PlayState* play) {
-    Vec3f sp34;
+    Vec3f randOffsetSparklePos;
 
     if (this->unk_168 < 1.0f) {
         this->unk_168 += 0.01f;
@@ -116,10 +116,10 @@ void func_808BC6F8(BgTreemouth* this, PlayState* play) {
     }
 
     if ((gSaveContext.sceneSetupIndex == 6) && (play->csCtx.frames >= 0x2BD) && (play->state.frames % 8 == 0)) {
-        sp34.x = (Rand_ZeroOne() * 1158.0f) + 3407.0f;
-        sp34.y = 970.0f;
-        sp34.z = (Rand_ZeroOne() * 2026.0f) + -2163.0f;
-        EffectSsHahen_SpawnBurst(play, &sp34, 0.8f, 0, 50, 30, 1, HAHEN_OBJECT_DEFAULT, 10, NULL);
+        randOffsetSparklePos.x = (Rand_ZeroOne() * 1158.0f) + 3407.0f;
+        randOffsetSparklePos.y = 970.0f;
+        randOffsetSparklePos.z = (Rand_ZeroOne() * 2026.0f) + -2163.0f;
+        EffectSsHahen_SpawnBurst(play, &randOffsetSparklePos, 0.8f, 0, 50, 30, 1, HAHEN_OBJECT_DEFAULT, 10, NULL);
     }
 }
 

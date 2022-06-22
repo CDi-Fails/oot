@@ -72,7 +72,7 @@ void EnSw_CrossProduct(Vec3f* a, Vec3f* b, Vec3f* dst) {
 s32 func_80B0BE20(EnSw* this, CollisionPoly* poly) {
     Vec3f polyNormal;
     Vec3f sp38;
-    f32 sp34;
+    f32 randOffsetSparklePos;
     f32 temp_f0;
     s32 pad;
 
@@ -80,9 +80,9 @@ s32 func_80B0BE20(EnSw* this, CollisionPoly* poly) {
     polyNormal.x = COLPOLY_GET_NORMAL(poly->normal.x);
     polyNormal.y = COLPOLY_GET_NORMAL(poly->normal.y);
     polyNormal.z = COLPOLY_GET_NORMAL(poly->normal.z);
-    sp34 = Math_FAcosF(DOTXYZ(polyNormal, this->unk_364));
+    randOffsetSparklePos = Math_FAcosF(DOTXYZ(polyNormal, this->unk_364));
     EnSw_CrossProduct(&this->unk_364, &polyNormal, &sp38);
-    Matrix_RotateAxis(sp34, &sp38, MTXMODE_NEW);
+    Matrix_RotateAxis(randOffsetSparklePos, &sp38, MTXMODE_NEW);
     Matrix_MultVec3f(&this->unk_370, &sp38);
     this->unk_370 = sp38;
     EnSw_CrossProduct(&this->unk_370, &polyNormal, &this->unk_37C);

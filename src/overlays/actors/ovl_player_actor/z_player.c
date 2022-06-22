@@ -349,7 +349,7 @@ s32 Player_IsDroppingFish(PlayState* play);
 s32 Player_StartFishing(PlayState* play);
 s32 Player_SetupRestrainedByEnemy(PlayState* play, Player* this);
 s32 Player_SetupPlayerCutscene(PlayState* play, Actor* actor, s32 csMode);
-void Player_SetupStandStill(Player* this, PlayState* play);
+void Player_SetupStandingStillMorph(Player* this, PlayState* play);
 s32 Player_SetupInflictDamage(PlayState* play, s32 damage);
 void Player_StartTalkingWithActor(PlayState* play, Actor* actor);
 
@@ -4079,7 +4079,7 @@ void Player_SetupJump(Player* this, LinkAnimationHeader* anim, f32 yVel, PlaySta
 s32 Player_SetupWallJumpBehavior(Player* this, PlayState* play) {
     s32 canJumpToLedge;
     LinkAnimationHeader* sp38;
-    f32 sp34;
+    f32 randOffsetSparklePos;
     f32 temp;
     f32 wallPolyNormalX;
     f32 wallPolyNormalZ;
@@ -4118,9 +4118,9 @@ s32 Player_SetupWallJumpBehavior(Player* this, PlayState* play) {
 
             this->stateFlags1 |= PLAYER_STATE1_JUMPING;
 
-            sp34 = this->wallHeight;
+            randOffsetSparklePos = this->wallHeight;
 
-            if (this->ageProperties->unk_14 <= sp34) {
+            if (this->ageProperties->unk_14 <= randOffsetSparklePos) {
                 sp38 = &gPlayerAnim_002D48;
                 this->linearVelocity = 1.0f;
             } else {
@@ -4132,17 +4132,17 @@ s32 Player_SetupWallJumpBehavior(Player* this, PlayState* play) {
 
                 if (Player_IsSwimming(this)) {
                     sp38 = &gPlayerAnim_0032E8;
-                    sp34 -= (60.0f * this->ageProperties->translationScale);
+                    randOffsetSparklePos -= (60.0f * this->ageProperties->translationScale);
                     this->stateFlags1 &= ~PLAYER_STATE1_SWIMMING;
-                } else if (this->ageProperties->unk_18 <= sp34) {
+                } else if (this->ageProperties->unk_18 <= randOffsetSparklePos) {
                     sp38 = &gPlayerAnim_002D40;
-                    sp34 -= (59.0f * this->ageProperties->translationScale);
+                    randOffsetSparklePos -= (59.0f * this->ageProperties->translationScale);
                 } else {
                     sp38 = &gPlayerAnim_002D38;
-                    sp34 -= (41.0f * this->ageProperties->translationScale);
+                    randOffsetSparklePos -= (41.0f * this->ageProperties->translationScale);
                 }
 
-                this->actor.shape.yOffset -= sp34 * 100.0f;
+                this->actor.shape.yOffset -= randOffsetSparklePos * 100.0f;
 
                 this->actor.world.pos.x -= sp24 * wallPolyNormalX;
                 this->actor.world.pos.y += this->wallHeight;
@@ -4265,7 +4265,7 @@ u8 sReturnEntranceGroupIndices[] = {
 s32 func_80839034(PlayState* play, Player* this, CollisionPoly* poly, u32 bgId) {
     s32 exitIndex;
     s32 floorSpecialProperty;
-    s32 sp34;
+    s32 randOffsetSparklePos;
     f32 linearVel;
     s32 yaw;
 
@@ -4278,10 +4278,10 @@ s32 func_80839034(PlayState* play, Player* this, CollisionPoly* poly, u32 bgId) 
               (exitIndex = SurfaceType_GetSceneExitIndex(&play->colCtx, poly, bgId), exitIndex != 0)) ||
              (Player_IsFloorSinkingSand(sFloorSpecialProperty) && (this->floorProperty == BGCHECK_FLOORPROPERTY_VOID_PIT_LARGE)))) {
 
-            sp34 = this->unk_A84 - (s32)this->actor.world.pos.y;
+            randOffsetSparklePos = this->unk_A84 - (s32)this->actor.world.pos.y;
 
             if (!(this->stateFlags1 & (PLAYER_STATE1_RIDING_HORSE | PLAYER_STATE1_SWIMMING | PLAYER_STATE1_IN_CUTSCENE)) &&
-                !(this->actor.bgCheckFlags & BGCHECKFLAG_GROUND) && (sp34 < 100) && (sPlayerYDistToFloor > 100.0f)) {
+                !(this->actor.bgCheckFlags & BGCHECKFLAG_GROUND) && (randOffsetSparklePos < 100) && (sPlayerYDistToFloor > 100.0f)) {
                 return 0;
             }
 
@@ -4319,7 +4319,7 @@ s32 func_80839034(PlayState* play, Player* this, CollisionPoly* poly, u32 bgId) 
             if (!(this->stateFlags1 & (PLAYER_STATE1_RIDING_HORSE | PLAYER_STATE1_IN_CUTSCENE)) &&
                 !(this->stateFlags2 & PLAYER_STATE2_INSIDE_CRAWLSPACE) && !Player_IsSwimming(this) &&
                 (floorSpecialProperty = func_80041D4C(&play->colCtx, poly, bgId), (floorSpecialProperty != BGCHECK_FLOORSPECIALPROPERTY_10)) &&
-                ((sp34 < 100) || (this->actor.bgCheckFlags & BGCHECKFLAG_GROUND))) {
+                ((randOffsetSparklePos < 100) || (this->actor.bgCheckFlags & BGCHECKFLAG_GROUND))) {
 
                 if (floorSpecialProperty == BGCHECK_FLOORSPECIALPROPERTY_LOOK_UP) {
                     func_800788CC(NA_SE_OC_SECRET_HOLE_OUT);
@@ -4638,7 +4638,7 @@ void Player_SetupStandingStillType(Player* this, PlayState* play) {
     } else if (Player_IsFriendlyZTargeting(this)) {
         Player_SetupZTargetingStandStill(this, play);
     } else {
-        Player_SetupStandStill(this, play);
+        Player_SetupStandingStillMorph(this, play);
     }
 }
 
@@ -5004,7 +5004,7 @@ void Player_LoadGetItemObject(Player* this, s16 objectId) {
 void Player_SetupMagicSpell(PlayState* play, Player* this, s32 magicSpell) {
     Player_SetActionFuncPreserveItemAP(play, this, Player_UpdateMagicSpell, 0);
 
-    this->unk_84F = magicSpell - 3;
+    this->magicSpellType = magicSpell - 3;
     Magic_RequestChange(play, sMagicSpellCosts[magicSpell], MAGIC_CONSUME_WAIT_PREVIEW);
 
     LinkAnimation_PlayOnceSetSpeed(play, &this->skelAnime, &gPlayerAnim_002D28, 0.83f);
@@ -5390,7 +5390,7 @@ s32 Player_SetupJumpSlashOrRoll(Player* this, PlayState* play) {
     return 0;
 }
 
-void Player_EndWalking(Player* this, PlayState* play) {
+void Player_EndRun(Player* this, PlayState* play) {
     LinkAnimationHeader* anim;
     f32 frame;
 
@@ -5420,18 +5420,18 @@ void Player_EndWalking(Player* this, PlayState* play) {
     this->currentYaw = this->actor.shape.rot.y;
 }
 
-void func_8083C0B8(Player* this, PlayState* play) {
+void Player_SetupEndRun(Player* this, PlayState* play) {
     Player_SetupStandingStillTypeNoMorph(this, play);
-    Player_EndWalking(this, play);
+    Player_EndRun(this, play);
 }
 
-void func_8083C0E8(Player* this, PlayState* play) {
+void Player_SetupStandingStillNoMorph(Player* this, PlayState* play) {
     Player_SetActionFunc(play, this, Player_StandingStill, 1);
     Player_PlayAnimOnce(play, this, Player_GetStandingStillAnim(this));
     this->currentYaw = this->actor.shape.rot.y;
 }
 
-void func_8083C148(Player* this, PlayState* play) {
+void Player_ClearLookAndAttention(Player* this, PlayState* play) {
     if (!(this->stateFlags3 & PLAYER_STATE3_MOVING_ALONG_HOOKSHOT_PATH)) {
         Player_ResetLookAngles(this);
         if (this->stateFlags1 & PLAYER_STATE1_SWIMMING) {
@@ -5605,7 +5605,7 @@ s32 Player_CanSwingBottleOrCastFishingRod(PlayState* play, Player* this) {
     return 0;
 }
 
-void Player_SetupRunning(Player* this, PlayState* play) {
+void Player_SetupRun(Player* this, PlayState* play) {
     PlayerActionFunc func;
 
     if (Player_IsZTargeting(this)) {
@@ -5623,7 +5623,7 @@ void Player_SetupRunning(Player* this, PlayState* play) {
 
 void Player_SetupZTargetRunning(Player* this, PlayState* play, s16 arg2) {
     this->actor.shape.rot.y = this->currentYaw = arg2;
-    Player_SetupRunning(this, play);
+    Player_SetupRun(this, play);
 }
 
 s32 Player_SetupDefaultSpawnBehavior(PlayState* play, Player* this, f32 arg2) {
@@ -5742,7 +5742,7 @@ void Player_SetupUnfriendlyZTarget(Player* this, PlayState* play) {
 
 void Player_SetupEndUnfriendlyZTarget(Player* this, PlayState* play) {
     if (this->linearVelocity != 0.0f) {
-        Player_SetupRunning(this, play);
+        Player_SetupRun(this, play);
     } else {
         Player_EndUnfriendlyZTarget(this, play);
     }
@@ -5750,7 +5750,7 @@ void Player_SetupEndUnfriendlyZTarget(Player* this, PlayState* play) {
 
 void func_8083CF5C(Player* this, PlayState* play) {
     if (this->linearVelocity != 0.0f) {
-        Player_SetupRunning(this, play);
+        Player_SetupRun(this, play);
     } else {
         Player_SetupStandingStillType(this, play);
     }
@@ -6038,7 +6038,7 @@ void func_8083DC54(Player* this, PlayState* play) {
     s16 sp46;
     s16 temp2;
     f32 temp1;
-    Vec3f sp34;
+    Vec3f randOffsetSparklePos;
 
     if (this->targetActor != NULL) {
         if (Actor_PlayerIsAimingReadyFpsItem(this) || Player_IsAimingReadyBoomerang(this)) {
@@ -6053,7 +6053,7 @@ void func_8083DC54(Player* this, PlayState* play) {
         Math_SmoothStepToS(&this->actor.focus.rot.x, -20000, 10, 4000, 800);
     } else {
         sp46 = 0;
-        temp1 = Player_RaycastFloorWithOffset2(play, this, &D_8085456C, &sp34);
+        temp1 = Player_RaycastFloorWithOffset2(play, this, &D_8085456C, &randOffsetSparklePos);
         if (temp1 > BGCHECK_Y_MIN) {
             temp2 = Math_Atan2S(40.0f, this->actor.world.pos.y - temp1);
             sp46 = CLAMP(temp2, -4000, 4000);
@@ -6116,12 +6116,12 @@ s32 Player_SetupMountHorse(Player* this, PlayState* play) {
     f32 unk_04;
     f32 unk_08;
     f32 sp38;
-    f32 sp34;
+    f32 randOffsetSparklePos;
     s32 temp;
 
     if ((rideActor != NULL) && CHECK_BTN_ALL(sControlInput->press.button, BTN_A)) {
         sp38 = Math_CosS(rideActor->actor.shape.rot.y);
-        sp34 = Math_SinS(rideActor->actor.shape.rot.y);
+        randOffsetSparklePos = Math_SinS(rideActor->actor.shape.rot.y);
 
         Player_SetupMiniCsFunc(play, this, Player_SetupRideHorse);
 
@@ -6137,9 +6137,9 @@ s32 Player_SetupMountHorse(Player* this, PlayState* play) {
         unk_04 = D_80854578[temp].unk_04;
         unk_08 = D_80854578[temp].unk_08;
         this->actor.world.pos.x =
-            rideActor->actor.world.pos.x + rideActor->riderPos.x + ((unk_04 * sp38) + (unk_08 * sp34));
+            rideActor->actor.world.pos.x + rideActor->riderPos.x + ((unk_04 * sp38) + (unk_08 * randOffsetSparklePos));
         this->actor.world.pos.z =
-            rideActor->actor.world.pos.z + rideActor->riderPos.z + ((unk_08 * sp38) - (unk_04 * sp34));
+            rideActor->actor.world.pos.z + rideActor->riderPos.z + ((unk_08 * sp38) - (unk_04 * randOffsetSparklePos));
 
         this->unk_878 = rideActor->actor.world.pos.y - this->actor.world.pos.y;
         this->currentYaw = this->actor.shape.rot.y = rideActor->actor.shape.rot.y;
@@ -7234,7 +7234,7 @@ void Player_EndSidewalk(Player* this, PlayState* play) {
         }
 
         if (!Player_IsFriendlyZTargeting(this)) {
-            Player_SetupStandStill(this, play);
+            Player_SetupStandingStillMorph(this, play);
             return;
         }
 
@@ -7360,7 +7360,7 @@ void Player_FriendlyBackwalk(Player* this, PlayState* play) {
         if (sp2C >= 0) {
             if (!func_80841458(this, &targetVelocity, &targetYaw, play)) {
                 if (sp2C != 0) {
-                    Player_SetupRunning(this, play);
+                    Player_SetupRun(this, play);
                 } else if (targetVelocity > 4.9f) {
                     Player_SetupSidewalk(this, play);
                 } else {
@@ -7386,11 +7386,11 @@ void func_808416C0(Player* this, PlayState* play) {
 }
 
 void func_8084170C(Player* this, PlayState* play) {
-    s32 sp34;
+    s32 randOffsetSparklePos;
     f32 targetVelocity;
     s16 targetYaw;
 
-    sp34 = LinkAnimation_Update(play, &this->skelAnime);
+    randOffsetSparklePos = LinkAnimation_Update(play, &this->skelAnime);
     Player_StepLinearVelocityToZero(this);
 
     if (!Player_SetupSubAction(play, this, sFriendlyBackwalkSubActions, 1)) {
@@ -7400,8 +7400,8 @@ void func_8084170C(Player* this, PlayState* play) {
             this->currentYaw = this->actor.shape.rot.y;
 
             if (Player_GetFriendlyZTargetingMoveDirection(this, &targetVelocity, &targetYaw, play) > 0) {
-                Player_SetupRunning(this, play);
-            } else if ((targetVelocity != 0.0f) || (sp34 != 0)) {
+                Player_SetupRun(this, play);
+            } else if ((targetVelocity != 0.0f) || (randOffsetSparklePos != 0)) {
                 func_808416C0(this, play);
             }
         }
@@ -7423,14 +7423,14 @@ void func_808417FC(Player* this, PlayState* play) {
 void func_80841860(PlayState* play, Player* this) {
     f32 frame;
     LinkAnimationHeader* sp38 = GET_PLAYER_ANIM(PLAYER_ANIMGROUP_SIDEWALKING_LEFT, this->modelAnimType);
-    LinkAnimationHeader* sp34 = GET_PLAYER_ANIM(PLAYER_ANIMGROUP_SIDEWALKING_RIGHT, this->modelAnimType);
+    LinkAnimationHeader* randOffsetSparklePos = GET_PLAYER_ANIM(PLAYER_ANIMGROUP_SIDEWALKING_RIGHT, this->modelAnimType);
 
     this->skelAnime.animation = sp38;
 
     Player_SetupWalkSfx(this, (REG(30) / 1000.0f) + ((REG(32) / 1000.0f) * this->linearVelocity));
 
     frame = this->walkFrame * (16.0f / 29.0f);
-    LinkAnimation_BlendToJoint(play, &this->skelAnime, sp34, frame, sp38, frame, this->leftRightBlendWeight, this->blendTable);
+    LinkAnimation_BlendToJoint(play, &this->skelAnime, randOffsetSparklePos, frame, sp38, frame, this->leftRightBlendWeight, this->blendTable);
 }
 
 void Player_Sidewalk(Player* this, PlayState* play) {
@@ -7444,7 +7444,7 @@ void Player_Sidewalk(Player* this, PlayState* play) {
 
     if (!Player_SetupSubAction(play, this, sSidewalkSubActions, 1)) {
         if (!Player_IsZTargetingSetupBeginUnfriendly(this)) {
-            Player_SetupRunning(this, play);
+            Player_SetupRun(this, play);
             return;
         }
 
@@ -7457,7 +7457,7 @@ void Player_Sidewalk(Player* this, PlayState* play) {
         }
 
         if (moveDir > 0) {
-            Player_SetupRunning(this, play);
+            Player_SetupRun(this, play);
             return;
         }
 
@@ -7515,9 +7515,9 @@ void Player_Turn(Player* this, PlayState* play) {
     if (!Player_SetupSubAction(play, this, sTurnSubActions, 1)) {
         if (targetVelocity != 0.0f) {
             this->actor.shape.rot.y = targetYaw;
-            Player_SetupRunning(this, play);
+            Player_SetupRun(this, play);
         } else if (Math_ScaledStepToS(&this->actor.shape.rot.y, targetYaw, this->unk_87E)) {
-            func_8083C0E8(this, play);
+            Player_SetupStandingStillNoMorph(this, play);
         }
 
         this->currentYaw = this->actor.shape.rot.y;
@@ -7630,7 +7630,7 @@ void Player_Run(Player* this, PlayState* play) {
 
     if (!Player_SetupSubAction(play, this, sRunSubActions, 1)) {
         if (Player_IsZTargetingSetupBeginUnfriendly(this)) {
-            Player_SetupRunning(this, play);
+            Player_SetupRun(this, play);
             return;
         }
 
@@ -7641,7 +7641,7 @@ void Player_Run(Player* this, PlayState* play) {
             func_8083DDC8(this, play);
 
             if ((this->linearVelocity == 0.0f) && (targetVelocity == 0.0f)) {
-                func_8083C0B8(this, play);
+                Player_SetupEndRun(this, play);
             }
         }
     }
@@ -7656,7 +7656,7 @@ void Player_ZTargetingRun(Player* this, PlayState* play) {
 
     if (!Player_SetupSubAction(play, this, sTargetRunSubActions, 1)) {
         if (!Player_IsZTargetingSetupBeginUnfriendly(this)) {
-            Player_SetupRunning(this, play);
+            Player_SetupRun(this, play);
             return;
         }
 
@@ -7688,7 +7688,7 @@ void Player_UnfriendlyBackwalk(Player* this, PlayState* play) {
 
     if (!Player_SetupSubAction(play, this, sSidewalkSubActions, 1)) {
         if (!Player_IsZTargetingSetupBeginUnfriendly(this)) {
-            Player_SetupRunning(this, play);
+            Player_SetupRun(this, play);
             return;
         }
 
@@ -7725,7 +7725,7 @@ void Player_EndUnfriendlyBackwalk(Player* this, PlayState* play) {
             this->currentYaw = this->actor.shape.rot.y;
 
             if (Player_GetUnfriendlyZTargetMoveDirection(this, targetVelocity, targetYaw) > 0) {
-                Player_SetupRunning(this, play);
+                Player_SetupRun(this, play);
                 return;
             }
 
@@ -8136,7 +8136,7 @@ void func_8084377C(Player* this, PlayState* play) {
         if (this->genericTimer != 0) {
             this->genericTimer--;
             if (this->genericTimer == 0) {
-                Player_SetupStandStill(this, play);
+                Player_SetupStandingStillMorph(this, play);
             }
         } else if ((this->stateFlags1 & PLAYER_STATE1_IN_CUTSCENE) ||
                    (!(this->cylinder.base.acFlags & AC_HIT) && (this->damageEffect == PLAYER_DMGEFFECT_NONE))) {
@@ -8223,7 +8223,7 @@ void Player_EndDie(PlayState* play, Player* this) {
             if (this->stateFlags1 & PLAYER_STATE1_SWIMMING) {
                 Player_SetupSwimIdle(play, this);
             } else {
-                Player_SetupStandStill(this, play);
+                Player_SetupStandingStillMorph(this, play);
             }
             this->unk_A87 = 20;
             Player_SetupInvincibilityNoDamageFlash(this, -20);
@@ -8287,19 +8287,19 @@ static FallImpactInfo D_80854600[] = {
 };
 
 s32 func_80843E64(PlayState* play, Player* this) {
-    s32 sp34;
+    s32 randOffsetSparklePos;
 
     if ((sFloorSpecialProperty == BGCHECK_FLOORSPECIALPROPERTY_NO_FALL_DAMAGE) || (sFloorSpecialProperty == BGCHECK_FLOORSPECIALPROPERTY_VOID_ON_TOUCH)) {
-        sp34 = 0;
+        randOffsetSparklePos = 0;
     } else {
-        sp34 = this->fallDistance;
+        randOffsetSparklePos = this->fallDistance;
     }
 
     Math_StepToF(&this->linearVelocity, 0.0f, 1.0f);
 
     this->stateFlags1 &= ~(PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALLING);
 
-    if (sp34 >= 400) {
+    if (randOffsetSparklePos >= 400) {
         s32 impactIndex;
         FallImpactInfo* impactInfo;
 
@@ -8324,14 +8324,14 @@ s32 func_80843E64(PlayState* play, Player* this) {
         return impactIndex + 1;
     }
 
-    if (sp34 > 200) {
-        sp34 *= 2;
+    if (randOffsetSparklePos > 200) {
+        randOffsetSparklePos *= 2;
 
-        if (sp34 > 255) {
-            sp34 = 255;
+        if (randOffsetSparklePos > 255) {
+            randOffsetSparklePos = 255;
         }
 
-        Player_RequestRumble(this, (u8)sp34, (u8)(sp34 * 0.1f), (u8)sp34, 0);
+        Player_RequestRumble(this, (u8)randOffsetSparklePos, (u8)(randOffsetSparklePos * 0.1f), (u8)randOffsetSparklePos, 0);
 
         if (sFloorSpecialProperty == BGCHECK_FLOORSPECIALPROPERTY_NO_FALL_DAMAGE) {
             Player_PlayVoiceSfxForAge(this, NA_SE_VO_LI_CLIMB_END);
@@ -8869,7 +8869,7 @@ void Player_JumpUpToLedge(Player* this, PlayState* play) {
         }
 
         if ((sp3C != 0) || (temp2 > 0)) {
-            func_8083C0E8(this, play);
+            Player_SetupStandingStillNoMorph(this, play);
             this->stateFlags1 &= ~(PLAYER_STATE1_CLIMBING_ONTO_LEDGE | PLAYER_STATE1_JUMPING);
             return;
         }
@@ -8918,10 +8918,10 @@ s32 func_80845964(PlayState* play, Player* this, CsCmdActorAction* arg2, f32 arg
     }
 
     if (arg5 != 2) {
-        f32 sp34 = R_UPDATE_RATE * 0.5f;
+        f32 randOffsetSparklePos = R_UPDATE_RATE * 0.5f;
         f32 selfDistX = arg2->endPos.x - this->actor.world.pos.x;
         f32 selfDistZ = arg2->endPos.z - this->actor.world.pos.z;
-        f32 sp28 = sqrtf(SQ(selfDistX) + SQ(selfDistZ)) / sp34;
+        f32 sp28 = sqrtf(SQ(selfDistX) + SQ(selfDistZ)) / randOffsetSparklePos;
         s32 sp24 = (arg2->endFrame - play->csCtx.frames) + 1;
 
         arg4 = Math_Atan2S(selfDistZ, selfDistX);
@@ -8929,7 +8929,7 @@ s32 func_80845964(PlayState* play, Player* this, CsCmdActorAction* arg2, f32 arg
         if (arg5 == 1) {
             f32 distX = arg2->endPos.x - arg2->startPos.x;
             f32 distZ = arg2->endPos.z - arg2->startPos.z;
-            s32 temp = (((sqrtf(SQ(distX) + SQ(distZ)) / sp34) / (arg2->endFrame - arg2->startFrame)) / 1.5f) * 4.0f;
+            s32 temp = (((sqrtf(SQ(distX) + SQ(distZ)) / randOffsetSparklePos) / (arg2->endFrame - arg2->startFrame)) / 1.5f) * 4.0f;
 
             if (temp >= sp24) {
                 arg4 = this->actor.shape.rot.y;
@@ -8947,7 +8947,7 @@ s32 func_80845964(PlayState* play, Player* this, CsCmdActorAction* arg2, f32 arg
     func_8083DF68(this, arg3, arg4);
 
     if ((arg3 == 0.0f) && (this->linearVelocity == 0.0f)) {
-        Player_EndWalking(this, play);
+        Player_EndRun(this, play);
     }
 
     return 0;
@@ -8982,7 +8982,7 @@ s32 func_80845C68(PlayState* play, s32 arg1) {
 void func_80845CA4(Player* this, PlayState* play) {
     f32 sp3C;
     s32 temp;
-    f32 sp34;
+    f32 randOffsetSparklePos;
     s32 sp30;
     s32 pad;
 
@@ -9005,11 +9005,11 @@ void func_80845CA4(Player* this, PlayState* play) {
                 this->csStartPos.z = this->csEndPos.z;
             }
         } else {
-            sp34 = 5.0f;
+            randOffsetSparklePos = 5.0f;
             sp30 = 20;
 
             if (this->stateFlags1 & PLAYER_STATE1_EXITING_SCENE) {
-                sp34 = gSaveContext.entranceSpeed;
+                randOffsetSparklePos = gSaveContext.entranceSpeed;
 
                 if (sConveyorSpeedIndex != 0) {
                     this->csStartPos.x = (Math_SinS(sConveyorYaw) * 400.0f) + this->actor.world.pos.x;
@@ -9018,11 +9018,11 @@ void func_80845CA4(Player* this, PlayState* play) {
             } else if (this->genericTimer < 0) {
                 this->genericTimer++;
 
-                sp34 = gSaveContext.entranceSpeed;
+                randOffsetSparklePos = gSaveContext.entranceSpeed;
                 sp30 = -1;
             }
 
-            temp = func_80845BA0(play, this, &sp34, sp30);
+            temp = func_80845BA0(play, this, &randOffsetSparklePos, sp30);
 
             if ((this->genericTimer == 0) || ((temp == 0) && (this->linearVelocity == 0.0f) &&
                                          (Play_GetCamera(play, CAM_ID_MAIN)->unk_14C & 0x10))) {
@@ -9057,7 +9057,7 @@ void func_80845EF8(Player* this, PlayState* play) {
                 this->skelAnime.endFrame = this->skelAnime.animLength - 1.0f;
             }
         } else {
-            func_8083C0E8(this, play);
+            Player_SetupStandingStillNoMorph(this, play);
             if (play->roomCtx.prevRoom.num >= 0) {
                 func_80097534(play, &play->roomCtx);
             }
@@ -9379,10 +9379,10 @@ void Player_SpawnFromWarpSong(PlayState* play, Player* this) {
     this->stateFlags1 |= PLAYER_STATE1_IN_CUTSCENE;
 }
 
-static s16 D_80854700[] = { ACTOR_MAGIC_WIND, ACTOR_MAGIC_DARK, ACTOR_MAGIC_FIRE };
+static s16 sMagicSpellActors[] = { ACTOR_MAGIC_WIND, ACTOR_MAGIC_DARK, ACTOR_MAGIC_FIRE };
 
-Actor* func_80846A00(PlayState* play, Player* this, s32 arg2) {
-    return Actor_Spawn(&play->actorCtx, play, D_80854700[arg2], this->actor.world.pos.x, this->actor.world.pos.y,
+Actor* Player_SpawnMagicSpellActor(PlayState* play, Player* this, s32 index) {
+    return Actor_Spawn(&play->actorCtx, play, sMagicSpellActors[index], this->actor.world.pos.x, this->actor.world.pos.y,
                        this->actor.world.pos.z, 0, 0, 0, 0);
 }
 
@@ -9469,7 +9469,7 @@ void Player_Init(Actor* thisx, PlayState* play2) {
     play->startPlayerFishing = Player_StartFishing;
     play->grabPlayer = Player_SetupRestrainedByEnemy;
     play->startPlayerCutscene = Player_SetupPlayerCutscene;
-    play->func_11D54 = Player_SetupStandStill;
+    play->func_11D54 = Player_SetupStandingStillMorph;
     play->damagePlayer = Player_SetupInflictDamage;
     play->talkWithPlayer = Player_StartTalkingWithActor;
 
@@ -9555,7 +9555,7 @@ void Player_Init(Actor* thisx, PlayState* play2) {
 
     if (gSaveContext.nayrusLoveTimer != 0) {
         gSaveContext.magicState = MAGIC_STATE_METER_FLASH_1;
-        func_80846A00(play, this, 1);
+        Player_SpawnMagicSpellActor(play, this, 1);
         this->stateFlags3 &= ~PLAYER_STATE3_RESTORE_NAYRUS_LOVE;
     }
 
@@ -10294,63 +10294,63 @@ static f32 sFloorConveyorSpeeds[] = { 0.5f, 1.0f, 3.0f };
 void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     s32 pad;
 
-    // // TESTING
+    // TESTING
 
-    // s32 i;
+    s32 i;
 
-    // typedef struct {
-    //     void* func;
-    //     char name[60];
-    // } TestFuncs;
+    typedef struct {
+        void* func;
+        char name[60];
+    } TestFuncs;
 
-    // static TestFuncs testFuncs[] = {
-    //     { Player_FriendlyZTargetStandingStill, "Player_FriendlyZTargetStandingStill" },
-    //     { Player_UnfriendlyZTargetStandingStill, "Player_UnfriendlyZTargetStandingStill" },
-    //     { Player_FriendlyBackwalk, "Player_FriendlyBackwalk" },
-    //     { Player_UnfriendlyBackwalk, "Player_UnfriendlyBackwalk" },
-    //     { Player_Sidewalk, "Player_Sidewalk" },
-    //     { Player_Turn, "Player_Turn" },
-    //     { Player_ZTargetingRun, "Player_ZTargetingRun" },
-    //     { Player_Run, "Player_Run" },
-    //     { Player_ChargeSpinAttack, "Player_ChargeSpinAttack" },
-    //     { Player_WalkChargingSpinAttack, "Player_WalkChargingSpinAttack" },
-    //     { Player_SidewalkChargingSpinAttack, "Player_SidewalkChargingSpinAttack" },
-    //     { Player_Rolling, "Player_Rolling" },
-    //     { Player_UpdateMidair, "Player_UpdateMidair" },
-    //     { Player_HoldActor, "Player_HoldActor" },
-    // };
+    static TestFuncs testFuncs[] = {
+        { Player_FriendlyZTargetStandingStill, "Player_FriendlyZTargetStandingStill" },
+        { Player_UnfriendlyZTargetStandingStill, "Player_UnfriendlyZTargetStandingStill" },
+        { Player_FriendlyBackwalk, "Player_FriendlyBackwalk" },
+        { Player_UnfriendlyBackwalk, "Player_UnfriendlyBackwalk" },
+        { Player_Sidewalk, "Player_Sidewalk" },
+        { Player_Turn, "Player_Turn" },
+        { Player_ZTargetingRun, "Player_ZTargetingRun" },
+        { Player_Run, "Player_Run" },
+        { Player_ChargeSpinAttack, "Player_ChargeSpinAttack" },
+        { Player_WalkChargingSpinAttack, "Player_WalkChargingSpinAttack" },
+        { Player_SidewalkChargingSpinAttack, "Player_SidewalkChargingSpinAttack" },
+        { Player_Rolling, "Player_Rolling" },
+        { Player_UpdateMidair, "Player_UpdateMidair" },
+        { Player_HoldActor, "Player_HoldActor" },
+    };
 
-    // GfxPrint printer;
-    // Gfx* gfx;
+    GfxPrint printer;
+    Gfx* gfx;
 
-    // OPEN_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
+    OPEN_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
 
-    // gfx = POLY_OPA_DISP + 1;
-    // gSPDisplayList(OVERLAY_DISP++, gfx);
+    gfx = POLY_OPA_DISP + 1;
+    gSPDisplayList(OVERLAY_DISP++, gfx);
 
-    // GfxPrint_Init(&printer);
-    // GfxPrint_Open(&printer, gfx);
+    GfxPrint_Init(&printer);
+    GfxPrint_Open(&printer, gfx);
 
-    // GfxPrint_SetColor(&printer, 255, 0, 255, 255);
-    // GfxPrint_SetPos(&printer, 2, 10);
-    // for (i = 0; i < ARRAY_COUNT(testFuncs); i++) {
-    //     if (testFuncs[i].func == this->actionFunc) {
-    //         GfxPrint_Printf(&printer, "%s", testFuncs[i].name);
-    //     }
-    // }
-    // GfxPrint_SetPos(&printer, 2, 11);
-    // GfxPrint_Printf(&printer, "comboTimer: %d", this->comboTimer);
+    GfxPrint_SetColor(&printer, 255, 0, 255, 255);
+    GfxPrint_SetPos(&printer, 2, 10);
+    for (i = 0; i < ARRAY_COUNT(testFuncs); i++) {
+        if (testFuncs[i].func == this->actionFunc) {
+            GfxPrint_Printf(&printer, "%s", testFuncs[i].name);
+        }
+    }
+    GfxPrint_SetPos(&printer, 2, 11);
+    GfxPrint_Printf(&printer, "comboTimer: %d", this->comboTimer);
 
-    // gfx = GfxPrint_Close(&printer);
-    // GfxPrint_Destroy(&printer);
+    gfx = GfxPrint_Close(&printer);
+    GfxPrint_Destroy(&printer);
 
-    // gSPEndDisplayList(gfx++);
-    // gSPBranchList(POLY_OPA_DISP, gfx);
-    // POLY_OPA_DISP = gfx;
+    gSPEndDisplayList(gfx++);
+    gSPBranchList(POLY_OPA_DISP, gfx);
+    POLY_OPA_DISP = gfx;
 
-    // CLOSE_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
+    CLOSE_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
 
-    // // END TESTING
+    // END TESTING
 
     sControlInput = input;
 
@@ -10406,7 +10406,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     if ((this->stateFlags3 & PLAYER_STATE3_RESTORE_NAYRUS_LOVE) && (gSaveContext.nayrusLoveTimer != 0) &&
         (gSaveContext.magicState == MAGIC_STATE_IDLE)) {
         gSaveContext.magicState = MAGIC_STATE_METER_FLASH_1;
-        func_80846A00(play, this, 1);
+        Player_SpawnMagicSpellActor(play, this, 1);
         this->stateFlags3 &= ~PLAYER_STATE3_RESTORE_NAYRUS_LOVE;
     }
 
@@ -11138,7 +11138,7 @@ void func_8084B1D8(Player* this, PlayState* play) {
          ((this->attentionMode == PLAYER_ATTENTIONMODE_C_UP) &&
           CHECK_BTN_ANY(sControlInput->press.button,
                         BTN_A | BTN_B | BTN_R | BTN_CUP | BTN_CLEFT | BTN_CRIGHT | BTN_CDOWN)))) {
-        func_8083C148(this, play);
+        Player_ClearLookAndAttention(this, play);
         func_80078884(NA_SE_SY_CAMERA_ZOOM_UP);
     } else if ((DECR(this->genericTimer) == 0) || (this->attentionMode != PLAYER_ATTENTIONMODE_AIMING)) {
         if (Player_IsShootingHookshot(this)) {
@@ -11209,7 +11209,7 @@ void func_8084B530(Player* this, PlayState* play) {
                 } else if (Player_IsSwimming(this)) {
                     Player_SetupSwimIdle(play, this);
                 } else {
-                    Player_SetupStandStill(this, play);
+                    Player_SetupStandingStillMorph(this, play);
                 }
             }
         }
@@ -11437,7 +11437,7 @@ void Player_ClimbOntoLedge(Player* this, PlayState* play) {
 
     if (LinkAnimation_Update(play, &this->skelAnime)) {
         Player_UpdateAnimMovement(this, PLAYER_ANIMMOVEFLAGS_UPDATE_XZ);
-        func_8083C0E8(this, play);
+        Player_SetupStandingStillNoMorph(this, play);
         return;
     }
 
@@ -11609,7 +11609,7 @@ static PlayerAnimSfxEntry sClimbLadderAnimSfx[] = {
 void func_8084C5F8(Player* this, PlayState* play) {
     s32 temp;
     f32* sp38;
-    CollisionPoly* sp34;
+    CollisionPoly* randOffsetSparklePos;
     s32 sp30;
     Vec3f sp24;
 
@@ -11623,7 +11623,7 @@ void func_8084C5F8(Player* this, PlayState* play) {
     }
 
     if ((temp > 0) || LinkAnimation_Update(play, &this->skelAnime)) {
-        func_8083C0E8(this, play);
+        Player_SetupStandingStillNoMorph(this, play);
         this->stateFlags1 &= ~PLAYER_STATE1_CLIMBING;
         return;
     }
@@ -11639,8 +11639,8 @@ void func_8084C5F8(Player* this, PlayState* play) {
         sp24.x = this->actor.world.pos.x;
         sp24.y = this->actor.world.pos.y + 20.0f;
         sp24.z = this->actor.world.pos.z;
-        if (BgCheck_EntityRaycastFloor3(&play->colCtx, &sp34, &sp30, &sp24) != 0.0f) {
-            this->moveSfxType = SurfaceType_GetMoveSfx(&play->colCtx, sp34, sp30);
+        if (BgCheck_EntityRaycastFloor3(&play->colCtx, &randOffsetSparklePos, &sp30, &sp24) != 0.0f) {
+            this->moveSfxType = SurfaceType_GetMoveSfx(&play->colCtx, randOffsetSparklePos, sp30);
             Player_PlayLandingSfx(this);
         }
     }
@@ -11690,7 +11690,7 @@ void func_8084C81C(Player* this, PlayState* play) {
     this->stateFlags2 |= PLAYER_STATE2_ALWAYS_DISABLE_MOVE_ROTATION;
 
     if (LinkAnimation_Update(play, &this->skelAnime)) {
-        func_8083C0E8(this, play);
+        Player_SetupStandingStillNoMorph(this, play);
         this->stateFlags2 &= ~PLAYER_STATE2_INSIDE_CRAWLSPACE;
         return;
     }
@@ -11718,7 +11718,7 @@ s32 func_8084C89C(PlayState* play, Player* this, s32 arg2, f32* arg3) {
     f32 sp50;
     f32 sp4C;
     Vec3f sp40;
-    Vec3f sp34;
+    Vec3f randOffsetSparklePos;
     CollisionPoly* sp30;
     s32 sp2C;
 
@@ -11727,22 +11727,22 @@ s32 func_8084C89C(PlayState* play, Player* this, s32 arg2, f32* arg3) {
 
     *arg3 = Player_RaycastFloorWithOffset2(play, this, &D_808548FC[arg2], &sp40);
 
-    return (sp4C < *arg3) && (*arg3 < sp50) && !Player_WallLineTestWithOffset(play, this, &D_80854914[arg2], &sp30, &sp2C, &sp34) &&
-           !Player_WallLineTestWithOffset(play, this, &D_8085492C[arg2], &sp30, &sp2C, &sp34);
+    return (sp4C < *arg3) && (*arg3 < sp50) && !Player_WallLineTestWithOffset(play, this, &D_80854914[arg2], &sp30, &sp2C, &randOffsetSparklePos) &&
+           !Player_WallLineTestWithOffset(play, this, &D_8085492C[arg2], &sp30, &sp2C, &randOffsetSparklePos);
 }
 
 s32 func_8084C9BC(Player* this, PlayState* play) {
     EnHorse* rideActor = (EnHorse*)this->rideActor;
     s32 sp38;
-    f32 sp34;
+    f32 randOffsetSparklePos;
 
     if (this->genericTimer < 0) {
         this->genericTimer = 99;
     } else {
         sp38 = (this->mountSide < 0) ? 0 : 1;
-        if (!func_8084C89C(play, this, sp38, &sp34)) {
+        if (!func_8084C89C(play, this, sp38, &randOffsetSparklePos)) {
             sp38 ^= 1;
-            if (!func_8084C89C(play, this, sp38, &sp34)) {
+            if (!func_8084C89C(play, this, sp38, &randOffsetSparklePos)) {
                 return 0;
             } else {
                 this->mountSide = -this->mountSide;
@@ -11757,7 +11757,7 @@ s32 func_8084C9BC(Player* this, PlayState* play) {
                 (EN_HORSE_CHECK_4(rideActor) && CHECK_BTN_ALL(sControlInput->press.button, BTN_A))) {
                 rideActor->actor.child = NULL;
                 Player_SetActionFuncPreserveMoveFlags(play, this, func_8084D3E4, 0);
-                this->unk_878 = sp34 - rideActor->actor.world.pos.y;
+                this->unk_878 = randOffsetSparklePos - rideActor->actor.world.pos.y;
                 Player_PlayAnimOnce(play, this, (this->mountSide < 0) ? &gPlayerAnim_003390 : &gPlayerAnim_0033A0);
                 return 1;
             }
@@ -12015,7 +12015,7 @@ void func_8084D3E4(Player* this, PlayState* play) {
     if (LinkAnimation_Update(play, &this->skelAnime)) {
         EnHorse* rideActor = (EnHorse*)this->rideActor;
 
-        func_8083C0E8(this, play);
+        Player_SetupStandingStillNoMorph(this, play);
         this->stateFlags1 &= ~PLAYER_STATE1_RIDING_HORSE;
         this->actor.parent = NULL;
         AREG(6) = 0;
@@ -12282,7 +12282,7 @@ void func_8084DF6C(PlayState* play, Player* this) {
 void func_8084DFAC(PlayState* play, Player* this) {
     func_8084DF6C(play, this);
     Player_AddRootYawToShapeYaw(this);
-    func_8083C0E8(this, play);
+    Player_SetupStandingStillNoMorph(this, play);
     this->currentYaw = this->actor.shape.rot.y;
 }
 
@@ -12492,7 +12492,7 @@ void func_8084E6D4(Player* this, PlayState* play) {
                 if (this->getItemId != GI_ICE_TRAP) {
                     Actor_Spawn(&play->actorCtx, play, ACTOR_EN_CLEAR_TAG, this->actor.world.pos.x,
                                 this->actor.world.pos.y + 100.0f, this->actor.world.pos.z, 0, 0, 0, 0);
-                    func_8083C0E8(this, play);
+                    Player_SetupStandingStillNoMorph(this, play);
                 } else {
                     this->actor.colChkInfo.damage = 0;
                     Player_SetupDamage(play, this, PLAYER_DMGREACTION_FROZEN, 0.0f, 0.0f, 0, 20);
@@ -12548,7 +12548,7 @@ void func_8084E9AC(Player* this, PlayState* play) {
                 this->skelAnime.endFrame = this->skelAnime.animLength - 1.0f;
             }
         } else {
-            func_8083C0E8(this, play);
+            Player_SetupStandingStillNoMorph(this, play);
         }
     } else {
         if (LINK_IS_ADULT && LinkAnimation_OnFrame(&this->skelAnime, 158.0f)) {
@@ -12608,7 +12608,7 @@ void func_8084EAC0(Player* this, PlayState* play) {
             return;
         }
 
-        func_8083C0E8(this, play);
+        Player_SetupStandingStillNoMorph(this, play);
         func_8005B1A4(Play_GetCamera(play, CAM_ID_MAIN));
     } else if (this->genericTimer == 1) {
         if ((gSaveContext.healthAccumulator == 0) && (gSaveContext.magicState != MAGIC_STATE_FILL)) {
@@ -12649,7 +12649,7 @@ void Player_SwingBottle(Player* this, PlayState* play) {
                 func_8005B1A4(Play_GetCamera(play, CAM_ID_MAIN));
             }
         } else {
-            func_8083C0E8(this, play);
+            Player_SetupStandingStillNoMorph(this, play);
         }
     } else {
         if (this->unk_84F == 0) {
@@ -12686,7 +12686,7 @@ void Player_SwingBottle(Player* this, PlayState* play) {
         }
     }
 
-    //! @bug If the animation is changed at any point above (such as by func_8083C0E8() or func_808322D0()), it will
+    //! @bug If the animation is changed at any point above (such as by Player_SetupStandingStillNoMorph() or func_808322D0()), it will
     //! change the curFrame to 0. This causes this flag to be set for one frame, at a time when it does not look like
     //! Player is swinging the bottle.
     if (this->skelAnime.curFrame <= 7.0f) {
@@ -12698,7 +12698,7 @@ static Vec3f sBottleFairyPosOffset = { 0.0f, 0.0f, 5.0f };
 
 void func_8084EED8(Player* this, PlayState* play) {
     if (LinkAnimation_Update(play, &this->skelAnime)) {
-        func_8083C0E8(this, play);
+        Player_SetupStandingStillNoMorph(this, play);
         func_8005B1A4(Play_GetCamera(play, CAM_ID_MAIN));
         return;
     }
@@ -12728,7 +12728,7 @@ void Player_DropItemFromBottle(Player* this, PlayState* play) {
     Player_StepLinearVelocityToZero(this);
 
     if (LinkAnimation_Update(play, &this->skelAnime)) {
-        func_8083C0E8(this, play);
+        Player_SetupStandingStillNoMorph(this, play);
         func_8005B1A4(Play_GetCamera(play, CAM_ID_MAIN));
         return;
     }
@@ -12757,7 +12757,7 @@ void func_8084F104(Player* this, PlayState* play) {
 
     if (LinkAnimation_Update(play, &this->skelAnime)) {
         if (this->genericTimer < 0) {
-            func_8083C0E8(this, play);
+            Player_SetupStandingStillNoMorph(this, play);
         } else if (this->exchangeItemId == EXCH_ITEM_NONE) {
             Actor* targetActor = this->talkActor;
 
@@ -12794,7 +12794,7 @@ void func_8084F104(Player* this, PlayState* play) {
                     Player_PlayAnimOnce(play, this, &gPlayerAnim_002698);
                     this->genericTimer = -1;
                 } else {
-                    func_8083C0E8(this, play);
+                    Player_SetupStandingStillNoMorph(this, play);
                 }
 
                 func_8005B1A4(Play_GetCamera(play, CAM_ID_MAIN));
@@ -12917,7 +12917,7 @@ void func_8084F710(Player* this, PlayState* play) {
                 if ((play->sceneNum == SCENE_SPOT04) && Player_SetupCutscene(play, this)) {
                     return;
                 }
-                Player_SetupStandStill(this, play);
+                Player_SetupStandingStillMorph(this, play);
             }
         }
         Math_SmoothStepToF(&this->actor.velocity.y, 2.0f, 0.3f, 8.0f, 0.5f);
@@ -12991,7 +12991,7 @@ void Player_ShootingGalleryPlay(Player* this, PlayState* play) {
     if (play->shootingGalleryStatus < 0) {
         play->shootingGalleryStatus++;
         if (play->shootingGalleryStatus == 0) {
-            func_8083C148(this, play);
+            Player_ClearLookAndAttention(this, play);
         }
     }
 }
@@ -13290,7 +13290,7 @@ void Player_ChooseFaroresWindOption(Player* this, PlayState* play) {
             func_80078914(&gSaveContext.respawn[RESPAWN_MODE_TOP].pos, NA_SE_PL_MAGIC_WIND_VANISH);
         }
 
-        Player_SetupStandStill(this, play);
+        Player_SetupStandingStillMorph(this, play);
         func_8005B1A4(Play_GetCamera(play, CAM_ID_MAIN));
     }
 }
@@ -13311,25 +13311,25 @@ void Player_SpawnFromFaroresWind(Player* this, PlayState* play) {
     }
 }
 
-static LinkAnimationHeader* D_80854A58[] = {
+static LinkAnimationHeader* sStartCastMagicSpellAnims[] = {
     &gPlayerAnim_002CF8,
     &gPlayerAnim_002CE0,
     &gPlayerAnim_002D10,
 };
 
-static LinkAnimationHeader* D_80854A64[] = {
+static LinkAnimationHeader* sCastMagicSpellAnims[] = {
     &gPlayerAnim_002D00,
     &gPlayerAnim_002CE8,
     &gPlayerAnim_002D18,
 };
 
-static LinkAnimationHeader* D_80854A70[] = {
+static LinkAnimationHeader* sEndCastMagicSpellAnims[] = {
     &gPlayerAnim_002D08,
     &gPlayerAnim_002CF0,
     &gPlayerAnim_002D20,
 };
 
-static u8 D_80854A7C[] = { 70, 10, 10 };
+static u8 sMagicSpellTimeLimits[] = { 70, 10, 10 };
 
 static PlayerAnimSfxEntry sMagicSpellCastAnimSfx[] = {
     { NA_SE_PL_SKIP, 0x814 },
@@ -13354,16 +13354,16 @@ static PlayerAnimSfxEntry sMagicSpellAnimSfx[][2] = {
 
 void Player_UpdateMagicSpell(Player* this, PlayState* play) {
     if (LinkAnimation_Update(play, &this->skelAnime)) {
-        if (this->unk_84F < 0) {
+        if (this->magicSpellType < 0) {
             if ((this->itemActionParam == PLAYER_AP_NAYRUS_LOVE) || (gSaveContext.magicState == MAGIC_STATE_IDLE)) {
                 Player_SetupStandingStillTypeNoMorph(this, play);
                 func_8005B1A4(Play_GetCamera(play, CAM_ID_MAIN));
             }
         } else {
             if (this->genericTimer == 0) {
-                LinkAnimation_PlayOnceSetSpeed(play, &this->skelAnime, D_80854A58[this->unk_84F], 0.83f);
+                LinkAnimation_PlayOnceSetSpeed(play, &this->skelAnime, sStartCastMagicSpellAnims[this->magicSpellType], 0.83f);
 
-                if (func_80846A00(play, this, this->unk_84F) != NULL) {
+                if (Player_SpawnMagicSpellActor(play, this, this->magicSpellType) != NULL) {
                     this->stateFlags1 |= PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE | PLAYER_STATE1_IN_CUTSCENE;
                     if ((this->unk_84F != 0) || (gSaveContext.respawn[RESPAWN_MODE_TOP].data <= 0)) {
                         gSaveContext.magicState = MAGIC_STATE_CONSUME_SETUP;
@@ -13372,9 +13372,9 @@ void Player_UpdateMagicSpell(Player* this, PlayState* play) {
                     Magic_Reset(play);
                 }
             } else {
-                LinkAnimation_PlayLoopSetSpeed(play, &this->skelAnime, D_80854A64[this->unk_84F], 0.83f);
+                LinkAnimation_PlayLoopSetSpeed(play, &this->skelAnime, sCastMagicSpellAnims[this->magicSpellType], 0.83f);
 
-                if (this->unk_84F == 0) {
+                if (this->magicSpellType == 0) {
                     this->genericTimer = -10;
                 }
             }
@@ -13400,18 +13400,18 @@ void Player_UpdateMagicSpell(Player* this, PlayState* play) {
                 gSaveContext.fw.tempCollectFlags = gSaveContext.respawn[RESPAWN_MODE_DOWN].tempCollectFlags;
                 this->genericTimer = 2;
             }
-        } else if (this->unk_84F >= 0) {
+        } else if (this->magicSpellType >= 0) {
             if (this->genericTimer == 0) {
                 Player_PlayAnimSfx(this, sMagicSpellCastAnimSfx);
             } else if (this->genericTimer == 1) {
-                Player_PlayAnimSfx(this, sMagicSpellAnimSfx[this->unk_84F]);
-                if ((this->unk_84F == 2) && LinkAnimation_OnFrame(&this->skelAnime, 30.0f)) {
+                Player_PlayAnimSfx(this, sMagicSpellAnimSfx[this->magicSpellType]);
+                if ((this->magicSpellType == 2) && LinkAnimation_OnFrame(&this->skelAnime, 30.0f)) {
                     this->stateFlags1 &= ~(PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE | PLAYER_STATE1_IN_CUTSCENE);
                 }
-            } else if (D_80854A7C[this->unk_84F] < this->genericTimer++) {
-                LinkAnimation_PlayOnceSetSpeed(play, &this->skelAnime, D_80854A70[this->unk_84F], 0.83f);
+            } else if (sMagicSpellTimeLimits[this->magicSpellType] < this->genericTimer++) {
+                LinkAnimation_PlayOnceSetSpeed(play, &this->skelAnime, sEndCastMagicSpellAnims[this->magicSpellType], 0.83f);
                 this->currentYaw = this->actor.shape.rot.y;
-                this->unk_84F = -1;
+                this->magicSpellType = -1;
             }
         }
     }
@@ -13482,7 +13482,7 @@ void Player_CastFishingRod(Player* this, PlayState* play) {
     Player_StepLinearVelocityToZero(this);
 
     if (this->fishingState == 0) {
-        Player_SetupStandStill(this, play);
+        Player_SetupStandingStillMorph(this, play);
     } else if (this->fishingState == 3) {
         Player_SetActionFunc(play, this, Player_ReleaseCaughtFish, 0);
         Player_ChangeAnimMorphToLastFrame(play, this, &gPlayerAnim_002C00);
@@ -14414,7 +14414,7 @@ static LinkAnimationHeader* sLearnOcarinaSongAnims[] = {
     &gPlayerAnim_003458,
 };
 
-static Vec3s D_80855210[2][2] = {
+static Vec3s sBaseSparklePos[2][2] = {
     { { -200, 700, 100 }, { 800, 600, 800 } },
     { { -200, 500, 0 }, { 600, 400, 600 } },
 };
@@ -14425,8 +14425,8 @@ void Player_LearnOcarinaSong(PlayState* play, Player* this, CsCmdActorAction* ar
     static Color_RGBA8 envColor = { 0, 128, 128, 0 };
     s32 linkAge = gSaveContext.linkAge;
     Vec3f sparklePos;
-    Vec3f sp34;
-    Vec3s* ptr;
+    Vec3f randOffsetSparklePos;
+    Vec3s* baseSparklePos;
 
     Player_AnimPlaybackType12(play, this, sLearnOcarinaSongAnims[linkAge]);
 
@@ -14435,13 +14435,13 @@ void Player_LearnOcarinaSong(PlayState* play, Player* this, CsCmdActorAction* ar
         return;
     }
 
-    ptr = D_80855210[gSaveContext.linkAge];
+    baseSparklePos = sBaseSparklePos[gSaveContext.linkAge];
 
-    sp34.x = ptr[0].x + Rand_CenteredFloat(ptr[1].x);
-    sp34.y = ptr[0].y + Rand_CenteredFloat(ptr[1].y);
-    sp34.z = ptr[0].z + Rand_CenteredFloat(ptr[1].z);
+    randOffsetSparklePos.x = baseSparklePos[0].x + Rand_CenteredFloat(baseSparklePos[1].x);
+    randOffsetSparklePos.y = baseSparklePos[0].y + Rand_CenteredFloat(baseSparklePos[1].y);
+    randOffsetSparklePos.z = baseSparklePos[0].z + Rand_CenteredFloat(baseSparklePos[1].z);
 
-    SkinMatrix_Vec3fMtxFMultXYZ(&this->shieldMf, &sp34, &sparklePos);
+    SkinMatrix_Vec3fMtxFMultXYZ(&this->shieldMf, &randOffsetSparklePos, &sparklePos);
 
     EffectSsKiraKira_SpawnDispersed(play, &sparklePos, &zeroVec, &zeroVec, &primColor, &envColor, 600, -10);
 }
@@ -14472,7 +14472,7 @@ void Player_CutsceneEnd(PlayState* play, Player* this, CsCmdActorAction* arg2) {
         Player_SetupSwimIdle(play, this);
         Player_ResetSubCam(play, this);
     } else {
-        func_8083C148(this, play);
+        Player_ClearLookAndAttention(this, play);
         if (!Player_SetupSpeakOrCheck(this, play)) {
             Player_SetupGetItemOrHoldBehavior(this, play);
         }
@@ -14628,7 +14628,8 @@ s32 Player_SetupPlayerCutscene(PlayState* play, Actor* actor, s32 csMode) {
     return 0;
 }
 
-void Player_SetupStandStill(Player* this, PlayState* play) {
+
+void Player_SetupStandingStillMorph(Player* this, PlayState* play) {
     Player_SetActionFunc(play, this, Player_StandingStill, 1);
     Player_ChangeAnimMorphToLastFrame(play, this, Player_GetStandingStillAnim(this));
     this->currentYaw = this->actor.shape.rot.y;

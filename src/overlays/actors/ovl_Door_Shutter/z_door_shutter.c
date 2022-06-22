@@ -408,15 +408,15 @@ void func_80996C60(DoorShutter* this, PlayState* play) {
     if (this->dyna.actor.category == ACTORCAT_DOOR) {
         Player* player = GET_PLAYER(play);
         s32 sp38 = this->unk_16C;
-        s32 sp34 = 0xF;
+        s32 randOffsetSparklePos = 0xF;
 
         if (DoorShutter_SetupDoor(this, play)) {
-            sp34 = 0x20;
+            randOffsetSparklePos = 0x20;
         }
         DoorShutter_SetupAction(this, func_80997004);
         this->unk_16C = sp38;
         this->unk_170 = 0.0f;
-        Camera_ChangeDoorCam(play->cameraPtrs[CAM_ID_MAIN], &this->dyna.actor, player->doorBgCamIndex, 0.0f, 12, sp34,
+        Camera_ChangeDoorCam(play->cameraPtrs[CAM_ID_MAIN], &this->dyna.actor, player->doorBgCamIndex, 0.0f, 12, randOffsetSparklePos,
                              10);
     }
 }

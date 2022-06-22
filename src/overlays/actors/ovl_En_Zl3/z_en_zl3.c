@@ -701,14 +701,14 @@ s32 func_80B5458C(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s
 void EnZl3_PostLimbDraw(PlayState* play, s32 limbIndex, Gfx** dList, Vec3s* rot, void* thisx, Gfx** gfx) {
     EnZl3* this = (EnZl3*)thisx;
     s32 pad;
-    Vec3f sp34;
+    Vec3f randOffsetSparklePos;
     s32 pad2;
     Vec3f sp24;
     Vec3f sp18;
 
     if (limbIndex == 13) {
-        sp34 = D_80B5A46C;
-        Matrix_MultVec3f(&sp34, &this->unk_31C);
+        randOffsetSparklePos = D_80B5A46C;
+        Matrix_MultVec3f(&randOffsetSparklePos, &this->unk_31C);
     } else if (limbIndex == 14) {
         sp24 = D_80B5A478;
         Matrix_MultVec3f(&sp24, &sp18);

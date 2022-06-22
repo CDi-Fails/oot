@@ -467,7 +467,7 @@ void EnBb_SetupDeath(EnBb* this, PlayState* play) {
 void EnBb_Death(EnBb* this, PlayState* play) {
     s16 enpartType = 3;
     Vec3f sp40 = { 0.0f, 0.5f, 0.0f };
-    Vec3f sp34 = { 0.0f, 0.0f, 0.0f };
+    Vec3f randOffsetSparklePos = { 0.0f, 0.0f, 0.0f };
 
     if (this->actor.params <= ENBB_BLUE) {
         Math_SmoothStepToF(&this->flameScaleY, 0.0f, 1.0f, 30.0f, 0.0f);
@@ -1228,7 +1228,7 @@ void EnBb_Update(Actor* thisx, PlayState* play2) {
     Vec3f sp40 = { 0.0f, -0.6f, 0.0f };
     Color_RGBA8 sp3C = { 0, 0, 255, 255 };
     Color_RGBA8 sp38 = { 0, 0, 0, 0 };
-    f32 sp34 = -15.0f;
+    f32 randOffsetSparklePos = -15.0f;
 
     if (this->actor.params <= ENBB_BLUE) {
         EnBb_CollisionCheck(this, play);
@@ -1241,9 +1241,9 @@ void EnBb_Update(Actor* thisx, PlayState* play2) {
         }
         if (this->moveMode == BBMOVE_NORMAL) {
             if ((this->actor.world.pos.y - 20.0f) <= this->actor.floorHeight) {
-                sp34 = 20.0f;
+                randOffsetSparklePos = 20.0f;
             }
-            Actor_UpdateBgCheckInfo(play, &this->actor, sp34, 25.0f, 20.0f,
+            Actor_UpdateBgCheckInfo(play, &this->actor, randOffsetSparklePos, 25.0f, 20.0f,
                                     UPDBGCHECKINFO_FLAG_0 | UPDBGCHECKINFO_FLAG_2);
         }
         this->actor.focus.pos = this->actor.world.pos;

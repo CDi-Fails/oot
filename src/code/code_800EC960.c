@@ -4969,15 +4969,15 @@ void func_800F64E0(u8 arg0) {
 
 void func_800F6584(u8 arg0) {
     u8 playerIdx;
-    u16 sp34;
+    u16 randOffsetSparklePos;
 
     D_8016B9F2 = arg0;
     if ((func_800FA0B4(SEQ_PLAYER_BGM_MAIN) & 0xFF) == NA_BGM_LONLON) {
         playerIdx = SEQ_PLAYER_BGM_MAIN;
-        sp34 = 0;
+        randOffsetSparklePos = 0;
     } else if ((func_800FA0B4(SEQ_PLAYER_BGM_SUB) & 0xFF) == NA_BGM_LONLON) {
         playerIdx = SEQ_PLAYER_BGM_SUB;
-        sp34 = 0xFFFC;
+        randOffsetSparklePos = 0xFFFC;
     } else {
         return;
     }
@@ -4986,7 +4986,7 @@ void func_800F6584(u8 arg0) {
         Audio_SeqCmd6(playerIdx, 1, 0, 0);
         Audio_SeqCmd6(playerIdx, 1, 1, 0);
         if (playerIdx == SEQ_PLAYER_BGM_SUB) {
-            Audio_SeqCmdA(playerIdx, sp34 | 3);
+            Audio_SeqCmdA(playerIdx, randOffsetSparklePos | 3);
         }
     } else {
         if (playerIdx == SEQ_PLAYER_BGM_SUB) {
@@ -4995,7 +4995,7 @@ void func_800F6584(u8 arg0) {
         Audio_SeqCmd6(playerIdx, 1, 0, 0x7F);
         Audio_SeqCmd6(playerIdx, 1, 1, 0x7F);
         if (playerIdx == SEQ_PLAYER_BGM_SUB) {
-            Audio_SeqCmdA(playerIdx, sp34);
+            Audio_SeqCmdA(playerIdx, randOffsetSparklePos);
         }
     }
 }

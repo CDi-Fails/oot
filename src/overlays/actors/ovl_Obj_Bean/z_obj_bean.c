@@ -245,7 +245,7 @@ void ObjBean_FollowPath(ObjBean* this, PlayState* play) {
     Vec3s* currentPoint;
     Vec3s* sp4C;
     Vec3f sp40;
-    Vec3f sp34;
+    Vec3f randOffsetSparklePos;
     f32 sp30;
     f32 mag;
 
@@ -271,8 +271,8 @@ void ObjBean_FollowPath(ObjBean* this, PlayState* play) {
         }
         sp4C = &((Vec3s*)SEGMENTED_TO_VIRTUAL(path->points))[this->nextPointIndex];
         Math_Vec3s_DiffToVec3f(&sp40, nextPathPoint, currentPoint);
-        Math_Vec3s_DiffToVec3f(&sp34, sp4C, nextPathPoint);
-        if (Math3D_CosOut(&sp40, &sp34, &sp30)) {
+        Math_Vec3s_DiffToVec3f(&randOffsetSparklePos, sp4C, nextPathPoint);
+        if (Math3D_CosOut(&sp40, &randOffsetSparklePos, &sp30)) {
             this->dyna.actor.speedXZ = 0.0f;
         } else {
             this->dyna.actor.speedXZ *= (sp30 + 1.0f) * 0.5f;
