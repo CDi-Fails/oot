@@ -129,7 +129,7 @@ typedef struct {
 
 void Player_DoNothing(PlayState* play, Player* this);
 void Player_DoNothing2(PlayState* play, Player* this);
-void Player_SetBowOrSlingshot(PlayState* play, Player* this);
+void Player_SetupBowOrSlingshot(PlayState* play, Player* this);
 void Player_SetupDekuStick(PlayState* play, Player* this);
 void Player_SetupExplosive(PlayState* play, Player* this);
 void Player_SetupHookshot(PlayState* play, Player* this);
@@ -1138,8 +1138,8 @@ static s32 (*sUpperBodyItemFuncs[])(Player* this, PlayState* play) = {
 
 static void (*sItemChangeFuncs[])(PlayState* play, Player* this) = {
     Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_SetupDekuStick,
-    Player_DoNothing2, Player_SetBowOrSlingshot, Player_SetBowOrSlingshot, Player_SetBowOrSlingshot, Player_SetBowOrSlingshot, Player_SetBowOrSlingshot, Player_SetBowOrSlingshot,
-    Player_SetBowOrSlingshot, Player_SetBowOrSlingshot, Player_SetupHookshot, Player_SetupHookshot, Player_SetupExplosive, Player_SetupExplosive, Player_SetupBoomerang,
+    Player_DoNothing2, Player_SetupBowOrSlingshot, Player_SetupBowOrSlingshot, Player_SetupBowOrSlingshot, Player_SetupBowOrSlingshot, Player_SetupBowOrSlingshot, Player_SetupBowOrSlingshot,
+    Player_SetupBowOrSlingshot, Player_SetupBowOrSlingshot, Player_SetupHookshot, Player_SetupHookshot, Player_SetupExplosive, Player_SetupExplosive, Player_SetupBoomerang,
     Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing,
     Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing,
     Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing,
@@ -1960,7 +1960,7 @@ void Player_SetupDekuStick(PlayState* play, Player* this) {
 void Player_DoNothing2(PlayState* play, Player* this) {
 }
 
-void Player_SetBowOrSlingshot(PlayState* play, Player* this) {
+void Player_SetupBowOrSlingshot(PlayState* play, Player* this) {
     this->stateFlags1 |= PLAYER_STATE1_AIMING_FPS_ITEM;
 
     if (this->heldItemActionParam != PLAYER_AP_SLINGSHOT) {
