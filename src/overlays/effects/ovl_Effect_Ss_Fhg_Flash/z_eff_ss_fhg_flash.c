@@ -33,7 +33,7 @@ u32 EffectSsFhgFlash_Init(PlayState* play, u32 index, EffectSs* this, void* init
     s32 pad;
     s32 objBankIdx;
     Vec3f zeroVec = { 0.0f, 0.0f, 0.0f };
-    Vec3f randOffsetSparklePos = { 0.0f, -1000.0f, 0.0f };
+    Vec3f sp34 = { 0.0f, -1000.0f, 0.0f };
     u32 oldSeg6;
 
     if (initParams->type == FHGFLASH_LIGHTBALL) {
@@ -69,7 +69,7 @@ u32 EffectSsFhgFlash_Init(PlayState* play, u32 index, EffectSs* this, void* init
         this->rParam = initParams->param;
 
         if (initParams->param != FHGFLASH_SHOCK_NO_ACTOR) {
-            this->pos = randOffsetSparklePos;
+            this->pos = sp34;
             this->gfx = SEGMENTED_TO_VIRTUAL(D_809A5100);
         } else {
             this->pos = initParams->pos;

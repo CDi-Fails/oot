@@ -1070,7 +1070,7 @@ void func_809809C0(DemoGt* this, PlayState* play2) {
 
     if (((frames > 469) && (frames < 481)) || (kREG(1) == 3)) {
         Vec3f sp40 = { 20.0f, 6.0f, 0.0f };
-        Vec3f randOffsetSparklePos = { 0.0f, 0.0f, 0.0f };
+        Vec3f sp34 = { 0.0f, 0.0f, 0.0f };
         s16 pad2[3];
 
         sp54.x = this2->dyna.actor.world.pos.x + 790.0f;
@@ -1078,7 +1078,7 @@ void func_809809C0(DemoGt* this, PlayState* play2) {
         sp54.z = this2->dyna.actor.world.pos.z + 23.0f;
 
         if (ABS(gameplayFrames % 12) == 0) {
-            DemoGt_SpawnExplosionNoSound(play, &sp54, &sp40, &randOffsetSparklePos, 2.0f);
+            DemoGt_SpawnExplosionNoSound(play, &sp54, &sp40, &sp34, 2.0f);
         }
     }
 }

@@ -202,15 +202,15 @@ void BgSpot06Objects_Destroy(Actor* thisx, PlayState* play) {
  * Water Temple entrance gate effect functions
  */
 void BgSpot06Objects_GateSpawnBubbles(BgSpot06Objects* this, PlayState* play) {
-    Vec3f randOffsetSparklePos;
+    Vec3f sp34;
     f32 tmp;
 
     if ((play->gameplayFrames % 3) == 0) {
         tmp = Rand_CenteredFloat(160.0f);
-        randOffsetSparklePos.x = (Math_SinS(this->dyna.actor.shape.rot.y + 0x4000) * tmp) + this->dyna.actor.world.pos.x;
-        randOffsetSparklePos.y = this->dyna.actor.world.pos.y;
-        randOffsetSparklePos.z = (Math_CosS(this->dyna.actor.shape.rot.y + 0x4000) * tmp) + this->dyna.actor.world.pos.z;
-        EffectSsBubble_Spawn(play, &randOffsetSparklePos, 50.0f, 70.0f, 10.0f, (Rand_ZeroOne() * 0.05f) + 0.175f);
+        sp34.x = (Math_SinS(this->dyna.actor.shape.rot.y + 0x4000) * tmp) + this->dyna.actor.world.pos.x;
+        sp34.y = this->dyna.actor.world.pos.y;
+        sp34.z = (Math_CosS(this->dyna.actor.shape.rot.y + 0x4000) * tmp) + this->dyna.actor.world.pos.z;
+        EffectSsBubble_Spawn(play, &sp34, 50.0f, 70.0f, 10.0f, (Rand_ZeroOne() * 0.05f) + 0.175f);
     }
 }
 

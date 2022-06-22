@@ -1196,13 +1196,13 @@ void EnPoSisters_Update(Actor* thisx, PlayState* play) {
                                     UPDBGCHECKINFO_FLAG_0 | UPDBGCHECKINFO_FLAG_2);
         } else {
             Vec3f vec;
-            s32 randOffsetSparklePos;
+            s32 sp34;
 
             vec.x = this->actor.world.pos.x;
             vec.y = this->actor.world.pos.y + 10.0f;
             vec.z = this->actor.world.pos.z;
             this->actor.floorHeight =
-                BgCheck_EntityRaycastFloor4(&play->colCtx, &this->actor.floorPoly, &randOffsetSparklePos, &this->actor, &vec);
+                BgCheck_EntityRaycastFloor4(&play->colCtx, &this->actor.floorPoly, &sp34, &this->actor, &vec);
         }
 
         Collider_UpdateCylinder(&this->actor, &this->collider);

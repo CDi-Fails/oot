@@ -274,7 +274,7 @@ void EffectBlure_UpdateFlags(EffectBlureElement* elem) {
     } else {
         EffectBlureElement* prev = elem - 1;
         EffectBlureElement* next = elem + 1;
-        f32 randOffsetSparklePos;
+        f32 sp34;
         f32 sp30;
         f32 sp2C;
 
@@ -285,11 +285,11 @@ void EffectBlure_UpdateFlags(EffectBlureElement* elem) {
         Math_Vec3s_DiffToVec3f(&sp4C, &next->p1, &elem->p1);
         Math_Vec3s_DiffToVec3f(&sp40, &next->p2, &elem->p2);
 
-        if (Math3D_CosOut(&sp64, &sp4C, &randOffsetSparklePos) || Math3D_CosOut(&sp58, &sp40, &sp30) ||
+        if (Math3D_CosOut(&sp64, &sp4C, &sp34) || Math3D_CosOut(&sp58, &sp40, &sp30) ||
             Math3D_CosOut(&sp4C, &sp40, &sp2C)) {
             elem->flags &= ~3;
             elem->flags |= 0;
-        } else if ((randOffsetSparklePos <= -0.5f) || (sp30 <= -0.5f) || (sp2C <= 0.7071f)) { // cos(45 degrees)
+        } else if ((sp34 <= -0.5f) || (sp30 <= -0.5f) || (sp2C <= 0.7071f)) { // cos(45 degrees)
             elem->flags &= ~3;
             elem->flags |= 0;
         } else {

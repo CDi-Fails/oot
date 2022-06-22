@@ -568,7 +568,7 @@ void EnInsect_Dropped(EnInsect* this, PlayState* play) {
     f32 phi_f2;
     s16 type;
     s16 sp38;
-    f32 randOffsetSparklePos;
+    f32 sp34;
 
     sp50 = 0;
     type = this->actor.params & 3;
@@ -616,19 +616,19 @@ void EnInsect_Dropped(EnInsect* this, PlayState* play) {
             this->unk_324 = Rand_ZeroOne() * 0.8f + 1.0f;
         }
 
-        randOffsetSparklePos = 1.3f - D_80A7DEB0;
-        if (randOffsetSparklePos < 0.0f) {
-            randOffsetSparklePos = 0.0f;
+        sp34 = 1.3f - D_80A7DEB0;
+        if (sp34 < 0.0f) {
+            sp34 = 0.0f;
         } else {
-            if (randOffsetSparklePos > 1.0f) {
+            if (sp34 > 1.0f) {
                 phi_f0 = 1.0f;
             } else {
-                phi_f0 = randOffsetSparklePos;
+                phi_f0 = sp34;
             }
-            randOffsetSparklePos = phi_f0;
+            sp34 = phi_f0;
         }
 
-        sp38 = (Rand_ZeroOne() - 0.5f) * 65535.0f * randOffsetSparklePos;
+        sp38 = (Rand_ZeroOne() - 0.5f) * 65535.0f * sp34;
         this->unk_328 = Math_Vec3f_Yaw(&this->actor.world.pos, &this->actor.home.pos) + sp38;
     }
 

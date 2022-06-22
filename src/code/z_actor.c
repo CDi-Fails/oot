@@ -4168,7 +4168,7 @@ void func_800359B8(Actor* actor, s16 arg1, Vec3s* arg2) {
     f32 floorPolyNormalY;
     f32 floorPolyNormalZ;
     f32 sp38;
-    f32 randOffsetSparklePos;
+    f32 sp34;
     f32 sp30;
     f32 sp2C;
     f32 sp28;
@@ -4183,8 +4183,8 @@ void func_800359B8(Actor* actor, s16 arg1, Vec3s* arg2) {
         floorPolyNormalZ = COLPOLY_GET_NORMAL(floorPoly->normal.z);
 
         sp38 = Math_SinS(arg1);
-        randOffsetSparklePos = Math_CosS(arg1);
-        sp28 = (-(floorPolyNormalX * sp38) - (floorPolyNormalZ * randOffsetSparklePos));
+        sp34 = Math_CosS(arg1);
+        sp28 = (-(floorPolyNormalX * sp38) - (floorPolyNormalZ * sp34));
         arg2->x = -RAD_TO_BINANG(Math_FAtan2F(sp28 * floorPolyNormalY, 1.0f));
 
         sp2C = Math_SinS(arg1 - 16375);

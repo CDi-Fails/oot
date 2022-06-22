@@ -6,7 +6,7 @@ void __osViSwapContext(void) {
     u32 origin;
     u32 hStart;
     u32 vstart;
-    u32 randOffsetSparklePos;
+    u32 sp34;
     u32 field;
     register u32 s2;
 
@@ -22,8 +22,8 @@ void __osViSwapContext(void) {
         viNext->x.scale = viMode->comRegs.xScale;
     }
     if (viNext->state & 4) {
-        randOffsetSparklePos = (u32)(viMode->fldRegs[field].yScale & 0xFFF);
-        viNext->y.scale = viNext->y.factor * randOffsetSparklePos;
+        sp34 = (u32)(viMode->fldRegs[field].yScale & 0xFFF);
+        viNext->y.scale = viNext->y.factor * sp34;
         viNext->y.scale |= viMode->fldRegs[field].yScale & ~0xFFF;
     } else {
         viNext->y.scale = viMode->fldRegs[field].yScale;

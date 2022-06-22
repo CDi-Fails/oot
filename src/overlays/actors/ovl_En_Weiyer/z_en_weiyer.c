@@ -232,12 +232,12 @@ void func_80B32804(EnWeiyer* this, PlayState* play) {
 }
 
 void func_80B328E8(EnWeiyer* this, PlayState* play) {
-    s32 randOffsetSparklePos;
+    s32 sp34;
     f32 curFrame;
 
     SkelAnime_Update(&this->skelAnime);
     Math_ScaledStepToS(&this->actor.shape.rot.x, 0, 0x800);
-    randOffsetSparklePos = Animation_OnFrame(&this->skelAnime, 0.0f);
+    sp34 = Animation_OnFrame(&this->skelAnime, 0.0f);
     curFrame = this->skelAnime.curFrame;
     Math_StepToF(&this->unk_27C, this->unk_280, 0.5f);
     this->actor.world.pos.y = this->unk_27C - cosf((curFrame - 5.0f) * (M_PI / 40)) * 3.0f;
@@ -283,7 +283,7 @@ void func_80B328E8(EnWeiyer* this, PlayState* play) {
         if (this->actor.bgCheckFlags & BGCHECKFLAG_GROUND) {
             this->unk_280 =
                 this->actor.home.pos.y - Rand_ZeroOne() * ((this->actor.home.pos.y - this->actor.floorHeight) / 2.0f);
-        } else if (randOffsetSparklePos && (Rand_ZeroOne() < 0.1f)) {
+        } else if (sp34 && (Rand_ZeroOne() < 0.1f)) {
             this->unk_280 =
                 Rand_ZeroOne() * (this->actor.home.pos.y - this->actor.floorHeight) + this->actor.floorHeight;
         }
