@@ -1627,8 +1627,8 @@ void func_8002F5C4(Actor* actorA, Actor* actorB, PlayState* play) {
 void func_8002F5F0(Actor* actor, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
-    if (actor->xyzDistToPlayerSq < player->unk_6A4) {
-        player->unk_6A4 = actor->xyzDistToPlayerSq;
+    if (actor->xyzDistToPlayerSq < player->stoneOfAgonyActorDistSq) {
+        player->stoneOfAgonyActorDistSq = actor->xyzDistToPlayerSq;
     }
 }
 

@@ -838,8 +838,8 @@ typedef struct Player {
     /* 0x0694 */ Actor*     talkActor;
     /* 0x0698 */ f32        talkActorDistance;
     /* 0x069C */ char       unk_69C[0x004];
-    /* 0x06A0 */ f32        unk_6A0;
-    /* 0x06A4 */ f32        unk_6A4;
+    /* 0x06A0 */ f32        stoneOfAgonyRumbleTimer;
+    /* 0x06A4 */ f32        stoneOfAgonyActorDistSq;
     /* 0x06A8 */ Actor*     ocarinaActor;
     /* 0x06AC */ s8         idleCounter;
     /* 0x06AD */ u8         attentionMode;

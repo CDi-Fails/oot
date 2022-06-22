@@ -10266,17 +10266,17 @@ void Player_Burning(PlayState* play, Player* this) {
     }
 }
 
-void func_80848EF8(Player* this) {
+void Player_SetupStoneOfAgonyRumble(Player* this) {
     if (CHECK_QUEST_ITEM(QUEST_STONE_OF_AGONY)) {
-        f32 temp = 200000.0f - (this->unk_6A4 * 5.0f);
+        f32 timerStep = 200000.0f - (this->stoneOfAgonyActorDistSq * 5.0f);
 
-        if (temp < 0.0f) {
-            temp = 0.0f;
+        if (timerStep < 0.0f) {
+            timerStep = 0.0f;
         }
 
-        this->unk_6A0 += temp;
-        if (this->unk_6A0 > 4000000.0f) {
-            this->unk_6A0 = 0.0f;
+        this->stoneOfAgonyRumbleTimer += timerStep;
+        if (this->stoneOfAgonyRumbleTimer > 4000000.0f) {
+            this->stoneOfAgonyRumbleTimer = 0.0f;
             Player_RequestRumble(this, 120, 20, 10, 0);
         }
     }
@@ -10595,7 +10595,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
                 } else {
                     this->fallStartHeight = this->actor.world.pos.y;
                 }
-                func_80848EF8(this);
+                Player_SetupStoneOfAgonyRumble(this);
             }
         }
 
@@ -10686,7 +10686,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
         }
 
         this->stateFlags2 &= ~PLAYER_STATE2_NEAR_OCARINA_ACTOR;
-        this->unk_6A4 = FLT_MAX;
+        this->stoneOfAgonyActorDistSq = FLT_MAX;
 
         temp_f0 = this->actor.world.pos.y - this->actor.prevPos.y;
 
