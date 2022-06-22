@@ -322,7 +322,7 @@ typedef enum {
     /* 0x1D */ PLAYER_ANIMGROUP_THROWING_OBJECT,
     /* 0x1E */ PLAYER_ANIMGROUP_PUTTING_DOWN_OBJECT,
     /* 0x1F */ PLAYER_ANIMGROUP_BACKWALKING,
-    /* 0x20 */ PLAYER_ANIMGROUP_BEGIN_CHECKING_OR_SPEAKING,
+    /* 0x20 */ PLAYER_ANIMGROUP_START_CHECKING_OR_SPEAKING,
     /* 0x21 */ PLAYER_ANIMGROUP_CHECKING_OR_SPEAKING,
     /* 0x22 */ PLAYER_ANIMGROUP_END_CHECKING_OR_SPEAKING,
     /* 0x23 */ PLAYER_ANIMGROUP_END_PULL_OBJECT,
@@ -682,7 +682,7 @@ typedef struct {
 #define PLAYER_STATE1_INPUT_DISABLED (1 << 5)
 #define PLAYER_STATE1_TALKING (1 << 6)
 #define PLAYER_STATE1_IN_DEATH_CUTSCENE (1 << 7)
-#define PLAYER_STATE1_BEGIN_CHANGE_ITEM (1 << 8)
+#define PLAYER_STATE1_START_CHANGE_ITEM (1 << 8)
 #define PLAYER_STATE1_READY_TO_SHOOT (1 << 9)
 #define PLAYER_STATE1_GETTING_ITEM (1 << 10)
 #define PLAYER_STATE1_HOLDING_ACTOR (1 << 11)
@@ -943,8 +943,8 @@ typedef struct Player {
     /* 0x0A7C */ f32        analogStickDistance;
     /* 0x0A80 */ s16        analogStickAngle;
     /* 0x0A82 */ u16        prevMoveSfxType;
-    /* 0x0A84 */ s16        unk_A84;
-    /* 0x0A86 */ s8         unk_A86;
+    /* 0x0A84 */ s16        sceneExitPosY;
+    /* 0x0A86 */ s8         voidRespawnCounter;
     /* 0x0A87 */ u8         unk_A87;
     /* 0x0A88 */ Vec3f      prevWaistPos; // previous body part 0 position
 } Player; // size = 0xA94
