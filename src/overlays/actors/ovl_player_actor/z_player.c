@@ -4626,7 +4626,7 @@ void Player_SetupUnfriendlyZTargetStandStill(Player* this, PlayState* play) {
     this->currentYaw = this->actor.shape.rot.y;
 }
 
-void Player_SetupZTargetingStandStill(Player* this, PlayState* play) {
+void Player_SetupFriendlyZTargetingStandStill(Player* this, PlayState* play) {
     Player_SetActionFunc(play, this, Player_FriendlyZTargetStandingStill, 1);
     Player_ChangeAnimMorphToLastFrame(play, this, Player_GetStandingStillAnim(this));
     this->currentYaw = this->actor.shape.rot.y;
@@ -4636,13 +4636,13 @@ void Player_SetupStandingStillType(Player* this, PlayState* play) {
     if (Player_IsUnfriendlyZTargeting(this)) {
         Player_SetupUnfriendlyZTargetStandStill(this, play);
     } else if (Player_IsFriendlyZTargeting(this)) {
-        Player_SetupZTargetingStandStill(this, play);
+        Player_SetupFriendlyZTargetingStandStill(this, play);
     } else {
         Player_SetupStandingStillMorph(this, play);
     }
 }
 
-void Player_SetupStandingStillTypeNoMorph(Player* this, PlayState* play) {
+void Player_ReturnToStandStill(Player* this, PlayState* play) {
     PlayerActionFunc func;
 
     if (Player_IsUnfriendlyZTargeting(this)) {
@@ -4656,15 +4656,15 @@ void Player_SetupStandingStillTypeNoMorph(Player* this, PlayState* play) {
     Player_SetActionFunc(play, this, func, 1);
 }
 
-void Player_ReturnToStandStill(Player* this, PlayState* play) {
-    Player_SetupStandingStillTypeNoMorph(this, play);
+void Player_SetupReturnToStandStill(Player* this, PlayState* play) {
+    Player_ReturnToStandStill(this, play);
     if (Player_IsUnfriendlyZTargeting(this)) {
         this->genericTimer = 1;
     }
 }
 
-void Player_ReturnToStandStillSetAnim(Player* this, LinkAnimationHeader* anim, PlayState* play) {
-    Player_ReturnToStandStill(this, play);
+void Player_SetupReturnToStandStillSetAnim(Player* this, LinkAnimationHeader* anim, PlayState* play) {
+    Player_SetupReturnToStandStill(this, play);
     Player_PlayAnimOnceWithWaterInfluence(play, this, anim);
 }
 
@@ -5421,7 +5421,7 @@ void Player_EndRun(Player* this, PlayState* play) {
 }
 
 void Player_SetupEndRun(Player* this, PlayState* play) {
-    Player_SetupStandingStillTypeNoMorph(this, play);
+    Player_ReturnToStandStill(this, play);
     Player_EndRun(this, play);
 }
 
@@ -6737,7 +6737,7 @@ s32 Player_SetupPushPullWallIdle(PlayState* play, Player* this) {
         }
     }
 
-    Player_SetupStandingStillTypeNoMorph(this, play);
+    Player_ReturnToStandStill(this, play);
     Player_PlayAnimOnce(play, this, &gPlayerAnim_003100);
     this->stateFlags2 &= ~PLAYER_STATE2_MOVING_PUSH_PULL_WALL;
     return 1;
@@ -7161,7 +7161,7 @@ void Player_StandingStill(Player* this, PlayState* play) {
             }
 
             if (Player_IsFriendlyZTargeting(this)) {
-                Player_SetupZTargetingStandStill(this, play);
+                Player_SetupFriendlyZTargetingStandStill(this, play);
                 return;
             }
 
@@ -7258,7 +7258,7 @@ void Player_EndSidewalk(Player* this, PlayState* play) {
         }
 
         if ((targetVelocity == 0.0f) && (this->linearVelocity == 0.0f)) {
-            Player_SetupZTargetingStandStill(this, play);
+            Player_SetupFriendlyZTargetingStandStill(this, play);
             return;
         }
 
@@ -7374,7 +7374,7 @@ void Player_FriendlyBackwalk(Player* this, PlayState* play) {
             Math_ScaledStepToS(&this->currentYaw, targetYaw, targetYawDiff * 0.1f);
 
             if ((targetVelocity == 0.0f) && (this->linearVelocity == 0.0f)) {
-                Player_SetupZTargetingStandStill(this, play);
+                Player_SetupFriendlyZTargetingStandStill(this, play);
             }
         }
     }
@@ -7415,7 +7415,7 @@ void func_808417FC(Player* this, PlayState* play) {
 
     if (!Player_SetupSubAction(play, this, sFriendlyBackwalkSubActions, 1)) {
         if (sp1C != 0) {
-            Player_SetupZTargetingStandStill(this, play);
+            Player_SetupFriendlyZTargetingStandStill(this, play);
         }
     }
 }
@@ -7766,7 +7766,7 @@ void func_8084279C(Player* this, PlayState* play) {
 
     if (DECR(this->genericTimer) == 0) {
         if (!Player_SetupItemCutsceneOrCUp(this, play)) {
-            Player_ReturnToStandStillSetAnim(this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_END_CHECKING_OR_SPEAKING, this->modelAnimType), play);
+            Player_SetupReturnToStandStillSetAnim(this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_END_CHECKING_OR_SPEAKING, this->modelAnimType), play);
         }
 
         this->actor.flags &= ~ACTOR_FLAG_8;
@@ -8050,7 +8050,7 @@ void func_80843188(Player* this, PlayState* play) {
                 Player_InactivateMeleeWeapon(this);
 
                 if (Player_IsChildWithHylianShield(this)) {
-                    Player_ReturnToStandStill(this, play);
+                    Player_SetupReturnToStandStill(this, play);
                     LinkAnimation_Change(play, &this->skelAnime, &gPlayerAnim_002400, 1.0f,
                                          Animation_GetLastFrame(&gPlayerAnim_002400), 0.0f, ANIMMODE_ONCE, 0.0f);
                     Player_SetupAnimMovement(play, this, PLAYER_ANIMMOVEFLAGS_NO_AGE_Y_TRANSLATION_SCALE);
@@ -8058,7 +8058,7 @@ void func_80843188(Player* this, PlayState* play) {
                     if (this->itemActionParam < 0) {
                         Player_SetHeldItem(this);
                     }
-                    Player_ReturnToStandStillSetAnim(this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_END_DEFENDING, this->modelAnimType), play);
+                    Player_SetupReturnToStandStillSetAnim(this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_END_DEFENDING, this->modelAnimType), play);
                 }
 
                 func_8002F7DC(&this->actor, NA_SE_IT_SHIELD_REMOVE);
@@ -8456,7 +8456,7 @@ void Player_UpdateMidair(Player* this, PlayState* play) {
         sp3C = func_80843E64(play, this);
 
         if (sp3C > 0) {
-            Player_ReturnToStandStillSetAnim(this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_TALL_JUMP_LANDING, this->modelAnimType), play);
+            Player_SetupReturnToStandStillSetAnim(this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_TALL_JUMP_LANDING, this->modelAnimType), play);
             this->skelAnime.endFrame = 8.0f;
             if (sp3C == 1) {
                 this->genericTimer = 10;
@@ -8464,7 +8464,7 @@ void Player_UpdateMidair(Player* this, PlayState* play) {
                 this->genericTimer = 20;
             }
         } else if (sp3C == 0) {
-            Player_ReturnToStandStillSetAnim(this, anim, play);
+            Player_SetupReturnToStandStillSetAnim(this, anim, play);
         }
     }
 }
@@ -8500,7 +8500,7 @@ void Player_Rolling(Player* this, PlayState* play) {
 
             temp = Player_SetupInterruptAction(play, this, &this->skelAnime, 5.0f);
             if ((temp != 0) && ((temp > 0) || animDone)) {
-                Player_ReturnToStandStill(this, play);
+                Player_SetupReturnToStandStill(this, play);
             }
         } else {
             if (this->linearVelocity >= 7.0f) {
@@ -8532,7 +8532,7 @@ void Player_Rolling(Player* this, PlayState* play) {
 
             if ((this->skelAnime.curFrame < 15.0f) || !Player_SetupMeleeWeaponAttack(this, play)) {
                 if (this->skelAnime.curFrame >= 20.0f) {
-                    Player_ReturnToStandStill(this, play);
+                    Player_SetupReturnToStandStill(this, play);
                     return;
                 }
 
@@ -8634,7 +8634,7 @@ void Player_SetupSidewalkChargingSpinAttack(Player* this, PlayState* play) {
 }
 
 void Player_CancelSpinAttackCharge(Player* this, PlayState* play) {
-    Player_SetupStandingStillTypeNoMorph(this, play);
+    Player_ReturnToStandStill(this, play);
     Player_InactivateMeleeWeapon(this);
     Player_ChangeAnimMorphToLastFrame(play, this, sCancelSpinAttackChargeAnims[Player_HoldsTwoHandedWeapon(this)]);
     this->currentYaw = this->actor.shape.rot.y;
@@ -9107,7 +9107,7 @@ static PlayerAnimSfxEntry sThrowStonePillarAnimSfx[] = {
 void Player_ThrowStonePillar(Player* this, PlayState* play) {
     if (LinkAnimation_Update(play, &this->skelAnime) && (this->genericTimer++ > 20)) {
         if (!Player_SetupItemCutsceneOrCUp(this, play)) {
-            Player_ReturnToStandStillSetAnim(this, &gPlayerAnim_002FA0, play);
+            Player_SetupReturnToStandStillSetAnim(this, &gPlayerAnim_002FA0, play);
         }
         return;
     }
@@ -9194,7 +9194,7 @@ void Player_FailToLiftActor(Player* this, PlayState* play) {
     if (this->genericTimer != 0) {
         this->genericTimer--;
         if (this->genericTimer == 0) {
-            Player_ReturnToStandStillSetAnim(this, &gPlayerAnim_003068, play);
+            Player_SetupReturnToStandStillSetAnim(this, &gPlayerAnim_003068, play);
             this->stateFlags1 &= ~PLAYER_STATE1_HOLDING_ACTOR;
             Player_PlayVoiceSfxForAge(this, NA_SE_VO_LI_DAMAGE_S);
         }
@@ -12076,7 +12076,7 @@ void Player_UpdateSwimIdle(Player* this, PlayState* play) {
             swimYaw = this->actor.shape.rot.y;
 
             if (this->actor.bgCheckFlags & BGCHECKFLAG_GROUND) {
-                Player_ReturnToStandStillSetAnim(this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_SHORT_JUMP_LANDING, this->modelAnimType), play);
+                Player_SetupReturnToStandStillSetAnim(this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_SHORT_JUMP_LANDING, this->modelAnimType), play);
                 Player_PlayLandingSfx(this);
             }
         } else {
@@ -12408,7 +12408,7 @@ void func_8084E3C4(Player* this, PlayState* play) {
             this->naviActor->textId = -this->naviTextId;
             Player_StartTalkingWithActor(play, this->talkActor);
         } else if (!Player_SetupItemCutsceneOrCUp(this, play)) {
-            Player_ReturnToStandStillSetAnim(this, &gPlayerAnim_003098, play);
+            Player_SetupReturnToStandStillSetAnim(this, &gPlayerAnim_003098, play);
         }
 
         this->stateFlags2 &= ~(PLAYER_STATE2_NEAR_OCARINA_ACTOR | PLAYER_STATE2_ATTEMPT_PLAY_OCARINA_FOR_ACTOR | PLAYER_STATE2_PLAYING_OCARINA_FOR_ACTOR);
@@ -12438,7 +12438,7 @@ void func_8084E3C4(Player* this, PlayState* play) {
 
 void Player_ThrowDekuNut(Player* this, PlayState* play) {
     if (LinkAnimation_Update(play, &this->skelAnime)) {
-        Player_ReturnToStandStillSetAnim(this, &gPlayerAnim_003050, play);
+        Player_SetupReturnToStandStillSetAnim(this, &gPlayerAnim_003050, play);
     } else if (LinkAnimation_OnFrame(&this->skelAnime, 3.0f)) {
         Inventory_ChangeAmmo(ITEM_NUT, -1);
         Actor_Spawn(&play->actorCtx, play, ACTOR_EN_ARROW, this->bodyPartsPos[PLAYER_BODYPART_R_HAND].x,
@@ -12877,7 +12877,7 @@ void func_8084F390(Player* this, PlayState* play) {
             } else {
                 anim = GET_PLAYER_ANIM(PLAYER_ANIMGROUP_END_SLIDING_DOWN_SLOPE, this->modelAnimType);
             }
-            Player_ReturnToStandStillSetAnim(this, anim, play);
+            Player_SetupReturnToStandStillSetAnim(this, anim, play);
         }
 
         Math_SmoothStepToS(&this->currentYaw, downwardSlopeYaw, 10, 4000, 800);
@@ -13220,7 +13220,7 @@ void Player_MeleeWeaponAttack(Player* this, PlayState* play) {
                     anim = &gPlayerAnim_002AC8;
                 }
 
-                Player_ReturnToStandStillSetAnim(this, anim, play);
+                Player_SetupReturnToStandStillSetAnim(this, anim, play);
 
                 this->skelAnime.moveFlags = savedMoveFlags;
                 this->stateFlags3 |= PLAYER_STATE3_ENDING_MELEE_ATTACK;
@@ -13256,7 +13256,7 @@ void Player_MeleeWeaponRebound(Player* this, PlayState* play) {
     Player_StepLinearVelocityToZero(this);
 
     if (this->skelAnime.curFrame >= 6.0f) {
-        Player_SetupStandingStillTypeNoMorph(this, play);
+        Player_ReturnToStandStill(this, play);
     }
 }
 
@@ -13356,7 +13356,7 @@ void Player_UpdateMagicSpell(Player* this, PlayState* play) {
     if (LinkAnimation_Update(play, &this->skelAnime)) {
         if (this->magicSpellType < 0) {
             if ((this->itemActionParam == PLAYER_AP_NAYRUS_LOVE) || (gSaveContext.magicState == MAGIC_STATE_IDLE)) {
-                Player_SetupStandingStillTypeNoMorph(this, play);
+                Player_ReturnToStandStill(this, play);
                 func_8005B1A4(Play_GetCamera(play, CAM_ID_MAIN));
             }
         } else {
@@ -13491,7 +13491,7 @@ void Player_CastFishingRod(Player* this, PlayState* play) {
 
 void Player_ReleaseCaughtFish(Player* this, PlayState* play) {
     if (LinkAnimation_Update(play, &this->skelAnime) && (this->fishingState == 0)) {
-        Player_ReturnToStandStillSetAnim(this, &gPlayerAnim_002C08, play);
+        Player_SetupReturnToStandStillSetAnim(this, &gPlayerAnim_002C08, play);
     }
 }
 
