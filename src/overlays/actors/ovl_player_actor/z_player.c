@@ -10294,63 +10294,63 @@ static f32 sFloorConveyorSpeeds[] = { 0.5f, 1.0f, 3.0f };
 void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     s32 pad;
 
-    // TESTING
+    // // TESTING
 
-    s32 i;
+    // s32 i;
 
-    typedef struct {
-        void* func;
-        char name[60];
-    } TestFuncs;
+    // typedef struct {
+    //     void* func;
+    //     char name[60];
+    // } TestFuncs;
 
-    static TestFuncs testFuncs[] = {
-        { Player_FriendlyZTargetStandingStill, "Player_FriendlyZTargetStandingStill" },
-        { Player_UnfriendlyZTargetStandingStill, "Player_UnfriendlyZTargetStandingStill" },
-        { Player_FriendlyBackwalk, "Player_FriendlyBackwalk" },
-        { Player_UnfriendlyBackwalk, "Player_UnfriendlyBackwalk" },
-        { Player_Sidewalk, "Player_Sidewalk" },
-        { Player_Turn, "Player_Turn" },
-        { Player_ZTargetingRun, "Player_ZTargetingRun" },
-        { Player_Run, "Player_Run" },
-        { Player_ChargeSpinAttack, "Player_ChargeSpinAttack" },
-        { Player_WalkChargingSpinAttack, "Player_WalkChargingSpinAttack" },
-        { Player_SidewalkChargingSpinAttack, "Player_SidewalkChargingSpinAttack" },
-        { Player_Rolling, "Player_Rolling" },
-        { Player_UpdateMidair, "Player_UpdateMidair" },
-        { Player_HoldActor, "Player_HoldActor" },
-    };
+    // static TestFuncs testFuncs[] = {
+    //     { Player_FriendlyZTargetStandingStill, "Player_FriendlyZTargetStandingStill" },
+    //     { Player_UnfriendlyZTargetStandingStill, "Player_UnfriendlyZTargetStandingStill" },
+    //     { Player_FriendlyBackwalk, "Player_FriendlyBackwalk" },
+    //     { Player_UnfriendlyBackwalk, "Player_UnfriendlyBackwalk" },
+    //     { Player_Sidewalk, "Player_Sidewalk" },
+    //     { Player_Turn, "Player_Turn" },
+    //     { Player_ZTargetingRun, "Player_ZTargetingRun" },
+    //     { Player_Run, "Player_Run" },
+    //     { Player_ChargeSpinAttack, "Player_ChargeSpinAttack" },
+    //     { Player_WalkChargingSpinAttack, "Player_WalkChargingSpinAttack" },
+    //     { Player_SidewalkChargingSpinAttack, "Player_SidewalkChargingSpinAttack" },
+    //     { Player_Rolling, "Player_Rolling" },
+    //     { Player_UpdateMidair, "Player_UpdateMidair" },
+    //     { Player_HoldActor, "Player_HoldActor" },
+    // };
 
-    GfxPrint printer;
-    Gfx* gfx;
+    // GfxPrint printer;
+    // Gfx* gfx;
 
-    OPEN_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
+    // OPEN_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
 
-    gfx = POLY_OPA_DISP + 1;
-    gSPDisplayList(OVERLAY_DISP++, gfx);
+    // gfx = POLY_OPA_DISP + 1;
+    // gSPDisplayList(OVERLAY_DISP++, gfx);
 
-    GfxPrint_Init(&printer);
-    GfxPrint_Open(&printer, gfx);
+    // GfxPrint_Init(&printer);
+    // GfxPrint_Open(&printer, gfx);
 
-    GfxPrint_SetColor(&printer, 255, 0, 255, 255);
-    GfxPrint_SetPos(&printer, 2, 10);
-    for (i = 0; i < ARRAY_COUNT(testFuncs); i++) {
-        if (testFuncs[i].func == this->actionFunc) {
-            GfxPrint_Printf(&printer, "%s", testFuncs[i].name);
-        }
-    }
-    GfxPrint_SetPos(&printer, 2, 11);
-    GfxPrint_Printf(&printer, "comboTimer: %d", this->comboTimer);
+    // GfxPrint_SetColor(&printer, 255, 0, 255, 255);
+    // GfxPrint_SetPos(&printer, 2, 10);
+    // for (i = 0; i < ARRAY_COUNT(testFuncs); i++) {
+    //     if (testFuncs[i].func == this->actionFunc) {
+    //         GfxPrint_Printf(&printer, "%s", testFuncs[i].name);
+    //     }
+    // }
+    // GfxPrint_SetPos(&printer, 2, 11);
+    // GfxPrint_Printf(&printer, "comboTimer: %d", this->comboTimer);
 
-    gfx = GfxPrint_Close(&printer);
-    GfxPrint_Destroy(&printer);
+    // gfx = GfxPrint_Close(&printer);
+    // GfxPrint_Destroy(&printer);
 
-    gSPEndDisplayList(gfx++);
-    gSPBranchList(POLY_OPA_DISP, gfx);
-    POLY_OPA_DISP = gfx;
+    // gSPEndDisplayList(gfx++);
+    // gSPBranchList(POLY_OPA_DISP, gfx);
+    // POLY_OPA_DISP = gfx;
 
-    CLOSE_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
+    // CLOSE_DISPS(play->state.gfxCtx, __FILE__, __LINE__);
 
-    // END TESTING
+    // // END TESTING
 
     sControlInput = input;
 
