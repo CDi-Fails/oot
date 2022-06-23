@@ -12279,15 +12279,15 @@ void Player_Dive(Player* this, PlayState* play) {
     }
 }
 
-void func_8084DF6C(PlayState* play, Player* this) {
+void Player_EndGetItem(PlayState* play, Player* this) {
     this->giDrawIdPlusOne = 0;
     this->stateFlags1 &= ~(PLAYER_STATE1_GETTING_ITEM | PLAYER_STATE1_HOLDING_ACTOR);
     this->getItemId = GI_NONE;
     func_8005B1A4(Play_GetCamera(play, CAM_ID_MAIN));
 }
 
-void func_8084DFAC(PlayState* play, Player* this) {
-    func_8084DF6C(play, this);
+void Player_SetupEndGetItem(PlayState* play, Player* this) {
+    Player_EndGetItem(play, this);
     Player_AddRootYawToShapeYaw(this);
     Player_SetupStandingStillNoMorph(this, play);
     this->currentYaw = this->actor.shape.rot.y;
@@ -12347,7 +12347,7 @@ void Player_GetItemInWater(Player* this, PlayState* play) {
 
     if (LinkAnimation_Update(play, &this->skelAnime)) {
         if (!(this->stateFlags1 & PLAYER_STATE1_GETTING_ITEM) || Player_SetupGetItemText(play, this)) {
-            func_8084DF6C(play, this);
+            Player_EndGetItem(play, this);
             Player_SetupSwimIdle(play, this);
             Player_ResetSubCam(play, this);
         }
@@ -12457,7 +12457,7 @@ void Player_ThrowDekuNut(Player* this, PlayState* play) {
     Player_StepLinearVelocityToZero(this);
 }
 
-static PlayerAnimSfxEntry D_808549E0[] = {
+static PlayerAnimSfxEntry sChildOpenChestAnimSfx[] = {
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, 0x3857 },
     { NA_SE_VO_LI_CLIMB_END, 0x2057 },
     { NA_SE_VO_LI_AUTO_JUMP, 0x2045 },
@@ -12479,14 +12479,14 @@ void Player_GetItem(Player* this, PlayState* play) {
 
                 if (cond || (gSaveContext.healthAccumulator == 0)) {
                     if (cond) {
-                        func_8084DF6C(play, this);
+                        Player_EndGetItem(play, this);
                         this->exchangeItemId = EXCH_ITEM_NONE;
 
                         if (Player_SetupForcePullOcarina(play, this) == 0) {
                             Player_StartTalkingWithActor(play, this->talkActor);
                         }
                     } else {
-                        func_8084DFAC(play, this);
+                        Player_SetupEndGetItem(play, this);
                     }
                 }
             }
@@ -12519,7 +12519,7 @@ void Player_GetItem(Player* this, PlayState* play) {
     } else {
         if (this->genericTimer == 0) {
             if (!LINK_IS_ADULT) {
-                Player_PlayAnimSfx(this, D_808549E0);
+                Player_PlayAnimSfx(this, sChildOpenChestAnimSfx);
             }
             return;
         }
