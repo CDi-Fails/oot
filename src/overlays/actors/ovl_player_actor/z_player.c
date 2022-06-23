@@ -3065,11 +3065,12 @@ void Player_SetupDie(PlayState* play, Player* this, LinkAnimationHeader* anim) {
     Player_PlayVoiceSfxForAge(this, NA_SE_VO_LI_DOWN);
 
     if (this->actor.category == ACTORCAT_PLAYER) {
+        // Fade out music
         func_800F47BC();
 
         if (Inventory_ConsumeFairy(play)) {
             play->gameOverCtx.state = GAMEOVER_REVIVE_START;
-            this->unk_84F = 1;
+            this->fairyReviveFlag = 1;
         } else {
             play->gameOverCtx.state = GAMEOVER_DEATH_START;
             func_800F6AB0(0);
@@ -8229,9 +8230,10 @@ void Player_EndDie(PlayState* play, Player* this) {
             }
             this->unk_A87 = 20;
             Player_SetupInvincibilityNoDamageFlash(this, -20);
+            // Fade in music
             func_800F47FC();
         }
-    } else if (this->unk_84F != 0) {
+    } else if (this->fairyReviveFlag != 0) {
         this->genericTimer = 60;
         Player_SpawnFairy(play, this, &this->actor.world.pos, &sDeathReviveFairyPosOffset, FAIRY_REVIVE_DEATH);
         func_8002F7DC(&this->actor, NA_SE_EV_FIATY_HEAL - SFX_FLAG);
@@ -8275,7 +8277,7 @@ void Player_Die(Player* this, PlayState* play) {
     }
 }
 
-void func_80843E14(Player* this, u16 sfxId) {
+void Player_PlayFallingVoiceSfx(Player* this, u16 sfxId) {
     Player_PlayVoiceSfxForAge(this, sfxId);
 
     if ((this->heldActor != NULL) && (this->heldActor->id == ACTOR_EN_RU1)) {
@@ -8283,7 +8285,7 @@ void func_80843E14(Player* this, u16 sfxId) {
     }
 }
 
-static FallImpactInfo sFallImpactSfx[] = {
+static FallImpactInfo sFallImpactInfo[] = {
     { -8, 180, 40, 100, NA_SE_VO_LI_LAND_DAMAGE_S },
     { -16, 255, 140, 150, NA_SE_VO_LI_LAND_DAMAGE_S },
 };
@@ -8311,7 +8313,7 @@ s32 func_80843E64(PlayState* play, Player* this) {
             impactIndex = 1;
         }
 
-        impactInfo = &sFallImpactSfx[impactIndex];
+        impactInfo = &sFallImpactInfo[impactIndex];
 
         if (Player_SetupInflictDamage(play, impactInfo->damage)) {
             return -1;
@@ -8394,7 +8396,7 @@ void Player_UpdateMidair(Player* this, PlayState* play) {
                     if ((this->actor.bgCheckFlags & BGCHECKFLAG_WALL) || (this->genericTimer == 0) ||
                         (this->fallDistance > 0)) {
                         if ((sPlayerYDistToFloor > 800.0f) || (this->stateFlags1 & PLAYER_STATE1_END_HOOKSHOT_MOVE)) {
-                            func_80843E14(this, NA_SE_VO_LI_FALL_S);
+                            Player_PlayFallingVoiceSfx(this, NA_SE_VO_LI_FALL_S);
                             this->stateFlags1 &= ~PLAYER_STATE1_END_HOOKSHOT_MOVE;
                         }
 
@@ -8405,7 +8407,7 @@ void Player_UpdateMidair(Player* this, PlayState* play) {
                 } else {
                     if ((this->genericTimer == -1) && (this->fallDistance > 120.0f) && (sPlayerYDistToFloor > 280.0f)) {
                         this->genericTimer = -2;
-                        func_80843E14(this, NA_SE_VO_LI_FALL_L);
+                        Player_PlayFallingVoiceSfx(this, NA_SE_VO_LI_FALL_L);
                     }
 
                     if ((this->actor.bgCheckFlags & BGCHECKFLAG_PLAYER_WALL_INTERACT) &&

@@ -871,6 +871,7 @@ typedef struct Player {
     /* 0x084B */ s8         relativeAnalogStickInputs[4];
     union {
         /* 0x084F */ s8 unk_84F;
+        /* 0x084F */ s8 fairyReviveFlag;
         /* 0x084F */ s8 magicSpellType;
         /* 0x084F */ s8 relativeStickInput;
         /* 0x084F */ s8 climbStatus;
