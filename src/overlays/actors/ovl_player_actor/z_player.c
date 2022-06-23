@@ -288,62 +288,62 @@ void Player_AnimPlaybackType11(PlayState* play, Player* this, void* anim);
 void Player_AnimPlaybackType16(PlayState* play, Player* this, void* anim);
 void Player_AnimPlaybackType12(PlayState* play, Player* this, void* anim);
 void Player_AnimPlaybackType17(PlayState* play, Player* this, void* animSfxEntry);
-void Player_CutsceneSetupSwimIdle(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSurfaceFromDive(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneIdle(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneTurnAroundSurprisedShort(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSetupIdle(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneWait(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneTurnAroundSurprisedLong(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSetupEnterWarp(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneEnterWarp(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSetupFightStance(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneFightStance(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneUnk3Update(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneUnk4Update(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSetupSwordPedestal(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSwordPedestal(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSetupWarpToSages(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneWarpToSages(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneKnockedToGround(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSetupStartPlayOcarina(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneDrawAndBrandishSword(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneCloseEyes(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneOpenEyes(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSetupGetItemInWater(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSetupSleeping(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSleeping(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSetupSleepingRestless(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneAwaken(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneGetOffBed(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSetupBlownBackward(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneBlownBackward(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneRaisedByWarp(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSetupIdle3(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneIdle3(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSetupStop(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSetDraw(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneInspectGroundCarefully(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneStartPassOcarina(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneDrawSwordChild(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneTurnAroundSlowly(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneDesperateLookAtZeldasCrystal(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneStepBackCautiously(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSetupSpinAttackIdle(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSpinAttackIdle(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneInspectWeapon(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_SetupDoNothing4(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_DoNothing5(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSetupKnockedToGroundDamaged(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneKnockedToGroundDamaged(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSetupGetSwordBack(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSwordKnockedFromHand(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_LearnOcarinaSong(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneGetSwordBack(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneGanonKillCombo(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneEnd(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void func_808529D0(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneUnk6Update(PlayState* play, Player* this, CsCmdActorAction* arg2);
+void Player_CutsceneSetupSwimIdle(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneSurfaceFromDive(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneIdle(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneTurnAroundSurprisedShort(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneSetupIdle(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneWait(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneTurnAroundSurprisedLong(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneSetupEnterWarp(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneEnterWarp(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneSetupFightStance(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneFightStance(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneUnk3Update(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneUnk4Update(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneSetupSwordPedestal(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneSwordPedestal(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneSetupWarpToSages(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneWarpToSages(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneKnockedToGround(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneSetupStartPlayOcarina(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneDrawAndBrandishSword(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneCloseEyes(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneOpenEyes(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneSetupGetItemInWater(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneSetupSleeping(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneSleeping(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneSetupSleepingRestless(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneAwaken(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneGetOffBed(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneSetupBlownBackward(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneBlownBackward(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneRaisedByWarp(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneSetupIdle3(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneIdle3(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneSetupStop(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneSetDraw(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneInspectGroundCarefully(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneStartPassOcarina(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneDrawSwordChild(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneTurnAroundSlowly(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneDesperateLookAtZeldasCrystal(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneStepBackCautiously(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneSetupSpinAttackIdle(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneSpinAttackIdle(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneInspectWeapon(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_SetupDoNothing4(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_DoNothing5(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneSetupKnockedToGroundDamaged(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneKnockedToGroundDamaged(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneSetupGetSwordBack(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneSwordKnockedFromHand(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_LearnOcarinaSong(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneGetSwordBack(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneGanonKillCombo(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneEnd(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void func_808529D0(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
+void Player_CutsceneUnk6Update(PlayState* play, Player* this, CsCmdActorAction* linkCsAction);
 void Player_StartCutscene(Player* this, PlayState* play);
 s32 Player_IsDroppingFish(PlayState* play);
 s32 Player_StartFishing(PlayState* play);
@@ -354,7 +354,7 @@ s32 Player_InflictDamageAndCheckForDeath(PlayState* play, s32 damage);
 void Player_StartTalkingWithActor(PlayState* play, Actor* actor);
 
 // .bss part 1
-static s32 D_80858AA0;
+static s32 sPrevSkelAnimeMoveFlags;
 static s32 D_80858AA4;
 static Vec3f sWallIntersectPos;
 static Input* sControlInput;
@@ -9037,25 +9037,29 @@ void Player_RunMiniCutsceneFunc(Player* this, PlayState* play) {
     }
 }
 
-s32 func_80845964(PlayState* play, Player* this, CsCmdActorAction* arg2, f32 targetVelocity, s16 targetYaw, s32 arg5) {
+s32 func_80845964(PlayState* play, Player* this, CsCmdActorAction* linkCsAction, f32 targetVelocity, s16 targetYaw,
+                  s32 arg5) {
     if ((arg5 != 0) && (this->linearVelocity == 0.0f)) {
         return LinkAnimation_Update(play, &this->skelAnime);
     }
 
     if (arg5 != 2) {
         f32 rate = R_UPDATE_RATE * 0.5f;
-        f32 playerDistToEndX = arg2->endPos.x - this->actor.world.pos.x;
-        f32 playerDistToEndZ = arg2->endPos.z - this->actor.world.pos.z;
+        f32 playerDistToEndX = linkCsAction->endPos.x - this->actor.world.pos.x;
+        f32 playerDistToEndZ = linkCsAction->endPos.z - this->actor.world.pos.z;
         f32 playerDistToEndXZ = sqrtf(SQ(playerDistToEndX) + SQ(playerDistToEndZ)) / rate;
-        s32 framesUntilEnd = (arg2->endFrame - play->csCtx.frames) + 1;
+        s32 framesUntilEnd = (linkCsAction->endFrame - play->csCtx.frames) + 1;
 
         // Set target yaw toward end position
         targetYaw = Math_Atan2S(playerDistToEndZ, playerDistToEndX);
 
         if (arg5 == 1) {
-            f32 startDistToEndX = arg2->endPos.x - arg2->startPos.x;
-            f32 startDistToEndZ = arg2->endPos.z - arg2->startPos.z;
-            s32 temp = (((sqrtf(SQ(startDistToEndX) + SQ(startDistToEndZ)) / rate) / (arg2->endFrame - arg2->startFrame)) / 1.5f) * 4.0f;
+            f32 startDistToEndX = linkCsAction->endPos.x - linkCsAction->startPos.x;
+            f32 startDistToEndZ = linkCsAction->endPos.z - linkCsAction->startPos.z;
+            s32 temp = (((sqrtf(SQ(startDistToEndX) + SQ(startDistToEndZ)) / rate) /
+                         (linkCsAction->endFrame - linkCsAction->startFrame)) /
+                        1.5f) *
+                       4.0f;
 
             if (temp >= framesUntilEnd) {
                 targetYaw = this->actor.shape.rot.y;
@@ -14003,7 +14007,7 @@ void Player_LookAtCutsceneTargetActor(Player* this) {
     }
 }
 
-void Player_CutsceneSetupSwimIdle(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSetupSwimIdle(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     this->stateFlags1 |= PLAYER_STATE1_SWIMMING;
     this->stateFlags2 |= PLAYER_STATE2_DIVING;
     this->stateFlags1 &= ~(PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALLING);
@@ -14011,7 +14015,7 @@ void Player_CutsceneSetupSwimIdle(PlayState* play, Player* this, CsCmdActorActio
     Player_PlayAnimLoop(play, this, &gPlayerAnim_0032F0);
 }
 
-void Player_CutsceneSurfaceFromDive(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSurfaceFromDive(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     this->actor.gravity = 0.0f;
 
     if (this->genericVar == 0) {
@@ -14037,7 +14041,7 @@ void Player_CutsceneSurfaceFromDive(PlayState* play, Player* this, CsCmdActorAct
     Player_UpdateSwimMovement(this, &this->linearVelocity, 0.0f, this->actor.shape.rot.y);
 }
 
-void Player_CutsceneIdle(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneIdle(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     Player_LookAtCutsceneTargetActor(this);
 
     if (Player_IsSwimming(this)) {
@@ -14057,11 +14061,11 @@ void Player_CutsceneIdle(PlayState* play, Player* this, CsCmdActorAction* arg2) 
     }
 }
 
-void Player_CutsceneTurnAroundSurprisedShort(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneTurnAroundSurprisedShort(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     LinkAnimation_Update(play, &this->skelAnime);
 }
 
-void Player_CutsceneSetupIdle(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSetupIdle(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     LinkAnimationHeader* anim;
 
     if (Player_IsSwimming(this)) {
@@ -14082,7 +14086,7 @@ void Player_CutsceneSetupIdle(PlayState* play, Player* this, CsCmdActorAction* a
     Player_StopMovement(this);
 }
 
-void Player_CutsceneWait(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneWait(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     if (Player_SetupShootingGalleryPlay(play, this) == 0) {
         if ((this->csMode == PLAYER_CSMODE_IDLE_4) && (play->csCtx.state == CS_STATE_IDLE)) {
             Actor_SetPlayerCutscene(play, NULL, PLAYER_CSMODE_END);
@@ -14107,12 +14111,12 @@ static PlayerAnimSfxEntry sTurnAroundSurprisedAnimSfx[] = {
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, -0x3030 },
 };
 
-void Player_CutsceneTurnAroundSurprisedLong(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneTurnAroundSurprisedLong(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     LinkAnimation_Update(play, &this->skelAnime);
     Player_PlayAnimSfx(this, sTurnAroundSurprisedAnimSfx);
 }
 
-void Player_CutsceneSetupEnterWarp(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSetupEnterWarp(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     this->stateFlags1 &= ~PLAYER_STATE1_AWAITING_THROWN_BOOMERANG;
 
     this->currentYaw = this->actor.shape.rot.y = this->actor.world.rot.y =
@@ -14125,7 +14129,7 @@ void Player_CutsceneSetupEnterWarp(PlayState* play, Player* this, CsCmdActorActi
     }
 }
 
-void Player_CutsceneEnterWarp(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneEnterWarp(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     f32 sp1C = 2.5f;
 
     func_80845BA0(play, this, &sp1C, 10);
@@ -14148,11 +14152,11 @@ void Player_CutsceneEnterWarp(PlayState* play, Player* this, CsCmdActorAction* a
     }
 }
 
-void Player_CutsceneSetupFightStance(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSetupFightStance(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     Player_SetupUnfriendlyZTarget(this, play);
 }
 
-void Player_CutsceneFightStance(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneFightStance(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     Player_LookAtCutsceneTargetActor(this);
 
     if (this->genericTimer != 0) {
@@ -14167,12 +14171,12 @@ void Player_CutsceneFightStance(PlayState* play, Player* this, CsCmdActorAction*
     }
 }
 
-void Player_CutsceneUnk3Update(PlayState* play, Player* this, CsCmdActorAction* arg2) {
-    func_80845964(play, this, arg2, 0.0f, 0, 0);
+void Player_CutsceneUnk3Update(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
+    func_80845964(play, this, linkCsAction, 0.0f, 0, 0);
 }
 
-void Player_CutsceneUnk4Update(PlayState* play, Player* this, CsCmdActorAction* arg2) {
-    func_80845964(play, this, arg2, 0.0f, 0, 1);
+void Player_CutsceneUnk4Update(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
+    func_80845964(play, this, linkCsAction, 0.0f, 0, 1);
 }
 
 // unused
@@ -14183,7 +14187,7 @@ static LinkAnimationHeader* sTimeTravelStartAnims[] = {
 
 static Vec3f sStartTimeTravelPos = { -1.0f, 70.0f, 20.0f };
 
-void Player_CutsceneSetupSwordPedestal(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSetupSwordPedestal(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     Math_Vec3f_Copy(&this->actor.world.pos, &sStartTimeTravelPos);
     this->actor.shape.rot.y = -0x8000;
     Player_PlayAnimOnceSlowed(play, this, this->ageProperties->timeTravelStartAnim);
@@ -14202,7 +14206,7 @@ static PlayerAnimSfxEntry sStepOntoPedestalAnimSfx[] = {
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, -0x4027 },
 };
 
-void Player_CutsceneSwordPedestal(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSwordPedestal(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     SwordPedestalSfx* swordPedestalSfx;
     Gfx** dLists;
 
@@ -14233,7 +14237,7 @@ void Player_CutsceneSwordPedestal(PlayState* play, Player* this, CsCmdActorActio
     }
 }
 
-void Player_CutsceneSetupWarpToSages(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSetupWarpToSages(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     LinkAnimation_Change(play, &this->skelAnime, &gPlayerAnim_002860, -(2.0f / 3.0f), 12.0f, 12.0f, ANIMMODE_ONCE,
                          0.0f);
 }
@@ -14242,7 +14246,7 @@ static PlayerAnimSfxEntry sWarpToSagesAnimSfx[] = {
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, -0x281E },
 };
 
-void Player_CutsceneWarpToSages(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneWarpToSages(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     LinkAnimation_Update(play, &this->skelAnime);
 
     this->genericTimer++;
@@ -14256,7 +14260,7 @@ void Player_CutsceneWarpToSages(PlayState* play, Player* this, CsCmdActorAction*
     }
 }
 
-void Player_CutsceneKnockedToGround(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneKnockedToGround(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     if (LinkAnimation_Update(play, &this->skelAnime) && (this->genericTimer == 0) &&
         (this->actor.bgCheckFlags & BGCHECKFLAG_GROUND)) {
         Player_PlayAnimOnce(play, this, &gPlayerAnim_002DB8);
@@ -14268,7 +14272,7 @@ void Player_CutsceneKnockedToGround(PlayState* play, Player* this, CsCmdActorAct
     }
 }
 
-void Player_CutsceneSetupStartPlayOcarina(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSetupStartPlayOcarina(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     Player_StopAnimAndMovementSlowed(play, this, &gPlayerAnim_0030A0);
     Player_SetOcarinaItemAP(this);
     Player_SetModels(this, Player_ActionToModelGroup(this, this->itemActionParam));
@@ -14278,7 +14282,7 @@ static PlayerAnimSfxEntry sDrawAndBrandishSwordAnimSfx[] = {
     { NA_SE_IT_SWORD_PICKOUT, -0x80C },
 };
 
-void Player_CutsceneDrawAndBrandishSword(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneDrawAndBrandishSword(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     LinkAnimation_Update(play, &this->skelAnime);
 
     if (LinkAnimation_OnFrame(&this->skelAnime, 6.0f)) {
@@ -14288,23 +14292,23 @@ void Player_CutsceneDrawAndBrandishSword(PlayState* play, Player* this, CsCmdAct
     }
 }
 
-void Player_CutsceneCloseEyes(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneCloseEyes(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     LinkAnimation_Update(play, &this->skelAnime);
     Math_StepToS(&this->actor.shape.face, 0, 1);
 }
 
-void Player_CutsceneOpenEyes(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneOpenEyes(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     LinkAnimation_Update(play, &this->skelAnime);
     Math_StepToS(&this->actor.shape.face, 2, 1);
 }
 
-void Player_CutsceneSetupGetItemInWater(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSetupGetItemInWater(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     Player_PlayAnimOnceWithMovementSlowed(play, this, &gPlayerAnim_003318,
                                           PLAYER_ANIMMOVEFLAGS_KEEP_ANIM_Y_TRANSLATION | PLAYER_ANIMMOVEFLAGS_NO_MOVE |
                                               PLAYER_ANIMMOVEFLAGS_7);
 }
 
-void Player_CutsceneSetupSleeping(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSetupSleeping(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     Player_PlayAnimOnceWithMovement(play, this, &gPlayerAnim_002408,
                                     PLAYER_ANIMMOVEFLAGS_NO_AGE_Y_TRANSLATION_SCALE |
                                         PLAYER_ANIMMOVEFLAGS_KEEP_ANIM_Y_TRANSLATION |
@@ -14312,7 +14316,7 @@ void Player_CutsceneSetupSleeping(PlayState* play, Player* this, CsCmdActorActio
     Player_PlayVoiceSfxForAge(this, NA_SE_VO_LI_GROAN);
 }
 
-void Player_CutsceneSleeping(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSleeping(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     if (LinkAnimation_Update(play, &this->skelAnime)) {
         Player_PlayAnimLoopWithMovement(play, this, &gPlayerAnim_002428,
                                         PLAYER_ANIMMOVEFLAGS_NO_AGE_Y_TRANSLATION_SCALE |
@@ -14330,7 +14334,7 @@ void Player_PlaySlowLoopedCutsceneAnimWithSfx(PlayState* play, Player* this, Lin
     }
 }
 
-void Player_CutsceneSetupSleepingRestless(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSetupSleepingRestless(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     this->actor.shape.shadowDraw = NULL;
     Player_AnimPlaybackType7(play, this, &gPlayerAnim_002420);
 }
@@ -14341,7 +14345,7 @@ static PlayerAnimSfxEntry sAwakenAnimSfx[] = {
     { NA_SE_PL_SLIPDOWN, -0x900 },
 };
 
-void Player_CutsceneAwaken(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneAwaken(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     if (LinkAnimation_Update(play, &this->skelAnime)) {
         Player_PlayAnimLoopWithMovement(play, this, &gPlayerAnim_002430, 0x9C);
         this->genericTimer = 1;
@@ -14360,24 +14364,24 @@ static PlayerAnimSfxEntry sGetOffBedAnimSfx[] = {
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, -0x4860 },
 };
 
-void Player_CutsceneGetOffBed(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneGetOffBed(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     LinkAnimation_Update(play, &this->skelAnime);
     Player_PlayAnimSfx(this, sGetOffBedAnimSfx);
 }
 
-void Player_CutsceneSetupBlownBackward(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSetupBlownBackward(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     Player_PlayAnimOnceWithMovementSlowed(play, this, &gPlayerAnim_002340, 0x9D);
     Player_PlayVoiceSfxForAge(this, NA_SE_VO_LI_FALL_L);
 }
 
-void Player_GetCsPositionByActionLength(PlayState* play, Player* this, CsCmdActorAction* arg2) {
-    f32 startX = arg2->startPos.x;
-    f32 startY = arg2->startPos.y;
-    f32 startZ = arg2->startPos.z;
-    f32 distX = (arg2->endPos.x - startX);
-    f32 distY = (arg2->endPos.y - startY);
-    f32 distZ = (arg2->endPos.z - startZ);
-    f32 percentCsActionDone = (f32)(play->csCtx.frames - arg2->startFrame) / (f32)(arg2->endFrame - arg2->startFrame);
+void Player_GetCsPositionByActionLength(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
+    f32 startX = linkCsAction->startPos.x;
+    f32 startY = linkCsAction->startPos.y;
+    f32 startZ = linkCsAction->startPos.z;
+    f32 distX = (linkCsAction->endPos.x - startX);
+    f32 distY = (linkCsAction->endPos.y - startY);
+    f32 distZ = (linkCsAction->endPos.z - startZ);
+    f32 percentCsActionDone = (f32)(play->csCtx.frames - linkCsAction->startFrame) / (f32)(linkCsAction->endFrame - linkCsAction->startFrame);
 
     this->actor.world.pos.x = distX * percentCsActionDone + startX;
     this->actor.world.pos.y = distY * percentCsActionDone + startY;
@@ -14389,37 +14393,37 @@ static PlayerAnimSfxEntry sBlownBackwardAnimSfx[] = {
     { NA_SE_PL_BOUND, -0x101E },
 };
 
-void Player_CutsceneBlownBackward(PlayState* play, Player* this, CsCmdActorAction* arg2) {
-    Player_GetCsPositionByActionLength(play, this, arg2);
+void Player_CutsceneBlownBackward(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
+    Player_GetCsPositionByActionLength(play, this, linkCsAction);
     LinkAnimation_Update(play, &this->skelAnime);
     Player_PlayAnimSfx(this, sBlownBackwardAnimSfx);
 }
 
-void Player_CutsceneRaisedByWarp(PlayState* play, Player* this, CsCmdActorAction* arg2) {
-    if (arg2 != NULL) {
-        Player_GetCsPositionByActionLength(play, this, arg2);
+void Player_CutsceneRaisedByWarp(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
+    if (linkCsAction != NULL) {
+        Player_GetCsPositionByActionLength(play, this, linkCsAction);
     }
     LinkAnimation_Update(play, &this->skelAnime);
 }
 
-void Player_CutsceneSetupIdle3(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSetupIdle3(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     Player_ChangeAnimMorphToLastFrame(play, this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_RELAX, this->modelAnimType));
     Player_StopMovement(this);
 }
 
-void Player_CutsceneIdle3(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneIdle3(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     LinkAnimation_Update(play, &this->skelAnime);
 }
 
-void Player_CutsceneSetupStop(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSetupStop(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     Player_SetupAnimMovement(play, this, PLAYER_ANIMMOVEFLAGS_KEEP_ANIM_Y_TRANSLATION | PLAYER_ANIMMOVEFLAGS_NO_MOVE | PLAYER_ANIMMOVEFLAGS_7);
 }
 
-void Player_CutsceneSetDraw(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSetDraw(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     this->actor.draw = Player_Draw;
 }
 
-void Player_CutsceneDrawSwordChild(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneDrawSwordChild(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     if (LinkAnimation_Update(play, &this->skelAnime)) {
         Player_PlayAnimLoopWithMovementPresetFlagsSlowed(play, this, &gPlayerAnim_002378);
         this->genericTimer = 1;
@@ -14435,7 +14439,7 @@ static PlayerAnimSfxEntry sTurnAroundSlowlyAnimSfx[] = {
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, -0x3018 },
 };
 
-void Player_CutsceneTurnAroundSlowly(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneTurnAroundSlowly(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     Player_PlaySlowLoopedCutsceneAnimWithSfx(play, this, &gPlayerAnim_002770, sTurnAroundSlowlyAnimSfx);
 }
 
@@ -14444,11 +14448,11 @@ static PlayerAnimSfxEntry sInspectGroundCarefullyAnimSfx[] = {
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, -0x4023 },
 };
 
-void Player_CutsceneInspectGroundCarefully(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneInspectGroundCarefully(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     Player_PlaySlowLoopedCutsceneAnimWithSfx(play, this, &gPlayerAnim_002830, sInspectGroundCarefullyAnimSfx);
 }
 
-void Player_CutsceneStartPassOcarina(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneStartPassOcarina(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     if (LinkAnimation_Update(play, &this->skelAnime)) {
         Player_PlayAnimLoopSlowed(play, this, &gPlayerAnim_002468);
         this->genericTimer = 1;
@@ -14461,7 +14465,7 @@ void Player_CutsceneStartPassOcarina(PlayState* play, Player* this, CsCmdActorAc
     }
 }
 
-void func_80852414(PlayState* play, Player* this, LinkAnimationHeader* anim, PlayerAnimSfxEntry* arg3) {
+void Player_AnimPlaybackType12PlaySfx(PlayState* play, Player* this, LinkAnimationHeader* anim, PlayerAnimSfxEntry* arg3) {
     Player_AnimPlaybackType12(play, this, anim);
     if (this->genericTimer == 0) {
         Player_PlayAnimSfx(this, arg3);
@@ -14473,39 +14477,39 @@ static PlayerAnimSfxEntry sStepBackCautiouslyAnimSfx[] = {
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, -0x3021 },
 };
 
-void Player_CutsceneStepBackCautiously(PlayState* play, Player* this, CsCmdActorAction* arg2) {
-    func_80852414(play, this, &gPlayerAnim_002378, sStepBackCautiouslyAnimSfx);
+void Player_CutsceneStepBackCautiously(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
+    Player_AnimPlaybackType12PlaySfx(play, this, &gPlayerAnim_002378, sStepBackCautiouslyAnimSfx);
 }
 
 static PlayerAnimSfxEntry sDesperateLookAtZeldasCrystalAnimSfx[] = {
     { NA_SE_PL_KNOCK, -0x84E },
 };
 
-void Player_CutsceneDesperateLookAtZeldasCrystal(PlayState* play, Player* this, CsCmdActorAction* arg2) {
-    func_80852414(play, this, &gPlayerAnim_0027D0, sDesperateLookAtZeldasCrystalAnimSfx);
+void Player_CutsceneDesperateLookAtZeldasCrystal(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
+    Player_AnimPlaybackType12PlaySfx(play, this, &gPlayerAnim_0027D0, sDesperateLookAtZeldasCrystalAnimSfx);
 }
 
-void Player_CutsceneSetupSpinAttackIdle(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSetupSpinAttackIdle(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     Player_SetupSpinAttackAnims(play, this);
 }
 
-void Player_CutsceneSpinAttackIdle(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSpinAttackIdle(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     sControlInput->press.button |= BTN_B;
 
     Player_ChargeSpinAttack(this, play);
 }
 
-void Player_CutsceneInspectWeapon(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneInspectWeapon(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     Player_ChargeSpinAttack(this, play);
 }
 
-void Player_SetupDoNothing4(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_SetupDoNothing4(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
 }
 
-void Player_DoNothing5(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_DoNothing5(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
 }
 
-void Player_CutsceneSetupKnockedToGroundDamaged(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSetupKnockedToGroundDamaged(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     this->stateFlags3 |= PLAYER_STATE3_MIDAIR;
     this->linearVelocity = 2.0f;
     this->actor.velocity.y = -1.0f;
@@ -14520,16 +14524,16 @@ static void (*sCsKnockedToGroundDamagedFuncs[])(Player* this, PlayState* play) =
     Player_GetUpFromKnockback,
 };
 
-void Player_CutsceneKnockedToGroundDamaged(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneKnockedToGroundDamaged(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     sCsKnockedToGroundDamagedFuncs[this->genericTimer](this, play);
 }
 
-void Player_CutsceneSetupGetSwordBack(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSetupGetSwordBack(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     Player_CutsceneDrawSword(play, this, 0);
     Player_PlayAnimOnceSlowed(play, this, &gPlayerAnim_002838);
 }
 
-void Player_CutsceneSwordKnockedFromHand(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneSwordKnockedFromHand(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     LinkAnimation_Update(play, &this->skelAnime);
 
     if (LinkAnimation_OnFrame(&this->skelAnime, 10.0f)) {
@@ -14553,7 +14557,7 @@ static Vec3s sBaseSparklePos[2][2] = {
     { { -200, 500, 0 }, { 600, 400, 600 } },
 };
 
-void Player_LearnOcarinaSong(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_LearnOcarinaSong(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     static Vec3f zeroVec = { 0.0f, 0.0f, 0.0f };
     static Color_RGBA8 primColor = { 255, 255, 255, 0 };
     static Color_RGBA8 envColor = { 0, 128, 128, 0 };
@@ -14580,9 +14584,9 @@ void Player_LearnOcarinaSong(PlayState* play, Player* this, CsCmdActorAction* ar
     EffectSsKiraKira_SpawnDispersed(play, &sparklePos, &zeroVec, &zeroVec, &primColor, &envColor, 600, -10);
 }
 
-void Player_CutsceneGetSwordBack(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneGetSwordBack(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     if (LinkAnimation_Update(play, &this->skelAnime)) {
-        Player_CutsceneEnd(play, this, arg2);
+        Player_CutsceneEnd(play, this, linkCsAction);
     } else if (this->genericTimer == 0) {
         Item_Give(play, ITEM_SWORD_MASTER);
         Player_CutsceneDrawSword(play, this, 0);
@@ -14591,7 +14595,7 @@ void Player_CutsceneGetSwordBack(PlayState* play, Player* this, CsCmdActorAction
     }
 }
 
-void Player_CutsceneGanonKillCombo(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneGanonKillCombo(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     if (LinkAnimation_Update(play, &this->skelAnime)) {
         Player_SetupMeleeAttack(this, 0.0f, 99.0f, this->skelAnime.endFrame - 8.0f);
     }
@@ -14601,7 +14605,7 @@ void Player_CutsceneGanonKillCombo(PlayState* play, Player* this, CsCmdActorActi
     }
 }
 
-void Player_CutsceneEnd(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneEnd(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     if (Player_IsSwimming(this)) {
         Player_SetupSwimIdle(play, this);
         Player_ResetSubCam(play, this);
@@ -14616,52 +14620,52 @@ void Player_CutsceneEnd(PlayState* play, Player* this, CsCmdActorAction* arg2) {
     this->attentionMode = PLAYER_ATTENTIONMODE_NONE;
 }
 
-void func_808529D0(PlayState* play, Player* this, CsCmdActorAction* arg2) {
-    this->actor.world.pos.x = arg2->startPos.x;
-    this->actor.world.pos.y = arg2->startPos.y;
+void func_808529D0(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
+    this->actor.world.pos.x = linkCsAction->startPos.x;
+    this->actor.world.pos.y = linkCsAction->startPos.y;
     if ((play->sceneNum == SCENE_SPOT04) && !LINK_IS_ADULT) {
         this->actor.world.pos.y -= 1.0f;
     }
-    this->actor.world.pos.z = arg2->startPos.z;
-    this->currentYaw = this->actor.shape.rot.y = arg2->rot.y;
+    this->actor.world.pos.z = linkCsAction->startPos.z;
+    this->currentYaw = this->actor.shape.rot.y = linkCsAction->rot.y;
 }
 
-void func_80852A54(PlayState* play, Player* this, CsCmdActorAction* arg2) {
-    f32 dx = arg2->startPos.x - (s32)this->actor.world.pos.x;
-    f32 dy = arg2->startPos.y - (s32)this->actor.world.pos.y;
-    f32 dz = arg2->startPos.z - (s32)this->actor.world.pos.z;
+void func_80852A54(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
+    f32 dx = linkCsAction->startPos.x - (s32)this->actor.world.pos.x;
+    f32 dy = linkCsAction->startPos.y - (s32)this->actor.world.pos.y;
+    f32 dz = linkCsAction->startPos.z - (s32)this->actor.world.pos.z;
     f32 dist = sqrtf(SQ(dx) + SQ(dy) + SQ(dz));
-    s16 yawDiff = arg2->rot.y - this->actor.shape.rot.y;
+    s16 yawDiff = linkCsAction->rot.y - this->actor.shape.rot.y;
 
     if ((this->linearVelocity == 0.0f) && ((dist > 50.0f) || (ABS(yawDiff) > 0x4000))) {
-        func_808529D0(play, this, arg2);
+        func_808529D0(play, this, linkCsAction);
     }
 
     this->skelAnime.moveFlags = 0;
     Player_ClearRootLimbPosY(this);
 }
 
-void func_80852B4C(PlayState* play, Player* this, CsCmdActorAction* arg2, CutsceneModeEntry* arg3) {
-    if (arg3->playbackFuncID > 0) {
-        csModePlaybackFuncs[arg3->playbackFuncID](play, this, arg3->ptr);
-    } else if (arg3->playbackFuncID < 0) {
-        arg3->func(play, this, arg2);
+void Player_SetupCsModePlayback(PlayState* play, Player* this, CsCmdActorAction* linkCsAction, CutsceneModeEntry* csMode) {
+    if (csMode->playbackFuncID > 0) {
+        csModePlaybackFuncs[csMode->playbackFuncID](play, this, csMode->ptr);
+    } else if (csMode->playbackFuncID < 0) {
+        csMode->func(play, this, linkCsAction);
     }
 
-    if ((D_80858AA0 & 4) && !(this->skelAnime.moveFlags & PLAYER_ANIMMOVEFLAGS_NO_AGE_Y_TRANSLATION_SCALE)) {
+    if ((sPrevSkelAnimeMoveFlags & PLAYER_ANIMMOVEFLAGS_NO_AGE_Y_TRANSLATION_SCALE) && !(this->skelAnime.moveFlags & PLAYER_ANIMMOVEFLAGS_NO_AGE_Y_TRANSLATION_SCALE)) {
         this->skelAnime.morphTable[0].y /= this->ageProperties->translationScale;
-        D_80858AA0 = 0;
+        sPrevSkelAnimeMoveFlags = 0;
     }
 }
 
-void func_80852C0C(PlayState* play, Player* this, s32 csMode) {
+void Player_CutsceneDetatchHeldActor(PlayState* play, Player* this, s32 csMode) {
     if ((csMode != PLAYER_CSMODE_IDLE) && (csMode != PLAYER_CSMODE_WAIT) && (csMode != PLAYER_CSMODE_IDLE_4) &&
         (csMode != PLAYER_CSMODE_END)) {
         Player_DetatchHeldActor(play, this);
     }
 }
 
-void Player_CutsceneUnk6Update(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneUnk6Update(PlayState* play, Player* this, CsCmdActorAction* linkCsAction) {
     CsCmdActorAction* linkCsAction = play->csCtx.linkAction;
     s32 pad;
     s32 currentCsAction;
@@ -14688,12 +14692,12 @@ void Player_CutsceneUnk6Update(PlayState* play, Player* this, CsCmdActorAction* 
             }
         }
 
-        D_80858AA0 = this->skelAnime.moveFlags;
+        sPrevSkelAnimeMoveFlags = this->skelAnime.moveFlags;
 
         Player_EndAnimMovement(this);
         osSyncPrintf("TOOL MODE=%d\n", currentCsAction);
-        func_80852C0C(play, this, ABS(currentCsAction));
-        func_80852B4C(play, this, linkCsAction, &sCutsceneModeInitFuncs[ABS(currentCsAction)]);
+        Player_CutsceneDetatchHeldActor(play, this, ABS(currentCsAction));
+        Player_SetupCsModePlayback(play, this, linkCsAction, &sCutsceneModeInitFuncs[ABS(currentCsAction)]);
 
         this->genericTimer = 0;
         this->genericVar = 0;
@@ -14701,21 +14705,21 @@ void Player_CutsceneUnk6Update(PlayState* play, Player* this, CsCmdActorAction* 
     }
 
     currentCsAction = sLinkCsActions[this->csAction];
-    func_80852B4C(play, this, linkCsAction, &sCutsceneModeUpdateFuncs[ABS(currentCsAction)]);
+    Player_SetupCsModePlayback(play, this, linkCsAction, &sCutsceneModeUpdateFuncs[ABS(currentCsAction)]);
 }
 
 void Player_StartCutscene(Player* this, PlayState* play) {
     if (this->csMode != this->prevCsMode) {
-        D_80858AA0 = this->skelAnime.moveFlags;
+        sPrevSkelAnimeMoveFlags = this->skelAnime.moveFlags;
 
         Player_EndAnimMovement(this);
         this->prevCsMode = this->csMode;
         osSyncPrintf("DEMO MODE=%d\n", this->csMode);
-        func_80852C0C(play, this, this->csMode);
-        func_80852B4C(play, this, NULL, &sCutsceneModeInitFuncs[this->csMode]);
+        Player_CutsceneDetatchHeldActor(play, this, this->csMode);
+        Player_SetupCsModePlayback(play, this, NULL, &sCutsceneModeInitFuncs[this->csMode]);
     }
 
-    func_80852B4C(play, this, NULL, &sCutsceneModeUpdateFuncs[this->csMode]);
+    Player_SetupCsModePlayback(play, this, NULL, &sCutsceneModeUpdateFuncs[this->csMode]);
 }
 
 s32 Player_IsDroppingFish(PlayState* play) {
