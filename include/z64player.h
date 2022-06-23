@@ -870,14 +870,14 @@ typedef struct Player {
     /* 0x0847 */ s8         analogStickInputs[4];
     /* 0x084B */ s8         relativeAnalogStickInputs[4];
     union {
-        /* 0x084F */ s8 unk_84F;
+        /* 0x084F */ s8 genericVar;
         /* 0x084F */ s8 fairyReviveFlag;
         /* 0x084F */ s8 magicSpellType;
         /* 0x084F */ s8 relativeStickInput;
         /* 0x084F */ s8 climbStatus;
     };
     union {
-        /* 0x0850 */ s16        genericTimer; // multipurpose timer
+        /* 0x0850 */ s16        genericTimer;
         /* 0x0850 */ s16        mashTimer;
     };
     /* 0x0854 */ f32        rippleTimer;
@@ -887,7 +887,7 @@ typedef struct Player {
         /* 0x0858 */ f32        reelPullDir;
     };
     union {
-        /* 0x085C */ f32        unk_85C; // stick length among other things
+        /* 0x085C */ f32        unk_85C;
         /* 0x085C */ f32        bowStringScale;
         /* 0x085C */ f32        dekuStickLength;
     };
@@ -900,7 +900,7 @@ typedef struct Player {
     /* 0x0864 */ f32        unk_864;
     /* 0x0868 */ f32        walkFrame;
     /* 0x086C */ f32        unk_86C;
-    /* 0x0870 */ f32        leftRightBlendWeight;
+    /* 0x0870 */ f32        leftRightBlendWeight; // Represents blend weight between left (1.0f) and right (0.0f) for some anims
     /* 0x0874 */ f32        leftRightBlendWeightTarget;
     /* 0x0878 */ f32        rideOffsetY;
     /* 0x087C */ s16        unk_87C;
