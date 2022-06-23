@@ -81,9 +81,9 @@ typedef struct {
 } PlayerAnimSfxEntry; // size = 0x04
 
 typedef struct {
-    /* 0x00 */ u16 unk_00;
-    /* 0x02 */ s16 unk_02;
-} struct_808551A4; // size = 0x04
+    /* 0x00 */ u16 swordSfx;
+    /* 0x02 */ s16 voiceSfx;
+} SwordPedestalSfx; // size = 0x04
 
 typedef struct {
     /* 0x00 */ LinkAnimationHeader* anim;
@@ -135,8 +135,8 @@ void Player_SetupExplosive(PlayState* play, Player* this);
 void Player_SetupHookshot(PlayState* play, Player* this);
 void Player_SetupBoomerang(PlayState* play, Player* this);
 void Player_ChangeItem(PlayState* play, Player* this, s8 actionParam);
-s32 Player_SetupStartZTargetingDefend(Player* this, PlayState* play);
-s32 Player_SetupStartZTargetingDefend2(Player* this, PlayState* play);
+s32 Player_SetupStartZTargetDefend(Player* this, PlayState* play);
+s32 Player_SetupStartZTargetDefend2(Player* this, PlayState* play);
 s32 Player_StartChangeItem(Player* this, PlayState* play);
 s32 func_80834B5C(Player* this, PlayState* play);
 s32 Player_EndDefend(Player* this, PlayState* play);
@@ -299,10 +299,10 @@ void Player_CutsceneSetupEnterWarp(PlayState* play, Player* this, CsCmdActorActi
 void Player_CutsceneEnterWarp(PlayState* play, Player* this, CsCmdActorAction* arg2);
 void Player_CutsceneSetupFightStance(PlayState* play, Player* this, CsCmdActorAction* arg2);
 void Player_CutsceneFightStance(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void func_80851998(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void func_808519C0(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSetupSwordIntoPedestal(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void Player_CutsceneSwordIntoPedestal(PlayState* play, Player* this, CsCmdActorAction* arg2);
+void Player_CutsceneUnk3Update(PlayState* play, Player* this, CsCmdActorAction* arg2);
+void Player_CutsceneUnk4Update(PlayState* play, Player* this, CsCmdActorAction* arg2);
+void Player_CutsceneSetupSwordPedestal(PlayState* play, Player* this, CsCmdActorAction* arg2);
+void Player_CutsceneSwordPedestal(PlayState* play, Player* this, CsCmdActorAction* arg2);
 void Player_CutsceneSetupWarpToSages(PlayState* play, Player* this, CsCmdActorAction* arg2);
 void Player_CutsceneWarpToSages(PlayState* play, Player* this, CsCmdActorAction* arg2);
 void Player_CutsceneKnockedToGround(PlayState* play, Player* this, CsCmdActorAction* arg2);
@@ -343,7 +343,7 @@ void Player_CutsceneGetSwordBack(PlayState* play, Player* this, CsCmdActorAction
 void Player_CutsceneGanonKillCombo(PlayState* play, Player* this, CsCmdActorAction* arg2);
 void Player_CutsceneEnd(PlayState* play, Player* this, CsCmdActorAction* arg2);
 void func_808529D0(PlayState* play, Player* this, CsCmdActorAction* arg2);
-void func_80852C50(PlayState* play, Player* this, CsCmdActorAction* arg2);
+void Player_CutsceneUnk6Update(PlayState* play, Player* this, CsCmdActorAction* arg2);
 void Player_StartCutscene(Player* this, PlayState* play);
 s32 Player_IsDroppingFish(PlayState* play);
 s32 Player_StartFishing(PlayState* play);
@@ -1124,29 +1124,143 @@ static s8 sItemActionParams[] = {
 };
 
 static s32 (*sUpperBodyItemFuncs[])(Player* this, PlayState* play) = {
-    Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend2, Player_SetupStartZTargetingDefend2, Player_SetupStartZTargetingDefend2, Player_SetupStartZTargetingDefend,
-    Player_SetupStartZTargetingDefend, Player_HoldFpsItem, Player_HoldFpsItem, Player_HoldFpsItem, Player_HoldFpsItem, Player_HoldFpsItem, Player_HoldFpsItem,
-    Player_HoldFpsItem, Player_HoldFpsItem, Player_HoldFpsItem, Player_HoldFpsItem, Player_HoldActor, Player_HoldActor, Player_HoldBoomerang,
-    Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend,
-    Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend,
-    Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend,
-    Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend,
-    Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend,
-    Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend,
-    Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend, Player_SetupStartZTargetingDefend,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_NONE,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_LAST_USED,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_FISHING_POLE,
+    Player_SetupStartZTargetDefend2, // PLAYER_AP_SWORD_MASTER,
+    Player_SetupStartZTargetDefend2, // PLAYER_AP_SWORD_KOKIRI,
+    Player_SetupStartZTargetDefend2, // PLAYER_AP_SWORD_BGS,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_STICK,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_HAMMER,
+    Player_HoldFpsItem,                 // PLAYER_AP_BOW,
+    Player_HoldFpsItem,                 // PLAYER_AP_BOW_FIRE,
+    Player_HoldFpsItem,                 // PLAYER_AP_BOW_ICE,
+    Player_HoldFpsItem,                 // PLAYER_AP_BOW_LIGHT,
+    Player_HoldFpsItem,                 // PLAYER_AP_BOW_0C,
+    Player_HoldFpsItem,                 // PLAYER_AP_BOW_0D,
+    Player_HoldFpsItem,                 // PLAYER_AP_BOW_0E,
+    Player_HoldFpsItem,                 // PLAYER_AP_SLINGSHOT,
+    Player_HoldFpsItem,                 // PLAYER_AP_HOOKSHOT,
+    Player_HoldFpsItem,                 // PLAYER_AP_LONGSHOT,
+    Player_HoldActor,                   // PLAYER_AP_BOMB,
+    Player_HoldActor,                   // PLAYER_AP_BOMBCHU,
+    Player_HoldBoomerang,               // PLAYER_AP_BOOMERANG,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_MAGIC_SPELL_15,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_MAGIC_SPELL_16,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_MAGIC_SPELL_17,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_FARORES_WIND,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_NAYRUS_LOVE,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_DINS_FIRE,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_NUT,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_OCARINA_FAIRY,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_OCARINA_TIME,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_BOTTLE,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_BOTTLE_FISH,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_BOTTLE_FIRE,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_BOTTLE_BUG,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_BOTTLE_POE,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_BOTTLE_BIG_POE,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_BOTTLE_LETTER,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_BOTTLE_POTION_RED,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_BOTTLE_POTION_BLUE,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_BOTTLE_POTION_GREEN,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_BOTTLE_MILK,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_BOTTLE_MILK_HALF,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_BOTTLE_FAIRY,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_LETTER_ZELDA,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_WEIRD_EGG,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_CHICKEN,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_BEAN,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_POCKET_EGG,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_POCKET_CUCCO,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_COJIRO,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_ODD_MUSHROOM,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_ODD_POTION,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_SAW,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_SWORD_BROKEN,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_PRESCRIPTION,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_FROG,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_EYEDROPS,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_CLAIM_CHECK,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_MASK_KEATON,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_MASK_SKULL,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_MASK_SPOOKY,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_MASK_BUNNY,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_MASK_GORON,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_MASK_ZORA,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_MASK_GERUDO,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_MASK_TRUTH,
+    Player_SetupStartZTargetDefend,  // PLAYER_AP_LENS,
 };
 
 static void (*sItemChangeFuncs[])(PlayState* play, Player* this) = {
-    Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_SetupDekuStick,
-    Player_DoNothing2, Player_SetupBowOrSlingshot, Player_SetupBowOrSlingshot, Player_SetupBowOrSlingshot, Player_SetupBowOrSlingshot, Player_SetupBowOrSlingshot, Player_SetupBowOrSlingshot,
-    Player_SetupBowOrSlingshot, Player_SetupBowOrSlingshot, Player_SetupHookshot, Player_SetupHookshot, Player_SetupExplosive, Player_SetupExplosive, Player_SetupBoomerang,
-    Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing,
-    Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing,
-    Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing,
-    Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing,
-    Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing,
-    Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing,
-    Player_DoNothing, Player_DoNothing, Player_DoNothing, Player_DoNothing,
+    Player_DoNothing,           // PLAYER_AP_NONE,
+    Player_DoNothing,           // PLAYER_AP_LAST_USED,
+    Player_DoNothing,           // PLAYER_AP_FISHING_POLE,
+    Player_DoNothing,           // PLAYER_AP_SWORD_MASTER,
+    Player_DoNothing,           // PLAYER_AP_SWORD_KOKIRI,
+    Player_DoNothing,           // PLAYER_AP_SWORD_BGS,
+    Player_SetupDekuStick,      // PLAYER_AP_STICK,
+    Player_DoNothing2,          // PLAYER_AP_HAMMER,
+    Player_SetupBowOrSlingshot, // PLAYER_AP_BOW,
+    Player_SetupBowOrSlingshot, // PLAYER_AP_BOW_FIRE,
+    Player_SetupBowOrSlingshot, // PLAYER_AP_BOW_ICE,
+    Player_SetupBowOrSlingshot, // PLAYER_AP_BOW_LIGHT,
+    Player_SetupBowOrSlingshot, // PLAYER_AP_BOW_0C,
+    Player_SetupBowOrSlingshot, // PLAYER_AP_BOW_0D,
+    Player_SetupBowOrSlingshot, // PLAYER_AP_BOW_0E,
+    Player_SetupBowOrSlingshot, // PLAYER_AP_SLINGSHOT,
+    Player_SetupHookshot,       // PLAYER_AP_HOOKSHOT,
+    Player_SetupHookshot,       // PLAYER_AP_LONGSHOT,
+    Player_SetupExplosive,      // PLAYER_AP_BOMB,
+    Player_SetupExplosive,      // PLAYER_AP_BOMBCHU,
+    Player_SetupBoomerang,      // PLAYER_AP_BOOMERANG,
+    Player_DoNothing,           // PLAYER_AP_MAGIC_SPELL_15,
+    Player_DoNothing,           // PLAYER_AP_MAGIC_SPELL_16,
+    Player_DoNothing,           // PLAYER_AP_MAGIC_SPELL_17,
+    Player_DoNothing,           // PLAYER_AP_FARORES_WIND,
+    Player_DoNothing,           // PLAYER_AP_NAYRUS_LOVE,
+    Player_DoNothing,           // PLAYER_AP_DINS_FIRE,
+    Player_DoNothing,           // PLAYER_AP_NUT,
+    Player_DoNothing,           // PLAYER_AP_OCARINA_FAIRY,
+    Player_DoNothing,           // PLAYER_AP_OCARINA_TIME,
+    Player_DoNothing,           // PLAYER_AP_BOTTLE,
+    Player_DoNothing,           // PLAYER_AP_BOTTLE_FISH,
+    Player_DoNothing,           // PLAYER_AP_BOTTLE_FIRE,
+    Player_DoNothing,           // PLAYER_AP_BOTTLE_BUG,
+    Player_DoNothing,           // PLAYER_AP_BOTTLE_POE,
+    Player_DoNothing,           // PLAYER_AP_BOTTLE_BIG_POE,
+    Player_DoNothing,           // PLAYER_AP_BOTTLE_LETTER,
+    Player_DoNothing,           // PLAYER_AP_BOTTLE_POTION_RED,
+    Player_DoNothing,           // PLAYER_AP_BOTTLE_POTION_BLUE,
+    Player_DoNothing,           // PLAYER_AP_BOTTLE_POTION_GREEN,
+    Player_DoNothing,           // PLAYER_AP_BOTTLE_MILK,
+    Player_DoNothing,           // PLAYER_AP_BOTTLE_MILK_HALF,
+    Player_DoNothing,           // PLAYER_AP_BOTTLE_FAIRY,
+    Player_DoNothing,           // PLAYER_AP_LETTER_ZELDA,
+    Player_DoNothing,           // PLAYER_AP_WEIRD_EGG,
+    Player_DoNothing,           // PLAYER_AP_CHICKEN,
+    Player_DoNothing,           // PLAYER_AP_BEAN,
+    Player_DoNothing,           // PLAYER_AP_POCKET_EGG,
+    Player_DoNothing,           // PLAYER_AP_POCKET_CUCCO,
+    Player_DoNothing,           // PLAYER_AP_COJIRO,
+    Player_DoNothing,           // PLAYER_AP_ODD_MUSHROOM,
+    Player_DoNothing,           // PLAYER_AP_ODD_POTION,
+    Player_DoNothing,           // PLAYER_AP_SAW,
+    Player_DoNothing,           // PLAYER_AP_SWORD_BROKEN,
+    Player_DoNothing,           // PLAYER_AP_PRESCRIPTION,
+    Player_DoNothing,           // PLAYER_AP_FROG,
+    Player_DoNothing,           // PLAYER_AP_EYEDROPS,
+    Player_DoNothing,           // PLAYER_AP_CLAIM_CHECK,
+    Player_DoNothing,           // PLAYER_AP_MASK_KEATON,
+    Player_DoNothing,           // PLAYER_AP_MASK_SKULL,
+    Player_DoNothing,           // PLAYER_AP_MASK_SPOOKY,
+    Player_DoNothing,           // PLAYER_AP_MASK_BUNNY,
+    Player_DoNothing,           // PLAYER_AP_MASK_GORON,
+    Player_DoNothing,           // PLAYER_AP_MASK_ZORA,
+    Player_DoNothing,           // PLAYER_AP_MASK_GERUDO,
+    Player_DoNothing,           // PLAYER_AP_MASK_TRUTH,
+    Player_DoNothing,           // PLAYER_AP_LENS,
 };
 
 typedef enum {
@@ -2348,7 +2462,7 @@ LinkAnimationHeader* Player_GetDefendAnim(PlayState* play, Player* this) {
     }
 }
 
-s32 Player_StartZTargetingDefend(PlayState* play, Player* this) {
+s32 Player_StartZTargetDefend(PlayState* play, Player* this) {
     LinkAnimationHeader* anim;
     f32 frame;
 
@@ -2368,8 +2482,8 @@ s32 Player_StartZTargetingDefend(PlayState* play, Player* this) {
     }
 }
 
-s32 Player_SetupStartZTargetingDefend(Player* this, PlayState* play) {
-    if (Player_StartZTargetingDefend(play, this)) {
+s32 Player_SetupStartZTargetDefend(Player* this, PlayState* play) {
+    if (Player_StartZTargetDefend(play, this)) {
         return 1;
     } else {
         return 0;
@@ -2412,8 +2526,8 @@ s32 func_8083499C(Player* this, PlayState* play) {
     return 1;
 }
 
-s32 Player_SetupStartZTargetingDefend2(Player* this, PlayState* play) {
-    if (Player_StartZTargetingDefend(play, this) || func_8083499C(this, play)) {
+s32 Player_SetupStartZTargetDefend2(Player* this, PlayState* play) {
+    if (Player_StartZTargetDefend(play, this) || func_8083499C(this, play)) {
         return 1;
     } else {
         return 0;
@@ -2567,7 +2681,7 @@ s32 Player_HoldFpsItem(Player* this, PlayState* play) {
         this->fpsItemType = -this->fpsItemType;
     }
 
-    if ((!Player_HoldsHookshot(this) || Player_EndHookshotMove(this)) && !Player_StartZTargetingDefend(play, this) &&
+    if ((!Player_HoldsHookshot(this) || Player_EndHookshotMove(this)) && !Player_StartZTargetDefend(play, this) &&
         !Player_CanUseFpsItem(this, play)) {
         return 0;
     }
@@ -2668,7 +2782,7 @@ s32 Player_AimFpsItem(Player* this, PlayState* play) {
         return 1;
     }
 
-    if (!Player_StartZTargetingDefend(play, this) && (sUsingItemAlreadyInHand || ((this->fpsItemType < PLAYER_FPSITEM_NONE) && sUsingItemAlreadyInHand2) || Player_CheckShootingGalleryShootInput(play))) {
+    if (!Player_StartZTargetDefend(play, this) && (sUsingItemAlreadyInHand || ((this->fpsItemType < PLAYER_FPSITEM_NONE) && sUsingItemAlreadyInHand2) || Player_CheckShootingGalleryShootInput(play))) {
         this->fpsItemType = ABS(this->fpsItemType);
 
         if (Player_SetupReadyFpsItemToShoot(this, play)) {
@@ -2746,7 +2860,7 @@ s32 Player_HoldActor(Player* this, PlayState* play) {
         Player_SetupHeldItemUpperActionFunc(play, this);
     }
 
-    if (Player_StartZTargetingDefend(play, this)) {
+    if (Player_StartZTargetDefend(play, this)) {
         return 1;
     }
 
@@ -2764,7 +2878,7 @@ s32 Player_HoldActor(Player* this, PlayState* play) {
         return 1;
     }
 
-    return Player_SetupStartZTargetingDefend(this, play);
+    return Player_SetupStartZTargetDefend(this, play);
 }
 
 void Player_SetLeftHandDlists(Player* this, Gfx** dLists) {
@@ -2772,7 +2886,7 @@ void Player_SetLeftHandDlists(Player* this, Gfx** dLists) {
 }
 
 s32 Player_HoldBoomerang(Player* this, PlayState* play) {
-    if (Player_StartZTargetingDefend(play, this)) {
+    if (Player_StartZTargetDefend(play, this)) {
         return 1;
     }
 
@@ -2848,7 +2962,7 @@ s32 Player_ThrowBoomerang(Player* this, PlayState* play) {
 }
 
 s32 Player_WaitForThrownBoomerang(Player* this, PlayState* play) {
-    if (Player_StartZTargetingDefend(play, this)) {
+    if (Player_StartZTargetDefend(play, this)) {
         return 1;
     }
 
@@ -9350,12 +9464,12 @@ void Player_CutsceneDrawSword(PlayState* play, Player* this, s32 arg2) {
     }
 }
 
-static Vec3f sTimeTravelSpawnPos = { -1.0f, 69.0f, 20.0f };
+static Vec3f sEndTimeTravelStartPos = { -1.0f, 69.0f, 20.0f };
 
 void Player_SpawnFromTimeTravel(PlayState* play, Player* this) {
     Player_SetActionFunc(play, this, Player_EndTimeTravel, 0);
     this->stateFlags1 |= PLAYER_STATE1_IN_CUTSCENE;
-    Math_Vec3f_Copy(&this->actor.world.pos, &sTimeTravelSpawnPos);
+    Math_Vec3f_Copy(&this->actor.world.pos, &sEndTimeTravelStartPos);
     this->currentYaw = this->actor.shape.rot.y = -0x8000;
     LinkAnimation_Change(play, &this->skelAnime, this->ageProperties->timeTravelEndAnim, 2.0f / 3.0f, 0.0f, 0.0f,
                          ANIMMODE_ONCE, 0.0f);
@@ -13209,8 +13323,8 @@ void Player_MeleeWeaponAttack(Player* this, PlayState* play) {
     if (!func_80842DF4(play, this)) {
         Player_SetupMeleeAttack(this, 0.0f, attackAnim->startFrame, attackAnim->endFrame);
 
-        if ((this->stateFlags2 & PLAYER_STATE2_ENABLE_FORWARD_SLIDE_FROM_ATTACK) && (this->heldItemActionParam != PLAYER_AP_HAMMER) &&
-            LinkAnimation_OnFrame(&this->skelAnime, 0.0f)) {
+        if ((this->stateFlags2 & PLAYER_STATE2_ENABLE_FORWARD_SLIDE_FROM_ATTACK) &&
+            (this->heldItemActionParam != PLAYER_AP_HAMMER) && LinkAnimation_OnFrame(&this->skelAnime, 0.0f)) {
             this->linearVelocity = 15.0f;
             this->stateFlags2 &= ~PLAYER_STATE2_ENABLE_FORWARD_SLIDE_FROM_ATTACK;
         }
@@ -13250,19 +13364,19 @@ void Player_MeleeWeaponAttack(Player* this, PlayState* play) {
                 (this->meleeAttackType == PLAYER_MELEEATKTYPE_JUMPSLASH_FINISH)) {
                 static Vec3f zeroVec = { 0.0f, 0.0f, 0.0f };
                 Vec3f shockwavePos;
-                f32 sp2C;
+                f32 shockwaveDistToPlayerY;
 
                 shockwavePos.y = Player_RaycastFloorWithOffset2(play, this, &sShockwaveRaycastPos, &shockwavePos);
-                sp2C = this->actor.world.pos.y - shockwavePos.y;
+                shockwaveDistToPlayerY = this->actor.world.pos.y - shockwavePos.y;
 
-                Math_ScaledStepToS(&this->actor.focus.rot.x, Math_Atan2S(45.0f, sp2C), 800);
+                Math_ScaledStepToS(&this->actor.focus.rot.x, Math_Atan2S(45.0f, shockwaveDistToPlayerY), 800);
                 Player_UpdateLookAngles(this, true);
 
                 if ((((this->meleeAttackType == PLAYER_MELEEATKTYPE_HAMMER_FORWARD) &&
                       LinkAnimation_OnFrame(&this->skelAnime, 7.0f)) ||
                      ((this->meleeAttackType == PLAYER_MELEEATKTYPE_JUMPSLASH_FINISH) &&
                       LinkAnimation_OnFrame(&this->skelAnime, 2.0f))) &&
-                    (sp2C > -40.0f) && (sp2C < 40.0f)) {
+                    (shockwaveDistToPlayerY > -40.0f) && (shockwaveDistToPlayerY < 40.0f)) {
                     Player_SetupHammerHit(play, this);
                     EffectSsBlast_SpawnWhiteShockwave(play, &shockwavePos, &zeroVec, &zeroVec);
                 }
@@ -13575,7 +13689,7 @@ static CutsceneModeEntry sCutsceneModeInitFuncs[] = {
     { 5, &gPlayerAnim_002358 },                         // PLAYER_CSMODE_END_GET_SPIRITUAL_STONE
     { 5, &gPlayerAnim_0023B0 },                         // PLAYER_CSMODE_GET_UP_FROM_DEKU_TREE_STORY
     { 7, &gPlayerAnim_0023B8 },                         // PLAYER_CSMODE_SIT_LISTENING_TO_DEKU_TREE_STORY
-    { -1, Player_CutsceneSetupSwordIntoPedestal },      // PLAYER_CSMODE_SWORD_INTO_PEDESTAL
+    { -1, Player_CutsceneSetupSwordPedestal },      // PLAYER_CSMODE_SWORD_INTO_PEDESTAL
     { 2, &gPlayerAnim_002728 },                         // PLAYER_CSMODE_REACT_TO_QUAKE
     { 2, &gPlayerAnim_002738 },                         // PLAYER_CSMODE_END_REACT_TO_QUAKE
     { 0, NULL },                                        // PLAYER_CSMODE_UNK_21
@@ -13601,9 +13715,9 @@ static CutsceneModeEntry sCutsceneModeInitFuncs[] = {
     { 6, &gPlayerAnim_002418 },                         // PLAYER_CSMODE_GET_OFF_BED
     { -1, Player_CutsceneSetupBlownBackward },          // PLAYER_CSMODE_BLOWN_BACKWARD
     { 5, &gPlayerAnim_002390 },                         // PLAYER_CSMODE_STAND_UP_AND_WATCH
-    { -1, Player_CutsceneSetupIdle3 },                              // PLAYER_CSMODE_IDLE_3
-    { -1, Player_CutsceneSetupStop },                              // PLAYER_CSMODE_STOP
-    { -1, Player_CutsceneSetDraw },                              // PLAYER_CSMODE_STOP_2
+    { -1, Player_CutsceneSetupIdle3 },                  // PLAYER_CSMODE_IDLE_3
+    { -1, Player_CutsceneSetupStop },                   // PLAYER_CSMODE_STOP
+    { -1, Player_CutsceneSetDraw },                     // PLAYER_CSMODE_STOP_2
     { 5, &gPlayerAnim_0023A0 },                         // PLAYER_CSMODE_LOOK_THROUGH_PEEPHOLE
     { 5, &gPlayerAnim_002368 },                         // PLAYER_CSMODE_STEP_BACK_CAUTIOUSLY
     { -1, Player_CutsceneSetupIdle },                   // PLAYER_CSMODE_IDLE_4
@@ -13666,10 +13780,10 @@ static CutsceneModeEntry sCutsceneModeUpdateFuncs[] = {
     { 0, NULL },                                         // PLAYER_CSMODE_NONE
     { -1, Player_CutsceneIdle },                         // PLAYER_CSMODE_IDLE
     { -1, Player_CutsceneTurnAroundSurprisedShort },     // PLAYER_CSMODE_TURN_AROUND_SURPRISED_SHORT
-    { -1, func_80851998 },                               // PLAYER_CSMODE_UNK_3
-    { -1, func_808519C0 },                               // PLAYER_CSMODE_UNK_4
+    { -1, Player_CutsceneUnk3Update },                   // PLAYER_CSMODE_UNK_3
+    { -1, Player_CutsceneUnk4Update },                   // PLAYER_CSMODE_UNK_4
     { 11, NULL },                                        // PLAYER_CSMODE_SURPRISED
-    { -1, func_80852C50 },                               // PLAYER_CSMODE_UNK_6
+    { -1, Player_CutsceneUnk6Update },                   // PLAYER_CSMODE_UNK_6
     { -1, Player_CutsceneEnd },                          // PLAYER_CSMODE_END
     { -1, Player_CutsceneWait },                         // PLAYER_CSMODE_WAIT
     { -1, Player_CutsceneTurnAroundSurprisedLong },      // PLAYER_CSMODE_TURN_AROUND_SURPRISED_LONG
@@ -13681,7 +13795,7 @@ static CutsceneModeEntry sCutsceneModeUpdateFuncs[] = {
     { 11, NULL },                                        // PLAYER_CSMODE_END_GET_SPIRITUAL_STONE
     { 18, sGetUpFromDekuTreeStoryAnimSfx },              // PLAYER_CSMODE_GET_UP_FROM_DEKU_TREE_STORY
     { 11, NULL },                                        // PLAYER_CSMODE_SIT_LISTENING_TO_DEKU_TREE_STORY
-    { -1, Player_CutsceneSwordIntoPedestal },            // PLAYER_CSMODE_SWORD_INTO_PEDESTAL
+    { -1, Player_CutsceneSwordPedestal },            // PLAYER_CSMODE_SWORD_INTO_PEDESTAL
     { 12, &gPlayerAnim_002730 },                         // PLAYER_CSMODE_REACT_TO_QUAKE
     { 11, NULL },                                        // PLAYER_CSMODE_END_REACT_TO_QUAKE
     { 0, NULL },                                         // PLAYER_CSMODE_UNK_21
@@ -14053,24 +14167,24 @@ void Player_CutsceneFightStance(PlayState* play, Player* this, CsCmdActorAction*
     }
 }
 
-void func_80851998(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneUnk3Update(PlayState* play, Player* this, CsCmdActorAction* arg2) {
     func_80845964(play, this, arg2, 0.0f, 0, 0);
 }
 
-void func_808519C0(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneUnk4Update(PlayState* play, Player* this, CsCmdActorAction* arg2) {
     func_80845964(play, this, arg2, 0.0f, 0, 1);
 }
 
 // unused
-static LinkAnimationHeader* D_80855190[] = {
+static LinkAnimationHeader* sTimeTravelStartAnims[] = {
     &gPlayerAnim_002720,
     &gPlayerAnim_002360,
 };
 
-static Vec3f D_80855198 = { -1.0f, 70.0f, 20.0f };
+static Vec3f sStartTimeTravelPos = { -1.0f, 70.0f, 20.0f };
 
-void Player_CutsceneSetupSwordIntoPedestal(PlayState* play, Player* this, CsCmdActorAction* arg2) {
-    Math_Vec3f_Copy(&this->actor.world.pos, &D_80855198);
+void Player_CutsceneSetupSwordPedestal(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+    Math_Vec3f_Copy(&this->actor.world.pos, &sStartTimeTravelPos);
     this->actor.shape.rot.y = -0x8000;
     Player_PlayAnimOnceSlowed(play, this, this->ageProperties->timeTravelStartAnim);
     Player_SetupAnimMovement(play, this,
@@ -14078,25 +14192,25 @@ void Player_CutsceneSetupSwordIntoPedestal(PlayState* play, Player* this, CsCmdA
                       PLAYER_ANIMMOVEFLAGS_7 | PLAYER_ANIMMOVEFLAGS_UPDATE_PREV_TRANSL_ROT_APPLY_AGE_SCALE);
 }
 
-static struct_808551A4 D_808551A4[] = {
+static SwordPedestalSfx sSwordPedestalSfx[] = {
     { NA_SE_IT_SWORD_PUTAWAY_STN, 0 },
     { NA_SE_IT_SWORD_STICK_STN, NA_SE_VO_LI_SWORD_N },
 };
 
-static PlayerAnimSfxEntry sSwordIntoPedestalAnimSfx[] = {
+static PlayerAnimSfxEntry sStepOntoPedestalAnimSfx[] = {
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, 0x401D },
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, -0x4027 },
 };
 
-void Player_CutsceneSwordIntoPedestal(PlayState* play, Player* this, CsCmdActorAction* arg2) {
-    struct_808551A4* sp2C;
+void Player_CutsceneSwordPedestal(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+    SwordPedestalSfx* swordPedestalSfx;
     Gfx** dLists;
 
     LinkAnimation_Update(play, &this->skelAnime);
 
     if ((LINK_IS_ADULT && LinkAnimation_OnFrame(&this->skelAnime, 70.0f)) ||
         (!LINK_IS_ADULT && LinkAnimation_OnFrame(&this->skelAnime, 87.0f))) {
-        sp2C = &D_808551A4[gSaveContext.linkAge];
+        swordPedestalSfx = &sSwordPedestalSfx[gSaveContext.linkAge];
         this->interactRangeActor->parent = &this->actor;
 
         if (!LINK_IS_ADULT) {
@@ -14106,16 +14220,16 @@ void Player_CutsceneSwordIntoPedestal(PlayState* play, Player* this, CsCmdActorA
         }
         this->leftHandDLists = dLists + gSaveContext.linkAge;
 
-        func_8002F7DC(&this->actor, sp2C->unk_00);
+        func_8002F7DC(&this->actor, swordPedestalSfx->swordSfx);
         if (!LINK_IS_ADULT) {
-            Player_PlayVoiceSfxForAge(this, sp2C->unk_02);
+            Player_PlayVoiceSfxForAge(this, swordPedestalSfx->voiceSfx);
         }
     } else if (LINK_IS_ADULT) {
         if (LinkAnimation_OnFrame(&this->skelAnime, 66.0f)) {
             Player_PlayVoiceSfxForAge(this, NA_SE_VO_LI_SWORD_L);
         }
     } else {
-        Player_PlayAnimSfx(this, sSwordIntoPedestalAnimSfx);
+        Player_PlayAnimSfx(this, sStepOntoPedestalAnimSfx);
     }
 }
 
@@ -14547,7 +14661,7 @@ void func_80852C0C(PlayState* play, Player* this, s32 csMode) {
     }
 }
 
-void func_80852C50(PlayState* play, Player* this, CsCmdActorAction* arg2) {
+void Player_CutsceneUnk6Update(PlayState* play, Player* this, CsCmdActorAction* arg2) {
     CsCmdActorAction* linkCsAction = play->csCtx.linkAction;
     s32 pad;
     s32 currentCsAction;
