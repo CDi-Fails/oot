@@ -863,7 +863,7 @@ typedef struct Player {
     /* 0x0830 */ f32        upperInterpWeight;
     /* 0x0834 */ s16        fpsItemTimer;
     /* 0x0836 */ s8         fpsItemShootState;
-    /* 0x0837 */ u8         unk_837;
+    /* 0x0837 */ u8         putAwayTimer;
     /* 0x0838 */ f32        linearVelocity;
     /* 0x083C */ s16        currentYaw;
     /* 0x083E */ s16        targetYaw;
@@ -926,7 +926,7 @@ typedef struct Player {
     /* 0x0896 */ s16        fallDistance; // truncated Y distance the player has fallen so far (positive is down)
     /* 0x0898 */ s16        angleToFloorX;
     /* 0x089A */ s16        angleToFloorY;
-    /* 0x089C */ s16        unk_89C;
+    /* 0x089C */ s16        walkAngleToFloorX;
     /* 0x089E */ u16        moveSfxType;
     /* 0x08A0 */ u8         damageAmount;
     /* 0x08A1 */ u8         damageEffect;

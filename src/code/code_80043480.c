@@ -52,6 +52,7 @@ s32 func_80043548(DynaPolyActor* dynaActor) {
     }
 }
 
+// Player is on top of dyna actor
 s32 func_8004356C(DynaPolyActor* dynaActor) {
     if (dynaActor->unk_160 & 2) {
         return true;
