@@ -230,18 +230,18 @@ void func_8084C5F8(Player* this, PlayState* play);
 void func_8084C760(Player* this, PlayState* play);
 void func_8084C81C(Player* this, PlayState* play);
 void Player_RideHorse(Player* this, PlayState* play);
-void func_8084D3E4(Player* this, PlayState* play);
+void Player_DismountHorse(Player* this, PlayState* play);
 void Player_UpdateSwimIdle(Player* this, PlayState* play);
 void Player_SpawnSwimming(Player* this, PlayState* play);
 void Player_Swim(Player* this, PlayState* play);
 void func_8084DAB4(Player* this, PlayState* play);
-void func_8084DC48(Player* this, PlayState* play);
-void func_8084E1EC(Player* this, PlayState* play);
-void func_8084E30C(Player* this, PlayState* play);
-void Player_SetupDrown(Player* this, PlayState* play);
+void Player_Dive(Player* this, PlayState* play);
+void Player_GetItemInWater(Player* this, PlayState* play);
+void Player_DamagedSwim(Player* this, PlayState* play);
+void Player_Drown(Player* this, PlayState* play);
 void func_8084E3C4(Player* this, PlayState* play);
 void Player_ThrowDekuNut(Player* this, PlayState* play);
-void func_8084E6D4(Player* this, PlayState* play);
+void Player_GetItem(Player* this, PlayState* play);
 void func_8084E9AC(Player* this, PlayState* play);
 void func_8084EAC0(Player* this, PlayState* play);
 void Player_SwingBottle(Player* this, PlayState* play);
@@ -3052,7 +3052,7 @@ void Player_SetupDie(PlayState* play, Player* this, LinkAnimationHeader* anim) {
 
     Player_ResetAttributesAndHeldActor(play, this);
 
-    Player_SetActionFunc(play, this, isSwimming ? Player_SetupDrown : Player_Die, 0);
+    Player_SetActionFunc(play, this, isSwimming ? Player_Drown : Player_Die, 0);
 
     this->stateFlags1 |= PLAYER_STATE1_IN_DEATH_CUTSCENE;
 
@@ -3186,20 +3186,20 @@ s32 Player_StepAngleWithOffset(s16* angle, s16 target, s16 step, s16 angleMinMax
 
 s32 Player_UpdateLookAngles(Player* this, s32 syncUpperRotToFocusRot) {
     s16 yawDiff;
-    s16 yaw;
+    s16 lookYaw;
 
-    yaw = this->actor.shape.rot.y;
+    lookYaw = this->actor.shape.rot.y;
     if (syncUpperRotToFocusRot != false) {
-        yaw = this->actor.focus.rot.y;
+        lookYaw = this->actor.focus.rot.y;
         this->upperBodyRot.x = this->actor.focus.rot.x;
         this->lookFlags |= PLAYER_LOOKFLAGS_OVERRIDE_UPPERBODY_ROT_X | PLAYER_LOOKFLAGS_OVERRIDE_FOCUS_ROT_X;
     } else {
         Player_StepAngleWithOffset(&this->upperBodyRot.x,
                       Player_StepAngleWithOffset(&this->headRot.x, this->actor.focus.rot.x, DEG_TO_BINANG(3.3f), DEG_TO_BINANG(54.932f), this->actor.focus.rot.x, 0),
                       DEG_TO_BINANG(1.1f), DEG_TO_BINANG(21.973f), this->headRot.x, DEG_TO_BINANG(54.932f));
-        yawDiff = this->actor.focus.rot.y - yaw;
+        yawDiff = this->actor.focus.rot.y - lookYaw;
         Player_StepAngleWithOffset(&yawDiff, 0, DEG_TO_BINANG(1.1f), DEG_TO_BINANG(131.84f), this->upperBodyRot.y, DEG_TO_BINANG(43.95f));
-        yaw = this->actor.focus.rot.y - yawDiff;
+        lookYaw = this->actor.focus.rot.y - yawDiff;
         Player_StepAngleWithOffset(&this->headRot.y, yawDiff - this->upperBodyRot.y, DEG_TO_BINANG(1.1f), DEG_TO_BINANG(43.95f), yawDiff, DEG_TO_BINANG(43.95f));
         Player_StepAngleWithOffset(&this->upperBodyRot.y, yawDiff, DEG_TO_BINANG(1.1f), DEG_TO_BINANG(43.95f), this->headRot.y, DEG_TO_BINANG(43.95f));
         this->lookFlags |= PLAYER_LOOKFLAGS_OVERRIDE_UPPERBODY_ROT_Y | PLAYER_LOOKFLAGS_OVERRIDE_UPPERBODY_ROT_X |
@@ -3207,7 +3207,7 @@ s32 Player_UpdateLookAngles(Player* this, s32 syncUpperRotToFocusRot) {
                            PLAYER_LOOKFLAGS_OVERRIDE_FOCUS_ROT_X;
     }
 
-    return yaw;
+    return lookYaw;
 }
 
 void func_80836BEC(Player* this, PlayState* play) {
@@ -3346,8 +3346,8 @@ s32 Player_SetVelocityAndYaw(PlayState* play, Player* this, f32* velocity, s16* 
             speedLimit = this->speedLimit;
             slopeSpeedScale = CLAMP(slope, 0.0f, 0.6f);
 
-            if (this->sinkingOffsetY != 0.0f) {
-                speedLimit = speedLimit - (this->sinkingOffsetY * 0.008f);
+            if (this->shapeOffsetY != 0.0f) {
+                speedLimit = speedLimit - (this->shapeOffsetY * 0.008f);
                 if (speedLimit < 2.0f) {
                     speedLimit = 2.0f;
                 }
@@ -3751,7 +3751,7 @@ void Player_SetupDamage(PlayState* play, Player* this, s32 damageReaction, f32 k
     } else {
         damageYaw -= this->actor.shape.rot.y;
         if (this->stateFlags1 & PLAYER_STATE1_SWIMMING) {
-            Player_SetActionFunc(play, this, func_8084E30C, 0);
+            Player_SetActionFunc(play, this, Player_DamagedSwim, 0);
             Player_RequestRumble(this, 180, 20, 50, 0);
 
             this->linearVelocity = 4.0f;
@@ -3908,7 +3908,7 @@ s32 Player_UpdateDamage(Player* this, PlayState* play) {
             this->voidRespawnCounter = 0;
         }
     } else {
-        sinkingGroundVoidOut = ((Player_GetHeight(this) - 8.0f) < (this->sinkingOffsetY * this->actor.scale.y));
+        sinkingGroundVoidOut = ((Player_GetHeight(this) - 8.0f) < (this->shapeOffsetY * this->actor.scale.y));
 
         if (sinkingGroundVoidOut || (this->actor.bgCheckFlags & BGCHECKFLAG_CRUSHED) || (sFloorSpecialProperty == BGCHECK_FLOORSPECIALPROPERTY_VOID_ON_TOUCH) ||
             (this->stateFlags2 & PLAYER_STATE2_FORCE_VOID_OUT)) {
@@ -4487,7 +4487,7 @@ s32 Player_SetupOpenDoor(Player* this, PlayState* play) {
                 Player_SetupMiniCsMovement(play, this, 50.0f, this->actor.shape.rot.y);
 
                 this->unk_84F = 0;
-                this->unk_447 = this->doorType;
+                this->csDoorType = this->doorType;
                 this->stateFlags1 |= PLAYER_STATE1_IN_CUTSCENE;
 
                 this->csStartPos.x = this->actor.world.pos.x + ((doorDirection * 20.0f) * sin);
@@ -4750,8 +4750,8 @@ void func_8083A40C(PlayState* play, Player* this) {
     Player_SetActionFuncPreserveMoveFlags(play, this, func_8084C760, 0);
 }
 
-void func_8083A434(PlayState* play, Player* this) {
-    Player_SetActionFuncPreserveMoveFlags(play, this, func_8084E6D4, 0);
+void Player_SetupGetItem(PlayState* play, Player* this) {
+    Player_SetActionFuncPreserveMoveFlags(play, this, Player_GetItem, 0);
 
     this->stateFlags1 |= PLAYER_STATE1_GETTING_ITEM | PLAYER_STATE1_IN_CUTSCENE;
 
@@ -5795,19 +5795,19 @@ void Player_StartJumpOutOfWater(PlayState* play, Player* this, f32 yVelocity) {
     Player_SetBootData(play, this);
 }
 
-s32 func_8083D12C(PlayState* play, Player* this, Input* arg2) {
+s32 Player_SetupDive(PlayState* play, Player* this, Input* input) {
     if (!(this->stateFlags1 & PLAYER_STATE1_GETTING_ITEM) && !(this->stateFlags2 & PLAYER_STATE2_DIVING)) {
-        if ((arg2 == NULL) || (CHECK_BTN_ALL(arg2->press.button, BTN_A) && (ABS(this->unk_6C2) < 12000) &&
+        if ((input == NULL) || (CHECK_BTN_ALL(input->press.button, BTN_A) && (ABS(this->shapePitchOffset) < DEG_TO_BINANG(65.918f)) &&
                                (this->currentBoots != PLAYER_BOOTS_IRON))) {
 
-            Player_SetActionFunc(play, this, func_8084DC48, 0);
+            Player_SetActionFunc(play, this, Player_Dive, 0);
             Player_PlayAnimOnce(play, this, &gPlayerAnim_003308);
 
-            this->unk_6C2 = 0;
+            this->shapePitchOffset = 0;
             this->stateFlags2 |= PLAYER_STATE2_DIVING;
             this->actor.velocity.y = 0.0f;
 
-            if (arg2 != NULL) {
+            if (input != NULL) {
                 this->stateFlags2 |= PLAYER_STATE2_ENABLE_DIVE_CAMERA_AND_TIMER;
                 func_8002F7DC(&this->actor, NA_SE_PL_DIVE_BUBBLE);
             }
@@ -5822,8 +5822,8 @@ s32 func_8083D12C(PlayState* play, Player* this, Input* arg2) {
 
                 this->stateFlags2 &= ~PLAYER_STATE2_DIVING;
 
-                if (arg2 != NULL) {
-                    Player_SetActionFunc(play, this, func_8084E1EC, 1);
+                if (input != NULL) {
+                    Player_SetActionFunc(play, this, Player_GetItemInWater, 1);
 
                     if (this->stateFlags1 & PLAYER_STATE1_GETTING_ITEM) {
                         this->stateFlags1 |= PLAYER_STATE1_GETTING_ITEM | PLAYER_STATE1_HOLDING_ACTOR | PLAYER_STATE1_IN_CUTSCENE;
@@ -5850,7 +5850,7 @@ s32 func_8083D12C(PlayState* play, Player* this, Input* arg2) {
 
 void Player_RiseFromDive(PlayState* play, Player* this) {
     Player_PlayAnimLoop(play, this, &gPlayerAnim_0032F0);
-    this->unk_6C2 = 16000;
+    this->shapePitchOffset = DEG_TO_BINANG(87.891f);
     this->genericTimer = 1;
 }
 
@@ -5860,10 +5860,10 @@ void func_8083D36C(PlayState* play, Player* this) {
 
         if ((this->currentBoots != PLAYER_BOOTS_IRON) && (this->stateFlags2 & PLAYER_STATE2_DIVING)) {
             this->stateFlags2 &= ~PLAYER_STATE2_DIVING;
-            func_8083D12C(play, this, 0);
+            Player_SetupDive(play, this, 0);
             this->unk_84F = 1;
         } else if (Player_FallingDive == this->actionFunc) {
-            Player_SetActionFunc(play, this, func_8084DC48, 0);
+            Player_SetActionFunc(play, this, Player_Dive, 0);
             Player_RiseFromDive(play, this);
         } else {
             Player_SetActionFunc(play, this, Player_UpdateSwimIdle, 1);
@@ -5905,10 +5905,10 @@ void func_8083D53C(PlayState* play, Player* this) {
         if (this->ageProperties->diveWaterSurface < this->actor.yDistToWater) {
             if (!(this->stateFlags1 & PLAYER_STATE1_SWIMMING) ||
                 (!((this->currentBoots == PLAYER_BOOTS_IRON) && (this->actor.bgCheckFlags & BGCHECKFLAG_GROUND)) &&
-                 (func_8084E30C != this->actionFunc) && (Player_SetupDrown != this->actionFunc) &&
+                 (Player_DamagedSwim != this->actionFunc) && (Player_Drown != this->actionFunc) &&
                  (Player_UpdateSwimIdle != this->actionFunc) && (Player_Swim != this->actionFunc) &&
-                 (func_8084DAB4 != this->actionFunc) && (func_8084DC48 != this->actionFunc) &&
-                 (func_8084E1EC != this->actionFunc) && (Player_SpawnSwimming != this->actionFunc))) {
+                 (func_8084DAB4 != this->actionFunc) && (Player_Dive != this->actionFunc) &&
+                 (Player_GetItemInWater != this->actionFunc) && (Player_SpawnSwimming != this->actionFunc))) {
                 func_8083D36C(play, this);
                 return;
             }
@@ -5936,8 +5936,8 @@ void func_8083D6EC(PlayState* play, Player* this) {
         sinkSpeed = 0.0f;
 
         if (sFloorSpecialProperty == BGCHECK_FLOORSPECIALPROPERTY_SHALLOW_SAND) {
-            if (this->sinkingOffsetY > 1300.0f) {
-                maxSinkSpeed = this->sinkingOffsetY;
+            if (this->shapeOffsetY > 1300.0f) {
+                maxSinkSpeed = this->shapeOffsetY;
             } else {
                 maxSinkSpeed = 1300.0f;
             }
@@ -5956,19 +5956,19 @@ void func_8083D6EC(PlayState* play, Player* this) {
         }
 
         if (this->currentBoots != PLAYER_BOOTS_HOVER) {
-            sinkSpeed = (maxSinkSpeed - this->sinkingOffsetY) * 0.02f;
+            sinkSpeed = (maxSinkSpeed - this->shapeOffsetY) * 0.02f;
             sinkSpeed = CLAMP(sinkSpeed, 0.0f, 300.0f);
             if (this->currentBoots == PLAYER_BOOTS_IRON) {
                 sinkSpeed += sinkSpeed;
             }
         }
 
-        this->sinkingOffsetY += sinkSpeed - unsinkSpeed;
-        this->sinkingOffsetY = CLAMP(this->sinkingOffsetY, 0.0f, maxSinkSpeed);
+        this->shapeOffsetY += sinkSpeed - unsinkSpeed;
+        this->shapeOffsetY = CLAMP(this->shapeOffsetY, 0.0f, maxSinkSpeed);
 
-        this->actor.gravity -= this->sinkingOffsetY * 0.004f;
+        this->actor.gravity -= this->shapeOffsetY * 0.004f;
     } else {
-        this->sinkingOffsetY = 0.0f;
+        this->shapeOffsetY = 0.0f;
     }
 
     if (this->actor.bgCheckFlags & BGCHECKFLAG_WATER) {
@@ -6120,7 +6120,7 @@ s32 Player_SetupMountHorse(Player* this, PlayState* play) {
     f32 riderOffsetZ;
     f32 cosYaw;
     f32 cosSin;
-    s32 isLeftOfHorse;
+    s32 mountedLeftOfHorse;
 
     if ((rideActor != NULL) && CHECK_BTN_ALL(sControlInput->press.button, BTN_A)) {
         cosYaw = Math_CosS(rideActor->actor.shape.rot.y);
@@ -6132,23 +6132,23 @@ s32 Player_SetupMountHorse(Player* this, PlayState* play) {
         this->actor.bgCheckFlags &= ~BGCHECKFLAG_WATER;
 
         if (this->mountSide < 0) {
-            isLeftOfHorse = false;
+            mountedLeftOfHorse = false;
         } else {
-            isLeftOfHorse = true;
+            mountedLeftOfHorse = true;
         }
 
-        riderOffsetX = sMountHorseAnims[isLeftOfHorse].riderOffsetX;
-        riderOffsetZ = sMountHorseAnims[isLeftOfHorse].riderOffsetZ;
+        riderOffsetX = sMountHorseAnims[mountedLeftOfHorse].riderOffsetX;
+        riderOffsetZ = sMountHorseAnims[mountedLeftOfHorse].riderOffsetZ;
         this->actor.world.pos.x =
             rideActor->actor.world.pos.x + rideActor->riderPos.x + ((riderOffsetX * cosYaw) + (riderOffsetZ * cosSin));
         this->actor.world.pos.z =
             rideActor->actor.world.pos.z + rideActor->riderPos.z + ((riderOffsetZ * cosYaw) - (riderOffsetX * cosSin));
 
-        this->unk_878 = rideActor->actor.world.pos.y - this->actor.world.pos.y;
+        this->rideOffsetY = rideActor->actor.world.pos.y - this->actor.world.pos.y;
         this->currentYaw = this->actor.shape.rot.y = rideActor->actor.shape.rot.y;
 
         Actor_MountHorse(play, this, &rideActor->actor);
-        Player_PlayAnimOnce(play, this, sMountHorseAnims[isLeftOfHorse].anim);
+        Player_PlayAnimOnce(play, this, sMountHorseAnims[mountedLeftOfHorse].anim);
         Player_SetupAnimMovement(play, this, PLAYER_ANIMMOVEFLAGS_UPDATE_XZ | PLAYER_ANIMMOVEFLAGS_UPDATE_Y | PLAYER_ANIMMOVEFLAGS_KEEP_ANIM_Y_TRANSLATION | PLAYER_ANIMMOVEFLAGS_NO_MOVE | PLAYER_ANIMMOVEFLAGS_7);
         this->actor.parent = this->rideActor;
         Player_ClearAttentionModeAndStopMoving(this);
@@ -6228,7 +6228,7 @@ static s16 D_80854598[] = {
     0x0801, 0x0402,
 };
 
-void Player_GetItem(PlayState* play, Player* this, GetItemEntry* giEntry) {
+void Player_PickupItemDrop(PlayState* play, Player* this, GetItemEntry* giEntry) {
     s32 dropType = giEntry->field & 0x1F;
 
     if (!(giEntry->field & 0x80)) {
@@ -6269,7 +6269,7 @@ s32 Player_SetupGetItemOrHoldBehavior(Player* this, PlayState* play) {
                     Player_LoadGetItemObject(this, giEntry->objectId);
 
                     if (!(this->stateFlags2 & PLAYER_STATE2_DIVING) || (this->currentBoots == PLAYER_BOOTS_IRON)) {
-                        Player_SetupMiniCsFunc(play, this, func_8083A434);
+                        Player_SetupMiniCsFunc(play, this, Player_SetupGetItem);
                         Player_PlayAnimOnceSlowed(play, this, &gPlayerAnim_002788);
                         Player_SetCameraTurnAround(play, 9);
                     }
@@ -6279,7 +6279,7 @@ s32 Player_SetupGetItemOrHoldBehavior(Player* this, PlayState* play) {
                     return 1;
                 }
 
-                Player_GetItem(play, this, giEntry);
+                Player_PickupItemDrop(play, this, giEntry);
                 this->getItemId = GI_NONE;
             }
         } else if (CHECK_BTN_ALL(sControlInput->press.button, BTN_A) && !(this->stateFlags1 & PLAYER_STATE1_HOLDING_ACTOR) &&
@@ -6296,7 +6296,7 @@ s32 Player_SetupGetItemOrHoldBehavior(Player* this, PlayState* play) {
                     }
                 }
 
-                Player_SetupMiniCsFunc(play, this, func_8083A434);
+                Player_SetupMiniCsFunc(play, this, Player_SetupGetItem);
                 this->stateFlags1 |=
                     PLAYER_STATE1_GETTING_ITEM | PLAYER_STATE1_HOLDING_ACTOR | PLAYER_STATE1_IN_CUTSCENE;
                 Player_LoadGetItemObject(this, giEntry->objectId);
@@ -7540,7 +7540,7 @@ void func_80841CC4(Player* this, s32 arg1, PlayState* play) {
 
     Math_ScaledStepToS(&this->unk_89C, target, 400);
 
-    if ((this->modelAnimType == PLAYER_ANIMTYPE_HOLDING_TWO_HAND_WEAPON) || ((this->unk_89C == 0) && (this->sinkingOffsetY <= 0.0f))) {
+    if ((this->modelAnimType == PLAYER_ANIMTYPE_HOLDING_TWO_HAND_WEAPON) || ((this->unk_89C == 0) && (this->shapeOffsetY <= 0.0f))) {
         if (arg1 == 0) {
             LinkAnimation_LoadToJoint(play, &this->skelAnime, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_WALKING, this->modelAnimType),
                                       this->walkFrame);
@@ -7554,7 +7554,7 @@ void func_80841CC4(Player* this, s32 arg1, PlayState* play) {
     if (this->unk_89C != 0) {
         rate = this->unk_89C / 10922.0f;
     } else {
-        rate = this->sinkingOffsetY * 0.0006f;
+        rate = this->shapeOffsetY * 0.0006f;
     }
 
     rate *= fabsf(this->linearVelocity) * 0.5f;
@@ -9616,8 +9616,8 @@ void Player_StepLookToZero(Player* this) {
     }
 
     if (!(this->lookFlags & PLAYER_LOOKFLAGS_OVERRIDE_UPPERBODY_ROT_Y)) {
-        if (this->unk_6B0 != 0) {
-            Player_StepValueToZero(&this->unk_6B0);
+        if (this->upperBodyYawOffset != 0) {
+            Player_StepValueToZero(&this->upperBodyYawOffset);
         } else {
             Player_StepValueToZero(&this->upperBodyRot.y);
         }
@@ -9673,7 +9673,7 @@ void func_808473D4(PlayState* play, Player* this) {
                            (!(this->stateFlags1 & PLAYER_STATE1_RIDING_HORSE) && (this->rideActor != NULL))) {
                     doAction = DO_ACTION_CLIMB;
                 } else if ((this->stateFlags1 & PLAYER_STATE1_RIDING_HORSE) && !EN_HORSE_CHECK_4((EnHorse*)this->rideActor) &&
-                           (func_8084D3E4 != this->actionFunc)) {
+                           (Player_DismountHorse != this->actionFunc)) {
                     if ((this->stateFlags2 & PLAYER_STATE2_CAN_SPEAK_OR_CHECK) && (this->talkActor != NULL)) {
                         if (this->talkActor->category == ACTORCAT_NPC) {
                             doAction = DO_ACTION_SPEAK;
@@ -10464,7 +10464,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
             this->comboTimer--;
         }
 
-        Math_ScaledStepToS(&this->unk_6C2, 0, 400);
+        Math_ScaledStepToS(&this->shapePitchOffset, 0, DEG_TO_BINANG(2.1973f));
         func_80032CB4(this->unk_3A8, 20, 80, 6);
 
         this->actor.shape.face = this->unk_3A8[0] + ((play->gameplayFrames & 32) ? 0 : 3);
@@ -10937,8 +10937,8 @@ void Player_Draw(Actor* thisx, PlayState* play2) {
         }
 
         if (this->stateFlags2 & PLAYER_STATE2_ENABLE_REFLECTION) {
-            f32 sp78 = BINANG_TO_RAD_ALT2((u16)(play->gameplayFrames * 600));
-            f32 sp74 = BINANG_TO_RAD_ALT2((u16)(play->gameplayFrames * 1000));
+            f32 pitchOffset = BINANG_TO_RAD_ALT2((u16)(play->gameplayFrames * 600));
+            f32 yawOffset = BINANG_TO_RAD_ALT2((u16)(play->gameplayFrames * 1000));
 
             Matrix_Push();
             this->actor.scale.y = -this->actor.scale.y;
@@ -10948,11 +10948,11 @@ void Player_Draw(Actor* thisx, PlayState* play2) {
                     (this->actor.shape.yOffset * this->actor.scale.y),
                 this->actor.world.pos.z, &this->actor.shape.rot);
             Matrix_Scale(this->actor.scale.x, this->actor.scale.y, this->actor.scale.z, MTXMODE_APPLY);
-            Matrix_RotateX(sp78, MTXMODE_APPLY);
-            Matrix_RotateY(sp74, MTXMODE_APPLY);
+            Matrix_RotateX(pitchOffset, MTXMODE_APPLY);
+            Matrix_RotateY(yawOffset, MTXMODE_APPLY);
             Matrix_Scale(1.1f, 0.95f, 1.05f, MTXMODE_APPLY);
-            Matrix_RotateY(-sp74, MTXMODE_APPLY);
-            Matrix_RotateX(-sp78, MTXMODE_APPLY);
+            Matrix_RotateY(-yawOffset, MTXMODE_APPLY);
+            Matrix_RotateX(-pitchOffset, MTXMODE_APPLY);
             Player_DrawGameplay(play, this, lod, gCullFrontDList, overrideLimbDraw);
             this->actor.scale.y = -this->actor.scale.y;
             Matrix_Pop();
@@ -11004,35 +11004,35 @@ void Player_Destroy(Actor* thisx, PlayState* play) {
     gSaveContext.linkAge = play->linkAgeOnLoad;
 }
 
-s16 func_8084ABD8(PlayState* play, Player* this, s32 arg2, s16 arg3) {
-    s32 temp1;
-    s16 temp2;
-    s16 temp3;
+s16 Player_SetFirstPersonAimLookAngles(PlayState* play, Player* this, s32 arg2, s16 lookYawOffset) {
+    s32 angleMinMax;
+    s16 aimAngleY;
+    s16 aimAngleX;
 
     if (!Actor_PlayerIsAimingReadyFpsItem(this) && !Player_IsAimingReadyBoomerang(this) && (arg2 == 0)) {
-        temp2 = sControlInput->rel.stick_y * 240.0f;
-        Math_SmoothStepToS(&this->actor.focus.rot.x, temp2, 14, 4000, 30);
+        aimAngleY = sControlInput->rel.stick_y * 240.0f;
+        Math_SmoothStepToS(&this->actor.focus.rot.x, aimAngleY, 14, DEG_TO_BINANG(21.973f), 0x1E);
 
-        temp2 = sControlInput->rel.stick_x * -16.0f;
-        temp2 = CLAMP(temp2, -3000, 3000);
-        this->actor.focus.rot.y += temp2;
+        aimAngleY = sControlInput->rel.stick_x * -16.0f;
+        aimAngleY = CLAMP(aimAngleY, -DEG_TO_BINANG(16.4795f), DEG_TO_BINANG(16.4795f));
+        this->actor.focus.rot.y += aimAngleY;
     } else {
-        temp1 = (this->stateFlags1 & PLAYER_STATE1_RIDING_HORSE) ? 3500 : 14000;
-        temp3 = ((sControlInput->rel.stick_y >= 0) ? 1 : -1) *
-                (s32)((1.0f - Math_CosS(sControlInput->rel.stick_y * 200)) * 1500.0f);
-        this->actor.focus.rot.x += temp3;
-        this->actor.focus.rot.x = CLAMP(this->actor.focus.rot.x, -temp1, temp1);
+        angleMinMax = (this->stateFlags1 & PLAYER_STATE1_RIDING_HORSE) ? DEG_TO_BINANG(19.23f) : DEG_TO_BINANG(76.9043f);
+        aimAngleX = ((sControlInput->rel.stick_y >= 0) ? 1 : -1) *
+                    (s32)((1.0f - Math_CosS(sControlInput->rel.stick_y * 200)) * 1500.0f);
+        this->actor.focus.rot.x += aimAngleX;
+        this->actor.focus.rot.x = CLAMP(this->actor.focus.rot.x, -angleMinMax, angleMinMax);
 
-        temp1 = 19114;
-        temp2 = this->actor.focus.rot.y - this->actor.shape.rot.y;
-        temp3 = ((sControlInput->rel.stick_x >= 0) ? 1 : -1) *
-                (s32)((1.0f - Math_CosS(sControlInput->rel.stick_x * 200)) * -1500.0f);
-        temp2 += temp3;
-        this->actor.focus.rot.y = CLAMP(temp2, -temp1, temp1) + this->actor.shape.rot.y;
+        angleMinMax = DEG_TO_BINANG(105.0f);
+        aimAngleY = this->actor.focus.rot.y - this->actor.shape.rot.y;
+        aimAngleX = ((sControlInput->rel.stick_x >= 0) ? 1 : -1) *
+                    (s32)((1.0f - Math_CosS(sControlInput->rel.stick_x * 200)) * -1500.0f);
+        aimAngleY += aimAngleX;
+        this->actor.focus.rot.y = CLAMP(aimAngleY, -angleMinMax, angleMinMax) + this->actor.shape.rot.y;
     }
 
     this->lookFlags |= PLAYER_LOOKFLAGS_OVERRIDE_FOCUS_ROT_Y;
-    return Player_UpdateLookAngles(this, (play->shootingGalleryStatus != 0) || Actor_PlayerIsAimingReadyFpsItem(this) || Player_IsAimingReadyBoomerang(this)) - arg3;
+    return Player_UpdateLookAngles(this, (play->shootingGalleryStatus != 0) || Actor_PlayerIsAimingReadyFpsItem(this) || Player_IsAimingReadyBoomerang(this)) - lookYawOffset;
 }
 
 void Player_UpdateSwimMovement(Player* this, f32* linearVelocity, f32 targetVelocity, s16 targetYaw) {
@@ -11150,7 +11150,7 @@ void func_8084B1D8(Player* this, PlayState* play) {
         if (Player_IsShootingHookshot(this)) {
             this->lookFlags |= PLAYER_LOOKFLAGS_OVERRIDE_UPPERBODY_ROT_X | PLAYER_LOOKFLAGS_OVERRIDE_FOCUS_ROT_Y | PLAYER_LOOKFLAGS_OVERRIDE_FOCUS_ROT_X;
         } else {
-            this->actor.shape.rot.y = func_8084ABD8(play, this, 0, 0);
+            this->actor.shape.rot.y = Player_SetFirstPersonAimLookAngles(play, this, 0, 0);
         }
     }
 
@@ -11704,51 +11704,52 @@ void func_8084C81C(Player* this, PlayState* play) {
     Player_PlayAnimSfx(this, D_808548D8);
 }
 
-static Vec3f D_808548FC[] = {
+static Vec3f sHorseDismountRaycastOffset[] = {
     { 40.0f, 0.0f, 0.0f },
     { -40.0f, 0.0f, 0.0f },
 };
 
-static Vec3f D_80854914[] = {
+static Vec3f sHorseLineTestTopOffset[] = {
     { 60.0f, 20.0f, 0.0f },
     { -60.0f, 20.0f, 0.0f },
 };
 
-static Vec3f D_8085492C[] = {
+static Vec3f sHorseLineTestBottomOffset[] = {
     { 60.0f, -20.0f, 0.0f },
     { -60.0f, -20.0f, 0.0f },
 };
 
-s32 func_8084C89C(PlayState* play, Player* this, s32 arg2, f32* floorPosY) {
+s32 Player_CanDismountHorse(PlayState* play, Player* this, s32 mountedLeftOfHorse, f32* floorPosY) {
     EnHorse* rideActor = (EnHorse*)this->rideActor;
-    f32 sp50;
-    f32 sp4C;
+    f32 posYMax;
+    f32 posYMin;
     Vec3f raycastPos;
-    Vec3f sp34;
-    CollisionPoly* sp30;
-    s32 sp2C;
+    Vec3f wallPos;
+    CollisionPoly* wallPoly;
+    s32 wallBgId;
 
-    sp50 = rideActor->actor.world.pos.y + 20.0f;
-    sp4C = rideActor->actor.world.pos.y - 20.0f;
+    posYMax = rideActor->actor.world.pos.y + 20.0f;
+    posYMin = rideActor->actor.world.pos.y - 20.0f;
 
-    *floorPosY = Player_RaycastFloorWithOffset2(play, this, &D_808548FC[arg2], &raycastPos);
+    *floorPosY = Player_RaycastFloorWithOffset2(play, this, &sHorseDismountRaycastOffset[mountedLeftOfHorse], &raycastPos);
 
-    return (sp4C < *floorPosY) && (*floorPosY < sp50) && !Player_WallLineTestWithOffset(play, this, &D_80854914[arg2], &sp30, &sp2C, &sp34) &&
-           !Player_WallLineTestWithOffset(play, this, &D_8085492C[arg2], &sp30, &sp2C, &sp34);
+    return (posYMin < *floorPosY) && (*floorPosY < posYMax) &&
+           !Player_WallLineTestWithOffset(play, this, &sHorseLineTestTopOffset[mountedLeftOfHorse], &wallPoly, &wallBgId, &wallPos) &&
+           !Player_WallLineTestWithOffset(play, this, &sHorseLineTestBottomOffset[mountedLeftOfHorse], &wallPoly, &wallBgId, &wallPos);
 }
 
-s32 func_8084C9BC(Player* this, PlayState* play) {
+s32 Player_SetupDismountHorse(Player* this, PlayState* play) {
     EnHorse* rideActor = (EnHorse*)this->rideActor;
-    s32 sp38;
-    f32 sp34;
+    s32 mountedLeftOfHorse;
+    f32 floorPosY;
 
     if (this->genericTimer < 0) {
         this->genericTimer = 99;
     } else {
-        sp38 = (this->mountSide < 0) ? 0 : 1;
-        if (!func_8084C89C(play, this, sp38, &sp34)) {
-            sp38 ^= 1;
-            if (!func_8084C89C(play, this, sp38, &sp34)) {
+        mountedLeftOfHorse = (this->mountSide < 0) ? 0 : 1;
+        if (!Player_CanDismountHorse(play, this, mountedLeftOfHorse, &floorPosY)) {
+            mountedLeftOfHorse ^= 1;
+            if (!Player_CanDismountHorse(play, this, mountedLeftOfHorse, &floorPosY)) {
                 return 0;
             } else {
                 this->mountSide = -this->mountSide;
@@ -11762,8 +11763,8 @@ s32 func_8084C9BC(Player* this, PlayState* play) {
             if (EN_HORSE_CHECK_1(rideActor) ||
                 (EN_HORSE_CHECK_4(rideActor) && CHECK_BTN_ALL(sControlInput->press.button, BTN_A))) {
                 rideActor->actor.child = NULL;
-                Player_SetActionFuncPreserveMoveFlags(play, this, func_8084D3E4, 0);
-                this->unk_878 = sp34 - rideActor->actor.world.pos.y;
+                Player_SetActionFuncPreserveMoveFlags(play, this, Player_DismountHorse, 0);
+                this->rideOffsetY = floorPosY - rideActor->actor.world.pos.y;
                 Player_PlayAnimOnce(play, this, (this->mountSide < 0) ? &gPlayerAnim_003390 : &gPlayerAnim_0033A0);
                 return 1;
             }
@@ -11777,23 +11778,23 @@ void func_8084CBF4(Player* this, f32 arg1, f32 arg2) {
     f32 temp;
     f32 dir;
 
-    if ((this->unk_878 != 0.0f) && (arg2 <= this->skelAnime.curFrame)) {
-        if (arg1 < fabsf(this->unk_878)) {
-            if (this->unk_878 >= 0.0f) {
+    if ((this->rideOffsetY != 0.0f) && (arg2 <= this->skelAnime.curFrame)) {
+        if (arg1 < fabsf(this->rideOffsetY)) {
+            if (this->rideOffsetY >= 0.0f) {
                 dir = 1;
             } else {
                 dir = -1;
             }
             temp = dir * arg1;
         } else {
-            temp = this->unk_878;
+            temp = this->rideOffsetY;
         }
         this->actor.world.pos.y += temp;
-        this->unk_878 -= temp;
+        this->rideOffsetY -= temp;
     }
 }
 
-static LinkAnimationHeader* D_80854944[] = {
+static LinkAnimationHeader* sHorseMoveAnims[] = {
     &gPlayerAnim_003370,
     &gPlayerAnim_003368,
     &gPlayerAnim_003380,
@@ -11805,7 +11806,7 @@ static LinkAnimationHeader* D_80854944[] = {
     NULL,
 };
 
-static LinkAnimationHeader* D_80854968[] = {
+static LinkAnimationHeader* sHorseWhipAnims[] = {
     &gPlayerAnim_003388,
     &gPlayerAnim_003388,
     &gPlayerAnim_003388,
@@ -11817,18 +11818,18 @@ static LinkAnimationHeader* D_80854968[] = {
     NULL,
 };
 
-static LinkAnimationHeader* D_8085498C[] = {
+static LinkAnimationHeader* sHorseIdleAnims[] = {
     &gPlayerAnim_0033C8,
     &gPlayerAnim_0033B8,
     &gPlayerAnim_0033C0,
 };
 
-static u8 D_80854998[2][2] = {
+static u8 sMountSfxFrames[2][2] = {
     { 32, 58 },
     { 25, 42 },
 };
 
-static Vec3s D_8085499C = { -69, 7146, -266 };
+static Vec3s sRideHorsePrevTransl = { -69, 7146, -266 };
 
 static PlayerAnimSfxEntry sHorseIdleAnimSfx[] = {
     { NA_SE_PL_CALM_HIT, 0x830 }, { NA_SE_PL_CALM_HIT, 0x83A },  { NA_SE_PL_CALM_HIT, 0x844 },
@@ -11838,7 +11839,7 @@ static PlayerAnimSfxEntry sHorseIdleAnimSfx[] = {
 
 void Player_RideHorse(Player* this, PlayState* play) {
     EnHorse* rideActor = (EnHorse*)this->rideActor;
-    u8* arr;
+    u8* mountSfxFrames;
 
     this->stateFlags2 |= PLAYER_STATE2_ALWAYS_DISABLE_MOVE_ROTATION;
 
@@ -11851,14 +11852,14 @@ void Player_RideHorse(Player* this, PlayState* play) {
             return;
         }
 
-        arr = D_80854998[(this->mountSide < 0) ? 0 : 1];
+        mountSfxFrames = sMountSfxFrames[(this->mountSide < 0) ? 0 : 1];
 
-        if (LinkAnimation_OnFrame(&this->skelAnime, arr[0])) {
+        if (LinkAnimation_OnFrame(&this->skelAnime, mountSfxFrames[0])) {
             func_8002F7DC(&this->actor, NA_SE_PL_CLIMB_CLIFF);
             return;
         }
 
-        if (LinkAnimation_OnFrame(&this->skelAnime, arr[1])) {
+        if (LinkAnimation_OnFrame(&this->skelAnime, mountSfxFrames[1])) {
             func_8002DE74(play, this);
             func_8002F7DC(&this->actor, NA_SE_PL_SIT_ON_HORSE);
             return;
@@ -11868,23 +11869,23 @@ void Player_RideHorse(Player* this, PlayState* play) {
     }
 
     func_8002DE74(play, this);
-    this->skelAnime.prevTransl = D_8085499C;
+    this->skelAnime.prevTransl = sRideHorsePrevTransl;
 
     if ((rideActor->animationIdx != this->genericTimer) && ((rideActor->animationIdx >= 2) || (this->genericTimer >= 2))) {
         if ((this->genericTimer = rideActor->animationIdx) < 2) {
             f32 rand = Rand_ZeroOne();
-            s32 temp = 0;
+            s32 idleAnimIdx = 0;
 
             this->genericTimer = 1;
 
             if (rand < 0.1f) {
-                temp = 2;
+                idleAnimIdx = 2;
             } else if (rand < 0.2f) {
-                temp = 1;
+                idleAnimIdx = 1;
             }
-            Player_PlayAnimOnce(play, this, D_8085498C[temp]);
+            Player_PlayAnimOnce(play, this, sHorseIdleAnims[idleAnimIdx]);
         } else {
-            this->skelAnime.animation = D_80854944[this->genericTimer - 2];
+            this->skelAnime.animation = sHorseMoveAnims[this->genericTimer - 2];
             Animation_SetMorph(play, &this->skelAnime, 8.0f);
             if (this->genericTimer < 4) {
                 Player_SetupHeldItemUpperActionFunc(play, this);
@@ -11962,7 +11963,7 @@ void Player_RideHorse(Player* this, PlayState* play) {
                     anim = &gPlayerAnim_0033B0;
                 } else if (EN_HORSE_CHECK_2(rideActor)) {
                     if ((this->genericTimer >= 2) && (this->genericTimer != 99)) {
-                        anim = D_80854968[this->genericTimer - 2];
+                        anim = sHorseWhipAnims[this->genericTimer - 2];
                     }
                 }
 
@@ -11979,14 +11980,14 @@ void Player_RideHorse(Player* this, PlayState* play) {
                 this->attentionMode = PLAYER_ATTENTIONMODE_NONE;
                 this->stateFlags1 &= ~PLAYER_STATE1_IN_FIRST_PERSON_MODE;
             } else {
-                this->upperBodyRot.y = func_8084ABD8(play, this, 1, -5000) - this->actor.shape.rot.y;
+                this->upperBodyRot.y = Player_SetFirstPersonAimLookAngles(play, this, 1, -5000) - this->actor.shape.rot.y;
                 this->upperBodyRot.y += 5000;
-                this->unk_6B0 = -5000;
+                this->upperBodyYawOffset = -5000;
             }
             return;
         }
 
-        if ((this->csMode != PLAYER_CSMODE_NONE) || (!func_8084C9BC(this, play) && !Player_SetupItemCutsceneOrCUp(this, play))) {
+        if ((this->csMode != PLAYER_CSMODE_NONE) || (!Player_SetupDismountHorse(this, play) && !Player_SetupItemCutsceneOrCUp(this, play))) {
             if (this->targetActor != NULL) {
                 if (Actor_PlayerIsAimingReadyFpsItem(this) != 0) {
                     this->upperBodyRot.y = Player_LookAtTargetActor(this, 1) - this->actor.shape.rot.y;
@@ -11999,9 +12000,9 @@ void Player_RideHorse(Player* this, PlayState* play) {
                 }
             } else {
                 if (Actor_PlayerIsAimingReadyFpsItem(this) != 0) {
-                    this->upperBodyRot.y = func_8084ABD8(play, this, 1, -5000) - this->actor.shape.rot.y;
+                    this->upperBodyRot.y = Player_SetFirstPersonAimLookAngles(play, this, 1, -5000) - this->actor.shape.rot.y;
                     this->upperBodyRot.y += 5000;
-                    this->unk_6B0 = -5000;
+                    this->upperBodyYawOffset = -5000;
                 }
             }
         }
@@ -12014,7 +12015,7 @@ static PlayerAnimSfxEntry sHorseDismountAnimSfx[] = {
     { NA_SE_PL_SLIPDOWN, -0x819 },
 };
 
-void func_8084D3E4(Player* this, PlayState* play) {
+void Player_DismountHorse(Player* this, PlayState* play) {
     this->stateFlags2 |= PLAYER_STATE2_ALWAYS_DISABLE_MOVE_ROTATION;
     func_8084CBF4(this, 1.0f, 10.0f);
 
@@ -12072,7 +12073,7 @@ void Player_UpdateSwimIdle(Player* this, PlayState* play) {
     Player_SetVerticalWaterVelocity(this);
 
     if (!Player_CheckActorTalkRequested(play) && !Player_SetupSubAction(play, this, sSwimSubActions, 1) &&
-        !func_8083D12C(play, this, sControlInput)) {
+        !Player_SetupDive(play, this, sControlInput)) {
         if (this->attentionMode != PLAYER_ATTENTIONMODE_C_UP) {
             this->attentionMode = PLAYER_ATTENTIONMODE_NONE;
         }
@@ -12130,7 +12131,7 @@ void Player_Swim(Player* this, PlayState* play) {
     Player_PlaySwimAnim(play, this, sControlInput, this->linearVelocity);
     Player_SetVerticalWaterVelocity(this);
 
-    if (!Player_SetupSubAction(play, this, sSwimSubActions, 1) && !func_8083D12C(play, this, sControlInput)) {
+    if (!Player_SetupSubAction(play, this, sSwimSubActions, 1) && !Player_SetupDive(play, this, sControlInput)) {
         Player_SetOrGetVelocityAndYaw(this, &swimVelocity, &swimYaw, 0.0f, play);
 
         yawDiff = this->actor.shape.rot.y - swimYaw;
@@ -12189,7 +12190,7 @@ void func_8084DAB4(Player* this, PlayState* play) {
     Player_PlaySwimAnim(play, this, sControlInput, this->linearVelocity);
     Player_SetVerticalWaterVelocity(this);
 
-    if (!Player_SetupSubAction(play, this, sSwimSubActions, 1) && !func_8083D12C(play, this, sControlInput)) {
+    if (!Player_SetupSubAction(play, this, sSwimSubActions, 1) && !Player_SetupDive(play, this, sControlInput)) {
         Player_SetOrGetVelocityAndYaw(this, &swimVelocity, &swimYaw, 0.0f, play);
 
         if (swimVelocity == 0.0f) {
@@ -12204,16 +12205,16 @@ void func_8084DAB4(Player* this, PlayState* play) {
     }
 }
 
-void func_8084DBC4(PlayState* play, Player* this, f32 swimNextVelocity) {
-    f32 swimBaseVelocity;
-    s16 swimYaw;
+void Player_UpdateDiveMovement(PlayState* play, Player* this, f32 swimNextVelocity) {
+    f32 swimTargetVelocity;
+    s16 swimTargetYaw;
 
-    Player_SetOrGetVelocityAndYaw(this, &swimBaseVelocity, &swimYaw, 0.0f, play);
-    Player_UpdateSwimMovement(this, &this->linearVelocity, swimBaseVelocity * 0.5f, swimYaw);
+    Player_SetOrGetVelocityAndYaw(this, &swimTargetVelocity, &swimTargetYaw, 0.0f, play);
+    Player_UpdateSwimMovement(this, &this->linearVelocity, swimTargetVelocity * 0.5f, swimTargetYaw);
     Player_UpdateSwimMovement(this, &this->actor.velocity.y, swimNextVelocity, this->currentYaw);
 }
 
-void func_8084DC48(Player* this, PlayState* play) {
+void Player_Dive(Player* this, PlayState* play) {
     f32 sp2C;
 
     this->stateFlags2 |= PLAYER_STATE2_DISABLE_MOVE_ROTATION_WHILE_Z_TARGETING;
@@ -12240,12 +12241,12 @@ void func_8084DC48(Player* this, PlayState* play) {
             }
 
             Player_PlaySwimAnim(play, this, sControlInput, this->actor.velocity.y);
-            this->unk_6C2 = 16000;
+            this->shapePitchOffset = DEG_TO_BINANG(87.891f);
 
             if (CHECK_BTN_ALL(sControlInput->cur.button, BTN_A) && !Player_SetupGetItemOrHoldBehavior(this, play) &&
                 !(this->actor.bgCheckFlags & BGCHECKFLAG_GROUND) &&
                 (this->actor.yDistToWater < D_80854784[CUR_UPG_VALUE(UPG_SCALE)])) {
-                func_8084DBC4(play, this, -2.0f);
+                Player_UpdateDiveMovement(play, this, -2.0f);
             } else {
                 this->unk_84F++;
                 Player_ChangeAnimLongMorphLoop(play, this, &gPlayerAnim_003328);
@@ -12254,12 +12255,12 @@ void func_8084DC48(Player* this, PlayState* play) {
             LinkAnimation_Update(play, &this->skelAnime);
             Player_SetVerticalWaterVelocity(this);
 
-            if (this->unk_6C2 < 10000) {
+            if (this->shapePitchOffset < DEG_TO_BINANG(54.932f)) {
                 this->unk_84F++;
                 this->genericTimer = this->actor.yDistToWater;
                 Player_ChangeAnimLongMorphLoop(play, this, &gPlayerAnim_0032F0);
             }
-        } else if (!func_8083D12C(play, this, sControlInput)) {
+        } else if (!Player_SetupDive(play, this, sControlInput)) {
             sp2C = (this->genericTimer * 0.018f) + 4.0f;
 
             if (this->stateFlags1 & PLAYER_STATE1_HOLDING_ACTOR) {
@@ -12267,13 +12268,13 @@ void func_8084DC48(Player* this, PlayState* play) {
             }
 
             Player_PlaySwimAnim(play, this, sControlInput, fabsf(this->actor.velocity.y));
-            Math_ScaledStepToS(&this->unk_6C2, -10000, 800);
+            Math_ScaledStepToS(&this->shapePitchOffset, -DEG_TO_BINANG(54.932f), DEG_TO_BINANG(4.395f));
 
             if (sp2C > 8.0f) {
                 sp2C = 8.0f;
             }
 
-            func_8084DBC4(play, this, sp2C);
+            Player_UpdateDiveMovement(play, this, sp2C);
         }
     }
 }
@@ -12292,7 +12293,7 @@ void func_8084DFAC(PlayState* play, Player* this) {
     this->currentYaw = this->actor.shape.rot.y;
 }
 
-s32 func_8084DFF4(PlayState* play, Player* this) {
+s32 Player_SetupGetItemText(PlayState* play, Player* this) {
     GetItemEntry* giEntry;
     s32 temp1;
     s32 temp2;
@@ -12341,11 +12342,11 @@ s32 func_8084DFF4(PlayState* play, Player* this) {
     return 0;
 }
 
-void func_8084E1EC(Player* this, PlayState* play) {
+void Player_GetItemInWater(Player* this, PlayState* play) {
     this->stateFlags2 |= PLAYER_STATE2_DISABLE_MOVE_ROTATION_WHILE_Z_TARGETING;
 
     if (LinkAnimation_Update(play, &this->skelAnime)) {
-        if (!(this->stateFlags1 & PLAYER_STATE1_GETTING_ITEM) || func_8084DFF4(play, this)) {
+        if (!(this->stateFlags1 & PLAYER_STATE1_GETTING_ITEM) || Player_SetupGetItemText(play, this)) {
             func_8084DF6C(play, this);
             Player_SetupSwimIdle(play, this);
             Player_ResetSubCam(play, this);
@@ -12364,7 +12365,7 @@ void func_8084E1EC(Player* this, PlayState* play) {
     Player_UpdateSwimMovement(this, &this->linearVelocity, 0.0f, this->actor.shape.rot.y);
 }
 
-void func_8084E30C(Player* this, PlayState* play) {
+void Player_DamagedSwim(Player* this, PlayState* play) {
     Player_SetVerticalWaterVelocity(this);
 
     if (LinkAnimation_Update(play, &this->skelAnime)) {
@@ -12374,7 +12375,7 @@ void func_8084E30C(Player* this, PlayState* play) {
     Player_UpdateSwimMovement(this, &this->linearVelocity, 0.0f, this->actor.shape.rot.y);
 }
 
-void Player_SetupDrown(Player* this, PlayState* play) {
+void Player_Drown(Player* this, PlayState* play) {
     Player_SetVerticalWaterVelocity(this);
 
     if (LinkAnimation_Update(play, &this->skelAnime)) {
@@ -12463,7 +12464,7 @@ static PlayerAnimSfxEntry D_808549E0[] = {
     { NA_SE_PL_WALK_GROUND - SFX_FLAG, -0x287B },
 };
 
-void func_8084E6D4(Player* this, PlayState* play) {
+void Player_GetItem(Player* this, PlayState* play) {
     s32 cond;
 
     if (LinkAnimation_Update(play, &this->skelAnime)) {
@@ -12472,7 +12473,7 @@ void func_8084E6D4(Player* this, PlayState* play) {
                 this->genericTimer--;
             }
 
-            if (func_8084DFF4(play, this) && (this->genericTimer == 1)) {
+            if (Player_SetupGetItemText(play, this) && (this->genericTimer == 1)) {
                 cond = ((this->talkActor != NULL) && (this->exchangeItemId < 0)) ||
                        (this->stateFlags3 & PLAYER_STATE3_FORCE_PULL_OCARINA);
 
@@ -12991,7 +12992,7 @@ void Player_ShootingGalleryPlay(Player* this, PlayState* play) {
     LinkAnimation_Update(play, &this->skelAnime);
     Player_SetupCurrentUpperAction(this, play);
 
-    this->upperBodyRot.y = func_8084ABD8(play, this, 1, 0) - this->actor.shape.rot.y;
+    this->upperBodyRot.y = Player_SetFirstPersonAimLookAngles(play, this, 1, 0) - this->actor.shape.rot.y;
     this->lookFlags |= PLAYER_LOOKFLAGS_OVERRIDE_UPPERBODY_ROT_Y;
 
     if (play->shootingGalleryStatus < 0) {
@@ -13887,11 +13888,11 @@ void Player_CutsceneSurfaceFromDive(PlayState* play, Player* this, CsCmdActorAct
     this->actor.gravity = 0.0f;
 
     if (this->unk_84F == 0) {
-        if (func_8083D12C(play, this, NULL)) {
+        if (Player_SetupDive(play, this, NULL)) {
             this->unk_84F = 1;
         } else {
             Player_PlaySwimAnim(play, this, NULL, fabsf(this->actor.velocity.y));
-            Math_ScaledStepToS(&this->unk_6C2, -10000, 800);
+            Math_ScaledStepToS(&this->shapePitchOffset, -DEG_TO_BINANG(54.932f), DEG_TO_BINANG(4.395f));
             Player_UpdateSwimMovement(this, &this->actor.velocity.y, 4.0f, this->currentYaw);
         }
         return;

@@ -806,7 +806,7 @@ typedef struct Player {
     /* 0x0444 */ u8         csMode;
     /* 0x0445 */ u8         prevCsMode;
     /* 0x0446 */ u8         csAction;
-    /* 0x0447 */ u8         unk_447;
+    /* 0x0447 */ u8         csDoorType; // Unused?
     /* 0x0448 */ Actor*     csTargetActor;
     /* 0x044C */ char       unk_44C[0x004];
     /* 0x0450 */ Vec3f      csStartPos;
@@ -844,12 +844,12 @@ typedef struct Player {
     /* 0x06AC */ s8         idleCounter;
     /* 0x06AD */ u8         attentionMode;
     /* 0x06AE */ u16        lookFlags;
-    /* 0x06B0 */ s16        unk_6B0;
+    /* 0x06B0 */ s16        upperBodyYawOffset;
     /* 0x06B2 */ char       unk_6B4[0x004];
     /* 0x06B6 */ Vec3s      headRot;
     /* 0x06BC */ Vec3s      upperBodyRot;
-    /* 0x06C2 */ s16        unk_6C2;
-    /* 0x06C4 */ f32        sinkingOffsetY;
+    /* 0x06C2 */ s16        shapePitchOffset;
+    /* 0x06C4 */ f32        shapeOffsetY;
     /* 0x06C8 */ SkelAnime  skelAnimeUpper;
     /* 0x070C */ Vec3s      jointTableUpper[PLAYER_LIMB_BUF_COUNT];
     /* 0x079C */ Vec3s      morphTableUpper[PLAYER_LIMB_BUF_COUNT];
@@ -902,7 +902,7 @@ typedef struct Player {
     /* 0x086C */ f32        unk_86C;
     /* 0x0870 */ f32        leftRightBlendWeight;
     /* 0x0874 */ f32        leftRightBlendWeightTarget;
-    /* 0x0878 */ f32        unk_878;
+    /* 0x0878 */ f32        rideOffsetY;
     /* 0x087C */ s16        unk_87C;
     /* 0x087E */ s16        unk_87E;
     /* 0x0880 */ f32        speedLimit;

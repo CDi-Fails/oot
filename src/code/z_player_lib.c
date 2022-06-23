@@ -983,7 +983,7 @@ void func_8008F87C(PlayState* play, Player* this, SkelAnime* skelAnime, Vec3f* p
 
         sp7C = D_80126058[(void)0, gSaveContext.linkAge];
         sp78 = D_80126060[(void)0, gSaveContext.linkAge];
-        sp74 = D_80126068[(void)0, gSaveContext.linkAge] - this->sinkingOffsetY;
+        sp74 = D_80126068[(void)0, gSaveContext.linkAge] - this->shapeOffsetY;
 
         Matrix_Push();
         Matrix_TranslateRotateZYX(pos, rot);
@@ -1072,11 +1072,11 @@ s32 Player_OverrideLimbDrawGameplayCommon(PlayState* play, s32 limbIndex, Gfx** 
             }
         }
 
-        pos->y -= this->sinkingOffsetY;
+        pos->y -= this->shapeOffsetY;
 
-        if (this->unk_6C2 != 0) {
-            Matrix_Translate(pos->x, ((Math_CosS(this->unk_6C2) - 1.0f) * 200.0f) + pos->y, pos->z, MTXMODE_APPLY);
-            Matrix_RotateX(BINANG_TO_RAD(this->unk_6C2), MTXMODE_APPLY);
+        if (this->shapePitchOffset != 0) {
+            Matrix_Translate(pos->x, ((Math_CosS(this->shapePitchOffset) - 1.0f) * 200.0f) + pos->y, pos->z, MTXMODE_APPLY);
+            Matrix_RotateX(BINANG_TO_RAD(this->shapePitchOffset), MTXMODE_APPLY);
             Matrix_RotateZYX(rot->x, rot->y, rot->z, MTXMODE_APPLY);
             pos->x = pos->y = pos->z = 0.0f;
             rot->x = rot->y = rot->z = 0;
@@ -1091,9 +1091,9 @@ s32 Player_OverrideLimbDrawGameplayCommon(PlayState* play, s32 limbIndex, Gfx** 
             rot->y -= this->headRot.y;
             rot->z += this->headRot.x;
         } else if (limbIndex == PLAYER_LIMB_UPPER) {
-            if (this->unk_6B0 != 0) {
+            if (this->upperBodyYawOffset != 0) {
                 Matrix_RotateZ(BINANG_TO_RAD(0x44C), MTXMODE_APPLY);
-                Matrix_RotateY(BINANG_TO_RAD(this->unk_6B0), MTXMODE_APPLY);
+                Matrix_RotateY(BINANG_TO_RAD(this->upperBodyYawOffset), MTXMODE_APPLY);
             }
             if (this->upperBodyRot.y != 0) {
                 Matrix_RotateY(BINANG_TO_RAD(this->upperBodyRot.y), MTXMODE_APPLY);
