@@ -3965,7 +3965,7 @@ void BossGanon_LightBall_Update(Actor* thisx, PlayState* play2) {
                                 this->unk_1C2 = 3;
                             }
 
-                            if (player->meleeWeaponAnimation >= PLAYER_MWA_SPIN_ATTACK_1H) {
+                            if (player->meleeAttackType >= PLAYER_MELEEATKTYPE_SPIN_ATTACK_1H) {
                                 this->actor.speedXZ = 20.0f;
                             }
                             break;
@@ -4406,7 +4406,7 @@ void func_808E2544(Actor* thisx, PlayState* play) {
             this->actor.world.rot.x = (Math_CosS(this->unk_1A2 * 0x3400) * sp84 * 0.1f) + this->actor.shape.rot.x;
             this->actor.world.rot.y = (Math_SinS(this->unk_1A2 * 0x1A00) * sp84) + this->actor.shape.rot.y;
 
-            if ((player->isMeleeWeaponAttacking != 0) && (player->meleeWeaponAnimation >= PLAYER_MWA_SPIN_ATTACK_1H) &&
+            if ((player->isMeleeWeaponAttacking != 0) && (player->meleeAttackType >= PLAYER_MELEEATKTYPE_SPIN_ATTACK_1H) &&
                 (this->actor.xzDistToPlayer < 80.0f)) {
                 this->unk_1C2 = 0xC;
                 this->actor.speedXZ = -30.0f;

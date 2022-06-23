@@ -255,9 +255,9 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
                 this->meleeWeaponQuads[1].base.atFlags |= AT_BOUNCED;
                 this->cylinder.base.acFlags &= ~AC_HIT;
 
-                if (sLastSwordAnim != this->meleeWeaponAnimation) {
+                if (sLastSwordAnim != this->meleeAttackType) {
                     sStaggerCount++;
-                    sLastSwordAnim = this->meleeWeaponAnimation;
+                    sLastSwordAnim = this->meleeAttackType;
                 }
                 /*! @bug
                  *  This code is needed to reset sCounterState, and should run regardless
@@ -296,7 +296,7 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
                 // Handles Dark Link's initial reaction to jumpslashes
 
                 if (((player->isMeleeWeaponAttacking != 0) || (player->actor.velocity.y > -3.0f)) &&
-                    (player->meleeWeaponAnimation == PLAYER_MWA_JUMPSLASH_START)) {
+                    (player->meleeAttackType == PLAYER_MELEEATKTYPE_JUMPSLASH_START)) {
                     this->actor.world.rot.y = this->actor.shape.rot.y = this->actor.yawTowardsPlayer;
 
                     if (play->gameplayFrames % 2) {
@@ -351,7 +351,7 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
                     // Handles Dark Link's reaction to sword attack other than jumpslashes
 
                     if (func_800354B4(play, &this->actor, 120.0f, 0x7FFF, 0x7FFF, this->actor.world.rot.y)) {
-                        if ((player->meleeWeaponAnimation == PLAYER_MWA_STAB_1H) &&
+                        if ((player->meleeAttackType == PLAYER_MELEEATKTYPE_STAB_1H) &&
                             (this->actor.xzDistToPlayer < 90.0f)) {
 
                             // Handles the reaction to a one-handed stab. If the conditions are satisfied,
@@ -359,7 +359,7 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
 
                             if ((this->isMeleeWeaponAttacking == 0) && (sCounterState == 0) &&
                                 (player->invincibilityTimer == 0) &&
-                                (player->meleeWeaponAnimation == PLAYER_MWA_STAB_1H) &&
+                                (player->meleeAttackType == PLAYER_MELEEATKTYPE_STAB_1H) &&
                                 (this->actor.xzDistToPlayer <= 85.0f) && Actor_IsTargeted(play, &this->actor)) {
 
                                 sStickTilt = 0.0f;
@@ -385,17 +385,17 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
                             sStickAngle = thisx->yawTowardsPlayer;
                             input->cur.button = BTN_B;
 
-                            if (player->meleeWeaponAnimation <= PLAYER_MWA_FORWARD_COMBO_2H) {
+                            if (player->meleeAttackType <= PLAYER_MELEEATKTYPE_FORWARD_COMBO_2H) {
                                 sStickTilt = 0.0f;
-                            } else if (player->meleeWeaponAnimation <= PLAYER_MWA_LEFT_COMBO_2H) {
+                            } else if (player->meleeAttackType <= PLAYER_MELEEATKTYPE_LEFT_COMBO_2H) {
                                 sStickTilt = 127.0f;
                                 sStickAngle += 0x4000;
-                            } else if (player->meleeWeaponAnimation <= PLAYER_MWA_RIGHT_COMBO_2H) {
+                            } else if (player->meleeAttackType <= PLAYER_MELEEATKTYPE_RIGHT_COMBO_2H) {
                                 sStickTilt = 127.0f;
                                 sStickAngle -= 0x4000;
-                            } else if (player->meleeWeaponAnimation <= PLAYER_MWA_HAMMER_SIDE) {
+                            } else if (player->meleeAttackType <= PLAYER_MELEEATKTYPE_HAMMER_SIDE) {
                                 input->cur.button = BTN_R;
-                            } else if (player->meleeWeaponAnimation <= PLAYER_MWA_BIG_SPIN_2H) {
+                            } else if (player->meleeAttackType <= PLAYER_MELEEATKTYPE_BIG_SPIN_2H) {
                                 EnTorch2_Backflip(this, input, &this->actor);
                             } else {
                                 EnTorch2_Backflip(this, input, &this->actor);
@@ -431,8 +431,8 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
                             }
                         } else if (this->actor.xzDistToPlayer > 100.0f + sp50) {
                             if ((player->isMeleeWeaponAttacking == 0) ||
-                                !((player->meleeWeaponAnimation >= PLAYER_MWA_SPIN_ATTACK_1H) &&
-                                  (player->meleeWeaponAnimation <= PLAYER_MWA_BIG_SPIN_2H)) ||
+                                !((player->meleeAttackType >= PLAYER_MELEEATKTYPE_SPIN_ATTACK_1H) &&
+                                  (player->meleeAttackType <= PLAYER_MELEEATKTYPE_BIG_SPIN_2H)) ||
                                 (this->actor.xzDistToPlayer >= 280.0f)) {
                                 sStickTilt = 127.0f;
                                 sStickAngle = this->actor.yawTowardsPlayer;
@@ -532,8 +532,8 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
     // Causes Dark Link to shield in place when Link is using magic attacks other than the spin attack
 
     if ((gSaveContext.magicState == MAGIC_STATE_METER_FLASH_1) &&
-        (player->isMeleeWeaponAttacking == 0 || !((player->meleeWeaponAnimation >= PLAYER_MWA_SPIN_ATTACK_1H) &&
-                                            (player->meleeWeaponAnimation <= PLAYER_MWA_BIG_SPIN_2H)))) {
+        (player->isMeleeWeaponAttacking == 0 || !((player->meleeAttackType >= PLAYER_MELEEATKTYPE_SPIN_ATTACK_1H) &&
+                                            (player->meleeAttackType <= PLAYER_MELEEATKTYPE_BIG_SPIN_2H)))) {
         sStickTilt = 0.0f;
         input->cur.stick_x = 0;
         input->cur.stick_y = 0;

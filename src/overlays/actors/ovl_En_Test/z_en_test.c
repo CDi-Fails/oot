@@ -497,7 +497,7 @@ void EnTest_Idle(EnTest* this, PlayState* play) {
             if ((player->isMeleeWeaponAttacking != 0) && (ABS(yawDiff) >= 0x1F40)) {
                 this->actor.shape.rot.y = this->actor.world.rot.y = this->actor.yawTowardsPlayer;
 
-                if (Rand_ZeroOne() > 0.7f && player->meleeWeaponAnimation != PLAYER_MWA_JUMPSLASH_START) {
+                if (Rand_ZeroOne() > 0.7f && player->meleeAttackType != PLAYER_MELEEATKTYPE_JUMPSLASH_START) {
                     EnTest_SetupJumpBack(this);
                 } else {
                     func_808627C4(this, play);
@@ -628,7 +628,7 @@ void EnTest_WalkAndBlock(EnTest* this, PlayState* play) {
             if (ABS(yawDiff) >= 0x1F40) {
                 this->actor.shape.rot.y = this->actor.world.rot.y = this->actor.yawTowardsPlayer;
 
-                if ((Rand_ZeroOne() > 0.7f) && (player->meleeWeaponAnimation != PLAYER_MWA_JUMPSLASH_START)) {
+                if ((Rand_ZeroOne() > 0.7f) && (player->meleeAttackType != PLAYER_MELEEATKTYPE_JUMPSLASH_START)) {
                     EnTest_SetupJumpBack(this);
                 } else {
                     EnTest_SetupStopAndBlock(this);
@@ -1240,7 +1240,7 @@ void func_808621D4(EnTest* this, PlayState* play) {
              (this->actor.xzDistToPlayer < 80.0f))) {
             EnTest_SetupJumpUp(this);
         } else if ((Rand_ZeroOne() > 0.7f) && (this->actor.params != STALFOS_TYPE_CEILING) &&
-                   (player->meleeWeaponAnimation != PLAYER_MWA_JUMPSLASH_START)) {
+                   (player->meleeAttackType != PLAYER_MELEEATKTYPE_JUMPSLASH_START)) {
             EnTest_SetupJumpBack(this);
         } else {
             EnTest_SetupStopAndBlock(this);
@@ -1280,7 +1280,7 @@ void func_80862418(EnTest* this, PlayState* play) {
              (this->actor.xzDistToPlayer < 80.0f))) {
             EnTest_SetupJumpUp(this);
         } else if ((Rand_ZeroOne() > 0.7f) && (this->actor.params != STALFOS_TYPE_CEILING) &&
-                   (player->meleeWeaponAnimation != PLAYER_MWA_JUMPSLASH_START)) {
+                   (player->meleeAttackType != PLAYER_MELEEATKTYPE_JUMPSLASH_START)) {
             EnTest_SetupJumpBack(this);
         } else {
             EnTest_SetupStopAndBlock(this);
@@ -1326,7 +1326,7 @@ void EnTest_Stunned(EnTest* this, PlayState* play) {
                 ((ABS((s16)(this->actor.wallYaw - this->actor.shape.rot.y)) < 0x38A4) &&
                  (this->actor.xzDistToPlayer < 80.0f))) {
                 EnTest_SetupJumpUp(this);
-            } else if ((Rand_ZeroOne() > 0.7f) && (player->meleeWeaponAnimation != PLAYER_MWA_JUMPSLASH_START)) {
+            } else if ((Rand_ZeroOne() > 0.7f) && (player->meleeAttackType != PLAYER_MELEEATKTYPE_JUMPSLASH_START)) {
                 EnTest_SetupJumpBack(this);
             } else {
                 EnTest_SetupStopAndBlock(this);

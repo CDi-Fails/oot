@@ -4046,7 +4046,7 @@ u8 func_800355E4(PlayState* play, Collider* collider) {
     Player* player = GET_PLAYER(play);
 
     if ((collider->acFlags & AC_TYPE_PLAYER) && (player->isMeleeWeaponAttacking != 0) &&
-        (player->meleeWeaponAnimation == PLAYER_MWA_HAMMER_FORWARD)) {
+        (player->meleeAttackType == PLAYER_MELEEATKTYPE_HAMMER_FORWARD)) {
         return true;
     } else {
         return false;

@@ -131,7 +131,7 @@ void func_80A9F350(EnMThunder* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
     if (player->stateFlags2 & PLAYER_STATE2_RELEASING_SPIN_ATTACK) {
-        if (player->meleeWeaponAnimation >= PLAYER_MWA_SPIN_ATTACK_1H) {
+        if (player->meleeAttackType >= PLAYER_MELEEATKTYPE_SPIN_ATTACK_1H) {
             Audio_PlaySoundGeneral(NA_SE_IT_ROLLING_CUT, &player->actor.projectedPos, 4, &gSfxDefaultFreqAndVolScale,
                                    &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
             Audio_PlaySoundGeneral(NA_SE_IT_SWORD_SWING_HARD, &player->actor.projectedPos, 4,
@@ -182,7 +182,7 @@ void func_80A9F408(EnMThunder* this, PlayState* play) {
         }
 
         if (player->spinAttackTimer <= 0.15f) {
-            if ((player->spinAttackTimer >= 0.1f) && (player->meleeWeaponAnimation >= PLAYER_MWA_SPIN_ATTACK_1H)) {
+            if ((player->spinAttackTimer >= 0.1f) && (player->meleeAttackType >= PLAYER_MELEEATKTYPE_SPIN_ATTACK_1H)) {
                 Audio_PlaySoundGeneral(NA_SE_IT_ROLLING_CUT, &player->actor.projectedPos, 4,
                                        &gSfxDefaultFreqAndVolScale, &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
                 Audio_PlaySoundGeneral(NA_SE_IT_SWORD_SWING_HARD, &player->actor.projectedPos, 4,

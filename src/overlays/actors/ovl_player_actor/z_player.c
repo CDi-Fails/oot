@@ -103,13 +103,13 @@ typedef struct {
     /* 0x08 */ LinkAnimationHeader* fightEndAnim;
     /* 0x0C */ u8 startFrame;
     /* 0x0D */ u8 endFrame;
-} struct_80854190; // size = 0x10
+} MeleeAttackAnimInfo; // size = 0x10
 
 typedef struct {
     /* 0x00 */ LinkAnimationHeader* anim;
-    /* 0x04 */ f32 unk_04;
-    /* 0x04 */ f32 unk_08;
-} struct_80854578; // size = 0x0C
+    /* 0x04 */ f32 riderOffsetX;
+    /* 0x04 */ f32 riderOffsetZ;
+} HorseMountAnimInfo; // size = 0x0C
 
 typedef struct {
     /* 0x00 */ s8 playbackFuncID;
@@ -1246,62 +1246,62 @@ static ExplosiveInfo sExplosiveInfos[] = {
     { ITEM_BOMBCHU, ACTOR_EN_BOM_CHU },
 };
 
-static struct_80854190 D_80854190[PLAYER_MWA_MAX] = {
-    /* PLAYER_MWA_FORWARD_SLASH_1H */
+static MeleeAttackAnimInfo sMeleeAttackAnims[PLAYER_MELEEATKTYPE_MAX] = {
+    /* PLAYER_MELEEATKTYPE_FORWARD_SLASH_1H */
     { &gPlayerAnim_002A80, &gPlayerAnim_002A90, &gPlayerAnim_002A88, 1, 4 },
-    /* PLAYER_MWA_FORWARD_SLASH_2H */
+    /* PLAYER_MELEEATKTYPE_FORWARD_SLASH_2H */
     { &gPlayerAnim_0028C0, &gPlayerAnim_0028C8, &gPlayerAnim_002498, 1, 4 },
-    /* PLAYER_MWA_FORWARD_COMBO_1H */
+    /* PLAYER_MELEEATKTYPE_FORWARD_COMBO_1H */
     { &gPlayerAnim_002A98, &gPlayerAnim_002AA0, &gPlayerAnim_002540, 0, 5 },
-    /* PLAYER_MWA_FORWARD_COMBO_2H */
+    /* PLAYER_MELEEATKTYPE_FORWARD_COMBO_2H */
     { &gPlayerAnim_0028D0, &gPlayerAnim_0028D8, &gPlayerAnim_0024A0, 1, 7 },
-    /* PLAYER_MWA_LEFT_SLASH_1H */
+    /* PLAYER_MELEEATKTYPE_LEFT_SLASH_1H */
     { &gPlayerAnim_002968, &gPlayerAnim_002970, &gPlayerAnim_0024C0, 1, 4 },
-    /* PLAYER_MWA_LEFT_SLASH_2H */
+    /* PLAYER_MELEEATKTYPE_LEFT_SLASH_2H */
     { &gPlayerAnim_002880, &gPlayerAnim_002888, &gPlayerAnim_002478, 0, 5 },
-    /* PLAYER_MWA_LEFT_COMBO_1H */
+    /* PLAYER_MELEEATKTYPE_LEFT_COMBO_1H */
     { &gPlayerAnim_002978, &gPlayerAnim_002980, &gPlayerAnim_0024C8, 2, 8 },
-    /* PLAYER_MWA_LEFT_COMBO_2H */
+    /* PLAYER_MELEEATKTYPE_LEFT_COMBO_2H */
     { &gPlayerAnim_002890, &gPlayerAnim_002898, &gPlayerAnim_002480, 3, 8 },
-    /* PLAYER_MWA_RIGHT_SLASH_1H */
+    /* PLAYER_MELEEATKTYPE_RIGHT_SLASH_1H */
     { &gPlayerAnim_0029A0, &gPlayerAnim_0029A8, &gPlayerAnim_0024D0, 0, 4 },
-    /* PLAYER_MWA_RIGHT_SLASH_2H */
+    /* PLAYER_MELEEATKTYPE_RIGHT_SLASH_2H */
     { &gPlayerAnim_0028A0, &gPlayerAnim_0028A8, &gPlayerAnim_002488, 0, 5 },
-    /* PLAYER_MWA_RIGHT_COMBO_1H */
+    /* PLAYER_MELEEATKTYPE_RIGHT_COMBO_1H */
     { &gPlayerAnim_0029B0, &gPlayerAnim_0029B8, &gPlayerAnim_0024D8, 0, 6 },
-    /* PLAYER_MWA_RIGHT_COMBO_2H */
+    /* PLAYER_MELEEATKTYPE_RIGHT_COMBO_2H */
     { &gPlayerAnim_0028B0, &gPlayerAnim_0028B8, &gPlayerAnim_002490, 1, 5 },
-    /* PLAYER_MWA_STAB_1H */
+    /* PLAYER_MELEEATKTYPE_STAB_1H */
     { &gPlayerAnim_002AA8, &gPlayerAnim_002AB0, &gPlayerAnim_002548, 0, 3 },
-    /* PLAYER_MWA_STAB_2H */
+    /* PLAYER_MELEEATKTYPE_STAB_2H */
     { &gPlayerAnim_0028E0, &gPlayerAnim_0028E8, &gPlayerAnim_0024A8, 0, 3 },
-    /* PLAYER_MWA_STAB_COMBO_1H */
+    /* PLAYER_MELEEATKTYPE_STAB_COMBO_1H */
     { &gPlayerAnim_002AB8, &gPlayerAnim_002AC0, &gPlayerAnim_002550, 1, 9 },
-    /* PLAYER_MWA_STAB_COMBO_2H */
+    /* PLAYER_MELEEATKTYPE_STAB_COMBO_2H */
     { &gPlayerAnim_0028F0, &gPlayerAnim_0028F8, &gPlayerAnim_0024B0, 1, 8 },
-    /* PLAYER_MWA_FLIPSLASH_START */
+    /* PLAYER_MELEEATKTYPE_FLIPSLASH_START */
     { &gPlayerAnim_002A60, &gPlayerAnim_002A50, &gPlayerAnim_002A50, 1, 10 },
-    /* PLAYER_MWA_JUMPSLASH_START */
+    /* PLAYER_MELEEATKTYPE_JUMPSLASH_START */
     { &gPlayerAnim_002900, &gPlayerAnim_002910, &gPlayerAnim_002910, 1, 11 },
-    /* PLAYER_MWA_FLIPSLASH_FINISH */
+    /* PLAYER_MELEEATKTYPE_FLIPSLASH_FINISH */
     { &gPlayerAnim_002A50, &gPlayerAnim_002A58, &gPlayerAnim_002A58, 1, 2 },
-    /* PLAYER_MWA_JUMPSLASH_FINISH */
+    /* PLAYER_MELEEATKTYPE_JUMPSLASH_FINISH */
     { &gPlayerAnim_002910, &gPlayerAnim_002908, &gPlayerAnim_002908, 1, 2 },
-    /* PLAYER_MWA_BACKSLASH_RIGHT */
+    /* PLAYER_MELEEATKTYPE_BACKSLASH_RIGHT */
     { &gPlayerAnim_002B80, &gPlayerAnim_002B88, &gPlayerAnim_002B88, 1, 5 },
-    /* PLAYER_MWA_BACKSLASH_LEFT */
+    /* PLAYER_MELEEATKTYPE_BACKSLASH_LEFT */
     { &gPlayerAnim_002B70, &gPlayerAnim_002B78, &gPlayerAnim_002B78, 1, 4 },
-    /* PLAYER_MWA_HAMMER_FORWARD */
+    /* PLAYER_MELEEATKTYPE_HAMMER_FORWARD */
     { &gPlayerAnim_002C40, &gPlayerAnim_002C50, &gPlayerAnim_002C48, 3, 10 },
-    /* PLAYER_MWA_HAMMER_SIDE */
+    /* PLAYER_MELEEATKTYPE_HAMMER_SIDE */
     { &gPlayerAnim_002C70, &gPlayerAnim_002C80, &gPlayerAnim_002C78, 2, 11 },
-    /* PLAYER_MWA_SPIN_ATTACK_1H */
+    /* PLAYER_MELEEATKTYPE_SPIN_ATTACK_1H */
     { &gPlayerAnim_002B28, &gPlayerAnim_002B30, &gPlayerAnim_002560, 0, 12 },
-    /* PLAYER_MWA_SPIN_ATTACK_2H */
+    /* PLAYER_MELEEATKTYPE_SPIN_ATTACK_2H */
     { &gPlayerAnim_002940, &gPlayerAnim_002948, &gPlayerAnim_0024B8, 0, 15 },
-    /* PLAYER_MWA_BIG_SPIN_1H */
+    /* PLAYER_MELEEATKTYPE_BIG_SPIN_1H */
     { &gPlayerAnim_0029C0, &gPlayerAnim_0029C8, &gPlayerAnim_002560, 0, 16 },
-    /* PLAYER_MWA_BIG_SPIN_2H */
+    /* PLAYER_MELEEATKTYPE_BIG_SPIN_2H */
     { &gPlayerAnim_0029C0, &gPlayerAnim_0029C8, &gPlayerAnim_0024B8, 0, 16 },
 };
 
@@ -1335,8 +1335,8 @@ static LinkAnimationHeader* sSpinAttackChargeSidewalkAnims[] = {
     &gPlayerAnim_002918, // Two-handed
 };
 
-static u8 D_80854380[2] = { PLAYER_MWA_SPIN_ATTACK_1H, PLAYER_MWA_SPIN_ATTACK_2H };
-static u8 D_80854384[2] = { PLAYER_MWA_BIG_SPIN_1H, PLAYER_MWA_BIG_SPIN_2H };
+static u8 sSmallSpinAttackMWAs[2] = { PLAYER_MELEEATKTYPE_SPIN_ATTACK_1H, PLAYER_MELEEATKTYPE_SPIN_ATTACK_2H };
+static u8 sBigSpinAttackMWAs[2] = { PLAYER_MELEEATKTYPE_BIG_SPIN_1H, PLAYER_MELEEATKTYPE_BIG_SPIN_2H };
 
 static u16 sUseItemButtons[] = { BTN_B, BTN_CLEFT, BTN_CDOWN, BTN_CRIGHT };
 
@@ -2046,7 +2046,7 @@ void Player_MeleeAttack(Player* this, s32 attackFlag) {
         voiceSfx = NA_SE_VO_LI_SWORD_N;
         if (this->heldItemActionParam == PLAYER_AP_HAMMER) {
             itemSfx = NA_SE_IT_HAMMER_SWING;
-        } else if (this->meleeWeaponAnimation >= PLAYER_MWA_SPIN_ATTACK_1H) {
+        } else if (this->meleeAttackType >= PLAYER_MELEEATKTYPE_SPIN_ATTACK_1H) {
             itemSfx = 0;
             voiceSfx = NA_SE_VO_LI_SWORD_L;
         } else if (this->slashCounter >= 3) {
@@ -2058,8 +2058,8 @@ void Player_MeleeAttack(Player* this, s32 attackFlag) {
             Player_PlayReactableSfx(this, itemSfx);
         }
 
-        if (!((this->meleeWeaponAnimation >= PLAYER_MWA_FLIPSLASH_START) &&
-              (this->meleeWeaponAnimation <= PLAYER_MWA_JUMPSLASH_FINISH))) {
+        if (!((this->meleeAttackType >= PLAYER_MELEEATKTYPE_FLIPSLASH_START) &&
+              (this->meleeAttackType <= PLAYER_MELEEATKTYPE_JUMPSLASH_FINISH))) {
             Player_PlayVoiceSfxForAge(this, voiceSfx);
         }
     }
@@ -3534,8 +3534,8 @@ s32 Player_CanQuickspin(Player* this) {
 void Player_SetupSpinAttackAnims(PlayState* play, Player* this) {
     LinkAnimationHeader* anim;
 
-    if ((this->meleeWeaponAnimation >= PLAYER_MWA_LEFT_SLASH_1H) &&
-        (this->meleeWeaponAnimation <= PLAYER_MWA_LEFT_COMBO_2H)) {
+    if ((this->meleeAttackType >= PLAYER_MELEEATKTYPE_LEFT_SLASH_1H) &&
+        (this->meleeAttackType <= PLAYER_MELEEATKTYPE_LEFT_COMBO_2H)) {
         anim = sSpinAttackAnims1[Player_HoldsTwoHandedWeapon(this)];
     } else {
         anim = sSpinAttackAnims2[Player_HoldsTwoHandedWeapon(this)];
@@ -3552,16 +3552,16 @@ void Player_StartChargeSpinAttack(PlayState* play, Player* this) {
 }
 
 static s8 sMeleeWeaponAttackDirections[] = {
-    PLAYER_MWA_STAB_1H,
-    PLAYER_MWA_LEFT_SLASH_1H,
-    PLAYER_MWA_LEFT_SLASH_1H,
-    PLAYER_MWA_RIGHT_SLASH_1H,
+    PLAYER_MELEEATKTYPE_STAB_1H,
+    PLAYER_MELEEATKTYPE_LEFT_SLASH_1H,
+    PLAYER_MELEEATKTYPE_LEFT_SLASH_1H,
+    PLAYER_MELEEATKTYPE_RIGHT_SLASH_1H,
 };
 static s8 sHammerAttackDirections[] = {
-    PLAYER_MWA_HAMMER_FORWARD,
-    PLAYER_MWA_HAMMER_SIDE,
-    PLAYER_MWA_HAMMER_FORWARD,
-    PLAYER_MWA_HAMMER_SIDE,
+    PLAYER_MELEEATKTYPE_HAMMER_FORWARD,
+    PLAYER_MELEEATKTYPE_HAMMER_SIDE,
+    PLAYER_MELEEATKTYPE_HAMMER_FORWARD,
+    PLAYER_MELEEATKTYPE_HAMMER_SIDE,
 };
 
 s32 Player_GetMeleeAttackAnim(Player* this) {
@@ -3576,25 +3576,25 @@ s32 Player_GetMeleeAttackAnim(Player* this) {
         this->slashCounter = 0;
     } else {
         if (Player_CanQuickspin(this)) {
-            attackAnim = PLAYER_MWA_SPIN_ATTACK_1H;
+            attackAnim = PLAYER_MELEEATKTYPE_SPIN_ATTACK_1H;
         } else {
             if (relativeStickInput < PLAYER_RELATIVESTICKINPUT_FORWARD) {
                 if (Player_IsZTargeting(this)) {
-                    attackAnim = PLAYER_MWA_FORWARD_SLASH_1H;
+                    attackAnim = PLAYER_MELEEATKTYPE_FORWARD_SLASH_1H;
                 } else {
-                    attackAnim = PLAYER_MWA_LEFT_SLASH_1H;
+                    attackAnim = PLAYER_MELEEATKTYPE_LEFT_SLASH_1H;
                 }
             } else {
                 attackAnim = sMeleeWeaponAttackDirections[relativeStickInput];
-                if (attackAnim == PLAYER_MWA_STAB_1H) {
+                if (attackAnim == PLAYER_MELEEATKTYPE_STAB_1H) {
                     this->stateFlags2 |= PLAYER_STATE2_ENABLE_FORWARD_SLIDE_FROM_ATTACK;
                     if (!Player_IsZTargeting(this)) {
-                        attackAnim = PLAYER_MWA_FORWARD_SLASH_1H;
+                        attackAnim = PLAYER_MELEEATKTYPE_FORWARD_SLASH_1H;
                     }
                 }
             }
             if (this->heldItemActionParam == PLAYER_AP_STICK) {
-                attackAnim = PLAYER_MWA_FORWARD_SLASH_1H;
+                attackAnim = PLAYER_MELEEATKTYPE_FORWARD_SLASH_1H;
             }
         }
         if (Player_HoldsTwoHandedWeapon(this)) {
@@ -3620,30 +3620,30 @@ static u32 sMeleeWeaponDmgFlags[][2] = {
     { DMG_DEKU_STICK, DMG_JUMP_MASTER },   { DMG_HAMMER_SWING, DMG_HAMMER_JUMP },
 };
 
-void Player_SetupMeleeWeaponAttackBehavior(PlayState* play, Player* this, s32 meleeWeaponAnim) {
+void Player_SetupMeleeWeaponAttackBehavior(PlayState* play, Player* this, s32 meleeAttackType) {
     s32 pad;
     u32 dmgFlags;
     s32 meleeWeapon;
 
     Player_SetActionFunc(play, this, Player_MeleeWeaponAttack, 0);
     this->comboTimer = 8;
-    if (!((meleeWeaponAnim >= PLAYER_MWA_FLIPSLASH_FINISH) && (meleeWeaponAnim <= PLAYER_MWA_JUMPSLASH_FINISH))) {
+    if (!((meleeAttackType >= PLAYER_MELEEATKTYPE_FLIPSLASH_FINISH) && (meleeAttackType <= PLAYER_MELEEATKTYPE_JUMPSLASH_FINISH))) {
         Player_InactivateMeleeWeapon(this);
     }
 
-    if ((meleeWeaponAnim != this->meleeWeaponAnimation) || !(this->slashCounter < 3)) {
+    if ((meleeAttackType != this->meleeAttackType) || !(this->slashCounter < 3)) {
         this->slashCounter = 0;
     }
 
     this->slashCounter++;
     if (this->slashCounter >= 3) {
-        meleeWeaponAnim += 2;
+        meleeAttackType += 2;
     }
 
-    this->meleeWeaponAnimation = meleeWeaponAnim;
+    this->meleeAttackType = meleeAttackType;
 
-    Player_PlayAnimOnceSlowed(play, this, D_80854190[meleeWeaponAnim].startAnim);
-    if ((meleeWeaponAnim != PLAYER_MWA_FLIPSLASH_START) && (meleeWeaponAnim != PLAYER_MWA_JUMPSLASH_START)) {
+    Player_PlayAnimOnceSlowed(play, this, sMeleeAttackAnims[meleeAttackType].startAnim);
+    if ((meleeAttackType != PLAYER_MELEEATKTYPE_FLIPSLASH_START) && (meleeAttackType != PLAYER_MELEEATKTYPE_JUMPSLASH_START)) {
         Player_SetupAnimMovement(play, this, PLAYER_ANIMMOVEFLAGS_UPDATE_XZ | PLAYER_ANIMMOVEFLAGS_KEEP_ANIM_Y_TRANSLATION | PLAYER_ANIMMOVEFLAGS_UPDATE_PREV_TRANSL_ROT_APPLY_AGE_SCALE);
     }
 
@@ -3655,7 +3655,7 @@ void Player_SetupMeleeWeaponAttackBehavior(PlayState* play, Player* this, s32 me
         meleeWeapon = Player_GetMeleeWeaponHeld(this) - 1;
     }
 
-    if ((meleeWeaponAnim >= PLAYER_MWA_FLIPSLASH_START) && (meleeWeaponAnim <= PLAYER_MWA_JUMPSLASH_FINISH)) {
+    if ((meleeAttackType >= PLAYER_MELEEATKTYPE_FLIPSLASH_START) && (meleeAttackType <= PLAYER_MELEEATKTYPE_JUMPSLASH_FINISH)) {
         dmgFlags = sMeleeWeaponDmgFlags[meleeWeapon][1];
     } else {
         dmgFlags = sMeleeWeaponDmgFlags[meleeWeapon][0];
@@ -5321,7 +5321,7 @@ s32 Player_CanJumpSlash(Player* this) {
 
 s32 Player_SetupMidairJumpSlash(Player* this, PlayState* play) {
     if (Player_CanJumpSlash(this) && (sFloorSpecialProperty != BGCHECK_FLOORSPECIALPROPERTY_QUICKSAND_NO_HORSE)) {
-        Player_SetupJumpSlash(play, this, PLAYER_MWA_JUMPSLASH_START, 3.0f, 4.5f);
+        Player_SetupJumpSlash(play, this, PLAYER_MELEEATKTYPE_JUMPSLASH_START, 3.0f, 4.5f);
         return 1;
     }
 
@@ -5377,7 +5377,7 @@ s32 Player_SetupJumpSlashOrRoll(Player* this, PlayState* play) {
                     }
                 } else {
                     if ((Player_GetMeleeWeaponHeld(this) != PLAYER_MELEEWEAPON_NONE) && Player_CanUseItem(this)) {
-                        Player_SetupJumpSlash(play, this, PLAYER_MWA_JUMPSLASH_START, 5.0f, 5.0f);
+                        Player_SetupJumpSlash(play, this, PLAYER_MELEEATKTYPE_JUMPSLASH_START, 5.0f, 5.0f);
                     } else {
                         Player_SetupRolling(this, play);
                     }
@@ -6109,22 +6109,22 @@ void func_8083DFE0(Player* this, f32* targetVelocity, s16* targetYaw) {
     }
 }
 
-static struct_80854578 D_80854578[] = {
+static HorseMountAnimInfo sMountHorseAnims[] = {
     { &gPlayerAnim_003398, 35.17f, 6.6099997f },
     { &gPlayerAnim_0033A8, -34.16f, 7.91f },
 };
 
 s32 Player_SetupMountHorse(Player* this, PlayState* play) {
     EnHorse* rideActor = (EnHorse*)this->rideActor;
-    f32 unk_04;
-    f32 unk_08;
-    f32 sp38;
-    f32 sp34;
-    s32 temp;
+    f32 riderOffsetX;
+    f32 riderOffsetZ;
+    f32 cosYaw;
+    f32 cosSin;
+    s32 isLeftOfHorse;
 
     if ((rideActor != NULL) && CHECK_BTN_ALL(sControlInput->press.button, BTN_A)) {
-        sp38 = Math_CosS(rideActor->actor.shape.rot.y);
-        sp34 = Math_SinS(rideActor->actor.shape.rot.y);
+        cosYaw = Math_CosS(rideActor->actor.shape.rot.y);
+        cosSin = Math_SinS(rideActor->actor.shape.rot.y);
 
         Player_SetupMiniCsFunc(play, this, Player_SetupRideHorse);
 
@@ -6132,23 +6132,23 @@ s32 Player_SetupMountHorse(Player* this, PlayState* play) {
         this->actor.bgCheckFlags &= ~BGCHECKFLAG_WATER;
 
         if (this->mountSide < 0) {
-            temp = 0;
+            isLeftOfHorse = false;
         } else {
-            temp = 1;
+            isLeftOfHorse = true;
         }
 
-        unk_04 = D_80854578[temp].unk_04;
-        unk_08 = D_80854578[temp].unk_08;
+        riderOffsetX = sMountHorseAnims[isLeftOfHorse].riderOffsetX;
+        riderOffsetZ = sMountHorseAnims[isLeftOfHorse].riderOffsetZ;
         this->actor.world.pos.x =
-            rideActor->actor.world.pos.x + rideActor->riderPos.x + ((unk_04 * sp38) + (unk_08 * sp34));
+            rideActor->actor.world.pos.x + rideActor->riderPos.x + ((riderOffsetX * cosYaw) + (riderOffsetZ * cosSin));
         this->actor.world.pos.z =
-            rideActor->actor.world.pos.z + rideActor->riderPos.z + ((unk_08 * sp38) - (unk_04 * sp34));
+            rideActor->actor.world.pos.z + rideActor->riderPos.z + ((riderOffsetZ * cosYaw) - (riderOffsetX * cosSin));
 
         this->unk_878 = rideActor->actor.world.pos.y - this->actor.world.pos.y;
         this->currentYaw = this->actor.shape.rot.y = rideActor->actor.shape.rot.y;
 
         Actor_MountHorse(play, this, &rideActor->actor);
-        Player_PlayAnimOnce(play, this, D_80854578[temp].anim);
+        Player_PlayAnimOnce(play, this, sMountHorseAnims[isLeftOfHorse].anim);
         Player_SetupAnimMovement(play, this, PLAYER_ANIMMOVEFLAGS_UPDATE_XZ | PLAYER_ANIMMOVEFLAGS_UPDATE_Y | PLAYER_ANIMMOVEFLAGS_KEEP_ANIM_Y_TRANSLATION | PLAYER_ANIMMOVEFLAGS_NO_MOVE | PLAYER_ANIMMOVEFLAGS_7);
         this->actor.parent = this->rideActor;
         Player_ClearAttentionModeAndStopMoving(this);
@@ -7791,7 +7791,7 @@ s32 Player_AttackWhileDefending(Player* this, PlayState* play) {
     if (!Player_IsChildWithHylianShield(this) && (Player_GetMeleeWeaponHeld(this) != PLAYER_MELEEWEAPON_NONE) && sUsingItemAlreadyInHand) {
         Player_PlayAnimOnce(play, this, &gPlayerAnim_002EC8);
         this->unk_84F = 1;
-        this->meleeWeaponAnimation = PLAYER_MWA_STAB_1H;
+        this->meleeAttackType = PLAYER_MELEEATKTYPE_STAB_1H;
         this->currentYaw = this->actor.shape.rot.y + this->upperBodyRot.y;
         return 1;
     }
@@ -7901,7 +7901,7 @@ s32 func_80842DF4(PlayState* play, Player* this) {
     s32 sp48;
 
     if (this->isMeleeWeaponAttacking > 0) {
-        if (this->meleeWeaponAnimation < PLAYER_MWA_SPIN_ATTACK_1H) {
+        if (this->meleeAttackType < PLAYER_MELEEATKTYPE_SPIN_ATTACK_1H) {
             if (!(this->meleeWeaponQuads[0].base.atFlags & AT_BOUNCED) &&
                 !(this->meleeWeaponQuads[1].base.atFlags & AT_BOUNCED)) {
                 if (this->skelAnime.curFrame >= 2.0f) {
@@ -7959,7 +7959,7 @@ s32 func_80842DF4(PlayState* play, Player* this) {
         temp1 = (this->meleeWeaponQuads[0].base.atFlags & AT_HIT) || (this->meleeWeaponQuads[1].base.atFlags & AT_HIT);
 
         if (temp1) {
-            if (this->meleeWeaponAnimation < PLAYER_MWA_SPIN_ATTACK_1H) {
+            if (this->meleeAttackType < PLAYER_MELEEATKTYPE_SPIN_ATTACK_1H) {
                 Actor* at = this->meleeWeaponQuads[temp1 ? 1 : 0].base.at;
 
                 if ((at != NULL) && (at->id != ACTOR_EN_KANBAN)) {
@@ -8290,7 +8290,7 @@ static FallImpactInfo sFallImpactInfo[] = {
     { -16, 255, 140, 150, NA_SE_VO_LI_LAND_DAMAGE_S },
 };
 
-// Returns 0 if landed safely, -1 if dead from fall, impactIndex + 1 if hurt from fall 
+// Returns 0 if landed safely, -1 if dead from fall, impactType + 1 if hurt from fall 
 s32 Player_SetupFallLanding(PlayState* play, Player* this) {
     s32 fallDistance;
 
@@ -8305,16 +8305,16 @@ s32 Player_SetupFallLanding(PlayState* play, Player* this) {
     this->stateFlags1 &= ~(PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALLING);
 
     if (fallDistance >= 400) {
-        s32 impactIndex;
+        s32 impactType;
         FallImpactInfo* impactInfo;
 
         if (this->fallDistance < 800) {
-            impactIndex = 0;
+            impactType = 0;
         } else {
-            impactIndex = 1;
+            impactType = 1;
         }
 
-        impactInfo = &sFallImpactInfo[impactIndex];
+        impactInfo = &sFallImpactInfo[impactType];
 
         if (Player_InflictDamageAndCheckForDeath(play, impactInfo->damage)) {
             return -1;
@@ -8326,7 +8326,7 @@ s32 Player_SetupFallLanding(PlayState* play, Player* this) {
         func_8002F7DC(&this->actor, NA_SE_PL_BODY_HIT);
         Player_PlayVoiceSfxForAge(this, impactInfo->sfxId);
 
-        return impactIndex + 1;
+        return impactType + 1;
     }
 
     if (fallDistance > 200) {
@@ -8437,7 +8437,7 @@ void Player_UpdateMidair(Player* this, PlayState* play) {
         }
     } else {
         LinkAnimationHeader* anim = GET_PLAYER_ANIM(PLAYER_ANIMGROUP_TALL_JUMP_LANDING, this->modelAnimType);
-        s32 sp3C;
+        s32 fallLandingResult;
 
         if (this->stateFlags2 & PLAYER_STATE2_BACKFLIPPING_OR_SIDEHOPPING) {
             if (Player_IsUnfriendlyZTargeting(this)) {
@@ -8458,17 +8458,17 @@ void Player_UpdateMidair(Player* this, PlayState* play) {
             return;
         }
 
-        sp3C = Player_SetupFallLanding(play, this);
+        fallLandingResult = Player_SetupFallLanding(play, this);
 
-        if (sp3C > 0) {
+        if (fallLandingResult > 0) {
             Player_SetupReturnToStandStillSetAnim(this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_TALL_JUMP_LANDING, this->modelAnimType), play);
             this->skelAnime.endFrame = 8.0f;
-            if (sp3C == 1) {
+            if (fallLandingResult == 1) {
                 this->genericTimer = 10;
             } else {
                 this->genericTimer = 20;
             }
-        } else if (sp3C == 0) {
+        } else if (fallLandingResult == 0) {
             Player_SetupReturnToStandStillSetAnim(this, anim, play);
         }
     }
@@ -8594,8 +8594,8 @@ void Player_JumpSlash(Player* this, PlayState* play) {
         }
 
         if (Player_SetupFallLanding(play, this) >= 0) {
-            this->meleeWeaponAnimation += 2;
-            Player_SetupMeleeWeaponAttackBehavior(play, this, this->meleeWeaponAnimation);
+            this->meleeAttackType += 2;
+            Player_SetupMeleeWeaponAttackBehavior(play, this, this->meleeAttackType);
             this->slashCounter = 3;
             Player_PlayLandingSfx(this);
         }
@@ -8603,19 +8603,19 @@ void Player_JumpSlash(Player* this, PlayState* play) {
 }
 
 s32 Player_SetupReleaseSpinAttack(Player* this, PlayState* play) {
-    s32 temp;
+    s32 meleeAttackType;
 
     if (Player_SetupCutscene(play, this)) {
         this->stateFlags2 |= PLAYER_STATE2_RELEASING_SPIN_ATTACK;
     } else {
         if (!CHECK_BTN_ALL(sControlInput->cur.button, BTN_B)) {
             if ((this->spinAttackTimer >= 0.85f) || Player_CanQuickspin(this)) {
-                temp = D_80854384[Player_HoldsTwoHandedWeapon(this)];
+                meleeAttackType = sBigSpinAttackMWAs[Player_HoldsTwoHandedWeapon(this)];
             } else {
-                temp = D_80854380[Player_HoldsTwoHandedWeapon(this)];
+                meleeAttackType = sSmallSpinAttackMWAs[Player_HoldsTwoHandedWeapon(this)];
             }
 
-            Player_SetupMeleeWeaponAttackBehavior(play, this, temp);
+            Player_SetupMeleeWeaponAttackBehavior(play, this, meleeAttackType);
             Player_SetupInvincibilityNoDamageFlash(this, -8);
 
             this->stateFlags2 |= PLAYER_STATE2_RELEASING_SPIN_ATTACK;
@@ -10116,8 +10116,8 @@ void Player_UpdateCamAndSeqModes(PlayState* play, Player* this) {
                 }
             } else if (this->stateFlags1 & PLAYER_STATE1_FREEFALLING) {
                 camMode = CAM_MODE_FREEFALL;
-            } else if ((this->isMeleeWeaponAttacking != 0) && (this->meleeWeaponAnimation >= PLAYER_MWA_FORWARD_SLASH_1H) &&
-                       (this->meleeWeaponAnimation < PLAYER_MWA_SPIN_ATTACK_1H)) {
+            } else if ((this->isMeleeWeaponAttacking != 0) && (this->meleeAttackType >= PLAYER_MELEEATKTYPE_FORWARD_SLASH_1H) &&
+                       (this->meleeAttackType < PLAYER_MELEEATKTYPE_SPIN_ATTACK_1H)) {
                 camMode = CAM_MODE_STILL;
             } else {
                 camMode = CAM_MODE_NORMAL;
@@ -13172,7 +13172,7 @@ s32 Player_SetupMeleeWeaponAttack(Player* this, PlayState* play) {
 
             Player_SetupMeleeWeaponAttackBehavior(play, this, attackAnim);
 
-            if (attackAnim >= PLAYER_MWA_SPIN_ATTACK_1H) {
+            if (attackAnim >= PLAYER_MELEEATKTYPE_SPIN_ATTACK_1H) {
                 this->stateFlags2 |= PLAYER_STATE2_RELEASING_SPIN_ATTACK;
                 Player_SetupSpinAttackActor(play, this, 0);
                 return 1;
@@ -13188,7 +13188,7 @@ s32 Player_SetupMeleeWeaponAttack(Player* this, PlayState* play) {
 static Vec3f sShockwaveRaycastPos = { 0.0f, 40.0f, 45.0f };
 
 void Player_MeleeWeaponAttack(Player* this, PlayState* play) {
-    struct_80854190* attackAnim = &D_80854190[this->meleeWeaponAnimation];
+    MeleeAttackAnimInfo* attackAnim = &sMeleeAttackAnims[this->meleeAttackType];
 
     this->stateFlags2 |= PLAYER_STATE2_DISABLE_MOVE_ROTATION_WHILE_Z_TARGETING;
 
@@ -13232,8 +13232,8 @@ void Player_MeleeWeaponAttack(Player* this, PlayState* play) {
                 this->stateFlags3 |= PLAYER_STATE3_ENDING_MELEE_ATTACK;
             }
         } else if (this->heldItemActionParam == PLAYER_AP_HAMMER) {
-            if ((this->meleeWeaponAnimation == PLAYER_MWA_HAMMER_FORWARD) ||
-                (this->meleeWeaponAnimation == PLAYER_MWA_JUMPSLASH_FINISH)) {
+            if ((this->meleeAttackType == PLAYER_MELEEATKTYPE_HAMMER_FORWARD) ||
+                (this->meleeAttackType == PLAYER_MELEEATKTYPE_JUMPSLASH_FINISH)) {
                 static Vec3f zeroVec = { 0.0f, 0.0f, 0.0f };
                 Vec3f shockwavePos;
                 f32 sp2C;
@@ -13244,9 +13244,9 @@ void Player_MeleeWeaponAttack(Player* this, PlayState* play) {
                 Math_ScaledStepToS(&this->actor.focus.rot.x, Math_Atan2S(45.0f, sp2C), 800);
                 Player_UpdateLookAngles(this, true);
 
-                if ((((this->meleeWeaponAnimation == PLAYER_MWA_HAMMER_FORWARD) &&
+                if ((((this->meleeAttackType == PLAYER_MELEEATKTYPE_HAMMER_FORWARD) &&
                       LinkAnimation_OnFrame(&this->skelAnime, 7.0f)) ||
-                     ((this->meleeWeaponAnimation == PLAYER_MWA_JUMPSLASH_FINISH) &&
+                     ((this->meleeAttackType == PLAYER_MELEEATKTYPE_JUMPSLASH_FINISH) &&
                       LinkAnimation_OnFrame(&this->skelAnime, 2.0f))) &&
                     (sp2C > -40.0f) && (sp2C < 40.0f)) {
                     Player_SetupHammerHit(play, this);

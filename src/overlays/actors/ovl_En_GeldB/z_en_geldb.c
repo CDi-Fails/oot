@@ -282,7 +282,7 @@ s32 EnGeldB_ReactToPlayer(PlayState* play, EnGeldB* this, s16 arg2) {
     angleToLink = ABS(angleToLink);
 
     if (func_800354B4(play, thisx, 100.0f, 0x2710, 0x3E80, thisx->shape.rot.y)) {
-        if (player->meleeWeaponAnimation == PLAYER_MWA_JUMPSLASH_START) {
+        if (player->meleeAttackType == PLAYER_MELEEATKTYPE_JUMPSLASH_START) {
             EnGeldB_SetupSpinDodge(this, play);
             return true;
         } else if (play->gameplayFrames & 1) {
@@ -296,7 +296,7 @@ s32 EnGeldB_ReactToPlayer(PlayState* play, EnGeldB* this, s16 arg2) {
             (thisx->xzDistToPlayer < 90.0f)) {
             EnGeldB_SetupJump(this);
             return true;
-        } else if (player->meleeWeaponAnimation == PLAYER_MWA_JUMPSLASH_START) {
+        } else if (player->meleeAttackType == PLAYER_MELEEATKTYPE_JUMPSLASH_START) {
             EnGeldB_SetupSpinDodge(this, play);
             return true;
         } else if ((thisx->xzDistToPlayer < 90.0f) && (play->gameplayFrames & 1)) {
@@ -1145,7 +1145,7 @@ void EnGeldB_Block(EnGeldB* this, PlayState* play) {
         if ((ABS(angleToLink) <= 0x4000) && (this->actor.xzDistToPlayer < 40.0f) &&
             (ABS(this->actor.yDistToPlayer) < 50.0f)) {
             if (func_800354B4(play, &this->actor, 100.0f, 0x2710, 0x4000, this->actor.shape.rot.y)) {
-                if (player->meleeWeaponAnimation == PLAYER_MWA_JUMPSLASH_START) {
+                if (player->meleeAttackType == PLAYER_MELEEATKTYPE_JUMPSLASH_START) {
                     EnGeldB_SetupSpinDodge(this, play);
                 } else if (play->gameplayFrames & 1) {
                     EnGeldB_SetupBlock(this);
@@ -1166,7 +1166,7 @@ void EnGeldB_Block(EnGeldB* this, PlayState* play) {
         }
     } else if ((this->timer == 0) &&
                func_800354B4(play, &this->actor, 100.0f, 0x2710, 0x4000, this->actor.shape.rot.y)) {
-        if (player->meleeWeaponAnimation == PLAYER_MWA_JUMPSLASH_START) {
+        if (player->meleeAttackType == PLAYER_MELEEATKTYPE_JUMPSLASH_START) {
             EnGeldB_SetupSpinDodge(this, play);
         } else if (!EnGeldB_DodgeRanged(play, this)) {
             if (play->gameplayFrames & 1) {
