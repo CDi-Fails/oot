@@ -201,7 +201,7 @@ void Player_SidewalkChargingSpinAttack(Player* this, PlayState* play);
 void Player_JumpUpToLedge(Player* this, PlayState* play);
 void Player_RunMiniCutsceneFunc(Player* this, PlayState* play);
 void func_80845CA4(Player* this, PlayState* play);
-void func_80845EF8(Player* this, PlayState* play);
+void Player_OpenDoor(Player* this, PlayState* play);
 void Player_LiftActor(Player* this, PlayState* play);
 void Player_ThrowStonePillar(Player* this, PlayState* play);
 void Player_LiftSilverBoulder(Player* this, PlayState* play);
@@ -261,7 +261,7 @@ void Player_SetupElectricShock(Player* this, PlayState* play);
 s32 func_8084FCAC(Player* this, PlayState* play);
 void Player_BowStringMoveAfterShot(Player* this);
 void Player_BunnyHoodPhysics(Player* this);
-s32 Player_SetupMeleeWeaponAttack(Player* this, PlayState* play);
+s32 Player_SetupStartMeleeWeaponAttack(Player* this, PlayState* play);
 void Player_MeleeWeaponAttack(Player* this, PlayState* play);
 void Player_MeleeWeaponRebound(Player* this, PlayState* play);
 void Player_ChooseFaroresWindOption(Player* this, PlayState* play);
@@ -2711,7 +2711,7 @@ s32 Player_EndAimFpsItem(Player* this, PlayState* play) {
     return 1;
 }
 
-void func_808355DC(Player* this) {
+void Player_SetZTargetFriendlyYaw(Player* this) {
     this->stateFlags1 |= PLAYER_STATE1_Z_TARGETING_FRIENDLY;
 
     if (!(this->skelAnime.moveFlags & PLAYER_ANIMMOVEFLAGS_7) && (this->actor.bgCheckFlags & BGCHECKFLAG_PLAYER_WALL_INTERACT) &&
@@ -2836,7 +2836,7 @@ s32 Player_ThrowBoomerang(Player* this, PlayState* play) {
             boomerang->returnTimer = 20;
             this->stateFlags1 |= PLAYER_STATE1_AWAITING_THROWN_BOOMERANG;
             if (!Player_IsUnfriendlyZTargeting(this)) {
-                func_808355DC(this);
+                Player_SetZTargetFriendlyYaw(this);
             }
             this->unk_A73 = 4;
             func_8002F7DC(&this->actor, NA_SE_IT_BOOMERANG_THROW);
@@ -2965,8 +2965,8 @@ void Player_UseItem(PlayState* play, Player* this, s32 item) {
     actionParam = Player_ItemToActionParam(item);
 
     if (((this->heldItemActionParam == this->itemActionParam) &&
-         (!(this->stateFlags1 & PLAYER_STATE1_SHIELDING) || (Player_ActionToMeleeWeapon(actionParam) != PLAYER_MELEEWEAPON_NONE) ||
-          (actionParam == PLAYER_AP_NONE))) ||
+         (!(this->stateFlags1 & PLAYER_STATE1_SHIELDING) ||
+          (Player_ActionToMeleeWeapon(actionParam) != PLAYER_MELEEWEAPON_NONE) || (actionParam == PLAYER_AP_NONE))) ||
         ((this->itemActionParam < 0) &&
          ((Player_ActionToMeleeWeapon(actionParam) != PLAYER_MELEEWEAPON_NONE) || (actionParam == PLAYER_AP_NONE)))) {
 
@@ -3031,8 +3031,8 @@ void Player_UseItem(PlayState* play, Player* this, s32 item) {
 
                 if ((this->heldItemActionParam >= 0) && (Player_ActionToMagicSpell(this, actionParam) < 0) &&
                     (item != this->heldItemId) &&
-                    (sAnimtypeToItemChangeAnims[gPlayerModelTypes[this->modelGroup][PLAYER_MODELGROUPENTRY_ANIM]][nextAnimType] !=
-                     PLAYER_ITEM_CHANGE_DEFAULT)) {
+                    (sAnimtypeToItemChangeAnims[gPlayerModelTypes[this->modelGroup][PLAYER_MODELGROUPENTRY_ANIM]]
+                                               [nextAnimType] != PLAYER_ITEM_CHANGE_DEFAULT)) {
                     this->heldItemId = item;
                     this->stateFlags1 |= PLAYER_STATE1_START_CHANGE_ITEM;
                 } else {
@@ -3210,7 +3210,7 @@ s32 Player_UpdateLookAngles(Player* this, s32 syncUpperRotToFocusRot) {
     return lookYaw;
 }
 
-void func_80836BEC(Player* this, PlayState* play) {
+void Player_SetupZTargeting(Player* this, PlayState* play) {
     s32 isRangeCheckDisabled = false;
     s32 zTrigPressed = CHECK_BTN_ALL(sControlInput->cur.button, BTN_Z);
     Actor* actorToTarget;
@@ -3278,7 +3278,7 @@ void func_80836BEC(Player* this, PlayState* play) {
                     this->stateFlags1 &= ~PLAYER_STATE1_30;
                 } else {
                     if (!(this->stateFlags1 & (PLAYER_STATE1_Z_TARGETING_FRIENDLY | PLAYER_STATE1_30))) {
-                        func_808355DC(this);
+                        Player_SetZTargetFriendlyYaw(this);
                     }
                 }
             }
@@ -3314,8 +3314,7 @@ void func_80836BEC(Player* this, PlayState* play) {
     }
 }
 
-// If not in scene transition, or if lacking attention mode, checks for analog stick distance. If none, returns false with generic velocity and yaw set to analog stick angle.
-s32 Player_SetVelocityAndYaw(PlayState* play, Player* this, f32* velocity, s16* yaw, f32 arg4) {
+s32 Player_CalculateTargetVelocityAndYaw(PlayState* play, Player* this, f32* targetVelocity, s16* targetYaw, f32 arg4) {
     f32 baseSpeedScale;
     f32 slope;
     f32 slopeSpeedScale;
@@ -3323,22 +3322,22 @@ s32 Player_SetVelocityAndYaw(PlayState* play, Player* this, f32* velocity, s16* 
 
     if ((this->attentionMode != PLAYER_ATTENTIONMODE_NONE) || (play->transitionTrigger == TRANS_TRIGGER_START) ||
         (this->stateFlags1 & PLAYER_STATE1_EXITING_SCENE)) {
-        *velocity = 0.0f;
-        *yaw = this->actor.shape.rot.y;
+        *targetVelocity = 0.0f;
+        *targetYaw = this->actor.shape.rot.y;
     } else {
-        *velocity = sAnalogStickDistance;
-        *yaw = sAnalogStickAngle;
+        *targetVelocity = sAnalogStickDistance;
+        *targetYaw = sAnalogStickAngle;
 
         if (arg4 != 0.0f) {
-            *velocity -= 20.0f;
-            if (*velocity < 0.0f) {
-                *velocity = 0.0f;
+            *targetVelocity -= 20.0f;
+            if (*targetVelocity < 0.0f) {
+                *targetVelocity = 0.0f;
             } else {
-                baseSpeedScale = 1.0f - Math_CosS(*velocity * 450.0f);
-                *velocity = ((baseSpeedScale * baseSpeedScale) * 30.0f) + 7.0f;
+                baseSpeedScale = 1.0f - Math_CosS(*targetVelocity * 450.0f);
+                *targetVelocity = ((baseSpeedScale * baseSpeedScale) * 30.0f) + 7.0f;
             }
         } else {
-            *velocity *= 0.8f;
+            *targetVelocity *= 0.8f;
         }
 
         if (sAnalogStickDistance != 0.0f) {
@@ -3353,8 +3352,8 @@ s32 Player_SetVelocityAndYaw(PlayState* play, Player* this, f32* velocity, s16* 
                 }
             }
 
-            *velocity = (*velocity * 0.14f) - (8.0f * slopeSpeedScale * slopeSpeedScale);
-            *velocity = CLAMP(*velocity, 0.0f, speedLimit);
+            *targetVelocity = (*targetVelocity * 0.14f) - (8.0f * slopeSpeedScale * slopeSpeedScale);
+            *targetVelocity = CLAMP(*targetVelocity, 0.0f, speedLimit);
 
             return 1;
         }
@@ -3367,23 +3366,22 @@ s32 Player_StepLinearVelocityToZero(Player* this) {
     return Math_StepToF(&this->linearVelocity, 0.0f, REG(43) / 100.0f);
 }
 
-// If Player_SetVelocityAndYaw returns false, return a target velocity and yaw. If it returns true, add cam input dir yaw to target yaw.
-s32 Player_SetOrGetVelocityAndYaw(Player* this, f32* velocity, s16* yaw, f32 arg3, PlayState* play) {
-    if (!Player_SetVelocityAndYaw(play, this, velocity, yaw, arg3)) {
-        *yaw = this->actor.shape.rot.y;
+s32 Player_GetTargetVelocityAndYaw(Player* this, f32* targetVelocity, s16* targetYaw, f32 arg3, PlayState* play) {
+    if (!Player_CalculateTargetVelocityAndYaw(play, this, targetVelocity, targetYaw, arg3)) {
+        *targetYaw = this->actor.shape.rot.y;
 
         if (this->targetActor != NULL) {
             if ((play->actorCtx.targetCtx.unk_4B != 0) && !(this->stateFlags2 & PLAYER_STATE2_ALWAYS_DISABLE_MOVE_ROTATION)) {
-                *yaw = Math_Vec3f_Yaw(&this->actor.world.pos, &this->targetActor->focus.pos);
+                *targetYaw = Math_Vec3f_Yaw(&this->actor.world.pos, &this->targetActor->focus.pos);
                 return 0;
             }
         } else if (Player_IsFriendlyZTargeting(this)) {
-            *yaw = this->targetYaw;
+            *targetYaw = this->targetYaw;
         }
 
         return 0;
     } else {
-        *yaw += Camera_GetInputDirYaw(GET_ACTIVE_CAM(play));
+        *targetYaw += Camera_GetInputDirYaw(GET_ACTIVE_CAM(play));
         return 1;
     }
 }
@@ -3409,7 +3407,7 @@ static s32 (*sSubActions[])(Player* this, PlayState* play) = {
     Player_SetupSpeakOrCheck,              // 4
     Player_SetupSpecialWallInteraction,    // 5
     Player_SetupRollOrPutAway,             // 6
-    Player_SetupMeleeWeaponAttack,         // 7
+    Player_SetupStartMeleeWeaponAttack,    // 7
     Player_SetupStartChargeSpinAttack,     // 8
     Player_SetupPutDownOrThrowActor,       // 9
     Player_SetupJumpSlashOrRoll,           // 10
@@ -3452,9 +3450,9 @@ s32 Player_SetupSubAction(PlayState* play, Player* this, s8* subActionIndex, s32
     return 0;
 }
 
-// Checks if current anim is certain number of frames from the end, returns -1 if false
-// If true, then returns 0 if sub-action can be performed, returns 1 if velocity is slowed down and target yaw is set
-s32 Player_SetupInterruptAction(PlayState* play, Player* this, SkelAnime* skelAnime, f32 framesFromEnd) {
+// Checks if action is interrupted within a certain number of frames from the end of the current animation
+// Returns -1 is action is not interrupted at all, 0 if interrupted by a sub-action, 1 if interrupted by the player moving
+s32 Player_IsActionInterrupted(PlayState* play, Player* this, SkelAnime* skelAnime, f32 framesFromEnd) {
     f32 targetVelocity;
     s16 targetYaw;
 
@@ -3463,7 +3461,7 @@ s32 Player_SetupInterruptAction(PlayState* play, Player* this, SkelAnime* skelAn
             return 0;
         }
 
-        if (Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.018f, play)) {
+        if (Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.018f, play)) {
             return 1;
         }
     }
@@ -3620,7 +3618,7 @@ static u32 sMeleeWeaponDmgFlags[][2] = {
     { DMG_DEKU_STICK, DMG_JUMP_MASTER },   { DMG_HAMMER_SWING, DMG_HAMMER_JUMP },
 };
 
-void Player_SetupMeleeWeaponAttackBehavior(PlayState* play, Player* this, s32 meleeAttackType) {
+void Player_StartMeleeWeaponAttack(PlayState* play, Player* this, s32 meleeAttackType) {
     s32 pad;
     u32 dmgFlags;
     s32 meleeWeapon;
@@ -4532,7 +4530,7 @@ s32 Player_SetupOpenDoor(Player* this, PlayState* play) {
                     anim = GET_PLAYER_ANIM(PLAYER_ANIMGROUP_OPEN_DOOR_CHILD_RIGHT, this->modelAnimType);
                 }
 
-                Player_SetActionFunc(play, this, func_80845EF8, 0);
+                Player_SetActionFunc(play, this, Player_OpenDoor, 0);
                 Player_UnequipItem(play, this);
 
                 if (doorDirection < 0) {
@@ -5292,7 +5290,7 @@ s32 Player_SetupCUpBehavior(Player* this, PlayState* play) {
 }
 
 void Player_SetupJumpSlash(PlayState* play, Player* this, s32 arg2, f32 xzVelocity, f32 yVelocity) {
-    Player_SetupMeleeWeaponAttackBehavior(play, this, arg2);
+    Player_StartMeleeWeaponAttack(play, this, arg2);
     Player_SetActionFunc(play, this, Player_JumpSlash, 0);
 
     this->stateFlags3 |= PLAYER_STATE3_MIDAIR;
@@ -5513,13 +5511,13 @@ s32 Player_SetupDefend(Player* this, PlayState* play) {
     return 0;
 }
 
-s32 func_8083C484(Player* this, f32* arg1, s16* arg2) {
-    s16 yaw = this->currentYaw - *arg2;
+s32 Player_SetupTurnAroundRunning(Player* this, f32* targetVelocity, s16* targetYaw) {
+    s16 yawDiff = this->currentYaw - *targetYaw;
 
-    if (ABS(yaw) > 0x6000) {
+    if (ABS(yawDiff) > DEG_TO_BINANG(135.0f)) {
         if (Player_StepLinearVelocityToZero(this)) {
-            *arg1 = 0.0f;
-            *arg2 = this->currentYaw;
+            *targetVelocity = 0.0f;
+            *targetYaw = this->currentYaw;
         } else {
             return 1;
         }
@@ -6087,7 +6085,7 @@ void func_8083DDC8(Player* this, PlayState* play) {
     }
 }
 
-void func_8083DF68(Player* this, f32 targetVelocity, s16 targetYaw) {
+void Player_SetRunVelocityAndYaw(Player* this, f32 targetVelocity, s16 targetYaw) {
     Math_AsymStepToF(&this->linearVelocity, targetVelocity, REG(19) / 100.0f, 1.5f);
     Math_ScaledStepToS(&this->currentYaw, targetYaw, REG(27));
 }
@@ -6971,7 +6969,7 @@ void Player_UnfriendlyZTargetStandingStill(Player* this, PlayState* play) {
             return;
         }
 
-        Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
+        Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
 
         moveDir = Player_GetUnfriendlyZTargetMoveDirection(this, targetVelocity, targetYaw);
 
@@ -7048,7 +7046,7 @@ void Player_FriendlyZTargetStandingStill(Player* this, PlayState* play) {
             return;
         }
 
-        Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
+        Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
 
         moveDir = Player_GetFriendlyZTargetingMoveDirection(this, &targetVelocity, &targetYaw, play);
 
@@ -7169,7 +7167,7 @@ void Player_StandingStill(Player* this, PlayState* play) {
                 return;
             }
 
-            Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.018f, play);
+            Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.018f, play);
 
             if (targetVelocity != 0.0f) {
                 Player_SetupZTargetRunning(this, play, targetYaw);
@@ -7242,7 +7240,7 @@ void Player_EndSidewalk(Player* this, PlayState* play) {
             return;
         }
 
-        Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
+        Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
         temp1 = Player_GetFriendlyZTargetingMoveDirection(this, &targetVelocity, &targetYaw, play);
 
         if (temp1 > 0) {
@@ -7358,7 +7356,7 @@ void Player_FriendlyBackwalk(Player* this, PlayState* play) {
             return;
         }
 
-        Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
+        Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
         moveDir = Player_GetFriendlyZTargetingMoveDirection(this, &targetVelocity, &targetYaw, play);
 
         if (moveDir >= 0) {
@@ -7398,7 +7396,7 @@ void Player_HaltFriendlyBackwalk(Player* this, PlayState* play) {
     Player_StepLinearVelocityToZero(this);
 
     if (!Player_SetupSubAction(play, this, sFriendlyBackwalkSubActions, 1)) {
-        Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
+        Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
 
         if (this->linearVelocity == 0.0f) {
             this->currentYaw = this->actor.shape.rot.y;
@@ -7452,7 +7450,7 @@ void Player_Sidewalk(Player* this, PlayState* play) {
             return;
         }
 
-        Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
+        Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
 
         if (Player_IsFriendlyZTargeting(this)) {
             moveDir = Player_GetFriendlyZTargetingMoveDirection(this, &targetVelocity, &targetYaw, play);
@@ -7514,7 +7512,7 @@ void Player_Turn(Player* this, PlayState* play) {
                                      this->skelAnime.morphTable, D_80853410);
     }
 
-    Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.018f, play);
+    Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.018f, play);
 
     if (!Player_SetupSubAction(play, this, sTurnSubActions, 1)) {
         if (targetVelocity != 0.0f) {
@@ -7638,10 +7636,10 @@ void Player_Run(Player* this, PlayState* play) {
             return;
         }
 
-        Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.018f, play);
+        Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.018f, play);
 
-        if (!func_8083C484(this, &targetVelocity, &targetYaw)) {
-            func_8083DF68(this, targetVelocity, targetYaw);
+        if (!Player_SetupTurnAroundRunning(this, &targetVelocity, &targetYaw)) {
+            Player_SetRunVelocityAndYaw(this, targetVelocity, targetYaw);
             func_8083DDC8(this, play);
 
             if ((this->linearVelocity == 0.0f) && (targetVelocity == 0.0f)) {
@@ -7664,16 +7662,16 @@ void Player_ZTargetingRun(Player* this, PlayState* play) {
             return;
         }
 
-        Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
+        Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
 
-        if (!func_8083C484(this, &targetVelocity, &targetYaw)) {
+        if (!Player_SetupTurnAroundRunning(this, &targetVelocity, &targetYaw)) {
             if ((Player_IsFriendlyZTargeting(this) && (targetVelocity != 0.0f) && (Player_GetFriendlyZTargetingMoveDirection(this, &targetVelocity, &targetYaw, play) <= 0)) ||
                 (!Player_IsFriendlyZTargeting(this) && (Player_GetUnfriendlyZTargetMoveDirection(this, targetVelocity, targetYaw) <= 0))) {
                 Player_SetupStandingStillType(this, play);
                 return;
             }
 
-            func_8083DF68(this, targetVelocity, targetYaw);
+            Player_SetRunVelocityAndYaw(this, targetVelocity, targetYaw);
             func_8083DDC8(this, play);
 
             if ((this->linearVelocity == 0) && (targetVelocity == 0)) {
@@ -7696,7 +7694,7 @@ void Player_UnfriendlyBackwalk(Player* this, PlayState* play) {
             return;
         }
 
-        Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
+        Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
 
         if ((this->skelAnime.morphWeight == 0.0f) && (this->skelAnime.curFrame > 5.0f)) {
             Player_StepLinearVelocityToZero(this);
@@ -7723,7 +7721,7 @@ void Player_EndUnfriendlyBackwalk(Player* this, PlayState* play) {
     Player_StepLinearVelocityToZero(this);
 
     if (!Player_SetupSubAction(play, this, sEndBackwalkSubActions, 1)) {
-        Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
+        Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
 
         if (this->linearVelocity == 0.0f) {
             this->currentYaw = this->actor.shape.rot.y;
@@ -8088,11 +8086,11 @@ void func_808435C4(Player* this, PlayState* play) {
 
     if (this->genericVar == 0) {
         D_808535E0 = Player_SetupCurrentUpperAction(this, play);
-        if ((func_80834B5C == this->upperActionFunc) || (Player_SetupInterruptAction(play, this, &this->skelAnimeUpper, 4.0f) > 0)) {
+        if ((func_80834B5C == this->upperActionFunc) || (Player_IsActionInterrupted(play, this, &this->skelAnimeUpper, 4.0f) > 0)) {
             Player_SetActionFunc(play, this, Player_UnfriendlyZTargetStandingStill, 1);
         }
     } else {
-        temp = Player_SetupInterruptAction(play, this, &this->skelAnime, 4.0f);
+        temp = Player_IsActionInterrupted(play, this, &this->skelAnime, 4.0f);
         if ((temp != 0) && ((temp > 0) || LinkAnimation_Update(play, &this->skelAnime))) {
             Player_SetActionFunc(play, this, func_80843188, 1);
             this->stateFlags1 |= PLAYER_STATE1_SHIELDING;
@@ -8109,7 +8107,7 @@ void func_8084370C(Player* this, PlayState* play) {
 
     Player_StepLinearVelocityToZero(this);
 
-    sp1C = Player_SetupInterruptAction(play, this, &this->skelAnime, 16.0f);
+    sp1C = Player_IsActionInterrupted(play, this, &this->skelAnime, 16.0f);
     if ((sp1C != 0) && (LinkAnimation_Update(play, &this->skelAnime) || (sp1C > 0))) {
         Player_SetupStandingStillType(this, play);
     }
@@ -8188,7 +8186,7 @@ static PlayerAnimSfxEntry sKnockbackGetUpAnimSfx[] = {
 };
 
 void Player_GetUpFromKnockback(Player* this, PlayState* play) {
-    s32 interruptActionResult;
+    s32 actionInterruptResult;
 
     this->stateFlags2 |= PLAYER_STATE2_DISABLE_MOVE_ROTATION_WHILE_Z_TARGETING;
     Player_RoundUpInvincibilityTimer(this);
@@ -8196,8 +8194,10 @@ void Player_GetUpFromKnockback(Player* this, PlayState* play) {
     if (this->stateFlags1 & PLAYER_STATE1_IN_CUTSCENE) {
         LinkAnimation_Update(play, &this->skelAnime);
     } else {
-        interruptActionResult = Player_SetupInterruptAction(play, this, &this->skelAnime, 16.0f);
-        if ((interruptActionResult != 0) && (LinkAnimation_Update(play, &this->skelAnime) || (interruptActionResult > 0))) {
+        actionInterruptResult = Player_IsActionInterrupted(play, this, &this->skelAnime, 16.0f);
+        if ((actionInterruptResult != PLAYER_ACTIONINTERRUPT_BY_SUB_ACTION) &&
+            (LinkAnimation_Update(play, &this->skelAnime) ||
+             (actionInterruptResult > PLAYER_ACTIONINTERRUPT_BY_SUB_ACTION))) {
             Player_SetupStandingStillType(this, play);
         }
     }
@@ -8372,7 +8372,7 @@ void Player_UpdateMidair(Player* this, PlayState* play) {
         this->actor.gravity = -1.2f;
     }
 
-    Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
+    Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
 
     if (!(this->actor.bgCheckFlags & BGCHECKFLAG_GROUND)) {
         if (this->stateFlags1 & PLAYER_STATE1_HOLDING_ACTOR) {
@@ -8484,7 +8484,7 @@ static PlayerAnimSfxEntry sRollAnimSfx[] = {
 
 void Player_Rolling(Player* this, PlayState* play) {
     Actor* cylinderOc;
-    s32 temp;
+    s32 actionInterruptResult;
     s32 animDone;
     DynaPolyActor* wallPolyActor;
     s32 pad;
@@ -8504,8 +8504,9 @@ void Player_Rolling(Player* this, PlayState* play) {
         if (this->genericTimer != 0) {
             Math_StepToF(&this->linearVelocity, 0.0f, 2.0f);
 
-            temp = Player_SetupInterruptAction(play, this, &this->skelAnime, 5.0f);
-            if ((temp != 0) && ((temp > 0) || animDone)) {
+            actionInterruptResult = Player_IsActionInterrupted(play, this, &this->skelAnime, 5.0f);
+            if ((actionInterruptResult != PLAYER_ACTIONINTERRUPT_BY_SUB_ACTION) &&
+                ((actionInterruptResult > PLAYER_ACTIONINTERRUPT_BY_SUB_ACTION) || animDone)) {
                 Player_SetupReturnToStandStill(this, play);
             }
         } else {
@@ -8536,20 +8537,20 @@ void Player_Rolling(Player* this, PlayState* play) {
                 }
             }
 
-            if ((this->skelAnime.curFrame < 15.0f) || !Player_SetupMeleeWeaponAttack(this, play)) {
+            if ((this->skelAnime.curFrame < 15.0f) || !Player_SetupStartMeleeWeaponAttack(this, play)) {
                 if (this->skelAnime.curFrame >= 20.0f) {
                     Player_SetupReturnToStandStill(this, play);
                     return;
                 }
 
-                Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.018f, play);
+                Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.018f, play);
 
                 targetVelocity *= 1.5f;
                 if ((targetVelocity < 3.0f) || (this->relativeAnalogStickInputs[this->inputFrameCounter] != 0)) {
                     targetVelocity = 3.0f;
                 }
 
-                func_8083DF68(this, targetVelocity, this->actor.shape.rot.y);
+                Player_SetRunVelocityAndYaw(this, targetVelocity, this->actor.shape.rot.y);
 
                 if (func_8084269C(play, this)) {
                     func_8002F8F0(&this->actor, NA_SE_PL_ROLL_DUST - SFX_FLAG);
@@ -8589,14 +8590,14 @@ void Player_JumpSlash(Player* this, PlayState* play) {
         Player_SetupMeleeAttack(this, 6.0f, 7.0f, 99.0f);
 
         if (!(this->actor.bgCheckFlags & BGCHECKFLAG_GROUND)) {
-            Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
+            Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
             func_8083DFE0(this, &targetVelocity, &this->currentYaw);
             return;
         }
 
         if (Player_SetupFallLanding(play, this) >= 0) {
             this->meleeAttackType += 2;
-            Player_SetupMeleeWeaponAttackBehavior(play, this, this->meleeAttackType);
+            Player_StartMeleeWeaponAttack(play, this, this->meleeAttackType);
             this->slashCounter = 3;
             Player_PlayLandingSfx(this);
         }
@@ -8616,7 +8617,7 @@ s32 Player_SetupReleaseSpinAttack(Player* this, PlayState* play) {
                 meleeAttackType = sSmallSpinAttackMWAs[Player_HoldsTwoHandedWeapon(this)];
             }
 
-            Player_SetupMeleeWeaponAttackBehavior(play, this, meleeAttackType);
+            Player_StartMeleeWeaponAttack(play, this, meleeAttackType);
             Player_SetupInvincibilityNoDamageFlash(this, -8);
 
             this->stateFlags2 |= PLAYER_STATE2_RELEASING_SPIN_ATTACK;
@@ -8666,7 +8667,7 @@ void Player_ChargeSpinAttack(Player* this, PlayState* play) {
 
     if (LinkAnimation_Update(play, &this->skelAnime)) {
         Player_EndAnimMovement(this);
-        func_808355DC(this);
+        Player_SetZTargetFriendlyYaw(this);
         this->stateFlags1 &= ~PLAYER_STATE1_Z_TARGETING_FRIENDLY;
         Player_PlayAnimLoop(play, this, sSpinAttackChargeAnims[Player_HoldsTwoHandedWeapon(this)]);
         this->genericTimer = -1;
@@ -8685,7 +8686,7 @@ void Player_ChargeSpinAttack(Player* this, PlayState* play) {
                 Player_CancelSpinAttackCharge(this, play);
             }
         } else if (!Player_SetupReleaseSpinAttack(this, play)) {
-            Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
+            Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
 
             moveDir = Player_GetSpinAttackMoveDirection(this, &targetVelocity, &targetYaw, play);
             if (moveDir > 0) {
@@ -8732,7 +8733,7 @@ void Player_WalkChargingSpinAttack(Player* this, PlayState* play) {
 
     if (!Player_IsBusy(this, play) && !Player_SetupReleaseSpinAttack(this, play)) {
         Player_UpdateSpinAttackTimer(this);
-        Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
+        Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
 
         moveDir = Player_GetSpinAttackMoveDirection(this, &targetVelocity, &targetYaw, play);
 
@@ -8800,7 +8801,7 @@ void Player_SidewalkChargingSpinAttack(Player* this, PlayState* play) {
 
     if (!Player_IsBusy(this, play) && !Player_SetupReleaseSpinAttack(this, play)) {
         Player_UpdateSpinAttackTimer(this);
-        Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
+        Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
 
         moveDir = Player_GetSpinAttackMoveDirection(this, &targetVelocity, &targetYaw, play);
 
@@ -8836,7 +8837,7 @@ void Player_SidewalkChargingSpinAttack(Player* this, PlayState* play) {
 void Player_JumpUpToLedge(Player* this, PlayState* play) {
     s32 animDone;
     f32 jumpVelocityY;
-    s32 interruptActionResult;
+    s32 actionInterruptResult;
     f32 landingSfxFrame;
 
     this->stateFlags2 |= PLAYER_STATE2_DISABLE_MOVE_ROTATION_WHILE_Z_TARGETING;
@@ -8867,14 +8868,14 @@ void Player_JumpUpToLedge(Player* this, PlayState* play) {
             return;
         }
     } else {
-        interruptActionResult = Player_SetupInterruptAction(play, this, &this->skelAnime, 4.0f);
+        actionInterruptResult = Player_IsActionInterrupted(play, this, &this->skelAnime, 4.0f);
 
-        if (interruptActionResult == 0) {
+        if (actionInterruptResult == PLAYER_ACTIONINTERRUPT_BY_SUB_ACTION) {
             this->stateFlags1 &= ~(PLAYER_STATE1_CLIMBING_ONTO_LEDGE | PLAYER_STATE1_JUMPING);
             return;
         }
 
-        if ((animDone != 0) || (interruptActionResult > 0)) {
+        if ((animDone != 0) || (actionInterruptResult > PLAYER_ACTIONINTERRUPT_BY_SUB_ACTION)) {
             Player_SetupStandingStillNoMorph(this, play);
             this->stateFlags1 &= ~(PLAYER_STATE1_CLIMBING_ONTO_LEDGE | PLAYER_STATE1_JUMPING);
             return;
@@ -8950,7 +8951,7 @@ s32 func_80845964(PlayState* play, Player* this, CsCmdActorAction* arg2, f32 arg
 
     this->stateFlags2 |= PLAYER_STATE2_DISABLE_MOVE_ROTATION_WHILE_Z_TARGETING;
     func_80841EE4(this, play);
-    func_8083DF68(this, arg3, arg4);
+    Player_SetRunVelocityAndYaw(this, arg3, arg4);
 
     if ((arg3 == 0.0f) && (this->linearVelocity == 0.0f)) {
         Player_EndRun(this, play);
@@ -9048,15 +9049,15 @@ void func_80845CA4(Player* this, PlayState* play) {
     }
 }
 
-void func_80845EF8(Player* this, PlayState* play) {
-    s32 sp2C;
+void Player_OpenDoor(Player* this, PlayState* play) {
+    s32 animDone;
 
     this->stateFlags2 |= PLAYER_STATE2_DISABLE_MOVE_ROTATION_WHILE_Z_TARGETING;
-    sp2C = LinkAnimation_Update(play, &this->skelAnime);
+    animDone = LinkAnimation_Update(play, &this->skelAnime);
 
     Player_SetupCurrentUpperAction(this, play);
 
-    if (sp2C) {
+    if (animDone) {
         if (this->genericTimer == 0) {
             if (DECR(this->doorTimer) == 0) {
                 this->genericTimer = 1;
@@ -9236,7 +9237,7 @@ void Player_StartThrowActor(Player* this, PlayState* play) {
     Player_StepLinearVelocityToZero(this);
 
     if (LinkAnimation_Update(play, &this->skelAnime) ||
-        ((this->skelAnime.curFrame >= 8.0f) && Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.018f, play))) {
+        ((this->skelAnime.curFrame >= 8.0f) && Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.018f, play))) {
         Player_SetupStandingStillType(this, play);
         return;
     }
@@ -9814,7 +9815,7 @@ void Player_UpdateBgcheck(PlayState* play, Player* this) {
         } else if ((this->stateFlags1 & PLAYER_STATE1_EXITING_SCENE) && ((this->sceneExitPosY - (s32)this->actor.world.pos.y) >= 100)) {
             updBgcheckFlags = UPDBGCHECKINFO_FLAG_0 | UPDBGCHECKINFO_FLAG_3 | UPDBGCHECKINFO_FLAG_4 | UPDBGCHECKINFO_FLAG_5;
         } else if (!(this->stateFlags1 & PLAYER_STATE1_EXITING_SCENE) &&
-                   ((func_80845EF8 == this->actionFunc) || (func_80845CA4 == this->actionFunc))) {
+                   ((Player_OpenDoor == this->actionFunc) || (func_80845CA4 == this->actionFunc))) {
             this->actor.bgCheckFlags &= ~(BGCHECKFLAG_WALL | BGCHECKFLAG_PLAYER_WALL_INTERACT);
             updBgcheckFlags = UPDBGCHECKINFO_FLAG_2 | UPDBGCHECKINFO_FLAG_3 | UPDBGCHECKINFO_FLAG_4 | UPDBGCHECKINFO_FLAG_5;
         } else {
@@ -10394,7 +10395,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
     }
 
     func_808473D4(play, this);
-    func_80836BEC(this, play);
+    Player_SetupZTargeting(this, play);
 
     if ((this->heldItemActionParam == PLAYER_AP_STICK) && (this->stickFlameTimer != 0)) {
         Player_UpdateDekuStick(play, this);
@@ -11258,7 +11259,7 @@ void Player_GrabPushPullWall(Player* this, PlayState* play) {
 
     if (LinkAnimation_Update(play, &this->skelAnime)) {
         if (!Player_SetupPushPullWallIdle(play, this)) {
-            Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
+            Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
             pushPullDir = Player_GetPushPullDirection(this, &targetVelocity, &targetYaw);
             if (pushPullDir > 0) {
                 Player_SetupPushWall(this, play);
@@ -11303,7 +11304,7 @@ void Player_PushWall(Player* this, PlayState* play) {
     Player_PushPullSetPositionAndYaw(play, this);
 
     if (!Player_SetupPushPullWallIdle(play, this)) {
-        Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
+        Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
         pushPullDir = Player_GetPushPullDirection(this, &targetVelocity, &targetYaw);
         if (pushPullDir < 0) {
             Player_SetupPullWall(this, play);
@@ -11357,7 +11358,7 @@ void Player_PullWall(Player* this, PlayState* play) {
     Player_PushPullSetPositionAndYaw(play, this);
 
     if (!Player_SetupPushPullWallIdle(play, this)) {
-        Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
+        Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
         pushPullDir = Player_GetPushPullDirection(this, &targetVelocity, &targetYaw);
         if (pushPullDir > 0) {
             Player_SetupPushWall(this, play);
@@ -11415,7 +11416,7 @@ void Player_GrabLedge(Player* this, PlayState* play) {
     Math_ScaledStepToS(&this->actor.shape.rot.y, this->currentYaw, 0x800);
 
     if (this->climbStatus != PLAYER_CLIMBSTATUS_MOVING_UP) {
-        Player_SetOrGetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
+        Player_GetTargetVelocityAndYaw(this, &targetVelocity, &targetYaw, 0.0f, play);
         if (this->analogStickInputs[this->inputFrameCounter] >= 0) {
             if (this->climbStatus > PLAYER_CLIMBSTATUS_MOVING_UP) {
                 anim = GET_PLAYER_ANIM(PLAYER_ANIMGROUP_KNOCKED_FROM_CLIMBING, this->modelAnimType);
@@ -11616,7 +11617,7 @@ static PlayerAnimSfxEntry sClimbLadderEndAnimSfx[] = {
 };
 
 void Player_EndClimb(Player* this, PlayState* play) {
-    s32 interruptActionResult;
+    s32 actionInterruptResult;
     f32* endFrames;
     CollisionPoly* floorPoly;
     s32 floorBgId;
@@ -11624,14 +11625,14 @@ void Player_EndClimb(Player* this, PlayState* play) {
 
     this->stateFlags2 |= PLAYER_STATE2_ALWAYS_DISABLE_MOVE_ROTATION;
 
-    interruptActionResult = Player_SetupInterruptAction(play, this, &this->skelAnime, 4.0f);
+    actionInterruptResult = Player_IsActionInterrupted(play, this, &this->skelAnime, 4.0f);
 
-    if (interruptActionResult == 0) {
+    if (actionInterruptResult == PLAYER_ACTIONINTERRUPT_BY_SUB_ACTION) {
         this->stateFlags1 &= ~PLAYER_STATE1_CLIMBING;
         return;
     }
 
-    if ((interruptActionResult > 0) || LinkAnimation_Update(play, &this->skelAnime)) {
+    if ((actionInterruptResult > PLAYER_ACTIONINTERRUPT_BY_SUB_ACTION) || LinkAnimation_Update(play, &this->skelAnime)) {
         Player_SetupStandingStillNoMorph(this, play);
         this->stateFlags1 &= ~PLAYER_STATE1_CLIMBING;
         return;
@@ -12091,7 +12092,7 @@ void Player_UpdateSwimIdle(Player* this, PlayState* play) {
                 Player_PlayLandingSfx(this);
             }
         } else {
-            Player_SetOrGetVelocityAndYaw(this, &swimVelocity, &swimYaw, 0.0f, play);
+            Player_GetTargetVelocityAndYaw(this, &swimVelocity, &swimYaw, 0.0f, play);
 
             if (swimVelocity != 0.0f) {
                 s16 temp = this->actor.shape.rot.y - swimYaw;
@@ -12136,7 +12137,7 @@ void Player_Swim(Player* this, PlayState* play) {
     Player_SetVerticalWaterVelocity(this);
 
     if (!Player_SetupSubAction(play, this, sSwimSubActions, 1) && !Player_SetupDive(play, this, sControlInput)) {
-        Player_SetOrGetVelocityAndYaw(this, &swimVelocity, &swimYaw, 0.0f, play);
+        Player_GetTargetVelocityAndYaw(this, &swimVelocity, &swimYaw, 0.0f, play);
 
         yawDiff = this->actor.shape.rot.y - swimYaw;
         if ((swimVelocity == 0.0f) || (ABS(yawDiff) > DEG_TO_BINANG(135.0f)) || (this->currentBoots == PLAYER_BOOTS_IRON)) {
@@ -12195,7 +12196,7 @@ void Player_ZTargetSwimming(Player* this, PlayState* play) {
     Player_SetVerticalWaterVelocity(this);
 
     if (!Player_SetupSubAction(play, this, sSwimSubActions, 1) && !Player_SetupDive(play, this, sControlInput)) {
-        Player_SetOrGetVelocityAndYaw(this, &swimVelocity, &swimYaw, 0.0f, play);
+        Player_GetTargetVelocityAndYaw(this, &swimVelocity, &swimYaw, 0.0f, play);
 
         if (swimVelocity == 0.0f) {
             Player_SetupSwimIdle(play, this);
@@ -12213,7 +12214,7 @@ void Player_UpdateDiveMovement(PlayState* play, Player* this, f32 swimNextVeloci
     f32 swimTargetVelocity;
     s16 swimTargetYaw;
 
-    Player_SetOrGetVelocityAndYaw(this, &swimTargetVelocity, &swimTargetYaw, 0.0f, play);
+    Player_GetTargetVelocityAndYaw(this, &swimTargetVelocity, &swimTargetYaw, 0.0f, play);
     Player_UpdateSwimMovement(this, &this->linearVelocity, swimTargetVelocity * 0.5f, swimTargetYaw);
     Player_UpdateSwimMovement(this, &this->actor.velocity.y, swimNextVelocity, this->currentYaw);
 }
@@ -13170,12 +13171,12 @@ void Player_BunnyHoodPhysics(Player* this) {
     }
 }
 
-s32 Player_SetupMeleeWeaponAttack(Player* this, PlayState* play) {
+s32 Player_SetupStartMeleeWeaponAttack(Player* this, PlayState* play) {
     if (Player_CanSwingBottleOrCastFishingRod(play, this) == false) {
         if (Player_CanJumpSlash(this) != false) {
             s32 attackAnim = Player_GetMeleeAttackAnim(this);
 
-            Player_SetupMeleeWeaponAttackBehavior(play, this, attackAnim);
+            Player_StartMeleeWeaponAttack(play, this, attackAnim);
 
             if (attackAnim >= PLAYER_MELEEATKTYPE_SPIN_ATTACK_1H) {
                 this->stateFlags2 |= PLAYER_STATE2_RELEASING_SPIN_ATTACK;
@@ -13214,7 +13215,7 @@ void Player_MeleeWeaponAttack(Player* this, PlayState* play) {
         func_8083C50C(this);
 
         if (LinkAnimation_Update(play, &this->skelAnime)) {
-            if (!Player_SetupMeleeWeaponAttack(this, play)) {
+            if (!Player_SetupStartMeleeWeaponAttack(this, play)) {
                 u8 savedMoveFlags = this->skelAnime.moveFlags;
                 LinkAnimationHeader* anim;
 

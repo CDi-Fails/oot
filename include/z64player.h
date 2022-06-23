@@ -603,6 +603,12 @@ typedef enum {
     /*  2 */ PLAYER_HURTFLOORTYPE_MAX
 } PlayerHurtFloorType;
 
+typedef enum {
+    /* -1 */ PLAYER_ACTIONINTERRUPT_NONE = -1,
+    /*  0 */ PLAYER_ACTIONINTERRUPT_BY_SUB_ACTION,
+    /*  1 */ PLAYER_ACTIONINTERRUPT_BY_MOVEMENT
+} PlayerActionInterruptResult;
+
 #define PLAYER_ANIMSFXFLAGS_0 (1 << 11) // 0x0800
 #define PLAYER_ANIMSFXFLAGS_1 (1 << 12) // 0x1000
 #define PLAYER_ANIMSFXFLAGS_2 (1 << 13) // 0x2000
