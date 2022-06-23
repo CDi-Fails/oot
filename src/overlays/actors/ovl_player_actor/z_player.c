@@ -350,7 +350,7 @@ s32 Player_StartFishing(PlayState* play);
 s32 Player_SetupRestrainedByEnemy(PlayState* play, Player* this);
 s32 Player_SetupPlayerCutscene(PlayState* play, Actor* actor, s32 csMode);
 void Player_SetupStandingStillMorph(Player* this, PlayState* play);
-s32 Player_SetupInflictDamage(PlayState* play, s32 damage);
+s32 Player_InflictDamageAndCheckForDeath(PlayState* play, s32 damage);
 void Player_StartTalkingWithActor(PlayState* play, Actor* actor);
 
 // .bss part 1
@@ -3904,7 +3904,7 @@ s32 Player_UpdateDamage(Player* this, PlayState* play) {
 
     if (this->voidRespawnCounter != 0) {
         if (!Player_InBlockingCsMode(play, this)) {
-            Player_SetupInflictDamage(play, -16);
+            Player_InflictDamageAndCheckForDeath(play, -16);
             this->voidRespawnCounter = 0;
         }
     } else {
@@ -8290,7 +8290,8 @@ static FallImpactInfo sFallImpactInfo[] = {
     { -16, 255, 140, 150, NA_SE_VO_LI_LAND_DAMAGE_S },
 };
 
-s32 func_80843E64(PlayState* play, Player* this) {
+// Returns 0 if landed safely, -1 if dead from fall, impactIndex + 1 if hurt from fall 
+s32 Player_SetupFallLanding(PlayState* play, Player* this) {
     s32 fallDistance;
 
     if ((sFloorSpecialProperty == BGCHECK_FLOORSPECIALPROPERTY_NO_FALL_DAMAGE) || (sFloorSpecialProperty == BGCHECK_FLOORSPECIALPROPERTY_VOID_ON_TOUCH)) {
@@ -8315,7 +8316,7 @@ s32 func_80843E64(PlayState* play, Player* this) {
 
         impactInfo = &sFallImpactInfo[impactIndex];
 
-        if (Player_SetupInflictDamage(play, impactInfo->damage)) {
+        if (Player_InflictDamageAndCheckForDeath(play, impactInfo->damage)) {
             return -1;
         }
 
@@ -8457,7 +8458,7 @@ void Player_UpdateMidair(Player* this, PlayState* play) {
             return;
         }
 
-        sp3C = func_80843E64(play, this);
+        sp3C = Player_SetupFallLanding(play, this);
 
         if (sp3C > 0) {
             Player_SetupReturnToStandStillSetAnim(this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_TALL_JUMP_LANDING, this->modelAnimType), play);
@@ -8592,7 +8593,7 @@ void Player_JumpSlash(Player* this, PlayState* play) {
             return;
         }
 
-        if (func_80843E64(play, this) >= 0) {
+        if (Player_SetupFallLanding(play, this) >= 0) {
             this->meleeWeaponAnimation += 2;
             Player_SetupMeleeWeaponAttackBehavior(play, this, this->meleeWeaponAnimation);
             this->slashCounter = 3;
@@ -9474,7 +9475,7 @@ void Player_Init(Actor* thisx, PlayState* play2) {
     play->grabPlayer = Player_SetupRestrainedByEnemy;
     play->startPlayerCutscene = Player_SetupPlayerCutscene;
     play->func_11D54 = Player_SetupStandingStillMorph;
-    play->damagePlayer = Player_SetupInflictDamage;
+    play->damagePlayer = Player_InflictDamageAndCheckForDeath;
     play->talkWithPlayer = Player_StartTalkingWithActor;
 
     thisx->room = -1;
@@ -10262,7 +10263,7 @@ void Player_Burning(PlayState* play, Player* this) {
         }
 
         if ((dmgCooldown & play->gameplayFrames) == 0) {
-            Player_SetupInflictDamage(play, -1);
+            Player_InflictDamageAndCheckForDeath(play, -1);
         }
     } else {
         this->isBurning = false;
@@ -13016,7 +13017,7 @@ void Player_FrozenInIce(Player* this, PlayState* play) {
         }
 
         if ((play->gameplayFrames % 4) == 0) {
-            Player_SetupInflictDamage(play, -1);
+            Player_InflictDamageAndCheckForDeath(play, -1);
         }
     } else {
         if (LinkAnimation_Update(play, &this->skelAnime)) {
@@ -14640,7 +14641,8 @@ void Player_SetupStandingStillMorph(Player* this, PlayState* play) {
     this->currentYaw = this->actor.shape.rot.y;
 }
 
-s32 Player_SetupInflictDamage(PlayState* play, s32 damage) {
+// Returns true if player is out of health and not in blocking cutscene mode
+s32 Player_InflictDamageAndCheckForDeath(PlayState* play, s32 damage) {
     Player* this = GET_PLAYER(play);
 
     if (!Player_InBlockingCsMode(play, this) && !Player_InflictDamage(play, this, damage)) {
