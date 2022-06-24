@@ -9849,7 +9849,7 @@ void Player_Init(Actor* thisx, PlayState* play2) {
     sSpawnFuncs[spawnMode](play, this);
 
     if (spawnMode != PLAYER_SPAWNMODE_NO_UPDATE_OR_DRAW) {
-        if ((gSaveContext.gameMode == 0) || (gSaveContext.gameMode == 3)) {
+        if ((gSaveContext.gameMode == GAMEMODE_NORMAL) || (gSaveContext.gameMode == GAMEMODE_END_CREDITS)) {
             this->naviActor = Player_SpawnFairy(play, this, &thisx->world.pos, &sNaviPosOffset, FAIRY_NAVI);
             if (gSaveContext.dogParams != 0) {
                 gSaveContext.dogParams |= 0x8000;
