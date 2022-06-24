@@ -1655,7 +1655,7 @@ void Player_StopInterruptableSfx(Player* this) {
 }
 
 u16 Player_GetMoveSfx(Player* this, u16 sfxId) {
-    return sfxId + this->moveSfxType;
+    return sfxId + this->surfaceMaterial;
 }
 
 void Player_PlayMoveSfx(Player* this, u16 sfxId) {
@@ -1663,7 +1663,7 @@ void Player_PlayMoveSfx(Player* this, u16 sfxId) {
 }
 
 u16 Player_GetMoveSfxForAge(Player* this, u16 sfxId) {
-    return sfxId + this->moveSfxType + this->ageProperties->ageMoveSfxOffset;
+    return sfxId + this->surfaceMaterial + this->ageProperties->ageMoveSfxOffset;
 }
 
 void Player_PlayMoveSfxForAge(Player* this, u16 sfxId) {
@@ -5107,7 +5107,7 @@ void Player_SetupMidairBehavior(Player* this, PlayState* play) {
                 Player_SetActionFunc(play, this, Player_UpdateMidair, 1);
                 Player_ResetAttributes(play, this);
 
-                this->moveSfxType = this->prevMoveSfxType;
+                this->surfaceMaterial = this->prevSurfaceMaterial;
 
                 if ((this->actor.bgCheckFlags & BGCHECKFLAG_GROUND_LEAVE) &&
                     !(this->stateFlags1 & PLAYER_STATE1_SWIMMING) &&
@@ -8009,7 +8009,7 @@ static Vec3f D_808545C0 = { 0.0f, 0.0f, 0.0f };
 s32 Player_SetupSpawnDustAtFeet(PlayState* play, Player* this) {
     Vec3f dustPos;
 
-    if ((this->moveSfxType == PLAYER_MOVESFXTYPE_DEFAULT) || (this->moveSfxType == PLAYER_MOVESFXTYPE_SAND)) {
+    if ((this->surfaceMaterial == BGCHECK_SURFACEMATERIAL_DIRT_DEFAULT) || (this->surfaceMaterial == BGCHECK_SURFACEMATERIAL_SAND)) {
         Player_GetDustPos(&this->actor.shape.feetPos[FOOT_LEFT], &dustPos,
                           this->actor.floorHeight - this->actor.shape.feetPos[FOOT_LEFT].y, 7.0f, 5.0f);
         func_800286CC(play, &dustPos, &D_808545B4, &D_808545C0, 50, 30);
@@ -10157,19 +10157,19 @@ void Player_UpdateBgcheck(PlayState* play, Player* this) {
 
     if (floorPoly != NULL) {
         this->floorProperty = func_80041EA4(&play->colCtx, floorPoly, this->actor.floorBgId);
-        this->prevMoveSfxType = this->moveSfxType;
+        this->prevSurfaceMaterial = this->surfaceMaterial;
 
         if (this->actor.bgCheckFlags & BGCHECKFLAG_WATER) {
             if (this->actor.yDistToWater < 20.0f) {
-                this->moveSfxType = PLAYER_MOVESFXTYPE_SHALLOW_WATER;
+                this->surfaceMaterial = BGCHECK_SURFACEMATERIAL_SHALLOW_WATER;
             } else {
-                this->moveSfxType = PLAYER_MOVESFXTYPE_DEEP_WATER;
+                this->surfaceMaterial = BGCHECK_SURFACEMATERIAL_DEEP_WATER;
             }
         } else {
             if (this->stateFlags2 & PLAYER_STATE2_SPAWN_DUST_AT_FEET) {
-                this->moveSfxType = PLAYER_MOVESFXTYPE_SAND;
+                this->surfaceMaterial = BGCHECK_SURFACEMATERIAL_SAND;
             } else {
-                this->moveSfxType = SurfaceType_SetMoveSfx(&play->colCtx, floorPoly, this->actor.floorBgId);
+                this->surfaceMaterial = SurfaceType_SetMoveSfx(&play->colCtx, floorPoly, this->actor.floorBgId);
             }
         }
 
@@ -11940,7 +11940,7 @@ void Player_EndClimb(Player* this, PlayState* play) {
         raycastPos.y = this->actor.world.pos.y + 20.0f;
         raycastPos.z = this->actor.world.pos.z;
         if (BgCheck_EntityRaycastFloor3(&play->colCtx, &floorPoly, &floorBgId, &raycastPos) != 0.0f) {
-            this->moveSfxType = SurfaceType_GetMoveSfx(&play->colCtx, floorPoly, floorBgId);
+            this->surfaceMaterial = SurfaceType_GetMoveSfx(&play->colCtx, floorPoly, floorBgId);
             Player_PlayLandingSfx(this);
         }
     }

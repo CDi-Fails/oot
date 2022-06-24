@@ -455,24 +455,6 @@ typedef enum {
 } PlayerCutsceneMode;
 
 typedef enum {
-    /* 0x00 */ PLAYER_MOVESFXTYPE_DEFAULT,
-    /* 0x01 */ PLAYER_MOVESFXTYPE_SAND,
-    /* 0x02 */ PLAYER_MOVESFXTYPE_STONE,
-    /* 0x03 */ PLAYER_MOVESFXTYPE_DIRT,
-    /* 0x04 */ PLAYER_MOVESFXTYPE_SHALLOW_WATER,
-    /* 0x05 */ PLAYER_MOVESFXTYPE_DEEP_WATER,
-    /* 0x06 */ PLAYER_MOVESFXTYPE_TALL_GRASS,
-    /* 0x07 */ PLAYER_MOVESFXTYPE_MAGMA,
-    /* 0x08 */ PLAYER_MOVESFXTYPE_GRASS,
-    /* 0x09 */ PLAYER_MOVESFXTYPE_WOOD_PLANK,
-    /* 0x0A */ PLAYER_MOVESFXTYPE_WOOD,
-    /* 0x0B */ PLAYER_MOVESFXTYPE_GRASS_2,
-    /* 0x0C */ PLAYER_MOVESFXTYPE_ICE,
-    /* 0x0D */ PLAYER_MOVESFXTYPE_CARPET,
-    /* 0x0E */ PLAYER_MOVESFXTYPE_MAX
-} PlayerMoveSfxType;
-
-typedef enum {
     /* -1 */ PLAYER_CLIMBSTATUS_MOVING_DOWN = -1,
     /*  0 */ PLAYER_CLIMBSTATUS_MOVING_UP,
     /*  1 */ PLAYER_CLIMBSTATUS_KNOCKED_DOWN
@@ -931,7 +913,7 @@ typedef struct Player {
     /* 0x0898 */ s16        angleToFloorX;
     /* 0x089A */ s16        angleToFloorY;
     /* 0x089C */ s16        walkAngleToFloorX;
-    /* 0x089E */ u16        moveSfxType;
+    /* 0x089E */ u16        surfaceMaterial;
     /* 0x08A0 */ u8         damageAmount;
     /* 0x08A1 */ u8         damageEffect;
     /* 0x08A2 */ s16        damageYaw;
@@ -953,7 +935,7 @@ typedef struct Player {
     /* 0x0A7B */ u8         prevFloorSpecialProperty;
     /* 0x0A7C */ f32        analogStickDistance;
     /* 0x0A80 */ s16        analogStickAngle;
-    /* 0x0A82 */ u16        prevMoveSfxType;
+    /* 0x0A82 */ u16        prevSurfaceMaterial;
     /* 0x0A84 */ s16        sceneExitPosY;
     /* 0x0A86 */ s8         voidRespawnCounter;
     /* 0x0A87 */ u8         deathTimer;

@@ -30,7 +30,7 @@ s32 D_80119D90[32] = {
 };
 
 // SurfaceType_SetMoveSfx
-u16 sPlayerMoveSfx[PLAYER_MOVESFXTYPE_MAX] = {
+u16 sPlayerMoveSfx[BGCHECK_SURFACEMATERIAL_MAX] = {
     NA_SE_PL_WALK_GROUND - SFX_FLAG, NA_SE_PL_WALK_SAND - SFX_FLAG,   NA_SE_PL_WALK_CONCRETE - SFX_FLAG,
     NA_SE_PL_WALK_DIRT - SFX_FLAG,   NA_SE_PL_WALK_WATER0 - SFX_FLAG, NA_SE_PL_WALK_WATER1 - SFX_FLAG,
     NA_SE_PL_WALK_WATER2 - SFX_FLAG, NA_SE_PL_WALK_MAGMA - SFX_FLAG,  NA_SE_PL_WALK_GRASS - SFX_FLAG,
@@ -4068,7 +4068,7 @@ u32 SurfaceType_GetMoveSfx(CollisionContext* colCtx, CollisionPoly* poly, s32 bg
 u16 SurfaceType_SetMoveSfx(CollisionContext* colCtx, CollisionPoly* poly, s32 bgId) {
     s32 id = SurfaceType_GetMoveSfx(colCtx, poly, bgId);
 
-    if (id < PLAYER_MOVESFXTYPE_DEFAULT || id > PLAYER_MOVESFXTYPE_CARPET) {
+    if (id < BGCHECK_SURFACEMATERIAL_DIRT_DEFAULT || id > BGCHECK_SURFACEMATERIAL_CARPET) {
         return NA_SE_PL_WALK_GROUND - SFX_FLAG;
     }
     return sPlayerMoveSfx[id];

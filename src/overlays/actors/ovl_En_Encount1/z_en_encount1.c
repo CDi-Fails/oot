@@ -243,7 +243,7 @@ void EnEncount1_SpawnStalchildOrWolfos(EnEncount1* this, PlayState* play) {
     if ((this->curNumSpawn < this->maxCurSpawns) && (this->totalNumSpawn < this->maxTotalSpawns)) {
         while ((this->curNumSpawn < this->maxCurSpawns) && (this->totalNumSpawn < this->maxTotalSpawns)) {
             if (play->sceneNum == SCENE_SPOT00) {
-                if ((player->moveSfxType == 0) || (player->actor.floorBgId != BGCHECK_SCENE) ||
+                if ((player->surfaceMaterial == 0) || (player->actor.floorBgId != BGCHECK_SCENE) ||
                     !(player->actor.bgCheckFlags & BGCHECKFLAG_GROUND) ||
                     (player->stateFlags1 & PLAYER_STATE1_SWIMMING)) {
 
