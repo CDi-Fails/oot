@@ -138,7 +138,7 @@ void Player_ChangeItem(PlayState* play, Player* this, s8 actionParam);
 s32 Player_SetupStartZTargetDefend(Player* this, PlayState* play);
 s32 Player_SetupStartZTargetDefend2(Player* this, PlayState* play);
 s32 Player_StartChangeItem(Player* this, PlayState* play);
-s32 func_80834B5C(Player* this, PlayState* play);
+s32 Player_StandingDefend(Player* this, PlayState* play);
 s32 Player_EndDefend(Player* this, PlayState* play);
 s32 Player_HoldFpsItem(Player* this, PlayState* play);
 s32 Player_ReadyFpsItemToShoot(Player* this, PlayState* play);
@@ -184,8 +184,8 @@ void Player_ZTargetingRun(Player* this, PlayState* play);
 void func_8084279C(Player* this, PlayState* play);
 void Player_UnfriendlyBackwalk(Player* this, PlayState* play);
 void Player_EndUnfriendlyBackwalk(Player* this, PlayState* play);
-void func_80843188(Player* this, PlayState* play);
-void func_808435C4(Player* this, PlayState* play);
+void Player_AimShieldCrouched(Player* this, PlayState* play);
+void Player_DeflectAttackWithShield(Player* this, PlayState* play);
 void func_8084370C(Player* this, PlayState* play);
 void Player_StartKnockback(Player* this, PlayState* play);
 void Player_DownFromKnockback(Player* this, PlayState* play);
@@ -1460,12 +1460,12 @@ static u16 sFpsItemReadySfx[] = { NA_SE_IT_BOW_DRAW, NA_SE_IT_SLING_DRAW, NA_SE_
 
 static u8 sMagicArrowCosts[] = { 4, 4, 8 };
 
-static LinkAnimationHeader* sRightDefendAnims[] = {
+static LinkAnimationHeader* sRightDefendStandingAnims[] = {
     &gPlayerAnim_0025C0,
     &gPlayerAnim_0025C8,
 };
 
-static LinkAnimationHeader* sLeftDefendAnims[] = {
+static LinkAnimationHeader* sLeftDefendStandingAnims[] = {
     &gPlayerAnim_002580,
     &gPlayerAnim_002588,
 };
@@ -2451,14 +2451,14 @@ void Player_SetupHeldItemUpperActionFunc(PlayState* play, Player* this) {
     this->stateFlags1 &= ~PLAYER_STATE1_START_CHANGE_ITEM;
 }
 
-LinkAnimationHeader* Player_GetDefendAnim(PlayState* play, Player* this) {
-    Player_SetUpperActionFunc(this, func_80834B5C);
+LinkAnimationHeader* Player_GetStandingDefendAnim(PlayState* play, Player* this) {
+    Player_SetUpperActionFunc(this, Player_StandingDefend);
     Player_DetatchHeldActor(play, this);
 
     if (this->leftRightBlendWeight < 0.5f) {
-        return sRightDefendAnims[Player_HoldsTwoHandedWeapon(this)];
+        return sRightDefendStandingAnims[Player_HoldsTwoHandedWeapon(this)];
     } else {
-        return sLeftDefendAnims[Player_HoldsTwoHandedWeapon(this)];
+        return sLeftDefendStandingAnims[Player_HoldsTwoHandedWeapon(this)];
     }
 }
 
@@ -2471,7 +2471,7 @@ s32 Player_StartZTargetDefend(PlayState* play, Player* this) {
         (this->currentShield != PLAYER_SHIELD_NONE) && !Player_IsChildWithHylianShield(this) && Player_IsZTargeting(this) &&
         CHECK_BTN_ALL(sControlInput->cur.button, BTN_R)) {
 
-        anim = Player_GetDefendAnim(play, this);
+        anim = Player_GetStandingDefendAnim(play, this);
         frame = Animation_GetLastFrame(anim);
         LinkAnimation_Change(play, &this->skelAnimeUpper, anim, 1.0f, frame, frame, ANIMMODE_ONCE, 0.0f);
         func_8002F7DC(&this->actor, NA_SE_IT_SHIELD_POSTURE);
@@ -2557,7 +2557,7 @@ s32 Player_StartChangeItem(Player* this, PlayState* play) {
     return 1;
 }
 
-s32 func_80834B5C(Player* this, PlayState* play) {
+s32 Player_StandingDefend(Player* this, PlayState* play) {
     LinkAnimation_Update(play, &this->skelAnimeUpper);
 
     if (!CHECK_BTN_ALL(sControlInput->cur.button, BTN_R)) {
@@ -2570,12 +2570,12 @@ s32 func_80834B5C(Player* this, PlayState* play) {
     }
 }
 
-s32 func_80834BD4(Player* this, PlayState* play) {
+s32 Player_EndDeflectAttackStanding(Player* this, PlayState* play) {
     LinkAnimationHeader* anim;
     f32 frame;
 
     if (LinkAnimation_Update(play, &this->skelAnimeUpper)) {
-        anim = Player_GetDefendAnim(play, this);
+        anim = Player_GetStandingDefendAnim(play, this);
         frame = Animation_GetLastFrame(anim);
         LinkAnimation_Change(play, &this->skelAnimeUpper, anim, 1.0f, frame, frame, ANIMMODE_ONCE, 0.0f);
     }
@@ -4081,14 +4081,14 @@ s32 Player_UpdateDamage(Player* this, PlayState* play) {
                 if (!Player_IsChildWithHylianShield(this)) {
                     if (this->invincibilityTimer >= 0) {
                         LinkAnimationHeader* anim;
-                        s32 sp54 = func_80843188 == this->actionFunc;
+                        s32 isAimingShieldCrouched = (Player_AimShieldCrouched == this->actionFunc);
 
                         if (!Player_IsSwimming(this)) {
-                            Player_SetActionFunc(play, this, func_808435C4, 0);
+                            Player_SetActionFunc(play, this, Player_DeflectAttackWithShield, 0);
                         }
 
-                        if (!(this->genericVar = sp54)) {
-                            Player_SetUpperActionFunc(this, func_80834BD4);
+                        if (!(this->genericVar = isAimingShieldCrouched)) {
+                            Player_SetUpperActionFunc(this, Player_EndDeflectAttackStanding);
 
                             if (this->leftRightBlendWeight < 0.5f) {
                                 anim = sRightStandingDeflectWithShieldAnims[Player_HoldsTwoHandedWeapon(this)];
@@ -5589,7 +5589,7 @@ s32 Player_SetupDefend(Player* this, PlayState* play) {
         Player_InactivateMeleeWeapon(this);
         Player_DetatchHeldActor(play, this);
 
-        if (Player_SetActionFunc(play, this, func_80843188, 0)) {
+        if (Player_SetActionFunc(play, this, Player_AimShieldCrouched, 0)) {
             this->stateFlags1 |= PLAYER_STATE1_SHIELDING;
 
             if (!Player_IsChildWithHylianShield(this)) {
@@ -7078,7 +7078,7 @@ void Player_UnfriendlyZTargetStandingStill(Player* this, PlayState* play) {
     Player_StepLinearVelocityToZero(this);
 
     if (!Player_SetupSubAction(play, this, sTargetEnemyStandStillSubActions, 1)) {
-        if (!Player_SetupStartUnfriendlyZTargeting(this) && (!Player_IsFriendlyZTargeting(this) || (func_80834B5C != this->upperActionFunc))) {
+        if (!Player_SetupStartUnfriendlyZTargeting(this) && (!Player_IsFriendlyZTargeting(this) || (Player_StandingDefend != this->upperActionFunc))) {
             Player_SetupEndUnfriendlyZTarget(this, play);
             return;
         }
@@ -7155,7 +7155,7 @@ void Player_FriendlyZTargetStandingStill(Player* this, PlayState* play) {
             return;
         }
 
-        if (func_80834B5C == this->upperActionFunc) {
+        if (Player_StandingDefend == this->upperActionFunc) {
             Player_SetupUnfriendlyZTarget(this, play);
             return;
         }
@@ -7989,7 +7989,7 @@ void Player_SetupMeleeWeaponRebound(PlayState* play, Player* this) {
     s32 pad;
     s32 bottleDrinkEffects;
 
-    if (func_80843188 != this->actionFunc) {
+    if (Player_AimShieldCrouched != this->actionFunc) {
         Player_ResetAttributes(play, this);
         Player_SetActionFunc(play, this, Player_MeleeWeaponRebound, 0);
 
@@ -8099,15 +8099,15 @@ s32 func_80842DF4(PlayState* play, Player* this) {
     return 0;
 }
 
-void func_80843188(Player* this, PlayState* play) {
-    f32 sp54;
-    f32 sp50;
-    s16 sp4E;
-    s16 sp4C;
-    s16 sp4A;
-    s16 sp48;
-    s16 sp46;
-    f32 sp40;
+void Player_AimShieldCrouched(Player* this, PlayState* play) {
+    f32 stickInputY;
+    f32 stickInputX;
+    s16 yaw;
+    s16 shieldPitchTarget;
+    s16 shieldYawTarget;
+    s16 shieldPitchStep;
+    s16 shieldYawStep;
+    f32 cosYaw;
 
     if (LinkAnimation_Update(play, &this->skelAnime)) {
         if (!Player_IsChildWithHylianShield(this)) {
@@ -8126,32 +8126,32 @@ void func_80843188(Player* this, PlayState* play) {
     Player_StepLinearVelocityToZero(this);
 
     if (this->genericTimer != 0) {
-        sp54 = sControlInput->rel.stick_y * 100;
-        sp50 = sControlInput->rel.stick_x * -120;
-        sp4E = this->actor.shape.rot.y - Camera_GetInputDirYaw(GET_ACTIVE_CAM(play));
+        stickInputY = sControlInput->rel.stick_y * 100;
+        stickInputX = sControlInput->rel.stick_x * -120;
+        yaw = this->actor.shape.rot.y - Camera_GetInputDirYaw(GET_ACTIVE_CAM(play));
 
-        sp40 = Math_CosS(sp4E);
-        sp4C = (Math_SinS(sp4E) * sp50) + (sp54 * sp40);
-        sp40 = Math_CosS(sp4E);
-        sp4A = (sp50 * sp40) - (Math_SinS(sp4E) * sp54);
+        cosYaw = Math_CosS(yaw);
+        shieldPitchTarget = (Math_SinS(yaw) * stickInputX) + (stickInputY * cosYaw);
+        cosYaw = Math_CosS(yaw);
+        shieldYawTarget = (stickInputX * cosYaw) - (Math_SinS(yaw) * stickInputY);
 
-        if (sp4C > 3500) {
-            sp4C = 3500;
+        if (shieldPitchTarget > 3500) {
+            shieldPitchTarget = 3500;
         }
 
-        sp48 = ABS(sp4C - this->actor.focus.rot.x) * 0.25f;
-        if (sp48 < 100) {
-            sp48 = 100;
+        shieldPitchStep = ABS(shieldPitchTarget - this->actor.focus.rot.x) * 0.25f;
+        if (shieldPitchStep < 100) {
+            shieldPitchStep = 100;
         }
 
-        sp46 = ABS(sp4A - this->upperBodyRot.y) * 0.25f;
-        if (sp46 < 50) {
-            sp46 = 50;
+        shieldYawStep = ABS(shieldYawTarget - this->upperBodyRot.y) * 0.25f;
+        if (shieldYawStep < 50) {
+            shieldYawStep = 50;
         }
 
-        Math_ScaledStepToS(&this->actor.focus.rot.x, sp4C, sp48);
+        Math_ScaledStepToS(&this->actor.focus.rot.x, shieldPitchTarget, shieldPitchStep);
         this->upperBodyRot.x = this->actor.focus.rot.x;
-        Math_ScaledStepToS(&this->upperBodyRot.y, sp4A, sp46);
+        Math_ScaledStepToS(&this->upperBodyRot.y, shieldYawTarget, shieldYawStep);
 
         if (this->genericVar != 0) {
             if (!func_80842DF4(play, this)) {
@@ -8195,8 +8195,8 @@ void func_80843188(Player* this, PlayState* play) {
     this->lookFlags |= PLAYER_LOOKFLAGS_OVERRIDE_UPPERBODY_ROT_Y | PLAYER_LOOKFLAGS_OVERRIDE_UPPERBODY_ROT_X | PLAYER_LOOKFLAGS_OVERRIDE_FOCUS_ROT_X;
 }
 
-void func_808435C4(Player* this, PlayState* play) {
-    s32 temp;
+void Player_DeflectAttackWithShield(Player* this, PlayState* play) {
+    s32 actionInterruptResult;
     LinkAnimationHeader* anim;
     f32 frames;
 
@@ -8204,13 +8204,16 @@ void func_808435C4(Player* this, PlayState* play) {
 
     if (this->genericVar == 0) {
         D_808535E0 = Player_SetupCurrentUpperAction(this, play);
-        if ((func_80834B5C == this->upperActionFunc) || (Player_IsActionInterrupted(play, this, &this->skelAnimeUpper, 4.0f) > 0)) {
+        if ((Player_StandingDefend == this->upperActionFunc) ||
+            (Player_IsActionInterrupted(play, this, &this->skelAnimeUpper, 4.0f) > 0)) {
             Player_SetActionFunc(play, this, Player_UnfriendlyZTargetStandingStill, 1);
         }
     } else {
-        temp = Player_IsActionInterrupted(play, this, &this->skelAnime, 4.0f);
-        if ((temp != 0) && ((temp > 0) || LinkAnimation_Update(play, &this->skelAnime))) {
-            Player_SetActionFunc(play, this, func_80843188, 1);
+        actionInterruptResult = Player_IsActionInterrupted(play, this, &this->skelAnime, 4.0f);
+        if ((actionInterruptResult != PLAYER_ACTIONINTERRUPT_BY_SUB_ACTION) &&
+            ((actionInterruptResult > PLAYER_ACTIONINTERRUPT_BY_SUB_ACTION) ||
+             LinkAnimation_Update(play, &this->skelAnime))) {
+            Player_SetActionFunc(play, this, Player_AimShieldCrouched, 1);
             this->stateFlags1 |= PLAYER_STATE1_SHIELDING;
             Player_SetModelsForHoldingShield(this);
             anim = GET_PLAYER_ANIM(PLAYER_ANIMGROUP_START_DEFENDING, this->modelAnimType);
