@@ -10923,7 +10923,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
         sUsingItemAlreadyInHand = sUsingItemAlreadyInHand2 = 0;
         sCurrentMask = this->currentMask;
 
-        if (!(this->stateFlags3 & PLAYER_STATE3_2)) {
+        if (!(this->stateFlags3 & PLAYER_STATE3_PAUSE_ACTION_FUNC)) {
             this->actionFunc(this, play);
         }
 
@@ -11019,7 +11019,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
         this->actor.colChkInfo.mass = 50;
     }
 
-    this->stateFlags3 &= ~PLAYER_STATE3_2;
+    this->stateFlags3 &= ~PLAYER_STATE3_PAUSE_ACTION_FUNC;
 
     Collider_ResetCylinderAC(play, &this->cylinder.base);
 
