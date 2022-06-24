@@ -91,11 +91,11 @@ typedef struct {
 } ItemChangeInfo; // size = 0x08
 
 typedef struct {
-    /* 0x00 */ LinkAnimationHeader* unk_00;
-    /* 0x04 */ LinkAnimationHeader* unk_04;
+    /* 0x00 */ LinkAnimationHeader* bottleSwingAnim;
+    /* 0x04 */ LinkAnimationHeader* bottleCatchAnim;
     /* 0x08 */ u8 unk_08;
     /* 0x09 */ u8 unk_09;
-} struct_80854554; // size = 0x0C
+} BottleSwingAnimInfo; // size = 0x0C
 
 typedef struct {
     /* 0x00 */ LinkAnimationHeader* startAnim;
@@ -355,7 +355,7 @@ void Player_StartTalkingWithActor(PlayState* play, Actor* actor);
 
 // .bss part 1
 static s32 sPrevSkelAnimeMoveFlags;
-static s32 D_80858AA4;
+static s32 sCurrentMask;
 static Vec3f sWallIntersectPos;
 static Input* sControlInput;
 
@@ -5452,7 +5452,7 @@ s32 Player_SetupSpeakOrCheck(Player* this, PlayState* play) {
                         }
                     }
 
-                    this->currentMask = D_80858AA4;
+                    this->currentMask = sCurrentMask;
                     Player_StartTalkingWithActor(play, talkActor);
                     return 1;
                 }
@@ -5774,7 +5774,7 @@ s32 Player_SetupThrowDekuNut(PlayState* play, Player* this) {
     return 0;
 }
 
-static struct_80854554 sBottleSwingAnims[] = {
+static BottleSwingAnimInfo sBottleSwingAnims[] = {
     { &gPlayerAnim_002648, &gPlayerAnim_002640, 2, 3 },
     { &gPlayerAnim_002680, &gPlayerAnim_002678, 5, 3 },
 };
@@ -5790,7 +5790,7 @@ s32 Player_CanSwingBottleOrCastFishingRod(PlayState* play, Player* this) {
                 this->genericTimer = 1;
             }
 
-            Player_PlayAnimOnceSlowed(play, this, sBottleSwingAnims[this->genericTimer].unk_00);
+            Player_PlayAnimOnceSlowed(play, this, sBottleSwingAnims[this->genericTimer].bottleSwingAnim);
 
             func_8002F7DC(&this->actor, NA_SE_IT_SWORD_SWING);
             Player_PlayVoiceSfxForAge(this, NA_SE_VO_LI_AUTO_JUMP);
@@ -10921,7 +10921,7 @@ void Player_UpdateCommon(Player* this, PlayState* play, Input* input) {
 
         sInvertedWaterSpeedScale = 1.0f / sWaterSpeedScale;
         sUsingItemAlreadyInHand = sUsingItemAlreadyInHand2 = 0;
-        D_80858AA4 = this->currentMask;
+        sCurrentMask = this->currentMask;
 
         if (!(this->stateFlags3 & PLAYER_STATE3_2)) {
             this->actionFunc(this, play);
@@ -12944,12 +12944,12 @@ static BottleCatchInfo sBottleCatchInfos[] = {
 };
 
 void Player_SwingBottle(Player* this, PlayState* play) {
-    struct_80854554* sp24;
+    BottleSwingAnimInfo* bottleSwingAnims;
     BottleCatchInfo* catchInfo;
     s32 temp;
     s32 i;
 
-    sp24 = &sBottleSwingAnims[this->genericTimer];
+    bottleSwingAnims = &sBottleSwingAnims[this->genericTimer];
     Player_StepLinearVelocityToZero(this);
 
     if (LinkAnimation_Update(play, &this->skelAnime)) {
@@ -12967,10 +12967,10 @@ void Player_SwingBottle(Player* this, PlayState* play) {
         }
     } else {
         if (this->genericVar == 0) {
-            temp = this->skelAnime.curFrame - sp24->unk_08;
+            temp = this->skelAnime.curFrame - bottleSwingAnims->unk_08;
 
             if (temp >= 0) {
-                if (sp24->unk_09 >= temp) {
+                if (bottleSwingAnims->unk_09 >= temp) {
                     if (this->genericTimer != 0) {
                         if (temp == 0) {
                             func_8002F7DC(&this->actor, NA_SE_IT_SCOOP_UP_WATER);
@@ -12991,7 +12991,7 @@ void Player_SwingBottle(Player* this, PlayState* play) {
                             this->stateFlags1 |= PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE | PLAYER_STATE1_IN_CUTSCENE;
                             this->interactRangeActor->parent = &this->actor;
                             Player_UpdateBottleHeld(play, this, catchInfo->itemId, ABS(catchInfo->actionParam));
-                            Player_PlayAnimOnceSlowed(play, this, sp24->unk_04);
+                            Player_PlayAnimOnceSlowed(play, this, bottleSwingAnims->bottleCatchAnim);
                             Player_SetCameraTurnAround(play, 4);
                         }
                     }
