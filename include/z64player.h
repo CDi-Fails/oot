@@ -887,19 +887,19 @@ typedef struct Player {
         /* 0x084F */ s8 climbStatus;
     };
     union {
-        /* 0x0850 */ s16        genericTimer;
-        /* 0x0850 */ s16        mashTimer;
+        /* 0x0850 */ s16 genericTimer;
+        /* 0x0850 */ s16 mashTimer;
     };
     /* 0x0854 */ f32        rippleTimer;
     union {
-        /* 0x0858 */ f32        unk_858;
-        /* 0x0858 */ f32        spinAttackTimer;
-        /* 0x0858 */ f32        reelPullDir;
+        /* 0x0858 */ f32 unk_858;
+        /* 0x0858 */ f32 spinAttackTimer;
+        /* 0x0858 */ f32 reelPullDir;
     };
     union {
-        /* 0x085C */ f32        unk_85C;
-        /* 0x085C */ f32        bowStringScale;
-        /* 0x085C */ f32        dekuStickLength;
+        /* 0x085C */ f32 unk_85C;
+        /* 0x085C */ f32 bowStringScale;
+        /* 0x085C */ f32 dekuStickLength;
     };
     union {
         /* 0x0860 */ s16 fpsItemType;
