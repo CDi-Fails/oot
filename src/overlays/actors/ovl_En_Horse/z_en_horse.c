@@ -2376,7 +2376,7 @@ s32 EnHorse_GetCutsceneFunctionIndex(s32 csAction) {
 
 void EnHorse_CutsceneUpdate(EnHorse* this, PlayState* play) {
     s32 csFunctionIdx;
-    CsCmdActorAction* linkCsAction = play->csCtx.linkAction;
+    CsCmdActorAction* linkActionCsCmd = play->csCtx.linkAction;
 
     if (play->csCtx.state == 3) {
         this->playerControlled = 1;
@@ -2385,22 +2385,22 @@ void EnHorse_CutsceneUpdate(EnHorse* this, PlayState* play) {
         EnHorse_Freeze(this);
         return;
     }
-    if (linkCsAction != 0) {
-        csFunctionIdx = EnHorse_GetCutsceneFunctionIndex(linkCsAction->action);
+    if (linkActionCsCmd != 0) {
+        csFunctionIdx = EnHorse_GetCutsceneFunctionIndex(linkActionCsCmd->action);
         if (csFunctionIdx != 0) {
             if (this->cutsceneAction != csFunctionIdx) {
                 if (this->cutsceneAction == 0) {
-                    this->actor.world.pos.x = linkCsAction->startPos.x;
-                    this->actor.world.pos.y = linkCsAction->startPos.y;
-                    this->actor.world.pos.z = linkCsAction->startPos.z;
-                    this->actor.world.rot.y = linkCsAction->urot.y;
+                    this->actor.world.pos.x = linkActionCsCmd->startPos.x;
+                    this->actor.world.pos.y = linkActionCsCmd->startPos.y;
+                    this->actor.world.pos.z = linkActionCsCmd->startPos.z;
+                    this->actor.world.rot.y = linkActionCsCmd->urot.y;
                     this->actor.shape.rot = this->actor.world.rot;
                     this->actor.prevPos = this->actor.world.pos;
                 }
                 this->cutsceneAction = csFunctionIdx;
-                sCutsceneInitFuncs[this->cutsceneAction](this, play, linkCsAction);
+                sCutsceneInitFuncs[this->cutsceneAction](this, play, linkActionCsCmd);
             }
-            sCutsceneActionFuncs[this->cutsceneAction](this, play, linkCsAction);
+            sCutsceneActionFuncs[this->cutsceneAction](this, play, linkActionCsCmd);
         }
     }
 }
@@ -3684,7 +3684,7 @@ void EnHorse_PostDraw(Actor* thisx, PlayState* play, Skin* skin) {
     Vec3f newCenter;
     s32 i;
     Vec3f sp2C;
-    f32 sp28;
+    f32 bottleDrinkEffects;
 
     if (!(this->stateFlags & ENHORSE_CALC_RIDER_POS)) {
         Skin_GetLimbPos(skin, 30, &riderOffset, &this->riderPos);
@@ -3696,7 +3696,7 @@ void EnHorse_PostDraw(Actor* thisx, PlayState* play, Skin* skin) {
     }
 
     Skin_GetLimbPos(skin, 13, &sp94, &sp2C);
-    SkinMatrix_Vec3fMtxFMultXYZW(&play->viewProjectionMtxF, &sp2C, &this->unk_228, &sp28);
+    SkinMatrix_Vec3fMtxFMultXYZW(&play->viewProjectionMtxF, &sp2C, &this->unk_228, &bottleDrinkEffects);
     if ((this->animationIdx == ENHORSE_ANIM_IDLE && this->action != ENHORSE_ACT_FROZEN) &&
         ((frame > 40.0f && frame < 45.0f && this->type == HORSE_EPONA) ||
          (frame > 28.0f && frame < 33.0f && this->type == HORSE_HNI))) {

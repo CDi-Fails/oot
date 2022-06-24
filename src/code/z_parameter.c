@@ -622,7 +622,7 @@ void func_80083108(PlayState* play) {
     Player* player = GET_PLAYER(play);
     InterfaceContext* interfaceCtx = &play->interfaceCtx;
     s16 i;
-    s16 sp28 = false;
+    s16 bottleDrinkEffects = false;
 
     if ((gSaveContext.cutsceneIndex < 0xFFF0) ||
         ((play->sceneNum == SCENE_SPOT20) && (gSaveContext.cutsceneIndex == 0xFFF0))) {
@@ -724,7 +724,7 @@ void func_80083108(PlayState* play) {
         } else if (msgCtx->msgMode == MSGMODE_NONE) {
             if ((func_8008F2F8(play) >= 2) && (func_8008F2F8(play) < 5)) {
                 if (gSaveContext.buttonStatus[0] != BTN_DISABLED) {
-                    sp28 = true;
+                    bottleDrinkEffects = true;
                 }
 
                 gSaveContext.buttonStatus[0] = BTN_DISABLED;
@@ -734,27 +734,27 @@ void func_80083108(PlayState* play) {
                         if ((gSaveContext.equips.buttonItems[i] != ITEM_HOOKSHOT) &&
                             (gSaveContext.equips.buttonItems[i] != ITEM_LONGSHOT)) {
                             if (gSaveContext.buttonStatus[i] == BTN_ENABLED) {
-                                sp28 = true;
+                                bottleDrinkEffects = true;
                             }
 
                             gSaveContext.buttonStatus[i] = BTN_DISABLED;
                         } else {
                             if (gSaveContext.buttonStatus[i] == BTN_DISABLED) {
-                                sp28 = true;
+                                bottleDrinkEffects = true;
                             }
 
                             gSaveContext.buttonStatus[i] = BTN_ENABLED;
                         }
                     } else {
                         if (gSaveContext.buttonStatus[i] == BTN_ENABLED) {
-                            sp28 = true;
+                            bottleDrinkEffects = true;
                         }
 
                         gSaveContext.buttonStatus[i] = BTN_DISABLED;
                     }
                 }
 
-                if (sp28) {
+                if (bottleDrinkEffects) {
                     gSaveContext.unk_13EA = 0;
                 }
 
@@ -776,7 +776,7 @@ void func_80083108(PlayState* play) {
                             gSaveContext.equips.buttonItems[0] = ITEM_NONE;
                         } else {
                             gSaveContext.equips.buttonItems[0] = ITEM_BOW;
-                            sp28 = true;
+                            bottleDrinkEffects = true;
                         }
                     }
                 } else {
@@ -792,32 +792,32 @@ void func_80083108(PlayState* play) {
                             gSaveContext.buttonStatus[0] = gSaveContext.equips.buttonItems[0];
                         }
                     }
-                    sp28 = true;
+                    bottleDrinkEffects = true;
                 }
 
-                if (sp28) {
+                if (bottleDrinkEffects) {
                     Interface_LoadItemIcon1(play, 0);
-                    sp28 = false;
+                    bottleDrinkEffects = false;
                 }
 
                 for (i = 1; i < 4; i++) {
                     if ((gSaveContext.equips.buttonItems[i] != ITEM_OCARINA_FAIRY) &&
                         (gSaveContext.equips.buttonItems[i] != ITEM_OCARINA_TIME)) {
                         if (gSaveContext.buttonStatus[i] == BTN_ENABLED) {
-                            sp28 = true;
+                            bottleDrinkEffects = true;
                         }
 
                         gSaveContext.buttonStatus[i] = BTN_DISABLED;
                     } else {
                         if (gSaveContext.buttonStatus[i] == BTN_DISABLED) {
-                            sp28 = true;
+                            bottleDrinkEffects = true;
                         }
 
                         gSaveContext.buttonStatus[i] = BTN_ENABLED;
                     }
                 }
 
-                if (sp28) {
+                if (bottleDrinkEffects) {
                     gSaveContext.unk_13EA = 0;
                 }
 
@@ -831,14 +831,14 @@ void func_80083108(PlayState* play) {
                         if ((gSaveContext.equips.buttonItems[0] != ITEM_NONE) ||
                             (gSaveContext.infTable[INFTABLE_1DX_INDEX] == 0)) {
                             gSaveContext.equips.buttonItems[0] = gSaveContext.buttonStatus[0];
-                            sp28 = true;
+                            bottleDrinkEffects = true;
 
                             if (gSaveContext.equips.buttonItems[0] != ITEM_NONE) {
                                 Interface_LoadItemIcon1(play, 0);
                             }
                         }
                     } else if ((gSaveContext.buttonStatus[0] & 0xFF) == BTN_DISABLED) {
-                        sp28 = true;
+                        bottleDrinkEffects = true;
 
                         if (((gSaveContext.buttonStatus[0] & 0xFF) == BTN_DISABLED) ||
                             ((gSaveContext.buttonStatus[0] & 0xFF) == BTN_ENABLED)) {
@@ -855,7 +855,7 @@ void func_80083108(PlayState* play) {
                         if ((gSaveContext.equips.buttonItems[0] != ITEM_NONE) ||
                             (gSaveContext.infTable[INFTABLE_1DX_INDEX] == 0)) {
                             gSaveContext.equips.buttonItems[0] = gSaveContext.buttonStatus[0];
-                            sp28 = true;
+                            bottleDrinkEffects = true;
 
                             if (gSaveContext.equips.buttonItems[0] != ITEM_NONE) {
                                 Interface_LoadItemIcon1(play, 0);
@@ -863,7 +863,7 @@ void func_80083108(PlayState* play) {
                         }
                     } else {
                         if (gSaveContext.buttonStatus[0] == BTN_ENABLED) {
-                            sp28 = true;
+                            bottleDrinkEffects = true;
                         }
 
                         gSaveContext.buttonStatus[0] = BTN_DISABLED;
@@ -875,7 +875,7 @@ void func_80083108(PlayState* play) {
                         if ((gSaveContext.equips.buttonItems[i] >= ITEM_BOTTLE) &&
                             (gSaveContext.equips.buttonItems[i] <= ITEM_POE)) {
                             if (gSaveContext.buttonStatus[i] == BTN_ENABLED) {
-                                sp28 = true;
+                                bottleDrinkEffects = true;
                             }
 
                             gSaveContext.buttonStatus[i] = BTN_DISABLED;
@@ -886,7 +886,7 @@ void func_80083108(PlayState* play) {
                         if ((gSaveContext.equips.buttonItems[i] >= ITEM_BOTTLE) &&
                             (gSaveContext.equips.buttonItems[i] <= ITEM_POE)) {
                             if (gSaveContext.buttonStatus[i] == BTN_DISABLED) {
-                                sp28 = true;
+                                bottleDrinkEffects = true;
                             }
 
                             gSaveContext.buttonStatus[i] = BTN_ENABLED;
@@ -899,7 +899,7 @@ void func_80083108(PlayState* play) {
                         if ((gSaveContext.equips.buttonItems[i] >= ITEM_WEIRD_EGG) &&
                             (gSaveContext.equips.buttonItems[i] <= ITEM_CLAIM_CHECK)) {
                             if (gSaveContext.buttonStatus[i] == BTN_ENABLED) {
-                                sp28 = true;
+                                bottleDrinkEffects = true;
                             }
 
                             gSaveContext.buttonStatus[i] = BTN_DISABLED;
@@ -910,7 +910,7 @@ void func_80083108(PlayState* play) {
                         if ((gSaveContext.equips.buttonItems[i] >= ITEM_WEIRD_EGG) &&
                             (gSaveContext.equips.buttonItems[i] <= ITEM_CLAIM_CHECK)) {
                             if (gSaveContext.buttonStatus[i] == BTN_DISABLED) {
-                                sp28 = true;
+                                bottleDrinkEffects = true;
                             }
 
                             gSaveContext.buttonStatus[i] = BTN_ENABLED;
@@ -923,7 +923,7 @@ void func_80083108(PlayState* play) {
                         if ((gSaveContext.equips.buttonItems[i] == ITEM_HOOKSHOT) ||
                             (gSaveContext.equips.buttonItems[i] == ITEM_LONGSHOT)) {
                             if (gSaveContext.buttonStatus[i] == BTN_ENABLED) {
-                                sp28 = true;
+                                bottleDrinkEffects = true;
                             }
 
                             gSaveContext.buttonStatus[i] = BTN_DISABLED;
@@ -934,7 +934,7 @@ void func_80083108(PlayState* play) {
                         if ((gSaveContext.equips.buttonItems[i] == ITEM_HOOKSHOT) ||
                             (gSaveContext.equips.buttonItems[i] == ITEM_LONGSHOT)) {
                             if (gSaveContext.buttonStatus[i] == BTN_DISABLED) {
-                                sp28 = true;
+                                bottleDrinkEffects = true;
                             }
 
                             gSaveContext.buttonStatus[i] = BTN_ENABLED;
@@ -947,7 +947,7 @@ void func_80083108(PlayState* play) {
                         if ((gSaveContext.equips.buttonItems[i] == ITEM_OCARINA_FAIRY) ||
                             (gSaveContext.equips.buttonItems[i] == ITEM_OCARINA_TIME)) {
                             if (gSaveContext.buttonStatus[i] == BTN_ENABLED) {
-                                sp28 = true;
+                                bottleDrinkEffects = true;
                             }
 
                             gSaveContext.buttonStatus[i] = BTN_DISABLED;
@@ -958,7 +958,7 @@ void func_80083108(PlayState* play) {
                         if ((gSaveContext.equips.buttonItems[i] == ITEM_OCARINA_FAIRY) ||
                             (gSaveContext.equips.buttonItems[i] == ITEM_OCARINA_TIME)) {
                             if (gSaveContext.buttonStatus[i] == BTN_DISABLED) {
-                                sp28 = true;
+                                bottleDrinkEffects = true;
                             }
 
                             gSaveContext.buttonStatus[i] = BTN_ENABLED;
@@ -970,7 +970,7 @@ void func_80083108(PlayState* play) {
                     for (i = 1; i < 4; i++) {
                         if (gSaveContext.equips.buttonItems[i] == ITEM_FARORES_WIND) {
                             if (gSaveContext.buttonStatus[i] == BTN_ENABLED) {
-                                sp28 = true;
+                                bottleDrinkEffects = true;
                             }
 
                             gSaveContext.buttonStatus[i] = BTN_DISABLED;
@@ -981,7 +981,7 @@ void func_80083108(PlayState* play) {
                     for (i = 1; i < 4; i++) {
                         if (gSaveContext.equips.buttonItems[i] == ITEM_FARORES_WIND) {
                             if (gSaveContext.buttonStatus[i] == BTN_DISABLED) {
-                                sp28 = true;
+                                bottleDrinkEffects = true;
                             }
 
                             gSaveContext.buttonStatus[i] = BTN_ENABLED;
@@ -994,7 +994,7 @@ void func_80083108(PlayState* play) {
                         if ((gSaveContext.equips.buttonItems[i] == ITEM_DINS_FIRE) ||
                             (gSaveContext.equips.buttonItems[i] == ITEM_NAYRUS_LOVE)) {
                             if (gSaveContext.buttonStatus[i] == BTN_ENABLED) {
-                                sp28 = true;
+                                bottleDrinkEffects = true;
                             }
 
                             gSaveContext.buttonStatus[i] = BTN_DISABLED;
@@ -1005,7 +1005,7 @@ void func_80083108(PlayState* play) {
                         if ((gSaveContext.equips.buttonItems[i] == ITEM_DINS_FIRE) ||
                             (gSaveContext.equips.buttonItems[i] == ITEM_NAYRUS_LOVE)) {
                             if (gSaveContext.buttonStatus[i] == BTN_DISABLED) {
-                                sp28 = true;
+                                bottleDrinkEffects = true;
                             }
 
                             gSaveContext.buttonStatus[i] = BTN_ENABLED;
@@ -1024,13 +1024,13 @@ void func_80083108(PlayState* play) {
                             if ((play->sceneNum != SCENE_TAKARAYA) ||
                                 (gSaveContext.equips.buttonItems[i] != ITEM_LENS)) {
                                 if (gSaveContext.buttonStatus[i] == BTN_ENABLED) {
-                                    sp28 = true;
+                                    bottleDrinkEffects = true;
                                 }
 
                                 gSaveContext.buttonStatus[i] = BTN_DISABLED;
                             } else {
                                 if (gSaveContext.buttonStatus[i] == BTN_DISABLED) {
-                                    sp28 = true;
+                                    bottleDrinkEffects = true;
                                 }
 
                                 gSaveContext.buttonStatus[i] = BTN_ENABLED;
@@ -1051,7 +1051,7 @@ void func_80083108(PlayState* play) {
                             !((gSaveContext.equips.buttonItems[i] >= ITEM_WEIRD_EGG) &&
                               (gSaveContext.equips.buttonItems[i] <= ITEM_CLAIM_CHECK))) {
                             if (gSaveContext.buttonStatus[i] == BTN_DISABLED) {
-                                sp28 = true;
+                                bottleDrinkEffects = true;
                             }
 
                             gSaveContext.buttonStatus[i] = BTN_ENABLED;
@@ -1062,7 +1062,7 @@ void func_80083108(PlayState* play) {
         }
     }
 
-    if (sp28) {
+    if (bottleDrinkEffects) {
         gSaveContext.unk_13EA = 0;
         if ((play->transitionTrigger == TRANS_TRIGGER_OFF) && (play->transitionMode == TRANS_MODE_OFF)) {
             Interface_ChangeAlpha(50);

@@ -1163,10 +1163,10 @@ void DemoIm_PostLimbDraw(PlayState* play, s32 limbIndex, Gfx** dList, Vec3s* rot
     DemoIm* this = (DemoIm*)thisx;
 
     if (limbIndex == IMPA_LIMB_HEAD) {
-        Vec3f sp28 = D_809887D8;
+        Vec3f bottleDrinkEffects = D_809887D8;
         Vec3f dest;
 
-        Matrix_MultVec3f(&sp28, &dest);
+        Matrix_MultVec3f(&bottleDrinkEffects, &dest);
         this->actor.focus.pos.x = dest.x;
         this->actor.focus.pos.y = dest.y;
         this->actor.focus.pos.z = dest.z;

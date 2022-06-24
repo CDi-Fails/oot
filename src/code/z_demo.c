@@ -1411,7 +1411,7 @@ s32 Cutscene_Command_07(PlayState* play, CutsceneContext* csCtx, u8* cmd, u8 unu
     Vec3f sp3C;
     Vec3f sp30;
     Camera* subCam;
-    f32 sp28;
+    f32 bottleDrinkEffects;
 
     cmd += 8;
     size = 8;
@@ -1428,8 +1428,8 @@ s32 Cutscene_Command_07(PlayState* play, CutsceneContext* csCtx, u8* cmd, u8 unu
                 Play_ChangeCameraStatus(play, CAM_ID_MAIN, CAM_STAT_WAIT);
                 Play_ChangeCameraStatus(play, csCtx->subCamId, CAM_STAT_ACTIVE);
                 Play_CameraChangeSetting(play, csCtx->subCamId, CAM_SET_FREE0);
-                sp28 = csCtx->subCamLookAtPoints->cameraRoll * 1.40625f;
-                Camera_SetParam(subCam, 64, &sp28);
+                bottleDrinkEffects = csCtx->subCamLookAtPoints->cameraRoll * 1.40625f;
+                Camera_SetParam(subCam, 64, &bottleDrinkEffects);
                 sp3C.x = csCtx->subCamLookAtPoints->pos.x;
                 sp3C.y = csCtx->subCamLookAtPoints->pos.y;
                 sp3C.z = csCtx->subCamLookAtPoints->pos.z;
@@ -1454,7 +1454,7 @@ s32 Cutscene_Command_08(PlayState* play, CutsceneContext* csCtx, u8* cmd, u8 unu
     Vec3f sp3C;
     Vec3f sp30;
     Camera* subCam;
-    f32 sp28;
+    f32 bottleDrinkEffects;
 
     cmd += 8;
     size = 8;

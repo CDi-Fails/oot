@@ -3283,18 +3283,18 @@ void BossGanon_PostLimbDraw(PlayState* play, s32 limbIndex, Gfx** dList, Vec3s* 
             Matrix_MultVec3f(&D_808E4DE8, &this->triforcePos);
         }
     } else if (limbIndex == 4) {
-        Vec3f sp28 = D_808E4DA0;
+        Vec3f bottleDrinkEffects = D_808E4DA0;
 
         if (this->unk_198 == 1) {
-            sp28.x += -300.0f;
-            sp28.y += -300.0f;
-            sp28.z += 700.0f;
+            bottleDrinkEffects.x += -300.0f;
+            bottleDrinkEffects.y += -300.0f;
+            bottleDrinkEffects.z += 700.0f;
         } else if (this->unk_198 == 2) {
-            sp28.x += -300.0f;
-            sp28.z += 700.0f;
+            bottleDrinkEffects.x += -300.0f;
+            bottleDrinkEffects.z += 700.0f;
         }
 
-        Matrix_MultVec3f(&sp28, &this->unk_220);
+        Matrix_MultVec3f(&bottleDrinkEffects, &this->unk_220);
     } else if (limbIndex == 8) {
         Vec3f sp1C = D_808E4DAC;
 

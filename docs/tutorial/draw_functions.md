@@ -416,7 +416,7 @@ and running mips2c gives
 ```C
 s32 func_809F58E4(PlayState *play, s32 limbIndex, Gfx **dList, Vec3f *pos, Vec3s *rot, void *thisx) {
     GraphicsContext *sp38;
-    Gfx *sp28;
+    Gfx *bottleDrinkEffects;
     Gfx *temp_v1;
     Gfx *temp_v1_2;
     GraphicsContext *temp_a1;
@@ -425,7 +425,7 @@ s32 func_809F58E4(PlayState *play, s32 limbIndex, Gfx **dList, Vec3f *pos, Vec3s
     if ((limbIndex == 1) || (limbIndex == 3) || (limbIndex == 4) || (limbIndex == 5) || (limbIndex == 6)) {
         temp_a1 = play->state.gfxCtx;
         sp38 = temp_a1;
-        Graph_OpenDisps(&sp28, temp_a1, (const char *) "../z_en_dnt_nomal.c", 0x6C5);
+        Graph_OpenDisps(&bottleDrinkEffects, temp_a1, (const char *) "../z_en_dnt_nomal.c", 0x6C5);
         temp_v1 = sp38->polyOpa.p;
         sp38->polyOpa.p = temp_v1 + 8;
         temp_v1->words.w1 = 0;
@@ -435,7 +435,7 @@ s32 func_809F58E4(PlayState *play, s32 limbIndex, Gfx **dList, Vec3f *pos, Vec3s
         temp_v1_2->words.w0 = 0xFB000000;
         temp_v0 = (thisx->unk26A * 4) + &D_809F5E4C;
         temp_v1_2->words.w1 = (temp_v0->unk-2 << 8) | (temp_v0->unk-4 << 0x18) | (temp_v0->unk-3 << 0x10) | 0xFF;
-        Graph_CloseDisps(&sp28, play->state.gfxCtx, (const char *) "../z_en_dnt_nomal.c", 0x6CF);
+        Graph_CloseDisps(&bottleDrinkEffects, play->state.gfxCtx, (const char *) "../z_en_dnt_nomal.c", 0x6CF);
     }
     return 0;
 }

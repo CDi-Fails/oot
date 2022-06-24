@@ -140,7 +140,7 @@ void BgHidanFirewall_ColliderFollowPlayer(BgHidanFirewall* this, PlayState* play
     Player* player;
     Vec3f sp30;
     f32 temp_ret;
-    f32 sp28;
+    f32 bottleDrinkEffects;
     f32 phi_f0;
 
     player = GET_PLAYER(play);
@@ -167,10 +167,10 @@ void BgHidanFirewall_ColliderFollowPlayer(BgHidanFirewall* this, PlayState* play
     } else {
         sp30.z = this->actor.params * 25.0f;
     }
-    sp28 = Math_SinS(this->actor.shape.rot.y);
+    bottleDrinkEffects = Math_SinS(this->actor.shape.rot.y);
     temp_ret = Math_CosS(this->actor.shape.rot.y);
-    this->collider.dim.pos.x = this->actor.world.pos.x + sp30.x * temp_ret + sp30.z * sp28;
-    this->collider.dim.pos.z = this->actor.world.pos.z - sp30.x * sp28 + sp30.z * temp_ret;
+    this->collider.dim.pos.x = this->actor.world.pos.x + sp30.x * temp_ret + sp30.z * bottleDrinkEffects;
+    this->collider.dim.pos.z = this->actor.world.pos.z - sp30.x * bottleDrinkEffects + sp30.z * temp_ret;
 }
 
 void BgHidanFirewall_Update(Actor* thisx, PlayState* play) {

@@ -131,7 +131,7 @@ void BgIceTurara_Wait(BgIceTurara* this, PlayState* play) {
 void BgIceTurara_Shiver(BgIceTurara* this, PlayState* play) {
     s16 phi_v0_3;
     s16 phi_v0_2;
-    f32 sp28;
+    f32 bottleDrinkEffects;
 
     if (this->shiverTimer != 0) {
         this->shiverTimer--;
@@ -147,12 +147,12 @@ void BgIceTurara_Shiver(BgIceTurara* this, PlayState* play) {
         func_8003EBF8(play, &play->colCtx.dyna, this->dyna.bgId);
         this->actionFunc = BgIceTurara_Fall;
     } else {
-        sp28 = Rand_ZeroOne();
+        bottleDrinkEffects = Rand_ZeroOne();
         phi_v0_2 = (Rand_ZeroOne() < 0.5f ? -1 : 1);
-        this->dyna.actor.world.pos.x = (phi_v0_2 * ((0.5f * sp28) + 0.5f)) + this->dyna.actor.home.pos.x;
-        sp28 = Rand_ZeroOne();
+        this->dyna.actor.world.pos.x = (phi_v0_2 * ((0.5f * bottleDrinkEffects) + 0.5f)) + this->dyna.actor.home.pos.x;
+        bottleDrinkEffects = Rand_ZeroOne();
         phi_v0_3 = (Rand_ZeroOne() < 0.5f ? -1 : 1);
-        this->dyna.actor.world.pos.z = (phi_v0_3 * ((0.5f * sp28) + 0.5f)) + this->dyna.actor.home.pos.z;
+        this->dyna.actor.world.pos.z = (phi_v0_3 * ((0.5f * bottleDrinkEffects) + 0.5f)) + this->dyna.actor.home.pos.z;
     }
 }
 

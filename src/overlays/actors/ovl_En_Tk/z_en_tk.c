@@ -700,7 +700,7 @@ s32 EnTk_OverrideLimbDraw(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* po
 
 void EnTk_PostLimbDraw(PlayState* play, s32 limbIndex, Gfx** dList, Vec3s* rot, void* thisx) {
     EnTk* this = (EnTk*)thisx;
-    Vec3f sp28 = { 0.0f, 0.0f, 4600.0f };
+    Vec3f bottleDrinkEffects = { 0.0f, 0.0f, 4600.0f };
     Vec3f sp1C = { 0.0f, 0.0f, 0.0f };
 
     /* Limb 16 - Jaw */
@@ -710,7 +710,7 @@ void EnTk_PostLimbDraw(PlayState* play, s32 limbIndex, Gfx** dList, Vec3s* rot, 
 
     /* Limb 14 - Neck */
     if (limbIndex == 14) {
-        Matrix_MultVec3f(&sp28, &this->v3f_304);
+        Matrix_MultVec3f(&bottleDrinkEffects, &this->v3f_304);
         func_80B1D200(play);
     }
 }

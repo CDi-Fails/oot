@@ -559,13 +559,13 @@ void func_80A6C8E0(EnHorseNormal* this, PlayState* play) {
     s32 pad;
     CollisionPoly* sp38;
     s32 pad2;
-    Vec3f sp28;
+    Vec3f bottleDrinkEffects;
     s32 sp24;
 
-    sp28.x = (Math_SinS(this->actor.shape.rot.y) * 30.0f) + this->actor.world.pos.x;
-    sp28.y = this->actor.world.pos.y + 60.0f;
-    sp28.z = (Math_CosS(this->actor.shape.rot.y) * 30.0f) + this->actor.world.pos.z;
-    this->unk_220 = BgCheck_EntityRaycastFloor3(&play->colCtx, &sp38, &sp24, &sp28);
+    bottleDrinkEffects.x = (Math_SinS(this->actor.shape.rot.y) * 30.0f) + this->actor.world.pos.x;
+    bottleDrinkEffects.y = this->actor.world.pos.y + 60.0f;
+    bottleDrinkEffects.z = (Math_CosS(this->actor.shape.rot.y) * 30.0f) + this->actor.world.pos.z;
+    this->unk_220 = BgCheck_EntityRaycastFloor3(&play->colCtx, &sp38, &sp24, &bottleDrinkEffects);
     this->actor.shape.rot.x = RAD_TO_BINANG(Math_FAtan2F(this->actor.world.pos.y - this->unk_220, 30.0f));
 }
 

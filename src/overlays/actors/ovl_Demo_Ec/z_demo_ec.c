@@ -1255,15 +1255,15 @@ void DemoEc_InitCommon(DemoEc* this, PlayState* play) {
     s16 primary;
     s32 type;
     s16 pad2;
-    s16 sp28;
+    s16 bottleDrinkEffects;
     s32 primaryBankIndex;
     s32 secondaryBankIndex;
 
     type = this->actor.params;
     primary = sDrawObjects[type];
-    sp28 = sAnimationObjects[type];
+    bottleDrinkEffects = sAnimationObjects[type];
     primaryBankIndex = Object_GetIndex(&play->objectCtx, primary);
-    secondaryBankIndex = Object_GetIndex(&play->objectCtx, sp28);
+    secondaryBankIndex = Object_GetIndex(&play->objectCtx, bottleDrinkEffects);
 
     if ((secondaryBankIndex < 0) || (primaryBankIndex < 0)) {
         // "Demo_Ec_main_bank: Bank unreadable arg_data = %d!"

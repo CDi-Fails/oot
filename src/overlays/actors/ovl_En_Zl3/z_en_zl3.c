@@ -2254,21 +2254,21 @@ void func_80B58C08(EnZl3* this, PlayState* play) {
     Vec3f* thisPos = &this->actor.world.pos;
     s32 unk_344;
     s32 unk_346;
-    s32 sp28;
+    s32 bottleDrinkEffects;
     f32 temp_f0;
 
     this->unk_344 += 1;
 
     unk_344 = this->unk_344;
     unk_346 = this->unk_346;
-    sp28 = unk_346 - kREG(11) - 2;
+    bottleDrinkEffects = unk_346 - kREG(11) - 2;
     temp_f0 = Environment_LerpWeightAccelDecel(unk_346, 0, unk_344, 3, 0);
 
     thisPos->x = unk_348->x + (temp_f0 * (unk_354->x - unk_348->x));
     thisPos->y = (unk_348->y + (temp_f0 * (unk_354->y - unk_348->y))) + this->unk_360;
     thisPos->z = unk_348->z + (temp_f0 * (unk_354->z - unk_348->z));
 
-    if ((unk_344 - sp28) >= 0) {
+    if ((unk_344 - bottleDrinkEffects) >= 0) {
         this->alpha = ((f32)(unk_346 - unk_344) / (kREG(11) + 2)) * 255.0f;
         this->drawConfig = 2;
     }

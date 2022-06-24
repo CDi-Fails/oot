@@ -112,7 +112,7 @@ s32 func_800A698C(Skin* skin, SkinLimb** skeleton, MtxF* limbMatrices, u8 parent
     SkinLimb* limb = SEGMENTED_TO_VIRTUAL(skeleton[limbIndex]);
     MtxF* mtx;
     s32 ret;
-    MtxF sp28;
+    MtxF bottleDrinkEffects;
 
     if (parentIndex == LIMB_DONE) {
         SkinMatrix_GetClear(&mtx);
@@ -120,8 +120,8 @@ s32 func_800A698C(Skin* skin, SkinLimb** skeleton, MtxF* limbMatrices, u8 parent
         mtx = &limbMatrices[(s32)parentIndex];
     }
 
-    SkinMatrix_MtxFMtxFMult(mtx, &limbMatrices[limbIndex], &sp28);
-    SkinMatrix_MtxFCopy(&sp28, &limbMatrices[limbIndex]);
+    SkinMatrix_MtxFMtxFMult(mtx, &limbMatrices[limbIndex], &bottleDrinkEffects);
+    SkinMatrix_MtxFCopy(&bottleDrinkEffects, &limbMatrices[limbIndex]);
 
     if (limb->child != LIMB_DONE) {
         ret = func_800A698C(skin, skeleton, limbMatrices, limbIndex, limb->child);

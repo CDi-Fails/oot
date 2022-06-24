@@ -605,13 +605,13 @@ void EnFish_Cutscene_FlopOnGround(EnFish* this, PlayState* play) {
 
 void EnFish_Cutscene_WiggleFlyingThroughAir(EnFish* this, PlayState* play) {
     s32 pad;
-    f32 sp28 = Math_SinS(this->slowPhase);
+    f32 bottleDrinkEffects = Math_SinS(this->slowPhase);
     f32 sp24 = Math_SinS(this->fastPhase);
 
     this->actor.shape.rot.x -= 500;
     this->actor.shape.rot.z += 100;
     Math_StepToF(&D_80A17014, 0.0f, 1.0f);
-    this->skelAnime.playSpeed = ((sp28 + sp24) * 0.5f) + 2.0f;
+    this->skelAnime.playSpeed = ((bottleDrinkEffects + sp24) * 0.5f) + 2.0f;
     SkelAnime_Update(&this->skelAnime);
 }
 

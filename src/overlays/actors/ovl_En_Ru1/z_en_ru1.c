@@ -1443,7 +1443,7 @@ void func_80AEE02C(EnRu1* this) {
 
 void func_80AEE050(EnRu1* this) {
     s32 pad;
-    f32 sp28;
+    f32 bottleDrinkEffects;
     f32 sp24;
     f32 temp_f10;
     EnRu1* thisx = this; // necessary to match
@@ -1478,9 +1478,9 @@ void func_80AEE050(EnRu1* this) {
                 this->unk_350 = 2;
                 this->unk_360 = 0.0f;
             } else {
-                sp28 = this->unk_358;
+                bottleDrinkEffects = this->unk_358;
                 sp24 = this->unk_354;
-                temp_f10 = Math_CosS(this->unk_35C) * -sp28;
+                temp_f10 = Math_CosS(this->unk_35C) * -bottleDrinkEffects;
                 this->actor.world.pos.y = temp_f10 + sp24;
                 this->unk_35C += 0x3E8;
                 this->unk_358 *= 0.95f;
