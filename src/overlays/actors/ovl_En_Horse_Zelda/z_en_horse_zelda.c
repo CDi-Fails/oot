@@ -112,18 +112,18 @@ void func_80A6D8D0(unknownStruct* data, s32 index, Vec3f* vec) {
 
 void func_80A6D918(EnHorseZelda* this, PlayState* play) {
     s32 pad;
-    Vec3f bottleDrinkEffects;
+    Vec3f sp28;
     s16 yawDiff;
 
-    func_80A6D8D0(D_80A6E240, this->unk_1EC, &bottleDrinkEffects);
-    if (Math3D_Vec3f_DistXYZ(&bottleDrinkEffects, &this->actor.world.pos) <= 400.0f) {
+    func_80A6D8D0(D_80A6E240, this->unk_1EC, &sp28);
+    if (Math3D_Vec3f_DistXYZ(&sp28, &this->actor.world.pos) <= 400.0f) {
         this->unk_1EC++;
         if (this->unk_1EC >= 14) {
             this->unk_1EC = 0;
-            func_80A6D8D0(D_80A6E240, 0, &bottleDrinkEffects);
+            func_80A6D8D0(D_80A6E240, 0, &sp28);
         }
     }
-    yawDiff = Math_Vec3f_Yaw(&this->actor.world.pos, &bottleDrinkEffects) - this->actor.world.rot.y;
+    yawDiff = Math_Vec3f_Yaw(&this->actor.world.pos, &sp28) - this->actor.world.rot.y;
     if (yawDiff >= 0x12D) {
         this->actor.world.rot.y += 0x12C;
     } else if (yawDiff < -0x12C) {

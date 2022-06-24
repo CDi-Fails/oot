@@ -203,29 +203,29 @@ void BgHakaTrap_Destroy(Actor* thisx, PlayState* play) {
 
 void func_8087FFC0(BgHakaTrap* this, PlayState* play) {
     f32 cosine;
-    Vec3f bottleDrinkEffects;
+    Vec3f sp28;
     f32 sine;
     f32 zNonNegative;
     Player* player = GET_PLAYER(play);
 
-    func_8002DBD0(&this->dyna.actor, &bottleDrinkEffects, &player->actor.world.pos);
+    func_8002DBD0(&this->dyna.actor, &sp28, &player->actor.world.pos);
 
     sine = Math_SinS(this->dyna.actor.shape.rot.y);
     cosine = Math_CosS(this->dyna.actor.shape.rot.y);
     if (this->dyna.actor.params == HAKA_TRAP_GUILLOTINE_SLOW) {
-        bottleDrinkEffects.x = CLAMP(bottleDrinkEffects.x, -50.0f, 50.0f);
-        zNonNegative = (bottleDrinkEffects.z >= 0.0f) ? 1.0f : -1.0f;
-        bottleDrinkEffects.z = zNonNegative * -15.0f;
+        sp28.x = CLAMP(sp28.x, -50.0f, 50.0f);
+        zNonNegative = (sp28.z >= 0.0f) ? 1.0f : -1.0f;
+        sp28.z = zNonNegative * -15.0f;
     } else {
-        bottleDrinkEffects.x = -CLAMP(bottleDrinkEffects.x, -162.0f, 162.0f);
-        zNonNegative = (bottleDrinkEffects.z >= 0.0f) ? 1.0f : -1.0f;
-        bottleDrinkEffects.z = zNonNegative * 15.0f;
+        sp28.x = -CLAMP(sp28.x, -162.0f, 162.0f);
+        zNonNegative = (sp28.z >= 0.0f) ? 1.0f : -1.0f;
+        sp28.z = zNonNegative * 15.0f;
     }
 
     this->colliderCylinder.dim.pos.x =
-        this->dyna.actor.world.pos.x + bottleDrinkEffects.x * cosine + bottleDrinkEffects.z * sine;
+        this->dyna.actor.world.pos.x + sp28.x * cosine + sp28.z * sine;
     this->colliderCylinder.dim.pos.z =
-        this->dyna.actor.world.pos.z + bottleDrinkEffects.x * sine + bottleDrinkEffects.z * cosine;
+        this->dyna.actor.world.pos.z + sp28.x * sine + sp28.z * cosine;
 }
 
 void func_808801B8(BgHakaTrap* this, PlayState* play) {

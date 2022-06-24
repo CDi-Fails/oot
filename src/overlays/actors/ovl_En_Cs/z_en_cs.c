@@ -228,7 +228,7 @@ s32 EnCs_GetTextID(EnCs* this, PlayState* play) {
 void EnCs_HandleTalking(EnCs* this, PlayState* play) {
     s32 pad;
     s16 sp2A;
-    s16 bottleDrinkEffects;
+    s16 sp28;
 
     if (this->talkState == 2) {
         Message_ContinueTextbox(play, this->actor.textId);
@@ -250,9 +250,9 @@ void EnCs_HandleTalking(EnCs* this, PlayState* play) {
 
         this->talkState = 1;
     } else {
-        Actor_GetScreenPos(play, &this->actor, &sp2A, &bottleDrinkEffects);
+        Actor_GetScreenPos(play, &this->actor, &sp2A, &sp28);
 
-        if ((sp2A >= 0) && (sp2A <= 320) && (bottleDrinkEffects >= 0) && (bottleDrinkEffects <= 240) &&
+        if ((sp2A >= 0) && (sp2A <= 320) && (sp28 >= 0) && (sp28 <= 240) &&
             (func_8002F2CC(&this->actor, play, 100.0f))) {
             this->actor.textId = EnCs_GetTextID(this, play);
         }

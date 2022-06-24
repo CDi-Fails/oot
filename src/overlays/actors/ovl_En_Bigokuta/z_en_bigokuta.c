@@ -479,7 +479,7 @@ void func_809BDC08(EnBigokuta* this, PlayState* play) {
     s16 phi_v0;
     s16 pad;
     s16 phi_v1;
-    Vec3f bottleDrinkEffects;
+    Vec3f sp28;
 
     SkelAnime_Update(&this->skelAnime);
     if (Animation_OnFrame(&this->skelAnime, 0.0f)) {
@@ -498,9 +498,9 @@ void func_809BDC08(EnBigokuta* this, PlayState* play) {
     }
 
     phi_v1 = (Actor_WorldDistXZToPoint(&player->actor, &this->actor.home.pos) - 180.0f) * (8.0f / 15);
-    func_8002DBD0(&this->actor, &bottleDrinkEffects, &player->actor.world.pos);
-    if (fabsf(bottleDrinkEffects.x) > 263.0f ||
-        ((bottleDrinkEffects.z > 0.0f) && !Actor_IsFacingPlayer(&this->actor, 0x1B00) &&
+    func_8002DBD0(&this->actor, &sp28, &player->actor.world.pos);
+    if (fabsf(sp28.x) > 263.0f ||
+        ((sp28.z > 0.0f) && !Actor_IsFacingPlayer(&this->actor, 0x1B00) &&
          !Player_IsFacingActor(&this->actor, 0x2000, play))) {
         phi_v1 -= 0x80;
         if (this->unk_196 != 0) {

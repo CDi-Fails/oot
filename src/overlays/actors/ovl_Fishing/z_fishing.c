@@ -2735,7 +2735,7 @@ void func_80B70CF0(Fishing* this, PlayState* play) {
 
 void func_80B70ED4(Fishing* this, Input* input) {
     Vec3f sp34;
-    Vec3f bottleDrinkEffects;
+    Vec3f sp28;
     f32 sp24;
 
     sp34.x = sLurePos.x - this->actor.world.pos.x;
@@ -2746,9 +2746,9 @@ void func_80B70ED4(Fishing* this, Input* input) {
 
     if ((D_80B7A694 == 3) && (this->unk_1A2 == 0) && (D_80B7A68C == 0)) {
         Matrix_RotateY(BINANG_TO_RAD_ALT(-this->actor.shape.rot.y), MTXMODE_NEW);
-        Matrix_MultVec3f(&sp34, &bottleDrinkEffects);
+        Matrix_MultVec3f(&sp34, &sp28);
 
-        if ((bottleDrinkEffects.z > 0.0f) || (this->unk_1AC < 40.0f)) {
+        if ((sp28.z > 0.0f) || (this->unk_1AC < 40.0f)) {
             if ((this->unk_158 == 7) && (sp24 < SQ(200.0f))) {
                 this->unk_158 = 4;
                 this->unk_1B4 = sLurePos;

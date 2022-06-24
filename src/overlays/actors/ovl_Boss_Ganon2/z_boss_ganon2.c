@@ -915,13 +915,13 @@ void func_808FF898(BossGanon2* this, PlayState* play) {
                             SQ(this->unk_218.z - gj->dyna.actor.world.pos.z) <
                         SQ(100.0f)) {
                         s32 pad;
-                        Vec3f bottleDrinkEffects;
+                        Vec3f sp28;
 
                         Matrix_RotateY(BINANG_TO_RAD_ALT(this->actor.shape.rot.y) + 0.5f, MTXMODE_NEW);
-                        bottleDrinkEffects.x = 0.0f;
-                        bottleDrinkEffects.y = 0.0f;
-                        bottleDrinkEffects.z = 1.0f;
-                        Matrix_MultVec3f(&bottleDrinkEffects, &gj->unk_26C);
+                        sp28.x = 0.0f;
+                        sp28.y = 0.0f;
+                        sp28.z = 1.0f;
+                        Matrix_MultVec3f(&sp28, &gj->unk_26C);
                         gj->killFlag = true;
                         func_800A9F6C(0.0f, 0x96, 0x14, 0x32);
                         this->unk_392 = 6;
@@ -1038,7 +1038,7 @@ void func_808FFCFC(BossGanon2* this, PlayState* play) {
 }
 
 void func_808FFDB0(BossGanon2* this, PlayState* play) {
-    s32 bottleDrinkEffects;
+    s32 sp28;
     s32 objectIdx = Object_GetIndex(&play->objectCtx, OBJECT_GANON2);
 
     if (Object_IsLoaded(&play->objectCtx, objectIdx)) {

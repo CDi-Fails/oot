@@ -238,7 +238,7 @@ void func_8089E318(BgMizuMovebg* this, PlayState* play) {
     WaterBox* waterBoxes = play->colCtx.colHeader->waterBoxes;
     f32 phi_f0;
     s32 type;
-    Vec3f bottleDrinkEffects;
+    Vec3f sp28;
 
     func_8089E198(this, play);
 
@@ -305,10 +305,10 @@ void func_8089E318(BgMizuMovebg* this, PlayState* play) {
         case 6:
             if (play->roomCtx.curRoom.num == this->dyna.actor.room) {
                 Matrix_RotateY(BINANG_TO_RAD(this->dyna.actor.world.rot.y), MTXMODE_NEW);
-                Matrix_MultVec3f(&D_8089EBAC, &bottleDrinkEffects);
-                this->dyna.actor.child->world.pos.x = this->dyna.actor.world.pos.x + bottleDrinkEffects.x;
-                this->dyna.actor.child->world.pos.y = this->dyna.actor.world.pos.y + bottleDrinkEffects.y;
-                this->dyna.actor.child->world.pos.z = this->dyna.actor.world.pos.z + bottleDrinkEffects.z;
+                Matrix_MultVec3f(&D_8089EBAC, &sp28);
+                this->dyna.actor.child->world.pos.x = this->dyna.actor.world.pos.x + sp28.x;
+                this->dyna.actor.child->world.pos.y = this->dyna.actor.world.pos.y + sp28.y;
+                this->dyna.actor.child->world.pos.z = this->dyna.actor.world.pos.z + sp28.z;
                 this->dyna.actor.child->flags &= ~ACTOR_FLAG_0;
             }
             break;

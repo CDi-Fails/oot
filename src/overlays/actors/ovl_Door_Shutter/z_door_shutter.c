@@ -313,14 +313,14 @@ void DoorShutter_SetupType(DoorShutter* this, PlayState* play) {
 
 f32 func_80996840(PlayState* play, DoorShutter* this, f32 arg2, f32 arg3, f32 arg4) {
     s32 pad;
-    Vec3f bottleDrinkEffects;
+    Vec3f sp28;
     Vec3f sp1C;
     Player* player = GET_PLAYER(play);
 
-    bottleDrinkEffects.x = player->actor.world.pos.x;
-    bottleDrinkEffects.y = player->actor.world.pos.y + arg2;
-    bottleDrinkEffects.z = player->actor.world.pos.z;
-    func_8002DBD0(&this->dyna.actor, &sp1C, &bottleDrinkEffects);
+    sp28.x = player->actor.world.pos.x;
+    sp28.y = player->actor.world.pos.y + arg2;
+    sp28.z = player->actor.world.pos.z;
+    func_8002DBD0(&this->dyna.actor, &sp1C, &sp28);
     if (arg3 < fabsf(sp1C.x) || arg4 < fabsf(sp1C.y)) {
         return FLT_MAX;
     } else {

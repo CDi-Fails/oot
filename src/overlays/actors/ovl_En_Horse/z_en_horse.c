@@ -3687,7 +3687,7 @@ void EnHorse_PostDraw(Actor* thisx, PlayState* play, Skin* skin) {
     Vec3f newCenter;
     s32 i;
     Vec3f sp2C;
-    f32 bottleDrinkEffects;
+    f32 sp28;
 
     if (!(this->stateFlags & ENHORSE_CALC_RIDER_POS)) {
         Skin_GetLimbPos(skin, 30, &riderOffset, &this->riderPos);
@@ -3699,7 +3699,7 @@ void EnHorse_PostDraw(Actor* thisx, PlayState* play, Skin* skin) {
     }
 
     Skin_GetLimbPos(skin, 13, &sp94, &sp2C);
-    SkinMatrix_Vec3fMtxFMultXYZW(&play->viewProjectionMtxF, &sp2C, &this->unk_228, &bottleDrinkEffects);
+    SkinMatrix_Vec3fMtxFMultXYZW(&play->viewProjectionMtxF, &sp2C, &this->unk_228, &sp28);
     if ((this->animationIdx == ENHORSE_ANIM_IDLE && this->action != ENHORSE_ACT_FROZEN) &&
         ((frame > 40.0f && frame < 45.0f && this->type == HORSE_EPONA) ||
          (frame > 28.0f && frame < 33.0f && this->type == HORSE_HNI))) {

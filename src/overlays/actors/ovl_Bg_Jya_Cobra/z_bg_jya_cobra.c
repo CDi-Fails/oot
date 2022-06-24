@@ -174,16 +174,16 @@ void func_80895A70(BgJyaCobra* this) {
     if (this->unk_18C <= 0.0f) {
         mirRay->unLit = 1;
     } else {
-        Vec3f bottleDrinkEffects;
+        Vec3f sp28;
 
         mirRay->unLit = 0;
         Math_Vec3f_Copy(&mirRay->sourcePt, &this->unk_180);
         Matrix_RotateY(BINANG_TO_RAD(this->dyna.actor.shape.rot.y), MTXMODE_NEW);
         Matrix_RotateX(BINANG_TO_RAD(D_80897308[this->dyna.actor.params & 3]), MTXMODE_APPLY);
-        bottleDrinkEffects.x = 0.0f;
-        bottleDrinkEffects.y = 0.0;
-        bottleDrinkEffects.z = this->unk_190 * 2800.0f;
-        Matrix_MultVec3f(&bottleDrinkEffects, &mirRay->poolPt);
+        sp28.x = 0.0f;
+        sp28.y = 0.0;
+        sp28.z = this->unk_190 * 2800.0f;
+        Matrix_MultVec3f(&sp28, &mirRay->poolPt);
         Math_Vec3f_Sum(&mirRay->sourcePt, &mirRay->poolPt, &mirRay->poolPt);
     }
 }

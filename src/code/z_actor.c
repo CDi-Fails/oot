@@ -4184,7 +4184,7 @@ void func_800359B8(Actor* actor, s16 arg1, Vec3s* arg2) {
     f32 sp34;
     f32 sp30;
     f32 sp2C;
-    f32 bottleDrinkEffects;
+    f32 sp28;
     f32 sp24;
     CollisionPoly* floorPoly;
     s32 pad;
@@ -4197,8 +4197,8 @@ void func_800359B8(Actor* actor, s16 arg1, Vec3s* arg2) {
 
         sp38 = Math_SinS(arg1);
         sp34 = Math_CosS(arg1);
-        bottleDrinkEffects = (-(floorPolyNormalX * sp38) - (floorPolyNormalZ * sp34));
-        arg2->x = -RAD_TO_BINANG(Math_FAtan2F(bottleDrinkEffects * floorPolyNormalY, 1.0f));
+        sp28 = (-(floorPolyNormalX * sp38) - (floorPolyNormalZ * sp34));
+        arg2->x = -RAD_TO_BINANG(Math_FAtan2F(sp28 * floorPolyNormalY, 1.0f));
 
         sp2C = Math_SinS(arg1 - 16375);
         sp30 = Math_CosS(arg1 - 16375);

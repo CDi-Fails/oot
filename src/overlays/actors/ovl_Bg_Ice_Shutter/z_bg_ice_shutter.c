@@ -48,21 +48,21 @@ void BgIceShutter_Init(Actor* thisx, PlayState* play) {
     BgIceShutter* this = (BgIceShutter*)thisx;
     f32 sp24;
     CollisionHeader* colHeader;
-    s32 bottleDrinkEffects;
+    s32 sp28;
     f32 temp_f6;
 
     colHeader = NULL;
     Actor_ProcessInitChain(&this->dyna.actor, sInitChain);
     DynaPolyActor_Init(&this->dyna, DPM_UNK);
-    bottleDrinkEffects = this->dyna.actor.params & 0xFF;
+    sp28 = this->dyna.actor.params & 0xFF;
     this->dyna.actor.params = (this->dyna.actor.params >> 8) & 0xFF;
     CollisionHeader_GetVirtual(&object_ice_objects_Col_002854, &colHeader);
     this->dyna.bgId = DynaPoly_SetBgActor(play, &play->colCtx.dyna, &this->dyna.actor, colHeader);
-    if (bottleDrinkEffects == 2) {
+    if (sp28 == 2) {
         this->dyna.actor.shape.rot.x = -0x4000;
     }
 
-    if (bottleDrinkEffects != 1) {
+    if (sp28 != 1) {
         if (Flags_GetClear(play, this->dyna.actor.room)) {
             Actor_Kill(&this->dyna.actor);
         } else {
@@ -77,7 +77,7 @@ void BgIceShutter_Init(Actor* thisx, PlayState* play) {
         }
     }
 
-    if (bottleDrinkEffects == 2) {
+    if (sp28 == 2) {
         temp_f6 = Math_SinS(this->dyna.actor.shape.rot.x) * 50.0f;
         this->dyna.actor.focus.pos.x =
             (Math_SinS(this->dyna.actor.shape.rot.y) * temp_f6) + this->dyna.actor.home.pos.x;

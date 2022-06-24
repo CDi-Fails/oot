@@ -1038,25 +1038,25 @@ void func_8098078C(DemoGt* this, PlayState* play) {
 
 void func_8098085C(DemoGt* this, PlayState* play) {
     s32 pad[3];
-    Vec3f bottleDrinkEffects;
+    Vec3f sp28;
     u16 frames = play->csCtx.frames;
     Vec3f* pos = &this->dyna.actor.world.pos;
 
     if ((frames == 58) || (kREG(1) == 1)) {
-        bottleDrinkEffects.x = pos->x + 900.0f;
-        bottleDrinkEffects.y = pos->y - 50.0f;
-        bottleDrinkEffects.z = pos->z + 93.0f;
-        DemoGt_SpawnExplosionWithSound(play, &bottleDrinkEffects, 2.0f);
+        sp28.x = pos->x + 900.0f;
+        sp28.y = pos->y - 50.0f;
+        sp28.z = pos->z + 93.0f;
+        DemoGt_SpawnExplosionWithSound(play, &sp28, 2.0f);
     } else if (frames == 80) {
-        bottleDrinkEffects.x = pos->x + 810.0f;
-        bottleDrinkEffects.y = pos->y + 200.0f;
-        bottleDrinkEffects.z = pos->z - 37.0f;
-        DemoGt_SpawnExplosionWithSound(play, &bottleDrinkEffects, 0.9f);
+        sp28.x = pos->x + 810.0f;
+        sp28.y = pos->y + 200.0f;
+        sp28.z = pos->z - 37.0f;
+        DemoGt_SpawnExplosionWithSound(play, &sp28, 0.9f);
     } else if (frames == 90) {
-        bottleDrinkEffects.x = pos->x - 220.0f;
-        bottleDrinkEffects.y = pos->y + 1350.0f;
-        bottleDrinkEffects.z = pos->z - 287.0f;
-        DemoGt_SpawnExplosionWithSound(play, &bottleDrinkEffects, 2.0f);
+        sp28.x = pos->x - 220.0f;
+        sp28.y = pos->y + 1350.0f;
+        sp28.z = pos->z - 287.0f;
+        DemoGt_SpawnExplosionWithSound(play, &sp28, 2.0f);
     }
 }
 

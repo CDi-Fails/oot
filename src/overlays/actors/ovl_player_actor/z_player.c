@@ -5238,7 +5238,7 @@ static LinkAnimationHeader* sExchangeItemAnims[] = {
 
 s32 Player_SetupItemCutsceneOrFirstPerson(Player* this, PlayState* play) {
     s32 item;
-    s32 bottleDrinkEffects;
+    s32 sp28;
     GetItemEntry* giEntry;
     Actor* talkActor;
 
@@ -5266,8 +5266,8 @@ s32 Player_SetupItemCutsceneOrFirstPerson(Player* this, PlayState* play) {
 
                 item = this->itemActionParam - PLAYER_AP_LETTER_ZELDA;
                 if ((item >= 0) ||
-                    (bottleDrinkEffects = Player_ActionToBottle(this, this->itemActionParam) - 1,
-                     ((bottleDrinkEffects >= 0) && (bottleDrinkEffects < 6) &&
+                    (sp28 = Player_ActionToBottle(this, this->itemActionParam) - 1,
+                     ((sp28 >= 0) && (sp28 < 6) &&
                       ((this->itemActionParam > PLAYER_AP_BOTTLE_POE) ||
                        ((this->talkActor != NULL) &&
                         (((this->itemActionParam == PLAYER_AP_BOTTLE_POE) && (this->exchangeItemId == EXCH_ITEM_POE)) ||
@@ -5287,7 +5287,7 @@ s32 Player_SetupItemCutsceneOrFirstPerson(Player* this, PlayState* play) {
                         if (item >= 0) {
                             item = item + 1;
                         } else {
-                            item = bottleDrinkEffects + 0x18;
+                            item = sp28 + 0x18;
                         }
 
                         talkActor = this->talkActor;
@@ -8134,19 +8134,19 @@ static LinkAnimationHeader* D_808545CC[] = {
 
 void Player_SetupMeleeWeaponRebound(PlayState* play, Player* this) {
     s32 pad;
-    s32 bottleDrinkEffects;
+    s32 sp28;
 
     if (Player_AimShieldCrouched != this->actionFunc) {
         Player_ResetAttributes(play, this);
         Player_SetActionFunc(play, this, Player_MeleeWeaponRebound, 0);
 
         if (Player_IsUnfriendlyZTargeting(this)) {
-            bottleDrinkEffects = 2;
+            sp28 = 2;
         } else {
-            bottleDrinkEffects = 0;
+            sp28 = 0;
         }
 
-        Player_PlayAnimOnceSlowed(play, this, D_808545CC[Player_HoldsTwoHandedWeapon(this) + bottleDrinkEffects]);
+        Player_PlayAnimOnceSlowed(play, this, D_808545CC[Player_HoldsTwoHandedWeapon(this) + sp28]);
     }
 
     Player_RequestRumble(this, 180, 20, 100, 0);
@@ -13439,7 +13439,7 @@ void Player_BowStringMoveAfterShot(Player* this) {
 void Player_BunnyHoodPhysics(Player* this) {
     s32 pad;
     s16 sp2A;
-    s16 bottleDrinkEffects;
+    s16 sp28;
     s16 sp26;
 
     D_80858AC8.unk_06 -= D_80858AC8.unk_06 >> 3;
@@ -13449,11 +13449,11 @@ void Player_BunnyHoodPhysics(Player* this) {
 
     sp26 = this->actor.world.rot.y - this->actor.shape.rot.y;
 
-    bottleDrinkEffects =
+    sp28 =
         (s32)(this->actor.speedXZ * -200.0f * Math_CosS(sp26) * (Rand_CenteredFloat(2.0f) + 10.0f)) & 0xFFFF;
     sp2A = (s32)(this->actor.speedXZ * 100.0f * Math_SinS(sp26) * (Rand_CenteredFloat(2.0f) + 10.0f)) & 0xFFFF;
 
-    D_80858AC8.unk_06 += bottleDrinkEffects >> 2;
+    D_80858AC8.unk_06 += sp28 >> 2;
     D_80858AC8.unk_08 += sp2A >> 2;
 
     if (D_80858AC8.unk_06 > 6000) {

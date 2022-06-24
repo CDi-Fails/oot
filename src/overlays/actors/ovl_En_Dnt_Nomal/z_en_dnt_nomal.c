@@ -715,18 +715,18 @@ void EnDntNomal_StageSetupReturn(EnDntNomal* this, PlayState* play) {
 
 void EnDntNomal_StageReturn(EnDntNomal* this, PlayState* play) {
     f32 sp2C;
-    f32 bottleDrinkEffects;
+    f32 sp28;
 
     SkelAnime_Update(&this->skelAnime);
     sp2C = this->flowerPos.x - this->actor.world.pos.x;
-    bottleDrinkEffects = this->flowerPos.z - this->actor.world.pos.z;
-    Math_SmoothStepToS(&this->actor.shape.rot.y, RAD_TO_BINANG(Math_FAtan2F(sp2C, bottleDrinkEffects)), 1, 0xBB8, 0);
+    sp28 = this->flowerPos.z - this->actor.world.pos.z;
+    Math_SmoothStepToS(&this->actor.shape.rot.y, RAD_TO_BINANG(Math_FAtan2F(sp2C, sp28)), 1, 0xBB8, 0);
     if (this->timer5 == 0) {
         this->timer5 = 10;
     } else if (!(this->timer5 & 1)) {
         Audio_PlayActorSound2(&this->actor, NA_SE_EN_NUTS_WALK);
     }
-    if ((fabsf(sp2C) < 7.0f) && (fabsf(bottleDrinkEffects) < 7.0f)) {
+    if ((fabsf(sp2C) < 7.0f) && (fabsf(sp28) < 7.0f)) {
         this->actor.world.pos.x = this->flowerPos.x;
         this->actor.world.pos.z = this->flowerPos.z;
         this->actor.speedXZ = 0.0f;
