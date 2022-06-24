@@ -108,11 +108,11 @@ u8 gPlayerModelTypes[PLAYER_MODELGROUP_MAX][PLAYER_MODELGROUPENTRY_MAX] = {
     { PLAYER_ANIMTYPE_HOLDING_SHIELD, PLAYER_MODELTYPE_LH_OPEN, PLAYER_MODELTYPE_RH_SHIELD, PLAYER_MODELTYPE_SHEATH_16,
       PLAYER_MODELTYPE_WAIST },
     /* PLAYER_MODELGROUP_CHILD_HYLIAN_SHIELD */
-    { PLAYER_ANIMTYPE_HOLDING_ONE_HAND_WEAPON, PLAYER_MODELTYPE_LH_SWORD, PLAYER_MODELTYPE_RH_CLOSED, PLAYER_MODELTYPE_SHEATH_19,
-      PLAYER_MODELTYPE_WAIST },
+    { PLAYER_ANIMTYPE_HOLDING_ONE_HAND_WEAPON, PLAYER_MODELTYPE_LH_SWORD, PLAYER_MODELTYPE_RH_CLOSED,
+      PLAYER_MODELTYPE_SHEATH_19, PLAYER_MODELTYPE_WAIST },
     /* PLAYER_MODELGROUP_SWORD */
-    { PLAYER_ANIMTYPE_HOLDING_ONE_HAND_WEAPON, PLAYER_MODELTYPE_LH_SWORD, PLAYER_MODELTYPE_RH_SHIELD, PLAYER_MODELTYPE_SHEATH_17,
-      PLAYER_MODELTYPE_WAIST },
+    { PLAYER_ANIMTYPE_HOLDING_ONE_HAND_WEAPON, PLAYER_MODELTYPE_LH_SWORD, PLAYER_MODELTYPE_RH_SHIELD,
+      PLAYER_MODELTYPE_SHEATH_17, PLAYER_MODELTYPE_WAIST },
     /* PLAYER_MODELGROUP_DEFAULT */
     { PLAYER_ANIMTYPE_DEFAULT, PLAYER_MODELTYPE_LH_OPEN, PLAYER_MODELTYPE_RH_OPEN, PLAYER_MODELTYPE_SHEATH_18,
       PLAYER_MODELTYPE_WAIST },
@@ -120,11 +120,11 @@ u8 gPlayerModelTypes[PLAYER_MODELGROUP_MAX][PLAYER_MODELGROUPENTRY_MAX] = {
     { PLAYER_ANIMTYPE_DEFAULT, PLAYER_MODELTYPE_LH_OPEN, PLAYER_MODELTYPE_RH_OPEN, PLAYER_MODELTYPE_SHEATH_18,
       PLAYER_MODELTYPE_WAIST },
     /* PLAYER_MODELGROUP_BGS */
-    { PLAYER_ANIMTYPE_HOLDING_TWO_HAND_WEAPON, PLAYER_MODELTYPE_LH_BGS, PLAYER_MODELTYPE_RH_CLOSED, PLAYER_MODELTYPE_SHEATH_19,
-      PLAYER_MODELTYPE_WAIST },
+    { PLAYER_ANIMTYPE_HOLDING_TWO_HAND_WEAPON, PLAYER_MODELTYPE_LH_BGS, PLAYER_MODELTYPE_RH_CLOSED,
+      PLAYER_MODELTYPE_SHEATH_19, PLAYER_MODELTYPE_WAIST },
     /* PLAYER_MODELGROUP_BOW_SLINGSHOT */
-    { PLAYER_ANIMTYPE_HOLDING_ITEM_IN_LEFT_HAND, PLAYER_MODELTYPE_LH_CLOSED, PLAYER_MODELTYPE_RH_BOW_SLINGSHOT, PLAYER_MODELTYPE_SHEATH_18,
-      PLAYER_MODELTYPE_WAIST },
+    { PLAYER_ANIMTYPE_HOLDING_ITEM_IN_LEFT_HAND, PLAYER_MODELTYPE_LH_CLOSED, PLAYER_MODELTYPE_RH_BOW_SLINGSHOT,
+      PLAYER_MODELTYPE_SHEATH_18, PLAYER_MODELTYPE_WAIST },
     /* PLAYER_MODELGROUP_EXPLOSIVES */
     { PLAYER_ANIMTYPE_USED_EXPLOSIVE, PLAYER_MODELTYPE_LH_OPEN, PLAYER_MODELTYPE_RH_OPEN, PLAYER_MODELTYPE_SHEATH_18,
       PLAYER_MODELTYPE_WAIST },
@@ -132,14 +132,14 @@ u8 gPlayerModelTypes[PLAYER_MODELGROUP_MAX][PLAYER_MODELGROUPENTRY_MAX] = {
     { PLAYER_ANIMTYPE_DEFAULT, PLAYER_MODELTYPE_LH_BOOMERANG, PLAYER_MODELTYPE_RH_OPEN, PLAYER_MODELTYPE_SHEATH_18,
       PLAYER_MODELTYPE_WAIST },
     /* PLAYER_MODELGROUP_HOOKSHOT */
-    { PLAYER_ANIMTYPE_HOLDING_ITEM_IN_LEFT_HAND, PLAYER_MODELTYPE_LH_OPEN, PLAYER_MODELTYPE_RH_HOOKSHOT, PLAYER_MODELTYPE_SHEATH_18,
-      PLAYER_MODELTYPE_WAIST },
+    { PLAYER_ANIMTYPE_HOLDING_ITEM_IN_LEFT_HAND, PLAYER_MODELTYPE_LH_OPEN, PLAYER_MODELTYPE_RH_HOOKSHOT,
+      PLAYER_MODELTYPE_SHEATH_18, PLAYER_MODELTYPE_WAIST },
     /* PLAYER_MODELGROUP_10 */
-    { PLAYER_ANIMTYPE_HOLDING_TWO_HAND_WEAPON, PLAYER_MODELTYPE_LH_CLOSED, PLAYER_MODELTYPE_RH_CLOSED, PLAYER_MODELTYPE_SHEATH_18,
-      PLAYER_MODELTYPE_WAIST },
+    { PLAYER_ANIMTYPE_HOLDING_TWO_HAND_WEAPON, PLAYER_MODELTYPE_LH_CLOSED, PLAYER_MODELTYPE_RH_CLOSED,
+      PLAYER_MODELTYPE_SHEATH_18, PLAYER_MODELTYPE_WAIST },
     /* PLAYER_MODELGROUP_HAMMER */
-    { PLAYER_ANIMTYPE_HOLDING_TWO_HAND_WEAPON, PLAYER_MODELTYPE_LH_HAMMER, PLAYER_MODELTYPE_RH_CLOSED, PLAYER_MODELTYPE_SHEATH_18,
-      PLAYER_MODELTYPE_WAIST },
+    { PLAYER_ANIMTYPE_HOLDING_TWO_HAND_WEAPON, PLAYER_MODELTYPE_LH_HAMMER, PLAYER_MODELTYPE_RH_CLOSED,
+      PLAYER_MODELTYPE_SHEATH_18, PLAYER_MODELTYPE_WAIST },
     /* PLAYER_MODELGROUP_OCARINA */
     { PLAYER_ANIMTYPE_DEFAULT, PLAYER_MODELTYPE_LH_OPEN, PLAYER_MODELTYPE_RH_OCARINA, PLAYER_MODELTYPE_SHEATH_18,
       PLAYER_MODELTYPE_WAIST },
@@ -488,8 +488,9 @@ void Player_SetBootData(PlayState* play, Player* this) {
 }
 
 s32 Player_InBlockingCsMode(PlayState* play, Player* this) {
-    return (this->stateFlags1 & (PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_IN_CUTSCENE)) || (this->csMode != PLAYER_ATTENTIONMODE_NONE) ||
-           (play->transitionTrigger == TRANS_TRIGGER_START) || (this->stateFlags1 & PLAYER_STATE1_EXITING_SCENE) ||
+    return (this->stateFlags1 & (PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_IN_CUTSCENE)) ||
+           (this->csMode != PLAYER_ATTENTIONMODE_NONE) || (play->transitionTrigger == TRANS_TRIGGER_START) ||
+           (this->stateFlags1 & PLAYER_STATE1_EXITING_SCENE) ||
            (this->stateFlags3 & PLAYER_STATE3_MOVING_ALONG_HOOKSHOT_PATH) ||
            ((gSaveContext.magicState != MAGIC_STATE_IDLE) &&
             (Player_ActionToMagicSpell(this, this->itemActionParam) >= 0));
@@ -564,7 +565,8 @@ void Player_SetModelGroup(Player* this, s32 modelGroup) {
         this->modelAnimType = gPlayerModelTypes[modelGroup][PLAYER_MODELGROUPENTRY_ANIM];
     }
 
-    if ((this->modelAnimType < PLAYER_ANIMTYPE_HOLDING_TWO_HAND_WEAPON) && (this->currentShield == PLAYER_SHIELD_NONE)) {
+    if ((this->modelAnimType < PLAYER_ANIMTYPE_HOLDING_TWO_HAND_WEAPON) &&
+        (this->currentShield == PLAYER_SHIELD_NONE)) {
         this->modelAnimType = PLAYER_ANIMTYPE_DEFAULT;
     }
 
@@ -609,8 +611,9 @@ void func_8008EE08(Player* this) {
         (this->stateFlags1 & (PLAYER_STATE1_CLIMBING | PLAYER_STATE1_RIDING_HORSE | PLAYER_STATE1_SWIMMING)) ||
         (!(this->stateFlags1 & (PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALLING)) &&
          ((this->actor.world.pos.y - this->actor.floorHeight) < 100.0f))) {
-        this->stateFlags1 &= ~(PLAYER_STATE1_UNUSED_Z_TARGETING_FLAG | PLAYER_STATE1_FORCE_STRAFING | PLAYER_STATE1_Z_TARGETING_FRIENDLY | PLAYER_STATE1_JUMPING |
-                               PLAYER_STATE1_FREEFALLING | PLAYER_STATE1_30);
+        this->stateFlags1 &= ~(PLAYER_STATE1_UNUSED_Z_TARGETING_FLAG | PLAYER_STATE1_FORCE_STRAFING |
+                               PLAYER_STATE1_Z_TARGETING_FRIENDLY | PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALLING |
+                               PLAYER_STATE1_30);
     } else if (!(this->stateFlags1 & (PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALLING | PLAYER_STATE1_CLIMBING))) {
         this->stateFlags1 |= PLAYER_STATE1_FREEFALLING;
     }
@@ -1038,7 +1041,9 @@ void func_8008F87C(PlayState* play, Player* this, SkelAnime* skelAnime, Vec3f* p
 
             temp3 = func_80041D4C(&play->colCtx, sp88, sp84);
 
-            if ((temp3 >= BGCHECK_FLOORSPECIALPROPERTY_HURT_FLOOR) && (temp3 < BGCHECK_FLOORSPECIALPROPERTY_SHALLOW_SAND) && !SurfaceType_IsWallDamage(&play->colCtx, sp88, sp84)) {
+            if ((temp3 >= BGCHECK_FLOORSPECIALPROPERTY_HURT_FLOOR) &&
+                (temp3 < BGCHECK_FLOORSPECIALPROPERTY_SHALLOW_SAND) &&
+                !SurfaceType_IsWallDamage(&play->colCtx, sp88, sp84)) {
                 footprintPos.y = sp80;
                 EffectSsGFire_Spawn(play, &footprintPos);
             }
@@ -1075,7 +1080,8 @@ s32 Player_OverrideLimbDrawGameplayCommon(PlayState* play, s32 limbIndex, Gfx** 
         pos->y -= this->shapeOffsetY;
 
         if (this->shapePitchOffset != 0) {
-            Matrix_Translate(pos->x, ((Math_CosS(this->shapePitchOffset) - 1.0f) * 200.0f) + pos->y, pos->z, MTXMODE_APPLY);
+            Matrix_Translate(pos->x, ((Math_CosS(this->shapePitchOffset) - 1.0f) * 200.0f) + pos->y, pos->z,
+                             MTXMODE_APPLY);
             Matrix_RotateX(BINANG_TO_RAD(this->shapePitchOffset), MTXMODE_APPLY);
             Matrix_RotateZYX(rot->x, rot->y, rot->z, MTXMODE_APPLY);
             pos->x = pos->y = pos->z = 0.0f;
@@ -1128,7 +1134,8 @@ s32 Player_OverrideLimbDrawGameplayDefault(PlayState* play, s32 limbIndex, Gfx**
 
             if ((sLeftHandType == PLAYER_MODELTYPE_LH_BGS) && (gSaveContext.swordHealth <= 0.0f)) {
                 dLists += 4;
-            } else if ((sLeftHandType == PLAYER_MODELTYPE_LH_BOOMERANG) && (this->stateFlags1 & PLAYER_STATE1_AWAITING_THROWN_BOOMERANG)) {
+            } else if ((sLeftHandType == PLAYER_MODELTYPE_LH_BOOMERANG) &&
+                       (this->stateFlags1 & PLAYER_STATE1_AWAITING_THROWN_BOOMERANG)) {
                 dLists = gPlayerLeftHandOpenDLs + gSaveContext.linkAge;
                 sLeftHandType = PLAYER_MODELTYPE_LH_OPEN;
             } else if ((this->leftHandType == PLAYER_MODELTYPE_LH_OPEN) && (this->actor.speedXZ > 2.0f) &&
@@ -1285,8 +1292,8 @@ void func_800906D4(PlayState* play, Player* this, Vec3f* newTipPos) {
                               &this->meleeWeaponInfo[0].base);
     }
 
-    if ((this->isMeleeWeaponAttacking > 0) &&
-        ((this->meleeAttackType < PLAYER_MELEEATKTYPE_SPIN_ATTACK_1H) || (this->stateFlags2 & PLAYER_STATE2_RELEASING_SPIN_ATTACK))) {
+    if ((this->isMeleeWeaponAttacking > 0) && ((this->meleeAttackType < PLAYER_MELEEATKTYPE_SPIN_ATTACK_1H) ||
+                                               (this->stateFlags2 & PLAYER_STATE2_RELEASING_SPIN_ATTACK))) {
         func_80090480(play, &this->meleeWeaponQuads[0], &this->meleeWeaponInfo[1], &newTipPos[1], &newBasePos[1]);
         func_80090480(play, &this->meleeWeaponQuads[1], &this->meleeWeaponInfo[2], &newTipPos[2], &newBasePos[2]);
     }
@@ -1518,7 +1525,8 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
                     if (hookedActor->flags & ACTOR_FLAG_17) {
                         hookedActor->world.rot.x = hookedActor->shape.rot.x = spB8.x - this->leftHandRot.x;
                     } else {
-                        hookedActor->world.rot.y = hookedActor->shape.rot.y = this->actor.shape.rot.y + this->leftHandRot.y;
+                        hookedActor->world.rot.y = hookedActor->shape.rot.y =
+                            this->actor.shape.rot.y + this->leftHandRot.y;
                     }
                 }
             } else {
@@ -1540,7 +1548,8 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
             Matrix_Push();
             Matrix_Translate(stringData->pos.x, stringData->pos.y, stringData->pos.z, MTXMODE_APPLY);
 
-            if ((this->stateFlags1 & PLAYER_STATE1_READY_TO_SHOOT) && (this->fpsItemType >= 0) && (this->fpsItemTimer <= 10)) {
+            if ((this->stateFlags1 & PLAYER_STATE1_READY_TO_SHOOT) && (this->fpsItemType >= 0) &&
+                (this->fpsItemTimer <= 10)) {
                 Vec3f sp90;
                 f32 distXYZ;
 
@@ -1674,7 +1683,8 @@ u8 sPauseModelGroupBySword[] = {
 s32 Player_OverrideLimbDrawPause(PlayState* play, s32 limbIndex, Gfx** dList, Vec3f* pos, Vec3s* rot, void* arg) {
     u8* playerSwordAndShield = arg;
     //! @bug `playerSwordAndShield[0]` can be 0 (`PLAYER_SWORD_NONE`), which indexes `sPauseModelGroupBySword[-1]`.
-    //! The result happens to be 0 (`PLAYER_MODELGROUP_SHIELD`) in vanilla, but weird values are likely to cause a crash.
+    //! The result happens to be 0 (`PLAYER_MODELGROUP_SHIELD`) in vanilla, but weird values are likely to cause a
+    //! crash.
     u8 modelGroup = sPauseModelGroupBySword[playerSwordAndShield[0] - PLAYER_SWORD_KOKIRI];
     s32 type;
     s32 dListOffset = 0;

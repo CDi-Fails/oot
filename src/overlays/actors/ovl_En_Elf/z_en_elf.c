@@ -1224,7 +1224,8 @@ void func_80A04DE4(EnElf* this, PlayState* play) {
     if (this->fairyFlags & 0x10) {
         naviRefPos = play->actorCtx.targetCtx.naviRefPos;
 
-        if ((player->targetActor == NULL) || (&player->actor == player->targetActor) || (&this->actor == player->targetActor)) {
+        if ((player->targetActor == NULL) || (&player->actor == player->targetActor) ||
+            (&this->actor == player->targetActor)) {
             naviRefPos.x =
                 player->bodyPartsPos[PLAYER_BODYPART_HEAD].x + (Math_SinS(player->actor.shape.rot.y) * 20.0f);
             naviRefPos.y = player->bodyPartsPos[PLAYER_BODYPART_HEAD].y + 5.0f;

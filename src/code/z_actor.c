@@ -1020,7 +1020,8 @@ void Actor_MountHorse(PlayState* play, Player* player, Actor* horse) {
 }
 
 s32 func_8002DEEC(Player* player) {
-    return (player->stateFlags1 & (PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_IN_CUTSCENE)) || (player->csMode != PLAYER_ATTENTIONMODE_NONE);
+    return (player->stateFlags1 & (PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_IN_CUTSCENE)) ||
+           (player->csMode != PLAYER_ATTENTIONMODE_NONE);
 }
 
 void func_8002DF18(PlayState* play, Player* player) {
@@ -1570,8 +1571,10 @@ u32 Actor_HasParent(Actor* actor, PlayState* play) {
 s32 func_8002F434(Actor* actor, PlayState* play, s32 getItemId, f32 xzRange, f32 yRange) {
     Player* player = GET_PLAYER(play);
 
-    if (!(player->stateFlags1 & (PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_CHARGING_SPIN_ATTACK | PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP | PLAYER_STATE1_CLIMBING_ONTO_LEDGE |
-                                 PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALLING | PLAYER_STATE1_IN_FIRST_PERSON_MODE | PLAYER_STATE1_CLIMBING)) &&
+    if (!(player->stateFlags1 &
+          (PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_CHARGING_SPIN_ATTACK |
+           PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP | PLAYER_STATE1_CLIMBING_ONTO_LEDGE | PLAYER_STATE1_JUMPING |
+           PLAYER_STATE1_FREEFALLING | PLAYER_STATE1_IN_FIRST_PERSON_MODE | PLAYER_STATE1_CLIMBING)) &&
         Player_GetExplosiveHeld(player) < 0) {
         if ((((player->heldActor != NULL) || (actor == player->talkActor)) && (getItemId > GI_NONE) &&
              (getItemId < GI_MAX)) ||
@@ -1644,8 +1647,9 @@ u32 Actor_SetRideActor(PlayState* play, Actor* horse, s32 mountSide) {
     Player* player = GET_PLAYER(play);
 
     if (!(player->stateFlags1 &
-          (PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_HOLDING_ACTOR | PLAYER_STATE1_CHARGING_SPIN_ATTACK | PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP | PLAYER_STATE1_CLIMBING_ONTO_LEDGE |
-           PLAYER_STATE1_JUMPING | PLAYER_STATE1_FREEFALLING | PLAYER_STATE1_IN_FIRST_PERSON_MODE | PLAYER_STATE1_CLIMBING))) {
+          (PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_HOLDING_ACTOR | PLAYER_STATE1_CHARGING_SPIN_ATTACK |
+           PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP | PLAYER_STATE1_CLIMBING_ONTO_LEDGE | PLAYER_STATE1_JUMPING |
+           PLAYER_STATE1_FREEFALLING | PLAYER_STATE1_IN_FIRST_PERSON_MODE | PLAYER_STATE1_CLIMBING))) {
         player->rideActor = horse;
         player->mountSide = mountSide;
         return true;
@@ -1662,7 +1666,8 @@ s32 Actor_NotMounted(PlayState* play, Actor* horse) {
     }
 }
 
-void Actor_SetPlayerDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw, f32 knockbackVelY, u32 damageEffect, u32 damageAmount) {
+void Actor_SetPlayerDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw, f32 knockbackVelY,
+                           u32 damageEffect, u32 damageAmount) {
     Player* player = GET_PLAYER(play);
 
     player->damageAmount = damageAmount;
@@ -1672,15 +1677,19 @@ void Actor_SetPlayerDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s1
     player->knockbackVelY = knockbackVelY;
 }
 
-void Actor_SetPlayerKnockbackDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw, f32 knockbackVelY, u32 damageAmount) {
-    Actor_SetPlayerDamage(play, actor, knockbackVelXZ, damageYaw, knockbackVelY, PLAYER_DMGEFFECT_KNOCKBACK, damageAmount);
+void Actor_SetPlayerKnockbackDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw, f32 knockbackVelY,
+                                    u32 damageAmount) {
+    Actor_SetPlayerDamage(play, actor, knockbackVelXZ, damageYaw, knockbackVelY, PLAYER_DMGEFFECT_KNOCKBACK,
+                          damageAmount);
 }
 
-void Actor_SetPlayerKnockbackNoDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw, f32 knockbackVelY) {
+void Actor_SetPlayerKnockbackNoDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw,
+                                      f32 knockbackVelY) {
     Actor_SetPlayerKnockbackDamage(play, actor, knockbackVelXZ, damageYaw, knockbackVelY, 0);
 }
 
-void Actor_SetPlayerHopDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw, f32 knockbackVelY, u32 damageAmount) {
+void Actor_SetPlayerHopDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw, f32 knockbackVelY,
+                              u32 damageAmount) {
     Actor_SetPlayerDamage(play, actor, knockbackVelXZ, damageYaw, knockbackVelY, PLAYER_DMGEFFECT_HOP, damageAmount);
 }
 
@@ -1993,13 +2002,17 @@ u32 D_80116068[ACTORCAT_MAX] = {
     PLAYER_STATE1_TALKING | PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE,
     PLAYER_STATE1_TALKING | PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE,
     0,
-    PLAYER_STATE1_TALKING | PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_GETTING_ITEM | PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE,
+    PLAYER_STATE1_TALKING | PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_GETTING_ITEM |
+        PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE,
     PLAYER_STATE1_IN_DEATH_CUTSCENE,
-    PLAYER_STATE1_TALKING | PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE | PLAYER_STATE1_IN_CUTSCENE,
+    PLAYER_STATE1_TALKING | PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE |
+        PLAYER_STATE1_IN_CUTSCENE,
     PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE,
     0,
-    PLAYER_STATE1_TALKING | PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE | PLAYER_STATE1_IN_CUTSCENE,
-    PLAYER_STATE1_TALKING | PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_GETTING_ITEM | PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE,
+    PLAYER_STATE1_TALKING | PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE |
+        PLAYER_STATE1_IN_CUTSCENE,
+    PLAYER_STATE1_TALKING | PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_GETTING_ITEM |
+        PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE,
     0,
     PLAYER_STATE1_TALKING | PLAYER_STATE1_IN_DEATH_CUTSCENE | PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE,
 };
@@ -5556,7 +5569,8 @@ s32 Actor_TrackPoint(Actor* actor, Vec3f* target, Vec3s* headRot, Vec3s* upperBo
  *
  * @note same note as Actor_TrackPlayer
  */
-s32 Actor_TrackPlayerSetFocusHeight(PlayState* play, Actor* actor, Vec3s* headRot, Vec3s* upperBodyRot, f32 focusHeight) {
+s32 Actor_TrackPlayerSetFocusHeight(PlayState* play, Actor* actor, Vec3s* headRot, Vec3s* upperBodyRot,
+                                    f32 focusHeight) {
     Player* player = GET_PLAYER(play);
     s16 yaw;
     Vec3f target;

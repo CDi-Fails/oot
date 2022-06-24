@@ -2203,8 +2203,8 @@ void BossGanon_Wait(BossGanon* this, PlayState* play) {
     SkelAnime_Update(&this->skelAnime);
 
     if ((this->unk_1C2 == 0) && !(player->actor.world.pos.y < 0.0f)) {
-        if (!(player->stateFlags1 & PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP) && (fabsf(player->actor.world.pos.x) < 110.0f) &&
-            (fabsf(player->actor.world.pos.z) < 110.0f)) {
+        if (!(player->stateFlags1 & PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP) &&
+            (fabsf(player->actor.world.pos.x) < 110.0f) && (fabsf(player->actor.world.pos.z) < 110.0f)) {
             BossGanon_SetupPoundFloor(this, play);
         } else if ((this->timers[0] == 0) && !(player->stateFlags1 & PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP)) {
             this->timers[0] = (s16)Rand_ZeroFloat(30.0f) + 30;
@@ -2831,7 +2831,7 @@ void BossGanon_Update(Actor* thisx, PlayState* play2) {
 
     // block players attack if hes shooting something
     if ((this->actionFunc == BossGanon_Wait) || (this->actionFunc == BossGanon_Block)) {
-        if (player->unk_A73 != 0) {
+        if (player->fpsItemShotTimer != 0) {
             BossGanon_SetupBlock(this, play);
         }
     }
@@ -4406,7 +4406,8 @@ void func_808E2544(Actor* thisx, PlayState* play) {
             this->actor.world.rot.x = (Math_CosS(this->unk_1A2 * 0x3400) * sp84 * 0.1f) + this->actor.shape.rot.x;
             this->actor.world.rot.y = (Math_SinS(this->unk_1A2 * 0x1A00) * sp84) + this->actor.shape.rot.y;
 
-            if ((player->isMeleeWeaponAttacking != 0) && (player->meleeAttackType >= PLAYER_MELEEATKTYPE_SPIN_ATTACK_1H) &&
+            if ((player->isMeleeWeaponAttacking != 0) &&
+                (player->meleeAttackType >= PLAYER_MELEEATKTYPE_SPIN_ATTACK_1H) &&
                 (this->actor.xzDistToPlayer < 80.0f)) {
                 this->unk_1C2 = 0xC;
                 this->actor.speedXZ = -30.0f;
@@ -4777,7 +4778,8 @@ void BossGanon_UpdateEffects(PlayState* play) {
 
                     if (((eff->scale * 150.0f) < distToPlayer) && (distToPlayer < (eff->scale * 300.0f))) {
                         eff->timer = 150;
-                        Actor_SetPlayerKnockbackDamage(play, &sGanondorf->actor, 7.0f, sGanondorf->actor.yawTowardsPlayer, 0.0f, 0x20);
+                        Actor_SetPlayerKnockbackDamage(play, &sGanondorf->actor, 7.0f,
+                                                       sGanondorf->actor.yawTowardsPlayer, 0.0f, 0x20);
                     }
                 }
             }

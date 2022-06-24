@@ -535,8 +535,9 @@ s32 EnZf_CanAttack(PlayState* play, EnZf* this) {
     Actor* targetedActor;
     Player* player = GET_PLAYER(play);
 
-    if (this->actor.params >= ENZF_TYPE_LIZALFOS_MINIBOSS_A) {             // miniboss
-        if (player->stateFlags1 & (PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP | PLAYER_STATE1_CLIMBING_ONTO_LEDGE)) { // Hanging or climbing
+    if (this->actor.params >= ENZF_TYPE_LIZALFOS_MINIBOSS_A) { // miniboss
+        if (player->stateFlags1 &
+            (PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP | PLAYER_STATE1_CLIMBING_ONTO_LEDGE)) { // Hanging or climbing
             return false;
         } else {
             return true;
@@ -727,7 +728,8 @@ void func_80B4543C(EnZf* this, PlayState* play) {
         angleToPlayer = player->actor.shape.rot.y - this->actor.shape.rot.y;
         angleToPlayer = ABS(angleToPlayer);
 
-        if ((this->actor.xzDistToPlayer < 100.0f) && (player->isMeleeWeaponAttacking != 0) && (angleToPlayer >= 0x1F40)) {
+        if ((this->actor.xzDistToPlayer < 100.0f) && (player->isMeleeWeaponAttacking != 0) &&
+            (angleToPlayer >= 0x1F40)) {
             this->actor.shape.rot.y = this->actor.world.rot.y = this->actor.yawTowardsPlayer;
             func_80B483E4(this, play);
         } else if (this->unk_3F0 != 0) {
@@ -844,8 +846,8 @@ void EnZf_ApproachPlayer(EnZf* this, PlayState* play) {
         temp_v1 = player->actor.shape.rot.y - this->actor.shape.rot.y;
         temp_v1 = ABS(temp_v1);
 
-        if ((sp48 == this->curPlatform) && (this->actor.xzDistToPlayer < 150.0f) && (player->isMeleeWeaponAttacking != 0) &&
-            (temp_v1 >= 0x1F40)) {
+        if ((sp48 == this->curPlatform) && (this->actor.xzDistToPlayer < 150.0f) &&
+            (player->isMeleeWeaponAttacking != 0) && (temp_v1 >= 0x1F40)) {
             this->actor.shape.rot.y = this->actor.world.rot.y = this->actor.yawTowardsPlayer;
 
             if (Rand_ZeroOne() > 0.7f) {
@@ -1216,7 +1218,9 @@ void EnZf_Slash(EnZf* this, PlayState* play) {
                     if (yawDiff > 16000) {
                         this->actor.world.rot.y = this->actor.yawTowardsPlayer;
                         func_80B483E4(this, play);
-                    } else if (player->stateFlags1 & (PLAYER_STATE1_Z_TARGETING_UNFRIENDLY | PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP | PLAYER_STATE1_CLIMBING_ONTO_LEDGE)) {
+                    } else if (player->stateFlags1 &
+                               (PLAYER_STATE1_Z_TARGETING_UNFRIENDLY | PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP |
+                                PLAYER_STATE1_CLIMBING_ONTO_LEDGE)) {
                         if (this->actor.isTargeted) {
                             EnZf_SetupSlash(this);
                         } else {

@@ -920,7 +920,7 @@ typedef struct Player {
     /* 0x0888 */ f32        wallDistance; // distance to the colliding wall plane
     /* 0x088C */ u8         touchedWallJumpType;
     /* 0x088D */ u8         wallTouchTimer;
-    /* 0x088E */ u8         unk_88E;
+    /* 0x088E */ u8         endTalkTimer;
     /* 0x088F */ u8         damageFlashTimer;
     /* 0x0890 */ u8         runDamageTimer;
     /* 0x0891 */ u8         shockTimer;
@@ -945,7 +945,7 @@ typedef struct Player {
     /* 0x0A20 */ MtxF       shieldMf;
     /* 0x0A60 */ u8         isBurning;
     /* 0x0A61 */ u8         flameTimers[PLAYER_BODYPART_MAX]; // one flame per body part
-    /* 0x0A73 */ u8         unk_A73;
+    /* 0x0A73 */ u8         fpsItemShotTimer;
     /* 0x0A74 */ PlayerMiniCsFunc miniCsFunc;
     /* 0x0A78 */ s8         invincibilityTimer; // prevents damage when nonzero (positive = visible, counts towards zero each frame)
     /* 0x0A79 */ u8         hurtFloorTimer;
@@ -956,7 +956,7 @@ typedef struct Player {
     /* 0x0A82 */ u16        prevMoveSfxType;
     /* 0x0A84 */ s16        sceneExitPosY;
     /* 0x0A86 */ s8         voidRespawnCounter;
-    /* 0x0A87 */ u8         unk_A87;
+    /* 0x0A87 */ u8         deathTimer;
     /* 0x0A88 */ Vec3f      prevWaistPos; // previous body part 0 position
 } Player; // size = 0xA94
 

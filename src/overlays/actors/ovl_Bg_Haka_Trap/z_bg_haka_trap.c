@@ -222,8 +222,10 @@ void func_8087FFC0(BgHakaTrap* this, PlayState* play) {
         bottleDrinkEffects.z = zNonNegative * 15.0f;
     }
 
-    this->colliderCylinder.dim.pos.x = this->dyna.actor.world.pos.x + bottleDrinkEffects.x * cosine + bottleDrinkEffects.z * sine;
-    this->colliderCylinder.dim.pos.z = this->dyna.actor.world.pos.z + bottleDrinkEffects.x * sine + bottleDrinkEffects.z * cosine;
+    this->colliderCylinder.dim.pos.x =
+        this->dyna.actor.world.pos.x + bottleDrinkEffects.x * cosine + bottleDrinkEffects.z * sine;
+    this->colliderCylinder.dim.pos.z =
+        this->dyna.actor.world.pos.z + bottleDrinkEffects.x * sine + bottleDrinkEffects.z * cosine;
 }
 
 void func_808801B8(BgHakaTrap* this, PlayState* play) {

@@ -200,7 +200,8 @@ void ArmsHook_Shoot(ArmsHook* this, PlayState* play) {
             }
         }
 
-        bodyDistDiff = Math_Vec3f_DistXYZAndStoreDiff(&player->hookshotHeldPos, &this->actor.world.pos, &bodyDistDiffVec);
+        bodyDistDiff =
+            Math_Vec3f_DistXYZAndStoreDiff(&player->hookshotHeldPos, &this->actor.world.pos, &bodyDistDiffVec);
         if (bodyDistDiff < 30.0f) {
             velocity = 0.0f;
             phi_f16 = 0.0f;

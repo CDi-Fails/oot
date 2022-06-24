@@ -860,7 +860,8 @@ void func_80B0E728(EnSw* this, PlayState* play) {
                 this->unk_440 = 4;
             }
 
-            if (!(Math_Vec3f_DistXYZ(&this->actor.world.pos, &this->unk_448) > 13.0f) || Actor_PlayerIsIdleWhileClimbing(play)) {
+            if (!(Math_Vec3f_DistXYZ(&this->actor.world.pos, &this->unk_448) > 13.0f) ||
+                Actor_PlayerIsIdleWhileClimbing(play)) {
                 this->actionFunc = func_80B0E90C;
             }
         }

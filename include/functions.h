@@ -418,7 +418,7 @@ void func_8002ED80(Actor* actor, PlayState* play, s32 flag);
 PosRot* Actor_GetFocus(PosRot* dest, Actor* actor);
 PosRot* Actor_GetWorld(PosRot* dest, Actor* actor);
 PosRot* Actor_GetWorldPosShapeRot(PosRot* arg0, Actor* actor);
-s32 Actor_OutsideTargetRange(Actor* actor, Player* player, s32 flag);
+s32 Actor_OutsideTargetRange(Actor* actor, Player* player, s32 disableCheck);
 u32 Actor_ProcessTalkRequest(Actor* actor, PlayState* play);
 s32 func_8002F1C4(Actor* actor, PlayState* play, f32 arg2, f32 arg3, u32 exchangeItemId);
 s32 func_8002F298(Actor* actor, PlayState* play, f32 arg2, u32 exchangeItemId);
@@ -437,11 +437,15 @@ void func_8002F5F0(Actor* actor, PlayState* play);
 s32 Actor_IsMounted(PlayState* play, Actor* horse);
 u32 Actor_SetRideActor(PlayState* play, Actor* horse, s32 mountSide);
 s32 Actor_NotMounted(PlayState* play, Actor* horse);
-void Actor_SetPlayerDamage(PlayState* play, Actor* actor, f32 arg2, s16 arg3, f32 arg4, u32 arg5, u32 arg6);
-void Actor_SetPlayerKnockbackDamage(PlayState* play, Actor* actor, f32 arg2, s16 arg3, f32 arg4, u32 arg5);
-void Actor_SetPlayerKnockbackNoDamage(PlayState* play, Actor* actor, f32 arg2, s16 arg3, f32 arg4);
-void Actor_SetPlayerHopDamage(PlayState* play, Actor* actor, f32 arg2, s16 arg3, f32 arg4, u32 arg5);
-void Actor_SetPlayerHopNoDamage(PlayState* play, Actor* actor, f32 arg2, s16 arg3, f32 arg4);
+void Actor_SetPlayerDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw, f32 knockbackVelY,
+                           u32 damageEffect, u32 damageAmount);
+void Actor_SetPlayerKnockbackDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw, f32 knockbackVelY,
+                                    u32 damageAmount);
+void Actor_SetPlayerKnockbackNoDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw,
+                                      f32 knockbackVelY);
+void Actor_SetPlayerHopDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw, f32 knockbackVelY,
+                              u32 damageAmount);
+void Actor_SetPlayerHopNoDamage(PlayState* play, Actor* actor, f32 knockbackVelXZ, s16 damageYaw, f32 knockbackVelY);
 void func_8002F7DC(Actor* actor, u16 sfxId);
 void Audio_PlayActorSound2(Actor* actor, u16 sfxId);
 void func_8002F850(PlayState* play, Actor* actor);
@@ -903,7 +907,7 @@ s32 Math_StepUntilS(s16* pValue, s16 limit, s16 step);
 s32 Math_StepToAngleS(s16* pValue, s16 target, s16 step);
 s32 Math_StepUntilF(f32* pValue, f32 limit, f32 step);
 s32 Math_AsymStepToF(f32* pValue, f32 target, f32 incrStep, f32 decrStep);
-void func_80077D10(f32* arg0, s16* arg1, Input* input);
+void func_80077D10(f32* analogStickDistance, s16* analogStickAngle, Input* input);
 s16 Rand_S16Offset(s16 base, s16 range);
 void Math_Vec3f_Copy(Vec3f* dest, Vec3f* src);
 void Math_Vec3s_ToVec3f(Vec3f* dest, Vec3s* src);

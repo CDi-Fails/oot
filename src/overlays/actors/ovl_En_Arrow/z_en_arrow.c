@@ -156,7 +156,7 @@ void EnArrow_Shoot(EnArrow* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
     if (this->actor.parent == NULL) {
-        if ((this->actor.params != ARROW_NUT) && (player->unk_A73 == 0)) {
+        if ((this->actor.params != ARROW_NUT) && (player->fpsItemShotTimer == 0)) {
             Actor_Kill(&this->actor);
             return;
         }
@@ -389,7 +389,7 @@ void EnArrow_Update(Actor* thisx, PlayState* play) {
     EnArrow* this = (EnArrow*)thisx;
     Player* player = GET_PLAYER(play);
 
-    if (this->isCsNut || ((this->actor.params >= ARROW_NORMAL_LIT) && (player->unk_A73 != 0)) ||
+    if (this->isCsNut || ((this->actor.params >= ARROW_NORMAL_LIT) && (player->fpsItemShotTimer != 0)) ||
         !Player_InBlockingCsMode(play, player)) {
         this->actionFunc(this, play);
     }

@@ -2966,8 +2966,8 @@ s32 Camera_Battle1(Camera* camera) {
     rwData->roll += (((OREG(36) * camera->speedRatio) * (1.0f - distRatio)) - rwData->roll) * CAM_DATA_SCALED(OREG(37));
     camera->roll = CAM_DEG_TO_BINANG(rwData->roll);
     camera->fov = Camera_LERPCeilF((player->isMeleeWeaponAttacking != 0 ? 0.8f
-                                    : gSaveContext.health <= 0x10 ? 0.8f
-                                                                  : 1.0f) *
+                                    : gSaveContext.health <= 0x10       ? 0.8f
+                                                                        : 1.0f) *
                                        (fov - ((fov * 0.05f) * distRatio)),
                                    camera->fov, camera->fovUpdateRate, 1.0f);
 }
@@ -6534,7 +6534,7 @@ s32 Camera_Special5(Camera* camera) {
             temp_f0_2 = Rand_ZeroOne();
             sp74.yaw =
                 (s16)(playerPosRot->rot.y - 0x7FFF) + (s16)(spA4 < 0 ? -(s16)(0x1553 + (s16)(temp_f0_2 * 2730.0f))
-                                                                    : (s16)(0x1553 + (s16)(temp_f0_2 * 2730.0f)));
+                                                                     : (s16)(0x1553 + (s16)(temp_f0_2 * 2730.0f)));
             sp74.pitch = roData->pitch;
             Camera_Vec3fVecSphGeoAdd(eyeNext, &spA8.pos, &sp74);
             *eye = *eyeNext;

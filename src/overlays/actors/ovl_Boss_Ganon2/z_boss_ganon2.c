@@ -1852,7 +1852,8 @@ void func_80902348(BossGanon2* this, PlayState* play) {
                     phi_v0_2 = 0;
                 }
 
-                Actor_SetPlayerKnockbackDamage(play, &this->actor, 15.0f, this->actor.yawTowardsPlayer + phi_v0_2, 2.0f, 0);
+                Actor_SetPlayerKnockbackDamage(play, &this->actor, 15.0f, this->actor.yawTowardsPlayer + phi_v0_2, 2.0f,
+                                               0);
                 sZelda->hookshotHeldPos = 8;
                 this->unk_316 = 10;
                 break;

@@ -135,7 +135,8 @@ void EnReeba_Init(Actor* thisx, PlayState* play) {
 
     surfaceType = func_80041D4C(&play->colCtx, this->actor.floorPoly, this->actor.floorBgId);
 
-    if ((surfaceType != BGCHECK_FLOORSPECIALPROPERTY_SHALLOW_SAND) && (surfaceType != BGCHECK_FLOORSPECIALPROPERTY_QUICKSAND_NO_HORSE)) {
+    if ((surfaceType != BGCHECK_FLOORSPECIALPROPERTY_SHALLOW_SAND) &&
+        (surfaceType != BGCHECK_FLOORSPECIALPROPERTY_QUICKSAND_NO_HORSE)) {
         Actor_Kill(&this->actor);
         return;
     }
@@ -253,7 +254,8 @@ void func_80AE5270(EnReeba* this, PlayState* play) {
 
     surfaceType = func_80041D4C(&play->colCtx, this->actor.floorPoly, this->actor.floorBgId);
 
-    if ((surfaceType != BGCHECK_FLOORSPECIALPROPERTY_SHALLOW_SAND) && (surfaceType != BGCHECK_FLOORSPECIALPROPERTY_QUICKSAND_NO_HORSE)) {
+    if ((surfaceType != BGCHECK_FLOORSPECIALPROPERTY_SHALLOW_SAND) &&
+        (surfaceType != BGCHECK_FLOORSPECIALPROPERTY_QUICKSAND_NO_HORSE)) {
         this->actor.speedXZ = 0.0f;
         this->actionfunc = func_80AE5688;
     } else if ((this->unk_272 == 0) || (this->actor.xzDistToPlayer < 30.0f) || (this->actor.xzDistToPlayer > 400.0f) ||
@@ -284,8 +286,9 @@ void func_80AE53AC(EnReeba* this, PlayState* play) {
 
     surfaceType = func_80041D4C(&play->colCtx, this->actor.floorPoly, this->actor.floorBgId);
 
-    if (((surfaceType != BGCHECK_FLOORSPECIALPROPERTY_SHALLOW_SAND) && (surfaceType != BGCHECK_FLOORSPECIALPROPERTY_QUICKSAND_NO_HORSE)) || (this->actor.xzDistToPlayer > 400.0f) ||
-        (this->actor.bgCheckFlags & BGCHECKFLAG_WALL)) {
+    if (((surfaceType != BGCHECK_FLOORSPECIALPROPERTY_SHALLOW_SAND) &&
+         (surfaceType != BGCHECK_FLOORSPECIALPROPERTY_QUICKSAND_NO_HORSE)) ||
+        (this->actor.xzDistToPlayer > 400.0f) || (this->actor.bgCheckFlags & BGCHECKFLAG_WALL)) {
         this->actionfunc = func_80AE5688;
     } else {
         if ((this->actor.xzDistToPlayer < 70.0f) && (this->unk_270 == 0)) {

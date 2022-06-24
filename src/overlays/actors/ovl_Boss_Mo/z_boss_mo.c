@@ -839,7 +839,8 @@ void BossMo_Tentacle(BossMo* this, PlayState* play) {
                         player->actor.parent = NULL;
                         player->csMode = 0;
                         if (this->timers[0] == 0) {
-                            Actor_SetPlayerKnockbackDamage(play, &this->actor, 20.0f, this->actor.shape.rot.y + 0x8000, 10.0f, 0);
+                            Actor_SetPlayerKnockbackDamage(play, &this->actor, 20.0f, this->actor.shape.rot.y + 0x8000,
+                                                           10.0f, 0);
                         }
                     }
                     this->timers[0] = 75;

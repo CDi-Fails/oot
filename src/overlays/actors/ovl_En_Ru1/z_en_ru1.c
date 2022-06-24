@@ -857,7 +857,8 @@ void func_80AEC780(EnRu1* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
     if ((func_80AEC5FC(this, play)) && (!Play_InCsMode(play)) &&
-        (!(player->stateFlags1 & (PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP | PLAYER_STATE1_CLIMBING_ONTO_LEDGE | PLAYER_STATE1_CLIMBING))) &&
+        (!(player->stateFlags1 &
+           (PLAYER_STATE1_HANGING_FROM_LEDGE_SLIP | PLAYER_STATE1_CLIMBING_ONTO_LEDGE | PLAYER_STATE1_CLIMBING))) &&
         (player->actor.bgCheckFlags & BGCHECKFLAG_GROUND)) {
 
         play->csCtx.segment = &D_80AF0880;

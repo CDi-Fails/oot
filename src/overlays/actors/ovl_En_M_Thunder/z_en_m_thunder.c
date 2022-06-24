@@ -173,7 +173,8 @@ void func_80A9F408(EnMThunder* this, PlayState* play) {
     }
 
     if (player->spinAttackTimer >= 0.1f) {
-        func_800AA000(0.0f, (s32)(player->spinAttackTimer * 150.0f) & 0xFF, 2, (s32)(player->spinAttackTimer * 150.0f) & 0xFF);
+        func_800AA000(0.0f, (s32)(player->spinAttackTimer * 150.0f) & 0xFF, 2,
+                      (s32)(player->spinAttackTimer * 150.0f) & 0xFF);
     }
 
     if (player->stateFlags2 & PLAYER_STATE2_RELEASING_SPIN_ATTACK) {

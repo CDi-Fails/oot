@@ -400,8 +400,8 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
                             } else {
                                 EnTorch2_Backflip(this, input, &this->actor);
                             }
-                            if (!CHECK_BTN_ANY(input->cur.button, BTN_A | BTN_R) && (this->isMeleeWeaponAttacking == 0) &&
-                                (player->isMeleeWeaponAttacking != 0)) {
+                            if (!CHECK_BTN_ANY(input->cur.button, BTN_A | BTN_R) &&
+                                (this->isMeleeWeaponAttacking == 0) && (player->isMeleeWeaponAttacking != 0)) {
                                 sCounterState = 1;
                             }
                         }
@@ -533,7 +533,7 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
 
     if ((gSaveContext.magicState == MAGIC_STATE_METER_FLASH_1) &&
         (player->isMeleeWeaponAttacking == 0 || !((player->meleeAttackType >= PLAYER_MELEEATKTYPE_SPIN_ATTACK_1H) &&
-                                            (player->meleeAttackType <= PLAYER_MELEEATKTYPE_BIG_SPIN_2H)))) {
+                                                  (player->meleeAttackType <= PLAYER_MELEEATKTYPE_BIG_SPIN_2H)))) {
         sStickTilt = 0.0f;
         input->cur.stick_x = 0;
         input->cur.stick_y = 0;
@@ -550,7 +550,8 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
     pad54 = input->prev.button ^ input->cur.button;
     input->press.button = input->cur.button & pad54;
     if (CHECK_BTN_ANY(input->cur.button, BTN_R)) {
-        input->cur.button = ((sCounterState == 0) && (this->isMeleeWeaponAttacking == 0)) ? BTN_R : input->cur.button ^ BTN_R;
+        input->cur.button =
+            ((sCounterState == 0) && (this->isMeleeWeaponAttacking == 0)) ? BTN_R : input->cur.button ^ BTN_R;
     }
     input->rel.button = input->prev.button & pad54;
     input->prev.button = input->cur.button & (u16) ~(BTN_A | BTN_B);

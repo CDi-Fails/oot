@@ -2889,7 +2889,8 @@ void BossTw_Update(Actor* thisx, PlayState* play) {
     if (this->actionFunc == BossTw_FlyTo || this->actionFunc == BossTw_Spin ||
         this->actionFunc == BossTw_TurnToPlayer) {
         if ((s16)(player->actor.shape.rot.y - this->actor.yawTowardsPlayer + 0x8000) < 0x1000 &&
-            (s16)(player->actor.shape.rot.y - this->actor.yawTowardsPlayer + 0x8000) > -0x1000 && player->unk_A73) {
+            (s16)(player->actor.shape.rot.y - this->actor.yawTowardsPlayer + 0x8000) > -0x1000 &&
+            player->fpsItemShotTimer) {
             BossTw_SetupSpin(this, play);
         }
     }
@@ -3009,7 +3010,8 @@ void BossTw_TwinrovaUpdate(Actor* thisx, PlayState* play2) {
     if (this->actionFunc != BossTw_TwinrovaShootBlast && this->actionFunc != BossTw_TwinrovaChargeBlast &&
         this->visible && this->unk_5F8 == 0 &&
         (s16)(player->actor.shape.rot.y - this->actor.yawTowardsPlayer + 0x8000) < 0x1000 &&
-        (s16)(player->actor.shape.rot.y - this->actor.yawTowardsPlayer + 0x8000) > -0x1000 && player->unk_A73 != 0) {
+        (s16)(player->actor.shape.rot.y - this->actor.yawTowardsPlayer + 0x8000) > -0x1000 &&
+        player->fpsItemShotTimer != 0) {
         BossTw_TwinrovaSetupSpin(this, play);
     }
 
@@ -4067,7 +4069,8 @@ void BossTw_BlastFire(BossTw* this, PlayState* play) {
                     player->isBurning = 1;
 
                     if (this->work[BURN_TMR] == 0) {
-                        func_8002F7DC(&player->actor, player->ageProperties->ageVoiceSfxOffset + NA_SE_VO_LI_DEMO_DAMAGE);
+                        func_8002F7DC(&player->actor,
+                                      player->ageProperties->ageVoiceSfxOffset + NA_SE_VO_LI_DEMO_DAMAGE);
                         this->work[BURN_TMR] = 40;
                     }
 

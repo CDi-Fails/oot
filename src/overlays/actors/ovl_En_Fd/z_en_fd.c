@@ -306,7 +306,8 @@ s32 EnFd_ColliderCheck(EnFd* this, PlayState* play) {
         }
         this->attackTimer = 30;
         Audio_PlayActorSound2(&player->actor, NA_SE_PL_BODY_HIT);
-        Actor_SetPlayerKnockbackNoDamage(play, &this->actor, this->actor.speedXZ + 2.0f, this->actor.yawTowardsPlayer, 6.0f);
+        Actor_SetPlayerKnockbackNoDamage(play, &this->actor, this->actor.speedXZ + 2.0f, this->actor.yawTowardsPlayer,
+                                         6.0f);
     }
     return false;
 }

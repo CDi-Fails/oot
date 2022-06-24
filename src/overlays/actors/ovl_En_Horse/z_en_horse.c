@@ -725,9 +725,11 @@ void EnHorse_ResetRace(EnHorse* this, PlayState* play) {
 s32 EnHorse_PlayerCanMove(EnHorse* this, PlayState* play) {
     Player* player = GET_PLAYER(play);
 
-    if ((player->stateFlags1 & PLAYER_STATE1_EXITING_SCENE) || Actor_PlayerIsAimingReadyFpsItem(GET_PLAYER(play)) == 1 ||
-        (player->stateFlags1 & PLAYER_STATE1_IN_FIRST_PERSON_MODE) || ((this->stateFlags & ENHORSE_FLAG_19) && !this->inRace) ||
-        this->action == ENHORSE_ACT_HBA || player->actor.flags & ACTOR_FLAG_8 || play->csCtx.state != 0) {
+    if ((player->stateFlags1 & PLAYER_STATE1_EXITING_SCENE) ||
+        Actor_PlayerIsAimingReadyFpsItem(GET_PLAYER(play)) == 1 ||
+        (player->stateFlags1 & PLAYER_STATE1_IN_FIRST_PERSON_MODE) ||
+        ((this->stateFlags & ENHORSE_FLAG_19) && !this->inRace) || this->action == ENHORSE_ACT_HBA ||
+        player->actor.flags & ACTOR_FLAG_8 || play->csCtx.state != 0) {
         return false;
     }
     return true;
@@ -2983,7 +2985,8 @@ void EnHorse_CheckFloors(EnHorse* this, PlayState* play) {
 
         if (ny < 0.81915206f || // cos(35 degrees)
             SurfaceType_IsHorseBlocked(&play->colCtx, this->actor.floorPoly, this->actor.floorBgId) ||
-            func_80041D4C(&play->colCtx, this->actor.floorPoly, this->actor.floorBgId) == BGCHECK_FLOORSPECIALPROPERTY_QUICKSAND_NO_HORSE) {
+            func_80041D4C(&play->colCtx, this->actor.floorPoly, this->actor.floorBgId) ==
+                BGCHECK_FLOORSPECIALPROPERTY_QUICKSAND_NO_HORSE) {
             if (this->actor.speedXZ >= 0.0f) {
                 EnHorse_ObstructMovement(this, play, 4, galloping);
             } else {
