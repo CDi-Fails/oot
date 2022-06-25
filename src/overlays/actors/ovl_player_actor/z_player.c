@@ -88,7 +88,7 @@ typedef struct {
 typedef struct {
     /* 0x00 */ LinkAnimationHeader* anim;
     /* 0x04 */ u8 itemChangeFrame;
-} ItemChangeInfo; // size = 0x08
+} ItemChangeAnimInfo; // size = 0x08
 
 typedef struct {
     /* 0x00 */ LinkAnimationHeader* bottleSwingAnim;
@@ -773,7 +773,7 @@ static LinkAnimationHeader* sPlayerAnimations[PLAYER_ANIMGROUP_MAX * PLAYER_ANIM
     &gPlayerAnim_002A68, // PLAYER_ANIMTYPE_HOLDING_TWO_HAND_WEAPON
     &gPlayerAnim_003038, // PLAYER_ANIMTYPE_HOLDING_ITEM_IN_LEFT_HAND
     &gPlayerAnim_003038, // PLAYER_ANIMTYPE_USED_EXPLOSIVE
-    /* PLAYER_ANIMGROUP_17 */
+    /* PLAYER_ANIMGROUP_ROLL_BONKING */
     &gPlayerAnim_002FC0, // PLAYER_ANIMTYPE_DEFAULT
     &gPlayerAnim_002FB8, // PLAYER_ANIMTYPE_HOLDING_ONE_HAND_WEAPON
     &gPlayerAnim_002FB8, // PLAYER_ANIMTYPE_HOLDING_SHIELD
@@ -1278,7 +1278,7 @@ typedef enum {
     /* 14 */ PLAYER_ITEM_CHANGE_MAX
 } PlayersItemChangeAnimsIndex;
 
-static ItemChangeInfo sItemChangeAnims[PLAYER_ITEM_CHANGE_MAX] = {
+static ItemChangeAnimInfo sItemChangeAnimsInfo[PLAYER_ITEM_CHANGE_MAX] = {
     { &gPlayerAnim_002F50, 12 }, /* PLAYER_ITEM_CHANGE_DEFAULT */
     { &gPlayerAnim_003080, 6 },  /* PLAYER_ITEM_CHANGE_SHIELD_TO_1HAND */
     { &gPlayerAnim_002C68, 8 },  /* PLAYER_ITEM_CHANGE_SHIELD_TO_2HAND */
@@ -2324,7 +2324,7 @@ void Player_SetupStartChangeItem(Player* this, PlayState* play) {
 
     this->itemChangeAnim = ABS(itemChangeAnim);
 
-    anim = sItemChangeAnims[this->itemChangeAnim].anim;
+    anim = sItemChangeAnimsInfo[this->itemChangeAnim].anim;
     if ((anim == &gPlayerAnim_002F30) && (this->currentShield == PLAYER_SHIELD_NONE)) {
         anim = &gPlayerAnim_002F40;
     }
@@ -2507,7 +2507,7 @@ void Player_SetupEndDefend(Player* this) {
 }
 
 void Player_SetupChangeItem(PlayState* play, Player* this) {
-    ItemChangeInfo* itemChangeInfo = &sItemChangeAnims[this->itemChangeAnim];
+    ItemChangeAnimInfo* itemChangeInfo = &sItemChangeAnimsInfo[this->itemChangeAnim];
     f32 itemChangeFrame;
 
     itemChangeFrame = itemChangeInfo->itemChangeFrame;
@@ -8808,7 +8808,7 @@ void Player_Rolling(Player* this, PlayState* play) {
                         }
                     }
 
-                    Player_PlayAnimOnce(play, this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_17, this->modelAnimType));
+                    Player_PlayAnimOnce(play, this, GET_PLAYER_ANIM(PLAYER_ANIMGROUP_ROLL_BONKING, this->modelAnimType));
                     this->linearVelocity = -this->linearVelocity;
                     Player_SetQuake(play, 33267, 3, 12);
                     Player_RequestRumble(this, 255, 20, 150, 0);
