@@ -8,6 +8,7 @@
 #include "global.h"
 
 #include "overlays/actors/ovl_Bg_Heavy_Block/z_bg_heavy_block.h"
+#include "overlays/actors/ovl_Demo_Kankyo/z_demo_kankyo.h"
 #include "overlays/actors/ovl_Door_Shutter/z_door_shutter.h"
 #include "overlays/actors/ovl_En_Boom/z_en_boom.h"
 #include "overlays/actors/ovl_En_Arrow/z_en_arrow.h"
@@ -595,7 +596,7 @@ static GetItemEntry sGetItemTable[] = {
     GET_ITEM(ITEM_WALLET_ADULT, OBJECT_GI_PURSE, GID_WALLET_ADULT, 0x5E, 0x80, CHEST_ANIM_LONG),
     GET_ITEM(ITEM_WALLET_GIANT, OBJECT_GI_PURSE, GID_WALLET_GIANT, 0x5F, 0x80, CHEST_ANIM_LONG),
     GET_ITEM(ITEM_WEIRD_EGG, OBJECT_GI_EGG, GID_EGG, 0x9A, 0x80, CHEST_ANIM_LONG),
-    GET_ITEM(ITEM_HEART, OBJECT_GI_HEART, GID_HEART, 0x55, 0x80, CHEST_ANIM_LONG),
+    GET_ITEM(ITEM_RECOVERY_HEART, OBJECT_GI_HEART, GID_RECOVERY_HEART, 0x55, 0x80, CHEST_ANIM_LONG),
     GET_ITEM(ITEM_ARROWS_SMALL, OBJECT_GI_ARROW, GID_ARROWS_SMALL, 0xE6, 0x48, CHEST_ANIM_SHORT),
     GET_ITEM(ITEM_ARROWS_MEDIUM, OBJECT_GI_ARROW, GID_ARROWS_MEDIUM, 0xE6, 0x49, CHEST_ANIM_SHORT),
     GET_ITEM(ITEM_ARROWS_LARGE, OBJECT_GI_ARROW, GID_ARROWS_LARGE, 0xE6, 0x4A, CHEST_ANIM_SHORT),
@@ -10081,13 +10082,13 @@ s32 Player_SetupHover(Player* this) {
         if (!hoverActive) {
             this->hoverBootsTimer = 19;
         }
-        return 0;
+        return false;
     }
 
     sFloorSpecialProperty = BGCHECK_FLOORSPECIALPROPERTY_NONE;
     this->angleToFloorX = this->angleToFloorY = sAngleToFloorX = 0;
 
-    return 1;
+    return true;
 }
 
 static Vec3f sWallCheckOffset = { 0.0f, 18.0f, 0.0f };
@@ -10180,7 +10181,7 @@ void Player_UpdateBgcheck(PlayState* play, Player* this) {
                 Environment_ChangeLightSetting(
                     play, SurfaceType_GetLightSettingIndex(&play->colCtx, floorPoly, this->actor.floorBgId));
             } else {
-                func_80043508(&play->colCtx, this->actor.floorBgId);
+                DynaPoly_SetPlayerAbove(&play->colCtx, this->actor.floorBgId);
             }
         }
 
@@ -10333,7 +10334,7 @@ void Player_UpdateBgcheck(PlayState* play, Player* this) {
             s32 pad3;
 
             if (this->actor.floorBgId != BGCHECK_SCENE) {
-                func_800434C8(&play->colCtx, this->actor.floorBgId);
+                DynaPoly_SetPlayerOnTop(&play->colCtx, this->actor.floorBgId);
             }
 
             floorPolyNormalX = COLPOLY_GET_NORMAL(floorPoly->normal.x);
@@ -12614,7 +12615,7 @@ s32 Player_SetupGetItemText(PlayState* play, Player* this) {
         if (((this->getItemId >= GI_RUPEE_GREEN) && (this->getItemId <= GI_RUPEE_RED)) ||
             ((this->getItemId >= GI_RUPEE_PURPLE) && (this->getItemId <= GI_RUPEE_GOLD)) ||
             ((this->getItemId >= GI_RUPEE_GREEN_LOSE) && (this->getItemId <= GI_RUPEE_PURPLE_LOSE)) ||
-            (this->getItemId == GI_HEART)) {
+            (this->getItemId == GI_RECOVERY_HEART)) {
             Audio_PlaySoundGeneral(NA_SE_SY_GET_BOXITEM, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                    &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
         } else {
@@ -12737,7 +12738,8 @@ void Player_PlayOcarina(Player* this, PlayState* play) {
         this->stateFlags1 |= PLAYER_STATE1_SKIP_OTHER_ACTORS_UPDATE | PLAYER_STATE1_IN_CUTSCENE;
         this->stateFlags2 |= PLAYER_STATE2_PLAYING_OCARINA_GENERAL;
 
-        if (Actor_Spawn(&play->actorCtx, play, ACTOR_DEMO_KANKYO, 0.0f, 0.0f, 0.0f, 0, 0, 0, 0xF) == NULL) {
+        if (Actor_Spawn(&play->actorCtx, play, ACTOR_DEMO_KANKYO, 0.0f, 0.0f, 0.0f, 0, 0, 0, DEMOKANKYO_WARP_OUT) ==
+            NULL) {
             Environment_WarpSongLeave(play);
         }
 
@@ -13213,7 +13215,7 @@ void Player_SetDrawAndStartCutsceneAfterTimer(Player* this, PlayState* play) {
 void Player_SpawnFromWarpSong(Player* this, PlayState* play) {
     Player_SetActionFunc(play, this, Player_SetDrawAndStartCutsceneAfterTimer, 0);
     this->genericTimer = 40;
-    Actor_Spawn(&play->actorCtx, play, ACTOR_DEMO_KANKYO, 0.0f, 0.0f, 0.0f, 0, 0, 0, 0x10);
+    Actor_Spawn(&play->actorCtx, play, ACTOR_DEMO_KANKYO, 0.0f, 0.0f, 0.0f, 0, 0, 0, DEMOKANKYO_WARP_IN);
 }
 
 void Player_SpawnFromBlueWarp(Player* this, PlayState* play) {
@@ -13256,8 +13258,13 @@ void Player_EnterGrotto(Player* this, PlayState* play) {
 
     if ((this->genericTimer++ > 8) && (play->transitionTrigger == TRANS_TRIGGER_OFF)) {
 
+<<<<<<< HEAD
         if (this->genericVar != 0) {
             if (play->sceneNum == 9) {
+=======
+        if (this->unk_84F != 0) {
+            if (play->sceneNum == SCENE_ICE_DOUKUTO) {
+>>>>>>> upstream/master
                 Play_TriggerRespawn(play);
                 play->nextEntranceIndex = ENTR_ICE_DOUKUTO_0;
             } else if (this->genericVar < 0) {
