@@ -13258,13 +13258,8 @@ void Player_EnterGrotto(Player* this, PlayState* play) {
 
     if ((this->genericTimer++ > 8) && (play->transitionTrigger == TRANS_TRIGGER_OFF)) {
 
-<<<<<<< HEAD
         if (this->genericVar != 0) {
-            if (play->sceneNum == 9) {
-=======
-        if (this->unk_84F != 0) {
             if (play->sceneNum == SCENE_ICE_DOUKUTO) {
->>>>>>> upstream/master
                 Play_TriggerRespawn(play);
                 play->nextEntranceIndex = ENTR_ICE_DOUKUTO_0;
             } else if (this->genericVar < 0) {
