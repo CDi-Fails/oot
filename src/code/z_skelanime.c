@@ -1,5 +1,5 @@
 #include "global.h"
-#include "vt.h"
+#include "terminal.h"
 
 #define ANIM_INTERP 1
 
@@ -208,7 +208,7 @@ void SkelAnime_DrawFlexLod(PlayState* play, void** skeleton, Vec3s* jointTable, 
 
     newDList = limbDList = rootLimb->dLists[lod];
 
-    if ((overrideLimbDraw == 0) || !overrideLimbDraw(play, 1, &newDList, &pos, &rot, arg)) {
+    if ((overrideLimbDraw == NULL) || !overrideLimbDraw(play, 1, &newDList, &pos, &rot, arg)) {
         Matrix_TranslateRotateZYX(&pos, &rot);
         if (newDList != NULL) {
             Matrix_ToMtx(mtx, "../z_skelanime.c", 1033);
@@ -716,7 +716,7 @@ Gfx* SkelAnime_DrawFlex(PlayState* play, void** skeleton, Vec3s* jointTable, s32
 s32 SkelAnime_GetFrameDataLegacy(LegacyAnimationHeader* animation, s32 frame, Vec3s* frameTable) {
     LegacyAnimationHeader* animHeader = SEGMENTED_TO_VIRTUAL(animation);
     s32 limbCount = animHeader->limbCount;
-    JointKey* key = SEGMENTED_TO_VIRTUAL(animHeader->jointKey);
+    LegacyJointKey* key = SEGMENTED_TO_VIRTUAL(animHeader->jointKey);
     s16* frameData = SEGMENTED_TO_VIRTUAL(animHeader->frameData);
     s16* staticData = &frameData[0];
     s16* dynamicData = &frameData[frame];
@@ -829,6 +829,10 @@ AnimationEntry* AnimationContext_AddEntry(AnimationContext* animationCtx, Animat
     return entry;
 }
 
+#define LINK_ANIMATION_OFFSET(addr, offset)                                                                         \
+    (((uintptr_t)_link_animetionSegmentRomStart) + ((uintptr_t)(addr)) - ((uintptr_t)_link_animetionSegmentStart) + \
+     (offset))
+
 /**
  * Requests loading frame data from the Link animation into frameTable
  */
@@ -841,7 +845,7 @@ void AnimationContext_SetLoadFrame(PlayState* play, LinkAnimationHeader* animati
         s32 pad;
 
         osCreateMesgQueue(&entry->data.load.msgQueue, &entry->data.load.msg, 1);
-        DmaMgr_SendRequest2(&entry->data.load.req, frameTable,
+        DmaMgr_RequestAsync(&entry->data.load.req, frameTable,
                             LINK_ANIMATION_OFFSET(linkAnimHeader->segment, ((sizeof(Vec3s) * limbCount + 2) * frame)),
                             sizeof(Vec3s) * limbCount + 2, 0, &entry->data.load.msgQueue, NULL, "../z_skelanime.c",
                             2004);
@@ -1010,6 +1014,8 @@ void AnimationContext_MoveActor(PlayState* play, AnimationEntryData* data) {
     actor->world.pos.y += diff.y * actor->scale.y * entry->unk_08;
     actor->world.pos.z += diff.z * actor->scale.z;
 }
+
+typedef void (*AnimationEntryCallback)(struct PlayState* play, AnimationEntryData* data);
 
 /**
  * Performs all requests in the animation queue, then resets the queue flags.
