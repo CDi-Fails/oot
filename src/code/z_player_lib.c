@@ -1039,7 +1039,7 @@ void func_8008F87C(PlayState* play, Player* this, SkelAnime* skelAnime, Vec3f* p
 
             temp3 = SurfaceType_GetFloorType(&play->colCtx, sp88, sp84);
 
-            if ((temp3 >= FLOOR_TYPE_HURT_FLOOR) && (temp3 <= FLOOR_TYPE_SHALLOW_SAND) && !SurfaceType_IsWallDamage(&play->colCtx, sp88, sp84)) {
+            if ((temp3 >= FLOOR_TYPE_HURT_FLOOR) && (temp3 <= FLOOR_TYPE_FIRE_HURT_FLOOR) && !SurfaceType_IsWallDamage(&play->colCtx, sp88, sp84)) {
                 footprintPos.y = sp80;
                 EffectSsGFire_Spawn(play, &footprintPos);
             }

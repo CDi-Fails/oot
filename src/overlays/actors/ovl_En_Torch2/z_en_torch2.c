@@ -413,7 +413,7 @@ void EnTorch2_Update(Actor* thisx, PlayState* play2) {
                         sp50 = 0.0f;
                         if ((90.0f >= this->actor.xzDistToPlayer) && (this->actor.xzDistToPlayer > 70.0f) &&
                             (ABS(sp5A) >= 0x7800) &&
-                            (this->actor.isTargeted || !(player->stateFlags1 & PLAYER_STATE1_SHIELDING))) {
+                            (this->actor.isTargeted || !(player->stateFlags1 & PLAYER_STATE1_22))) {
                             EnTorch2_SwingSword(play, input, this);
                         } else if (((this->actor.xzDistToPlayer <= 70.0f) ||
                                     ((this->actor.xzDistToPlayer <= 80.0f + sp50) &&

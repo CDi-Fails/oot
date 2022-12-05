@@ -68,7 +68,7 @@ s32 D_80119D90[WALL_TYPE_MAX] = {
     WALL_FLAG_6,               // WALL_TYPE_7
 };
 
-u16 sSurfaceMaterialToSfxOffset[SURFACE_MATERIAL_MAX] = {
+u16 sSurfaceMaterialToSfxOffset[14] = {
     SURFACE_SFX_OFFSET_DIRT,          // SURFACE_SFX_OFFSET_DIRT
     SURFACE_SFX_OFFSET_SAND,          // SURFACE_SFX_OFFSET_SAND
     SURFACE_SFX_OFFSET_STONE,         // SURFACE_SFX_OFFSET_STONE
@@ -4198,7 +4198,7 @@ u32 SurfaceType_GetConveyorDirection(CollisionContext* colCtx, CollisionPoly* po
     return SurfaceType_GetData(colCtx, poly, bgId, 1) >> 21 & 0x3F;
 }
 
-u32 func_80042108(CollisionContext* colCtx, CollisionPoly* poly, s32 bgId) {
+u32 SurfaceType_IsWallDamage(CollisionContext* colCtx, CollisionPoly* poly, s32 bgId) {
     return (SurfaceType_GetData(colCtx, poly, bgId, 1) & 0x08000000) ? 1 : 0;
 }
 

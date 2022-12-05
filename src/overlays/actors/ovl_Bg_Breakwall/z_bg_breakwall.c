@@ -252,7 +252,7 @@ void BgBreakwall_Wait(BgBreakwall* this, PlayState* play) {
             Flags_SetEventChkInf(EVENTCHKINF_B0);
             Cutscene_SetSegment(play, gDcOpeningCs);
             gSaveContext.cutsceneTrigger = 1;
-            Audio_PlaySoundGeneral(NA_SE_SY_CORRECT_CHIME, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
+            Audio_PlaySfxGeneral(NA_SE_SY_CORRECT_CHIME, &gSfxDefaultPos, 4, &gSfxDefaultFreqAndVolScale,
                                    &gSfxDefaultFreqAndVolScale, &gSfxDefaultReverb);
             Actor_SetPlayerCutscene(play, NULL, PLAYER_CSMODE_IDLE_4);
         }
